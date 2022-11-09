@@ -36,6 +36,11 @@ public class ParserTest {
         str = "#search(#search(#search(#search(param)+#search(param))))";
         str = "#search(#search(#search(#search(param)+(19-#search(paramA)))))";
         str = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
+        str = "#search(abc.abc)";
+        str = "#isBlank(abc.abc)";
+        str = "#isBlank(abc.abc)";
+        str = "#isBlank()";
+        str = "#isBlank(\"\")";
 
         final DynamicValue dynamicValue = new DynamicValueFactory().buildDynamicValue(str);
 
@@ -70,7 +75,8 @@ public class ParserTest {
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
         private final String test002 =  "{\n" +
                 "\"id\":\"${#uuid(abc)}\"," +
-                "\"name\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"${#search(abc.abc)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"age\": \"${#search(age)}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"" +
                 "}";
@@ -82,6 +88,8 @@ public class ParserTest {
             this.parameterContext.putParameter("2", "name");
             this.parameterContext.putParameter("name", "御坂美琴");
             this.parameterContext.putParameter("age", 14);
+            this.parameterContext.putParameter("abc.abc", "A御坂美琴A");
+            this.parameterContext.putParameter("def", "B御坂美琴B");
         }
     }
 

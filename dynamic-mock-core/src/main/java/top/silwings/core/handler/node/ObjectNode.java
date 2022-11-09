@@ -22,13 +22,13 @@ public class ObjectNode implements Node {
 
     private static final String COMMA = ",";
 
-    private final Map<StaticTextNode, Node> nodeMap;
+    private final Map<Node, Node> nodeMap;
 
     public ObjectNode() {
         this.nodeMap = new HashMap<>();
     }
 
-    public ObjectNode put(final StaticTextNode key, final Node value) {
+    public ObjectNode put(final Node key, final Node value) {
         this.nodeMap.put(key, value);
         return this;
     }
@@ -40,7 +40,7 @@ public class ObjectNode implements Node {
 
         builder.append(LEFT_BRACE);
 
-        for (final Map.Entry<StaticTextNode, Node> nodeEntry : this.nodeMap.entrySet()) {
+        for (final Map.Entry<Node, Node> nodeEntry : this.nodeMap.entrySet()) {
 
             nodeEntry.getKey().interpret(context);
             builder.append(COLON);

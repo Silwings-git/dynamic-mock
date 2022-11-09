@@ -6,6 +6,7 @@ import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 import top.silwings.core.exceptions.DynamicDataException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,10 @@ public class SearchFunctionFactory implements FunctionFactory {
 
     public static class SearchFunction extends AbstractFunctionDynamicValue {
 
+        // 搜索范围
+        // TODO_Silwings: 2022/11/9  
+        private static final List<String> searchScope = new ArrayList<>();
+        
         public SearchFunction(final DynamicValue param) {
             super(param);
         }

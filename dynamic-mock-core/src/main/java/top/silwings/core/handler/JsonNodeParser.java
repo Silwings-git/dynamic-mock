@@ -52,7 +52,7 @@ public class JsonNodeParser {
             // 每遍历到一个JSONObject,添加一层ObjectNode
             for (final Map.Entry<String, Object> entry : parseObject.entrySet()) {
                 final Object value = entry.getValue();
-                objectNode.put(new StaticTextNode(entry.getKey()), this.buildNode(value));
+                objectNode.put(this.buildNode(entry.getKey()), this.buildNode(value));
             }
             node = objectNode;
 

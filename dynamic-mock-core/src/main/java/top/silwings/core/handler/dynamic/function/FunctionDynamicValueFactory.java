@@ -4,6 +4,7 @@ import lombok.Getter;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.dynamic.function.functions.IsBlankFunctionFactory;
 import top.silwings.core.handler.dynamic.function.functions.SearchFunctionFactory;
 import top.silwings.core.handler.dynamic.function.functions.UUIDFunctionFactory;
 import top.silwings.core.exceptions.DynamicDataException;
@@ -37,6 +38,7 @@ public class FunctionDynamicValueFactory {
     private void init() {
         this.functionFactoryList.add(new SearchFunctionFactory());
         this.functionFactoryList.add(new UUIDFunctionFactory());
+        this.functionFactoryList.add(new IsBlankFunctionFactory());
     }
 
 
