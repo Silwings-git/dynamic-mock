@@ -7,7 +7,7 @@ package top.silwings.core.exceptions;
  * @Date 2022/11/6 15:07
  * @Since
  **/
-public class ExpressionException extends EasyMockException {
+public class ExpressionException extends DynamicMockException {
     public ExpressionException() {
         super();
     }

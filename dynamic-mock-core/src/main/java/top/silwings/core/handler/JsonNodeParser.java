@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.exceptions.NodeAnalyzeException;
+import top.silwings.core.exceptions.NodeParseException;
 import top.silwings.core.handler.node.ArrayNode;
 import top.silwings.core.handler.node.BooleanNode;
 import top.silwings.core.handler.node.DynamicNode;
@@ -67,7 +67,7 @@ public class JsonNodeParser {
             node = arrayNode;
 
         } else {
-            throw new NodeAnalyzeException();
+            throw new NodeParseException();
         }
 
         return node;
@@ -98,7 +98,7 @@ public class JsonNodeParser {
         } else if (this.isNull(obj)) {
             return NullNode.nullNode();
         } else {
-            throw new NodeAnalyzeException();
+            throw new NodeParseException();
         }
     }
 

@@ -7,7 +7,7 @@ package top.silwings.core.exceptions;
  * @Date 2022/11/6 23:27
  * @Since
  **/
-public class DynamicDataException extends EasyMockException {
+public class DynamicDataException extends DynamicMockException {
     public DynamicDataException() {
         super();
     }
