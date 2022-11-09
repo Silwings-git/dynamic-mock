@@ -7,6 +7,7 @@ import org.junit.Test;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.definition.RequestDefinition;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.node.Node;
@@ -41,6 +42,10 @@ public class ParserTest {
         str = "#isBlank(abc.abc)";
         str = "#isBlank()";
         str = "#isBlank(\"\")";
+        str = "#isBlank() && true";
+        str = "#isBlank() && false";
+        str = "#search(#isBlank())";
+        str = "#search(10+#isBlank())";
 
         final DynamicValue dynamicValue = new DynamicValueFactory().buildDynamicValue(str);
 
@@ -52,6 +57,7 @@ public class ParserTest {
         context.putParameter("2", 15);
         context.putParameter("true", 10);
         context.putParameter("10", "御坂美琴");
+        context.putParameter("10true", "御坂美琴");
 
         System.out.println(JSON.toJSONString(dynamicValue.value(context)));
     }
@@ -73,7 +79,7 @@ public class ParserTest {
     @Getter
     public static class TestData {
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
-        private final String test002 =  "{\n" +
+        private final String test002 = "{\n" +
                 "\"id\":\"${#uuid(abc)}\"," +
                 "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"${#search(abc.abc)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
@@ -91,6 +97,19 @@ public class ParserTest {
             this.parameterContext.putParameter("abc.abc", "A御坂美琴A");
             this.parameterContext.putParameter("def", "B御坂美琴B");
         }
+    }
+
+    @Test
+    public void test003() {
+
+        final RequestDefinition httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
+                "  \"map\": {\n" +
+                "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
+                "  }\n" +
+                "}", RequestDefinition.class);
+
+        System.out.println(httpTaskRequestInfoDefinition);
+
     }
 
 }
