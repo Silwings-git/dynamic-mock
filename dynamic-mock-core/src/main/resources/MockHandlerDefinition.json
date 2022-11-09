@@ -1,0 +1,75 @@
+{
+  "id": "id",
+  "name": "Demo Mock Handler",
+  "httpMethods": [
+    "GET"
+  ],
+  "requestUrl": "/user/query",
+  "label": "用户管理",
+  "delayTime": 0,
+  "customizeSpace": {
+    "uid": "${#uuid()}",
+    "name": "Misaka Mikoto",
+    "age": 18
+  },
+  "responses": [
+    {
+      "name": "Result Body",
+      "support": [
+        "${#search(age) >= 18}"
+      ],
+      "delayTime": 0,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json;charset=UTF-8",
+          "Date": "Wed, 09 Nov 2022 14:25:02 GMT"
+        },
+        "body": {
+          "name": "${#search(customSpace.name)}",
+          "age": "${#search(customSpace.age)}"
+        }
+      }
+    },
+    {
+      "name": "Result Msg",
+      "support": [
+        "${#search(age) < 18}"
+      ],
+      "delayTime": 0,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json;charset=UTF-8",
+          "Date": "Wed, 09 Nov 2022 14:25:02 GMT"
+        },
+        "body": "${#search(customSpace.name)}"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "name": "Http Task",
+      "support": [
+        "${#isBlank(#search(customizeSpace.uid))}"
+      ],
+      "delayTime": 2000,
+      "request": {
+        "requestUrl": "http://localhost:8088/hello/word",
+        "httpMethod": "POST",
+        "headers": {
+          "authToken": "8888888888"
+        },
+        "body": {
+          "timestemp": "${#now()}",
+          "name": "${#search(customSpace.name)}",
+          "id": "${#uuid()}"
+        },
+        "params": {
+          "${#search(requestBody.name)}": "${${#search(requestBody.userList)}}",
+          "timestemp": "${#now()}",
+          "index": "10"
+        }
+      }
+    }
+  ]
+}
+
