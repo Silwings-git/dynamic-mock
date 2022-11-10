@@ -14,7 +14,7 @@ import java.util.List;
  **/
 @Getter
 @Setter
-public class RequestInfoDefinition {
+public class HttpRequestInfoDefinition {
 
     /**
      * 任务名称
@@ -30,6 +30,16 @@ public class RequestInfoDefinition {
      * 延迟执行时间
      */
     private int delayTime;
+
+    /**
+     * 是否异步执行
+     */
+    private boolean async;
+
+    /**
+     * 执行次数
+     */
+    private int numberOfExecute;
 
     /**
      * 请求信息

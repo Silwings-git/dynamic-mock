@@ -52,6 +52,9 @@
         "${#isBlank(#search(customizeSpace.uid))}"
       ],
       "delayTime": 2000,
+      "async": false,
+      "cron": "* * * * * ?",
+      "numberOfExecute": "1",
       "request": {
         "requestUrl": "http://localhost:8088/hello/word",
         "httpMethod": "POST",
