@@ -3,12 +3,13 @@ package top.silwings.core.handler.dynamic.expression;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.dynamic.operation.ExtendedOperation;
 import top.silwings.core.handler.dynamic.operation.OperationDynamicValueFactory;
-import top.silwings.core.exceptions.DynamicDataException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +27,8 @@ import java.util.stream.Collectors;
  * @Date 2022/11/7 21:54
  * @Since
  **/
+@Component
 public class ExpressionDynamicValueFactory {
-
-    private static final ExpressionDynamicValueFactory INSTANCE = new ExpressionDynamicValueFactory();
 
     private final PrecedenceExpressionParser precedenceExpressionParser;
 
@@ -36,16 +36,11 @@ public class ExpressionDynamicValueFactory {
 
     private final OperationDynamicValueFactory operationDynamicValueFactory;
 
-    public ExpressionDynamicValueFactory() {
+    public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
         this.precedenceExpressionParser = new PrecedenceExpressionParser();
         this.operatorExpressionParser = new OperatorExpressionParser();
-        this.operationDynamicValueFactory = OperationDynamicValueFactory.getInstance();
+        this.operationDynamicValueFactory = operationDynamicValueFactory;
     }
-
-    public static ExpressionDynamicValueFactory getInstance() {
-        return INSTANCE;
-    }
-
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 

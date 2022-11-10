@@ -1,15 +1,12 @@
 package top.silwings.core.handler.dynamic.function;
 
 import lombok.Getter;
+import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.dynamic.function.functions.IsBlankFunctionFactory;
-import top.silwings.core.handler.dynamic.function.functions.SearchFunctionFactory;
-import top.silwings.core.handler.dynamic.function.functions.UUIDFunctionFactory;
-import top.silwings.core.exceptions.DynamicDataException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,29 +18,16 @@ import java.util.regex.Pattern;
  * @Date 2022/11/7 21:55
  * @Since
  **/
+@Component
 public class FunctionDynamicValueFactory {
-
-    private static final FunctionDynamicValueFactory INSTANCE = new FunctionDynamicValueFactory();
 
     private final MethodExpressionParser methodExpressionParser;
 
     private final List<FunctionFactory> functionFactoryList;
 
-    private FunctionDynamicValueFactory() {
+    public FunctionDynamicValueFactory(final List<FunctionFactory> functionFactoryList) {
         this.methodExpressionParser = new MethodExpressionParser();
-        this.functionFactoryList = new ArrayList<>();
-        this.init();
-    }
-
-    private void init() {
-        this.functionFactoryList.add(new SearchFunctionFactory());
-        this.functionFactoryList.add(new UUIDFunctionFactory());
-        this.functionFactoryList.add(new IsBlankFunctionFactory());
-    }
-
-
-    public static FunctionDynamicValueFactory getInstance() {
-        return INSTANCE;
+        this.functionFactoryList = functionFactoryList;
     }
 
     public boolean isFunction(final String expression) {

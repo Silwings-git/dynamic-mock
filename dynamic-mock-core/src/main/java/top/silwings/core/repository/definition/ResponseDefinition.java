@@ -1,4 +1,4 @@
-package top.silwings.core.handler.definition;
+package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +15,11 @@ import java.util.Map;
 @Getter
 @Setter
 public class ResponseDefinition {
+
+    /**
+     * 状态码
+     */
+    private Integer status;
 
     /**
      * 响应头

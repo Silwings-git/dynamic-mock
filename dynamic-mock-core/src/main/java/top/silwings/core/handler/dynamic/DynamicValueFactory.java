@@ -1,5 +1,6 @@
 package top.silwings.core.handler.dynamic;
 
+import org.springframework.stereotype.Component;
 import top.silwings.core.handler.dynamic.expression.ExpressionDynamicValueFactory;
 import top.silwings.core.handler.dynamic.function.FunctionDynamicValueFactory;
 
@@ -10,14 +11,15 @@ import top.silwings.core.handler.dynamic.function.FunctionDynamicValueFactory;
  * @Date 2022/11/7 21:56
  * @Since
  **/
+@Component
 public class DynamicValueFactory {
 
     private final ExpressionDynamicValueFactory expressionFactory;
     private final FunctionDynamicValueFactory functionFactory;
 
-    public DynamicValueFactory() {
-        this.expressionFactory = ExpressionDynamicValueFactory.getInstance();
-        this.functionFactory = FunctionDynamicValueFactory.getInstance();
+    public DynamicValueFactory(final ExpressionDynamicValueFactory expressionFactory, final FunctionDynamicValueFactory functionFactory) {
+        this.expressionFactory = expressionFactory;
+        this.functionFactory = functionFactory;
     }
 
     public DynamicValue buildDynamicValue(final String expression) {

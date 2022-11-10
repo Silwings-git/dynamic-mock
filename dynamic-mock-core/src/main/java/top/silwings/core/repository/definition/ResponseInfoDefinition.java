@@ -1,4 +1,4 @@
-package top.silwings.core.handler.definition;
+package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +29,7 @@ public class ResponseInfoDefinition {
     /**
      * 延迟响应时间
      */
-    private int delayTime;
+    private Integer delayTime;
 
     /**
      * 请求信息

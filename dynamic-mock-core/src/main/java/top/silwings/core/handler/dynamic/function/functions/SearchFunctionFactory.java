@@ -1,10 +1,11 @@
 package top.silwings.core.handler.dynamic.function.functions;
 
+import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.ParameterContext;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
-import top.silwings.core.exceptions.DynamicDataException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * @Date 2022/11/8 22:20
  * @Since
  **/
+@Component
 public class SearchFunctionFactory implements FunctionFactory {
 
     @Override
@@ -33,7 +35,7 @@ public class SearchFunctionFactory implements FunctionFactory {
         // 搜索范围
         // TODO_Silwings: 2022/11/9  
         private static final List<String> searchScope = new ArrayList<>();
-        
+
         public SearchFunction(final DynamicValue param) {
             super(param);
         }

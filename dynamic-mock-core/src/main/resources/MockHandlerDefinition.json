@@ -4,7 +4,7 @@
   "httpMethods": [
     "GET"
   ],
-  "requestUrl": "/user/query",
+  "requestUri": "/user/query",
   "label": "用户管理",
   "delayTime": 0,
   "customizeSpace": {
@@ -20,6 +20,7 @@
       ],
       "delayTime": 0,
       "response": {
+        "status": 200,
         "headers": {
           "Content-Type": "application/json;charset=UTF-8",
           "Date": "Wed, 09 Nov 2022 14:25:02 GMT"
@@ -37,6 +38,7 @@
       ],
       "delayTime": 0,
       "response": {
+        "status": 200,
         "headers": {
           "Content-Type": "application/json;charset=UTF-8",
           "Date": "Wed, 09 Nov 2022 14:25:02 GMT"

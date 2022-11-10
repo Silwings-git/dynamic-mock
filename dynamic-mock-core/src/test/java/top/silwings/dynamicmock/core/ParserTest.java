@@ -4,16 +4,29 @@ import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import top.silwings.core.MockSpringApplication;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.ParameterContext;
-import top.silwings.core.handler.definition.RequestDefinition;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.node.Node;
+import top.silwings.core.repository.definition.RequestDefinition;
 
 @Slf4j
+@SpringBootTest(classes = MockSpringApplication.class)
+@RunWith(SpringRunner.class)
 public class ParserTest {
+
+    @Autowired
+    private DynamicValueFactory dynamicValueFactory;
+
+    @Autowired
+    private JsonNodeParser jsonNodeParser;
 
     @Test
     public void test001() {
@@ -47,7 +60,7 @@ public class ParserTest {
         str = "#search(#isBlank())";
         str = "#search(10+#isBlank())";
 
-        final DynamicValue dynamicValue = new DynamicValueFactory().buildDynamicValue(str);
+        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
         final ParameterContext context = new ParameterContext();
         context.putParameter("paramA", -1);
@@ -67,9 +80,12 @@ public class ParserTest {
 
         final TestData testData = new TestData();
 
-        final Node analyze1 = testData.getJsonNodeParser().parse(testData.getTest002());
+        final Node analyze1 = this.jsonNodeParser.parse(testData.getTest002());
 
-        final Context context = new Context(testData.getTest002().length(), testData.getParameterContext());
+        final Context context = Context.builder()
+                .parameterContext(testData.getParameterContext())
+                .builder(new StringBuilder(testData.getTest002().length()))
+                .build();
 
         analyze1.interpret(context);
 
@@ -86,7 +102,6 @@ public class ParserTest {
                 "\"age\": \"${#search(age)}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"" +
                 "}";
-        private final JsonNodeParser jsonNodeParser = new JsonNodeParser(new DynamicValueFactory());
         private final ParameterContext parameterContext = new ParameterContext();
 
         public TestData() {

@@ -1,4 +1,4 @@
-package top.silwings.core.handler.definition;
+package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;

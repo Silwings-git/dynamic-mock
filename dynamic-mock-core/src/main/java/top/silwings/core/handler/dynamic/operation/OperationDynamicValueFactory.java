@@ -1,8 +1,9 @@
 package top.silwings.core.handler.dynamic.operation;
 
+import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.exceptions.DynamicDataException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,13 +19,8 @@ import java.util.stream.Stream;
  * @Date 2022/11/7 21:55
  * @Since
  **/
+@Component
 public class OperationDynamicValueFactory {
-
-    private static final OperationDynamicValueFactory INSTANCE = new OperationDynamicValueFactory();
-
-    public static OperationDynamicValueFactory getInstance() {
-        return INSTANCE;
-    }
 
     public DynamicValue buildDynamicValue(final List<String> symbolList, final DynamicValueFactory dynamicValueFactory) {
 
@@ -33,7 +29,6 @@ public class OperationDynamicValueFactory {
 
         return this.buildOperationValue(suffixList, dynamicValueFactory);
     }
-
 
     private DynamicValue buildOperationValue(final List<String> symbolList, final DynamicValueFactory dynamicValueFactory) {
 

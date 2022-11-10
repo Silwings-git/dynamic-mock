@@ -1,4 +1,4 @@
-package top.silwings.core.handler.definition;
+package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +35,7 @@ public class MockHandlerDefinition {
     /**
      * 支持的请求地址
      */
-    private String requestUrl;
+    private String requestUri;
 
     /**
      * 自定义标签
@@ -45,7 +45,7 @@ public class MockHandlerDefinition {
     /**
      * 延迟执行时间
      */
-    private int delayTime;
+    private Integer delayTime;
 
     /**
      * 自定义空间

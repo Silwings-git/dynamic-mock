@@ -2,6 +2,7 @@ package top.silwings.core.handler.dynamic.function.functions;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import top.silwings.core.handler.ParameterContext;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
@@ -16,6 +17,7 @@ import java.util.List;
  * @Date 2022/11/8 22:20
  * @Since
  **/
+@Component
 public class IsBlankFunctionFactory implements FunctionFactory {
 
     @Override

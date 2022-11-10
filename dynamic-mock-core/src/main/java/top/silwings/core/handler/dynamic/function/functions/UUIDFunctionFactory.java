@@ -1,6 +1,7 @@
 package top.silwings.core.handler.dynamic.function.functions;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.stereotype.Component;
 import top.silwings.core.handler.ParameterContext;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
@@ -16,6 +17,7 @@ import java.util.UUID;
  * @Date 2022/11/8 22:30
  * @Since
  **/
+@Component
 public class UUIDFunctionFactory implements FunctionFactory {
     @Override
     public boolean support(final String methodName) {

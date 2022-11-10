@@ -1,4 +1,4 @@
-package top.silwings.core.handler.definition;
+package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,17 +29,22 @@ public class HttpRequestInfoDefinition {
     /**
      * 延迟执行时间
      */
-    private int delayTime;
+    private Integer delayTime;
 
     /**
      * 是否异步执行
      */
-    private boolean async;
+    private Boolean async;
+
+    /**
+     * cron
+     */
+    private String cron;
 
     /**
      * 执行次数
      */
-    private int numberOfExecute;
+    private Integer numberOfExecute;
 
     /**
      * 请求信息
