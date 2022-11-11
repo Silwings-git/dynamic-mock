@@ -1,6 +1,11 @@
 package top.silwings.core.handler.node;
 
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.DynamicValue;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName StaticTextNode
@@ -11,8 +16,6 @@ import top.silwings.core.handler.Context;
  **/
 public class ValueNode implements Node {
 
-    private static final String QUOTATION_MARK = "\"";
-
     private final Object context;
 
     public ValueNode(final Object context) {
@@ -21,6 +24,11 @@ public class ValueNode implements Node {
 
     @Override
     public Object interpret(final Context context) {
+
+        if (this.context instanceof DynamicValue) {
+            return ((DynamicValue) this.context).value(context.getParameterContext());
+        }
+
         return this.context;
     }
 

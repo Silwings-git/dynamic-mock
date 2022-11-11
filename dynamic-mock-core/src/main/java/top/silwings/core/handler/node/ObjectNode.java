@@ -14,14 +14,6 @@ import java.util.Map;
  **/
 public class ObjectNode implements Node {
 
-    private static final String LEFT_BRACE = "{";
-
-    private static final String RIGHT_BRACE = "}";
-
-    private static final String COLON = ":";
-
-    private static final String COMMA = ",";
-
     private final Map<Node, Node> nodeMap;
 
     public ObjectNode() {
