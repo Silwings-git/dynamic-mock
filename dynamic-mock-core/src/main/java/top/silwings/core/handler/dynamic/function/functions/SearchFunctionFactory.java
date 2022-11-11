@@ -3,8 +3,8 @@ package top.silwings.core.handler.dynamic.function.functions;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.ArrayList;

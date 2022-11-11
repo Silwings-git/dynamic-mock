@@ -1,6 +1,4 @@
-package top.silwings.core.handler.dynamic.function;
-
-import top.silwings.core.handler.dynamic.DynamicValue;
+package top.silwings.core.handler.dynamic;
 
 /**
  * @ClassName FunctionDynamicValue

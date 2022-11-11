@@ -1,5 +1,7 @@
 package top.silwings.core.handler.dynamic.function;
 
+import top.silwings.core.handler.dynamic.DynamicFactory;
+
 /**
  * @ClassName FunctionFactory
  * @Description 方法接口

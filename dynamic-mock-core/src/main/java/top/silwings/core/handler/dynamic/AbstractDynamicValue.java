@@ -1,7 +1,6 @@
-package top.silwings.core.handler.dynamic.function;
+package top.silwings.core.handler.dynamic;
 
 import top.silwings.core.handler.Context;
-import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.Collections;
 import java.util.List;

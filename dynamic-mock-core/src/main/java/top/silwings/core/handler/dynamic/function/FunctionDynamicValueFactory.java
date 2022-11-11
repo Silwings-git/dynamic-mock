@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
+import top.silwings.core.handler.dynamic.DynamicFactory;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 

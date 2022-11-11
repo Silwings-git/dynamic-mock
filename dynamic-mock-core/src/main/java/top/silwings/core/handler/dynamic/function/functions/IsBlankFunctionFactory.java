@@ -4,8 +4,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.List;

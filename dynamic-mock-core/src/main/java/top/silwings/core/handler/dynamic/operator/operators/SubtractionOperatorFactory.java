@@ -1,13 +1,13 @@
-package top.silwings.core.handler.dynamic.function.operators;
+package top.silwings.core.handler.dynamic.operator.operators;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
-import top.silwings.core.handler.dynamic.function.OperatorFactory;
-import top.silwings.core.handler.dynamic.function.OperatorType;
+import top.silwings.core.handler.dynamic.operator.OperatorFactory;
+import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
 import java.math.BigDecimal;

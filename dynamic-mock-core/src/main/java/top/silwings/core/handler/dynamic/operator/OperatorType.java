@@ -1,4 +1,4 @@
-package top.silwings.core.handler.dynamic.function;
+package top.silwings.core.handler.dynamic.operator;
 
 /**
  * @ClassName OperatorType

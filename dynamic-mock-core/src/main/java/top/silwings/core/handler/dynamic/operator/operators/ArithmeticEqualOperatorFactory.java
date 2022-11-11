@@ -1,48 +1,48 @@
-package top.silwings.core.handler.dynamic.function.operators;
+package top.silwings.core.handler.dynamic.operator.operators;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
-import top.silwings.core.handler.dynamic.function.OperatorFactory;
-import top.silwings.core.handler.dynamic.function.OperatorType;
+import top.silwings.core.handler.dynamic.operator.OperatorFactory;
+import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
 
 /**
- * @ClassName GreaterEqualOperatorFactory
+ * @ClassName ArithmeticEqualOperatorFactory
  * @Description
  * @Author Silwings
- * @Date 2022/11/11 22:50
+ * @Date 2022/11/11 22:46
  * @Since
  **/
 @Component
-public class GreaterEqualOperatorFactory implements OperatorFactory {
+public class ArithmeticEqualOperatorFactory implements OperatorFactory {
 
-    private static final String SYMBOL = ">=";
+    private static final String SYMBOL = "==";
 
     @Override
     public boolean support(final String symbol) {
-        return ">=".equals(symbol);
+        return "==".equals(symbol);
     }
 
     @Override
     public DynamicValue buildFunction(final DynamicValue param) {
-        return new GreaterEqualOperator(param);
+        return new ArithmeticEqualOperator(param);
     }
 
     /**
-     * @ClassName GreaterEqualExtOperation
-     * @Description 大于等于
+     * @ClassName ArithmeticEqualExtOperation
+     * @Description 数值相等
      * @Author Silwings
-     * @Date 2022/11/7 21:34
+     * @Date 2022/11/7 21:29
      * @Since
      **/
-    public static class GreaterEqualOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class ArithmeticEqualOperator extends AbstractDynamicValue implements DynamicValue {
 
-        public GreaterEqualOperator(final DynamicValue param) {
+        public ArithmeticEqualOperator(final DynamicValue param) {
             super(param);
         }
 
@@ -53,7 +53,7 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
                 throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
             }
 
-            return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) >= 0;
+            return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) == 0;
         }
     }
 

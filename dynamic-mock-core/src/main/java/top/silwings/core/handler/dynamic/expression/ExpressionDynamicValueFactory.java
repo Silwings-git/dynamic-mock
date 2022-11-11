@@ -8,7 +8,9 @@ import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.dynamic.function.OperationDynamicValueFactory;
+import top.silwings.core.handler.dynamic.expression.expressions.ListExpressionDynamicValue;
+import top.silwings.core.handler.dynamic.expression.expressions.SingleValueExpressionDynamicValue;
+import top.silwings.core.handler.dynamic.operator.OperationDynamicValueFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
