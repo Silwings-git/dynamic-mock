@@ -33,8 +33,4 @@ public class MultiplicationExtOperation extends AbstractOperationDynamicValue {
         return TypeUtils.toBigDecimal(paramList.get(0)).multiply(TypeUtils.toBigDecimal(paramList.get(1)));
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.MULTIPLICATION.getPriority();
-    }
 }

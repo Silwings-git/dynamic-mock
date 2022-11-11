@@ -37,8 +37,4 @@ public class AdditionExtOperation extends AbstractOperationDynamicValue {
         }
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.ADDITION.getPriority();
-    }
 }

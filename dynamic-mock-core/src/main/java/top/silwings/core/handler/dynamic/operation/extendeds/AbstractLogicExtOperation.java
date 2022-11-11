@@ -19,8 +19,4 @@ public abstract class AbstractLogicExtOperation extends AbstractOperationDynamic
         super(paramList);
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.LOGICAL_OPERATOR_PRIORITY;
-    }
 }

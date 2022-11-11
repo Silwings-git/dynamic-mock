@@ -34,8 +34,4 @@ public class DivisionExtOperation extends AbstractOperationDynamicValue {
         return TypeUtils.toBigDecimal(paramList.get(0)).divide(TypeUtils.toBigDecimal(paramList.get(1)), MathContext.DECIMAL64);
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.DIVISION.getPriority();
-    }
 }

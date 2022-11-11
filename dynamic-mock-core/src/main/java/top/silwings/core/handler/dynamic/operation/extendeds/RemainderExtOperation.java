@@ -33,8 +33,4 @@ public class RemainderExtOperation extends AbstractOperationDynamicValue {
         return TypeUtils.toBigDecimal(paramList.get(0)).divideAndRemainder(TypeUtils.toBigDecimal(paramList.get(1)))[1];
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.REMAINDER.getPriority();
-    }
 }

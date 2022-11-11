@@ -20,8 +20,4 @@ public abstract class AbstractCompareExtOperation extends AbstractOperationDynam
         super(paramList);
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.COMPARISON_OPERATOR_PRIORITY;
-    }
 }

@@ -38,8 +38,4 @@ public class SubtractionExtOperation extends AbstractOperationDynamicValue {
         return TypeUtils.toBigDecimal(paramList.get(0)).subtract(TypeUtils.toBigDecimal(paramList.get(1)));
     }
 
-    @Override
-    public int getPriority() {
-        return ExtendedOperation.SUBTRACTION.getPriority();
-    }
 }
