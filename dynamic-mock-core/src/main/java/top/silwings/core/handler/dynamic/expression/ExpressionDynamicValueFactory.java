@@ -8,7 +8,6 @@ import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.dynamic.function.ExtendedOperation;
 import top.silwings.core.handler.dynamic.function.OperationDynamicValueFactory;
 
 import java.util.ArrayList;
@@ -37,9 +36,9 @@ public class ExpressionDynamicValueFactory {
     private final OperationDynamicValueFactory operationDynamicValueFactory;
 
     public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
-        this.precedenceExpressionParser = new PrecedenceExpressionParser();
-        this.operatorExpressionParser = new OperatorExpressionParser();
         this.operationDynamicValueFactory = operationDynamicValueFactory;
+        this.precedenceExpressionParser = new PrecedenceExpressionParser();
+        this.operatorExpressionParser = new OperatorExpressionParser(operationDynamicValueFactory);
     }
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
@@ -177,9 +176,15 @@ public class ExpressionDynamicValueFactory {
 
     public static class OperatorExpressionParser implements Parser<String, List<String>> {
 
+        private final OperationDynamicValueFactory operationDynamicValueFactory;
+
+        public OperatorExpressionParser(final OperationDynamicValueFactory operationDynamicValueFactory) {
+            this.operationDynamicValueFactory = operationDynamicValueFactory;
+        }
+
         @Override
         public boolean support(final String expression) {
-            for (final String operatorSymbol : ExtendedOperation.operatorSymbols()) {
+            for (final String operatorSymbol : this.operationDynamicValueFactory.operatorSymbols()) {
                 if (expression.contains(operatorSymbol)) {
                     return true;
                 }
@@ -189,7 +194,7 @@ public class ExpressionDynamicValueFactory {
 
         @Override
         public List<String> parse(final String expression) {
-            return this.parse(expression, ExtendedOperation.operatorSymbols());
+            return this.parse(expression, this.operationDynamicValueFactory.operatorSymbols());
         }
 
         private List<String> parse(final String str, final List<String> symbolList) {
@@ -240,7 +245,7 @@ public class ExpressionDynamicValueFactory {
                     reentrancy--;
                 }
                 if (i == nextOperatorSymbol.getIndex()) {
-                    if (reentrancy == 0 && i > 0 && StringUtils.isNotBlank(previousSymbol) && !ExtendedOperation.isOperation(previousSymbol)) {
+                    if (reentrancy == 0 && i > 0 && StringUtils.isNotBlank(previousSymbol) && !this.operationDynamicValueFactory.isOperatorSymbol(previousSymbol)) {
                         if (cache.length() > 0) {
                             result.add(cache.toString());
                             cache = new StringBuilder();

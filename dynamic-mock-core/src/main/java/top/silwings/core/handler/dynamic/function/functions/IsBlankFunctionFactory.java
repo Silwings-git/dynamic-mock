@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
+import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         return IsBlankFunction.from(param);
     }
 
-    public static class IsBlankFunction extends AbstractFunctionDynamicValue {
+    public static class IsBlankFunction extends AbstractDynamicValue {
 
         public IsBlankFunction(final DynamicValue param) {
             super(param);

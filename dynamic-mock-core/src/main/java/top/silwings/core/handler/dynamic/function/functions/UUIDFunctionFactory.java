@@ -4,8 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
-import top.silwings.core.handler.dynamic.function.FunctionDynamicValue;
+import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.UUID;
@@ -25,11 +24,11 @@ public class UUIDFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public FunctionDynamicValue buildFunction(final DynamicValue param) {
+    public DynamicValue buildFunction(final DynamicValue param) {
         return UUIDFunction.from(param);
     }
 
-    public static class UUIDFunction extends AbstractFunctionDynamicValue {
+    public static class UUIDFunction extends AbstractDynamicValue {
 
         public UUIDFunction(final DynamicValue param) {
             super(param);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName OperationDynamicValueFactory
@@ -20,6 +21,14 @@ import java.util.Stack;
  **/
 @Component
 public class OperationDynamicValueFactory {
+
+    private final List<OperatorFactory> operatorFactoryList;
+    private final List<String> operatorSymbolList;
+
+    public OperationDynamicValueFactory(final List<OperatorFactory> operatorFactoryList) {
+        this.operatorFactoryList = operatorFactoryList;
+        this.operatorSymbolList = operatorFactoryList.stream().map(OperatorFactory::getOperatorSymbol).collect(Collectors.toList());
+    }
 
     public DynamicValue buildDynamicValue(final List<String> symbolList, final DynamicValueFactory dynamicValueFactory) {
 
@@ -36,14 +45,12 @@ public class OperationDynamicValueFactory {
         final LinkedList<DynamicValue> cache = new LinkedList<>();
 
         for (final String symbol : symbolList) {
-            if (ExtendedOperation.isOperation(symbol)) {
-
-                final ExtendedOperation operator = ExtendedOperation.valueOfSymbol(symbol);
+            if (this.isOperatorSymbol(symbol)) {
 
                 final DynamicValue secondValue = cache.removeLast();
                 final DynamicValue firstValue = cache.removeLast();
 
-                cache.add(operator.getOperatorConstructor().apply(ListExpressionDynamicValue.of(firstValue, secondValue)));
+                cache.add(this.buildOperator(symbol, ListExpressionDynamicValue.of(firstValue, secondValue)));
 
             } else {
 
@@ -58,6 +65,17 @@ public class OperationDynamicValueFactory {
         return cache.get(0);
     }
 
+    private DynamicValue buildOperator(final String symbol, final DynamicValue dynamicValue) {
+
+        final OperatorFactory factory = this.filter(symbol);
+
+        if (null != factory) {
+            return factory.buildFunction(dynamicValue);
+        }
+
+        throw new DynamicDataException("操作符不存在");
+    }
+
     private List<String> infixToSuffix(final List<String> symbolList) {
 
         final Stack<String> stack = new Stack<>();
@@ -66,7 +84,7 @@ public class OperationDynamicValueFactory {
         for (final String symbol : symbolList) {
 
             // 如果前一个是操作符,应当将当前符号视为非操作符
-            if (ExtendedOperation.isOperation(symbol)) {
+            if (this.isOperatorSymbol(symbol)) {
 
                 // 数据操作符时:
                 // 1.如果栈是空,直接入栈
@@ -74,8 +92,8 @@ public class OperationDynamicValueFactory {
                 // 3.如果当前操作符优先级小于等于栈顶操作符,将栈顶元素依次弹栈,加入到suffixList,直到该操作符优先级大于栈顶操作符或栈无数据,将当前操作符入栈
 
                 while (!stack.empty()
-                        && ExtendedOperation.isOperation(stack.peek())
-                        && ExtendedOperation.getPriority(symbol) <= ExtendedOperation.getPriority(stack.peek())) {
+                        && this.isOperatorSymbol(stack.peek())
+                        && this.getPriority(symbol) <= this.getPriority(stack.peek())) {
 
                     suffixList.add(stack.pop());
                 }
@@ -93,6 +111,31 @@ public class OperationDynamicValueFactory {
         }
 
         return suffixList;
+    }
+
+    private int getPriority(final String symbol) {
+        final OperatorFactory factory = this.filter(symbol);
+        if (null == factory) {
+            throw new DynamicDataException("操作符不存在");
+        }
+        return factory.getPriority();
+    }
+
+    private OperatorFactory filter(final String symbol) {
+        for (final OperatorFactory factory : this.operatorFactoryList) {
+            if (factory.support(symbol)) {
+                return factory;
+            }
+        }
+        return null;
+    }
+
+    public boolean isOperatorSymbol(final String symbol) {
+        return null != this.filter(symbol);
+    }
+
+    public List<String> operatorSymbols() {
+        return new ArrayList<>(this.operatorSymbolList);
     }
 
 }

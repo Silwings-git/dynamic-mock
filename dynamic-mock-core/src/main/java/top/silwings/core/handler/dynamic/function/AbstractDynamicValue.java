@@ -13,11 +13,11 @@ import java.util.List;
  * @Date 2022/11/7 20:52
  * @Since
  **/
-public abstract class AbstractFunctionDynamicValue implements FunctionDynamicValue {
+public abstract class AbstractDynamicValue implements DynamicValue {
 
     private final DynamicValue param;
 
-    protected AbstractFunctionDynamicValue(final DynamicValue param) {
+    protected AbstractDynamicValue(final DynamicValue param) {
         this.param = param;
     }
 

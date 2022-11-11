@@ -1,18 +1,11 @@
 package top.silwings.core.handler.dynamic.function;
 
-import top.silwings.core.handler.dynamic.DynamicValue;
-
 /**
- * @ClassName FunctionDynamicValue
- * @Description 函数接口
+ * @ClassName FunctionFactory
+ * @Description 方法接口
  * @Author Silwings
- * @Date 2022/11/7 22:27
+ * @Date 2022/11/12 0:03
  * @Since
  **/
-public interface FunctionFactory {
-
-    boolean support(String methodName);
-
-    FunctionDynamicValue buildFunction(DynamicValue param);
-
+public interface FunctionFactory extends DynamicFactory {
 }

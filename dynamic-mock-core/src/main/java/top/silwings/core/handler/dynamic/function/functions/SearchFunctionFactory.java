@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
+import top.silwings.core.handler.dynamic.function.AbstractDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class SearchFunctionFactory implements FunctionFactory {
         return SearchFunction.from(param);
     }
 
-    public static class SearchFunction extends AbstractFunctionDynamicValue {
+    public static class SearchFunction extends AbstractDynamicValue {
 
         // 搜索范围
         // TODO_Silwings: 2022/11/9  

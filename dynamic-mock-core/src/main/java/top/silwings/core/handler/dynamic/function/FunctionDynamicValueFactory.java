@@ -39,7 +39,7 @@ public class FunctionDynamicValueFactory {
         final MethodInfo methodInfo = this.methodExpressionParser.parse(expression);
 
         // 使用名称找到对应函数的工厂,创建方法
-        for (final FunctionFactory factory : this.functionFactoryList) {
+        for (final DynamicFactory factory : this.functionFactoryList) {
             if (factory.support(methodInfo.getName())) {
                 return factory.buildFunction(dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression()));
             }
