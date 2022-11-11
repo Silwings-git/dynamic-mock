@@ -1,7 +1,7 @@
 package top.silwings.core.handler.dynamic.expression;
 
 import org.apache.commons.collections4.CollectionUtils;
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.Collections;
@@ -23,12 +23,12 @@ public abstract class AbstractExpressionDynamicValue implements DynamicValue {
         this.paramsList = paramsList;
     }
 
-    public List<Object> getParams(final ParameterContext context) {
+    public List<Object> getParams(final Context context) {
         if (CollectionUtils.isEmpty(this.paramsList)) {
             return Collections.emptyList();
         }
         return this.paramsList.stream()
-                .map(dynamicValue -> dynamicValue.value(context))
+                .map(dynamicValue -> dynamicValue.interpret(context))
                 .collect(Collectors.toList());
     }
 

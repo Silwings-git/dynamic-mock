@@ -1,6 +1,6 @@
 package top.silwings.core.handler.dynamic.operation.extendeds;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.List;
@@ -22,8 +22,8 @@ public class ArithmeticNoEqualExtOperation extends AbstractCompareExtOperation {
     }
 
     @Override
-    public Boolean value(final ParameterContext parameterContext) {
-        return !this.equalExtOperation.value(parameterContext);
+    public Boolean interpret(final Context parameterContext) {
+        return !this.equalExtOperation.interpret(parameterContext);
     }
 
 }

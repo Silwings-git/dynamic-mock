@@ -1,8 +1,8 @@
 package top.silwings.core.handler.dynamic.operation.extendeds;
 
-import top.silwings.core.handler.ParameterContext;
-import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.handler.Context;
+import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class AndDoubleExtOperation extends AbstractLogicExtOperation {
     }
 
     @Override
-    public Object value(final ParameterContext parameterContext) {
+    public Object interpret(final Context parameterContext) {
 
         final List<Object> paramList = this.getParams(parameterContext);
         if (paramList.size() < 2) {

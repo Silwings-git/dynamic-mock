@@ -1,6 +1,6 @@
 package top.silwings.core.handler.dynamic.function;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.Collections;
@@ -27,9 +27,9 @@ public abstract class AbstractFunctionDynamicValue implements FunctionDynamicVal
      * @param parameterContext 参数上下文
      * @return 最终值数值
      */
-    protected List<Object> getParams(final ParameterContext parameterContext) {
+    protected List<Object> getParams(final Context parameterContext) {
 
-        final Object value = this.param.value(parameterContext);
+        final Object value = this.param.interpret(parameterContext);
         if (null == value) {
             return Collections.emptyList();
         } else if (value instanceof List<?>) {

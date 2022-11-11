@@ -1,6 +1,6 @@
 package top.silwings.core.handler.dynamic.expression;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class ListExpressionDynamicValue extends AbstractExpressionDynamicValue {
     }
 
     @Override
-    public List<Object> value(final ParameterContext context) {
+    public List<Object> interpret(final Context context) {
         return this.getParams(context);
     }
 

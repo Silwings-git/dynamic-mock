@@ -1,7 +1,7 @@
 package top.silwings.core.handler.dynamic.operation;
 
 import org.apache.commons.collections4.CollectionUtils;
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.Collections;
@@ -24,14 +24,14 @@ public abstract class AbstractOperationDynamicValue implements Operator {
         this.paramList = paramList;
     }
 
-    protected List<Object> getParams(final ParameterContext parameterContext) {
+    protected List<Object> getParams(final Context parameterContext) {
 
         if (CollectionUtils.isEmpty(paramList)) {
             return Collections.emptyList();
         }
 
         return this.paramList.stream()
-                .map(dynamicValue -> dynamicValue.value(parameterContext))
+                .map(dynamicValue -> dynamicValue.interpret(parameterContext))
                 .collect(Collectors.toList());
     }
 

@@ -2,7 +2,7 @@ package top.silwings.core.handler.dynamic.function.functions;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
@@ -45,14 +45,14 @@ public class SearchFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object value(final ParameterContext parameterContext) {
+        public Object interpret(final Context parameterContext) {
 
             final List<Object> paramList = this.getParams(parameterContext);
             if (paramList.isEmpty()) {
                 throw new DynamicDataException("缺少搜索词.");
             }
 
-            return parameterContext.searchParameter(String.valueOf(paramList.get(0)));
+            return parameterContext.getParameterContext().searchParameter(String.valueOf(paramList.get(0)));
         }
 
     }

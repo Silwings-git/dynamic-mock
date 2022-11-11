@@ -62,17 +62,21 @@ public class ParserTest {
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
-        final ParameterContext context = new ParameterContext();
-        context.putParameter("paramA", -1);
-        context.putParameter("param", 20);
-        context.putParameter("40", true);
-        context.putParameter("age", 18);
-        context.putParameter("2", 15);
-        context.putParameter("true", 10);
-        context.putParameter("10", "御坂美琴");
-        context.putParameter("10true", "御坂美琴");
+        final ParameterContext parameterContext = new ParameterContext();
+        parameterContext.putParameter("paramA", -1);
+        parameterContext.putParameter("param", 20);
+        parameterContext.putParameter("40", true);
+        parameterContext.putParameter("age", 18);
+        parameterContext.putParameter("2", 15);
+        parameterContext.putParameter("true", 10);
+        parameterContext.putParameter("10", "御坂美琴");
+        parameterContext.putParameter("10true", "御坂美琴");
 
-        System.out.println(JSON.toJSONString(dynamicValue.value(context)));
+        final Context context = Context.builder()
+                .parameterContext(parameterContext)
+                .build();
+
+        System.out.println(JSON.toJSONString(dynamicValue.interpret(context)));
     }
 
     @Test

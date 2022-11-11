@@ -1,10 +1,10 @@
 package top.silwings.core.handler.dynamic.operation.extendeds;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.operation.AbstractOperationDynamicValue;
 import top.silwings.core.handler.dynamic.operation.ExtendedOperation;
-import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.utils.TypeUtils;
 
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ public class DivisionExtOperation extends AbstractOperationDynamicValue {
     }
 
     @Override
-    public BigDecimal value(final ParameterContext parameterContext) {
+    public BigDecimal interpret(final Context parameterContext) {
         final List<Object> paramList = this.getParams(parameterContext);
         if (paramList.size() < 2) {
             throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());

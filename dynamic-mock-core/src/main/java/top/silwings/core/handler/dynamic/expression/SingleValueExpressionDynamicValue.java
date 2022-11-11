@@ -1,6 +1,6 @@
 package top.silwings.core.handler.dynamic.expression;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 /**
@@ -23,7 +23,7 @@ public class SingleValueExpressionDynamicValue implements DynamicValue {
     }
 
     @Override
-    public Object value(final ParameterContext context) {
+    public Object interpret(final Context context) {
         return this.content;
     }
 

@@ -1,6 +1,6 @@
 package top.silwings.core.handler.dynamic;
 
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.node.Node;
 
 /**
  * @ClassName ValueAble
@@ -9,8 +9,5 @@ import top.silwings.core.handler.ParameterContext;
  * @Date 2022/11/7 20:50
  * @Since
  **/
-public interface DynamicValue {
-
-    Object value(final ParameterContext context);
-
+public interface DynamicValue extends Node {
 }

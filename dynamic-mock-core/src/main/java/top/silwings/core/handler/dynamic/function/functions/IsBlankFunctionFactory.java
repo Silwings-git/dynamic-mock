@@ -3,7 +3,7 @@ package top.silwings.core.handler.dynamic.function.functions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.handler.ParameterContext;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.handler.dynamic.function.FunctionFactory;
@@ -41,7 +41,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Boolean value(final ParameterContext parameterContext) {
+        public Boolean interpret(final Context parameterContext) {
 
             final List<Object> paramList = this.getParams(parameterContext);
 

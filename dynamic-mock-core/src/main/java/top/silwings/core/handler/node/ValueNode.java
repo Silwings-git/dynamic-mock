@@ -3,10 +3,6 @@ package top.silwings.core.handler.node;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @ClassName StaticTextNode
  * @Description
@@ -26,7 +22,7 @@ public class ValueNode implements Node {
     public Object interpret(final Context context) {
 
         if (this.context instanceof DynamicValue) {
-            return ((DynamicValue) this.context).value(context.getParameterContext());
+            return ((DynamicValue) this.context).interpret(context);
         }
 
         return this.context;
