@@ -1,10 +1,9 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.operation.AbstractOperationDynamicValue;
-import top.silwings.core.handler.dynamic.operation.ExtendedOperation;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
@@ -16,10 +15,10 @@ import java.util.List;
  * @Date 2022/11/7 21:20
  * @Since
  **/
-public class AdditionExtOperation extends AbstractOperationDynamicValue {
+public class AdditionExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
-    public AdditionExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
+    public AdditionExtOperation(final DynamicValue param) {
+        super(param);
     }
 
     @Override

@@ -1,8 +1,9 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
@@ -14,10 +15,10 @@ import java.util.List;
  * @Date 2022/11/7 21:37
  * @Since
  **/
-public class AndDoubleExtOperation extends AbstractLogicExtOperation {
+public class AndDoubleExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
-    public AndDoubleExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
+    public AndDoubleExtOperation(final DynamicValue param) {
+        super(param);
     }
 
     @Override

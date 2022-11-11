@@ -1,11 +1,10 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import org.apache.commons.collections4.CollectionUtils;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.operation.AbstractOperationDynamicValue;
-import top.silwings.core.handler.dynamic.operation.ExtendedOperation;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.math.BigDecimal;
@@ -18,10 +17,10 @@ import java.util.List;
  * @Date 2022/11/7 21:24
  * @Since
  **/
-public class SubtractionExtOperation extends AbstractOperationDynamicValue {
+public class SubtractionExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
-    public SubtractionExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
+    public SubtractionExtOperation(final DynamicValue param) {
+        super(param);
     }
 
     @Override

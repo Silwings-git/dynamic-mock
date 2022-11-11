@@ -1,26 +1,26 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.operation.AbstractOperationDynamicValue;
-import top.silwings.core.handler.dynamic.operation.ExtendedOperation;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 /**
- * @ClassName MultiplicationExtOperation
- * @Description 乘法
+ * @ClassName DivisionExtOperation
+ * @Description 除法
  * @Author Silwings
- * @Date 2022/11/7 21:26
+ * @Date 2022/11/7 21:27
  * @Since
  **/
-public class MultiplicationExtOperation extends AbstractOperationDynamicValue {
+public class DivisionExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
-    public MultiplicationExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
+    public DivisionExtOperation(final DynamicValue param) {
+        super(param);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MultiplicationExtOperation extends AbstractOperationDynamicValue {
             throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
         }
 
-        return TypeUtils.toBigDecimal(paramList.get(0)).multiply(TypeUtils.toBigDecimal(paramList.get(1)));
+        return TypeUtils.toBigDecimal(paramList.get(0)).divide(TypeUtils.toBigDecimal(paramList.get(1)), MathContext.DECIMAL64);
     }
 
 }

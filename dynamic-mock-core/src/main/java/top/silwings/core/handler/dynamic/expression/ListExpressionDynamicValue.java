@@ -4,6 +4,8 @@ import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName ExpressionDynamicValue
@@ -20,6 +22,10 @@ public class ListExpressionDynamicValue extends AbstractExpressionDynamicValue {
 
     public static ListExpressionDynamicValue from(final List<DynamicValue> expressions) {
         return new ListExpressionDynamicValue(expressions);
+    }
+
+    public static DynamicValue of(final DynamicValue firstValue, final DynamicValue secondValue) {
+        return new ListExpressionDynamicValue(Stream.of(firstValue, secondValue).collect(Collectors.toList()));
     }
 
     @Override

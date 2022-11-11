@@ -1,23 +1,24 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
 
 /**
- * @ClassName LessExtOperation
- * @Description 小于
+ * @ClassName GreaterExtOperation
+ * @Description 大于
  * @Author Silwings
- * @Date 2022/11/7 21:34
+ * @Date 2022/11/7 21:33
  * @Since
  **/
-public class LessExtOperation extends AbstractCompareExtOperation {
+public class GreaterExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
-    public LessExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
+    public GreaterExtOperation(final DynamicValue param) {
+        super(param);
     }
 
     @Override
@@ -27,6 +28,6 @@ public class LessExtOperation extends AbstractCompareExtOperation {
             throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
         }
 
-        return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) < 0;
+        return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) > 0;
     }
 }

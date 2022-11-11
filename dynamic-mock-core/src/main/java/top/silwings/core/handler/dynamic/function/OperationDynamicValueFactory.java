@@ -1,16 +1,15 @@
-package top.silwings.core.handler.dynamic.operation;
+package top.silwings.core.handler.dynamic.function;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.dynamic.expression.ListExpressionDynamicValue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @ClassName OperationDynamicValueFactory
@@ -44,7 +43,7 @@ public class OperationDynamicValueFactory {
                 final DynamicValue secondValue = cache.removeLast();
                 final DynamicValue firstValue = cache.removeLast();
 
-                cache.add(operator.getOperatorConstructor().apply(Stream.of(firstValue, secondValue).collect(Collectors.toList())));
+                cache.add(operator.getOperatorConstructor().apply(ListExpressionDynamicValue.of(firstValue, secondValue)));
 
             } else {
 

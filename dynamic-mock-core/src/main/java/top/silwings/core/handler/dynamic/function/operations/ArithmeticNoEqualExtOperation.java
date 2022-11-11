@@ -1,9 +1,8 @@
-package top.silwings.core.handler.dynamic.operation.extendeds;
+package top.silwings.core.handler.dynamic.function.operations;
 
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
-
-import java.util.List;
+import top.silwings.core.handler.dynamic.function.AbstractFunctionDynamicValue;
 
 /**
  * @ClassName ArithmeticNoEqualExtOperation
@@ -12,13 +11,13 @@ import java.util.List;
  * @Date 2022/11/7 21:30
  * @Since
  **/
-public class ArithmeticNoEqualExtOperation extends AbstractCompareExtOperation {
+public class ArithmeticNoEqualExtOperation extends AbstractFunctionDynamicValue implements DynamicValue {
 
     private final ArithmeticEqualExtOperation equalExtOperation;
 
-    public ArithmeticNoEqualExtOperation(final List<DynamicValue> paramList) {
-        super(paramList);
-        this.equalExtOperation = new ArithmeticEqualExtOperation(paramList);
+    public ArithmeticNoEqualExtOperation(final DynamicValue param) {
+        super(param);
+        this.equalExtOperation = new ArithmeticEqualExtOperation(param);
     }
 
     @Override

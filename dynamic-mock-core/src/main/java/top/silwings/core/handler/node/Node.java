@@ -10,7 +10,6 @@ import top.silwings.core.handler.Context;
  * @Since
  **/
 public interface Node {
-
     Object interpret(Context context);
 
 }

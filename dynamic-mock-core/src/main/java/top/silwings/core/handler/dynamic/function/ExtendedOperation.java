@@ -1,20 +1,21 @@
-package top.silwings.core.handler.dynamic.operation;
+package top.silwings.core.handler.dynamic.function;
 
 import lombok.Getter;
-import top.silwings.core.handler.dynamic.DynamicValue;
-import top.silwings.core.handler.dynamic.operation.extendeds.AdditionExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.AndDoubleExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.ArithmeticEqualExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.ArithmeticNoEqualExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.DivisionExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.GreaterEqualExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.GreaterExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.LessExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.MultiplicationExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.OrDoubleExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.RemainderExtOperation;
-import top.silwings.core.handler.dynamic.operation.extendeds.SubtractionExtOperation;
 import top.silwings.core.exceptions.ExpressionException;
+import top.silwings.core.handler.dynamic.DynamicValue;
+import top.silwings.core.handler.dynamic.function.operations.AdditionExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.AndDoubleExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.ArithmeticEqualExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.ArithmeticNoEqualExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.DivisionExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.GreaterEqualExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.GreaterExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.LessEqualExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.LessExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.MultiplicationExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.OrDoubleExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.RemainderExtOperation;
+import top.silwings.core.handler.dynamic.function.operations.SubtractionExtOperation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  * @Date 2022/11/6 14:51
  * @Since
  **/
-public enum ExtendedOperation implements PriorityAble {
+public enum ExtendedOperation {
     ADDITION("+", 30, AdditionExtOperation::new),
     SUBTRACTION("-", 30, SubtractionExtOperation::new),
     MULTIPLICATION("*", 40, MultiplicationExtOperation::new),
@@ -39,13 +40,10 @@ public enum ExtendedOperation implements PriorityAble {
     GREATER(">", 20, GreaterExtOperation::new),
     GREATER_EQUAL(">=", 20, GreaterEqualExtOperation::new),
     LESS("<", 20, LessExtOperation::new),
-    LESS_EQUAL("<=", 20, LessExtOperation::new),
+    LESS_EQUAL("<=", 20, LessEqualExtOperation::new),
     AND_DOUBLE("&&", 10, AndDoubleExtOperation::new),
     OR_DOUBLE("||", 10, OrDoubleExtOperation::new),
     ;
-
-    public static final int LOGICAL_OPERATOR_PRIORITY = 10;
-    public static final int COMPARISON_OPERATOR_PRIORITY = 20;
 
     @Getter
     private final String symbol;
@@ -53,9 +51,9 @@ public enum ExtendedOperation implements PriorityAble {
     private final int priority;
 
     @Getter
-    private final Function<List<DynamicValue>, Operator> operatorConstructor;
+    private final Function<DynamicValue, FunctionDynamicValue> operatorConstructor;
 
-    ExtendedOperation(final String symbol, final int priority, final Function<List<DynamicValue>, Operator> operatorConstructor) {
+    ExtendedOperation(final String symbol, final int priority, final Function<DynamicValue, FunctionDynamicValue> operatorConstructor) {
         this.symbol = symbol;
         this.priority = priority;
         this.operatorConstructor = operatorConstructor;
@@ -89,7 +87,6 @@ public enum ExtendedOperation implements PriorityAble {
         return valueOfSymbol(symbol).getPriority();
     }
 
-    @Override
     public int getPriority() {
         return this.priority;
     }
