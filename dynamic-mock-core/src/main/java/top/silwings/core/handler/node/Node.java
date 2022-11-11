@@ -11,6 +11,6 @@ import top.silwings.core.handler.Context;
  **/
 public interface Node {
 
-    void interpret(Context context);
+    Object interpret(Context context);
 
 }

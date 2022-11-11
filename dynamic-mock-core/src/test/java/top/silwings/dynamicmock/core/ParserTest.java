@@ -87,9 +87,9 @@ public class ParserTest {
                 .builder(new StringBuilder(testData.getTest002().length()))
                 .build();
 
-        analyze1.interpret(context);
+        final Object interpret = analyze1.interpret(context);
 
-        log.info(context.getJsonStr());
+        log.info(JSON.toJSONString(interpret));
     }
 
     @Getter

@@ -12,8 +12,6 @@ import top.silwings.core.handler.dynamic.DynamicValue;
  **/
 public class DynamicNode implements Node {
 
-    private static final String QUOTATION_MARK = "\"";
-
     private final DynamicValue dynamicValue;
 
     public DynamicNode(final DynamicValue dynamicValue) {
@@ -21,16 +19,8 @@ public class DynamicNode implements Node {
     }
 
     @Override
-    public void interpret(final Context context) {
-        final Object data = this.dynamicValue.value(context.getParameterContext());
-        if (data instanceof String) {
-            context.getBuilder()
-                    .append(QUOTATION_MARK)
-                    .append(data)
-                    .append(QUOTATION_MARK);
-        } else {
-            context.getBuilder().append(data);
-        }
+    public Object interpret(final Context context) {
+        return this.dynamicValue.value(context.getParameterContext());
     }
 
 }

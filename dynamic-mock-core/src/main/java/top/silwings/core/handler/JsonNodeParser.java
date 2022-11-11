@@ -7,13 +7,10 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.NodeParseException;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.node.ArrayNode;
-import top.silwings.core.handler.node.BooleanNode;
 import top.silwings.core.handler.node.DynamicNode;
 import top.silwings.core.handler.node.Node;
-import top.silwings.core.handler.node.NullNode;
-import top.silwings.core.handler.node.NumberNode;
 import top.silwings.core.handler.node.ObjectNode;
-import top.silwings.core.handler.node.StaticTextNode;
+import top.silwings.core.handler.node.ValueNode;
 
 import java.util.Map;
 
@@ -83,24 +80,17 @@ public class JsonNodeParser {
      */
     private Node buildNode(final Object obj) {
         if (this.isJson(obj)) {
+
             return this.doParse((JSON) obj);
-        } else if (this.isNumber(obj)) {
-            return new NumberNode((Number) obj);
-        } else if (this.isString(obj)) {
+
+        } else if (this.isString(obj) && this.isDynamic((String) obj)) {
 
             final String str = (String) obj;
+            // 在构建Expression时需要去掉表达式的首尾标志符,即 '${' 和 '}'
+            return new DynamicNode(this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1)));
 
-            if (this.isDynamic(str)) {
-                // 在构建Expression时需要去掉表达式的首尾标志符,即 '${' 和 '}'
-                return new DynamicNode(this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1)));
-            }
-            return new StaticTextNode(str);
-        } else if (this.isBoolean(obj)) {
-            return new BooleanNode((Boolean) obj);
-        } else if (this.isNull(obj)) {
-            return NullNode.nullNode();
         } else {
-            throw new NodeParseException();
+            return new ValueNode(obj);
         }
     }
 
@@ -109,20 +99,8 @@ public class JsonNodeParser {
         return str.startsWith("${") && str.endsWith("}");
     }
 
-    private boolean isBoolean(final Object obj) {
-        return obj instanceof Boolean;
-    }
-
-    private boolean isNull(final Object obj) {
-        return null == obj;
-    }
-
     private boolean isString(final Object obj) {
         return obj instanceof String;
-    }
-
-    private boolean isNumber(final Object obj) {
-        return obj instanceof Number;
     }
 
     private boolean isJson(final Object obj) {

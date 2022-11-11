@@ -4,6 +4,7 @@ import top.silwings.core.handler.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ArrayNode
@@ -13,12 +14,6 @@ import java.util.List;
  * @Since
  **/
 public class ArrayNode implements Node {
-
-    private static final String LEFT_BRACKET = "[";
-
-    private static final String RIGHT_BRACKET = "]";
-
-    private static final String COMMA = ",";
 
     private final List<Node> nodeList;
 
@@ -32,23 +27,8 @@ public class ArrayNode implements Node {
     }
 
     @Override
-    public void interpret(final Context context) {
-
-        final StringBuilder builder = context.getBuilder();
-
-        builder.append(LEFT_BRACKET);
-
-        for (final Node node : this.nodeList) {
-            node.interpret(context);
-            builder.append(COMMA);
-        }
-
-        if (!this.nodeList.isEmpty()) {
-            // 删除最后的逗号
-            builder.deleteCharAt(builder.length() - 1);
-        }
-
-        builder.append(RIGHT_BRACKET);
+    public List<Object> interpret(final Context context) {
+        return this.nodeList.stream().map(node -> node.interpret(context)).collect(Collectors.toList());
     }
 
 }

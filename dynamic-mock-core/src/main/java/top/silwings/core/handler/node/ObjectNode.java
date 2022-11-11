@@ -34,26 +34,15 @@ public class ObjectNode implements Node {
     }
 
     @Override
-    public void interpret(final Context context) {
+    public Object interpret(final Context context) {
 
-        final StringBuilder builder = context.getBuilder();
-
-        builder.append(LEFT_BRACE);
+        final HashMap<Object, Object> hashMap = new HashMap<>();
 
         for (final Map.Entry<Node, Node> nodeEntry : this.nodeMap.entrySet()) {
-
-            nodeEntry.getKey().interpret(context);
-            builder.append(COLON);
-            nodeEntry.getValue().interpret(context);
-            builder.append(COMMA);
+            hashMap.put(nodeEntry.getKey().interpret(context), nodeEntry.getValue().interpret(context));
         }
 
-        if (!this.nodeMap.isEmpty()) {
-            // 删除最后的逗号
-            builder.deleteCharAt(builder.length() - 1);
-        }
-
-        builder.append(RIGHT_BRACE);
+        return hashMap;
     }
 
 }
