@@ -7,6 +7,7 @@ import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicFactory;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.dynamic.expression.expressions.CommaExpressionDynamicValue;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,11 @@ public class FunctionDynamicValueFactory {
         // 使用名称找到对应函数的工厂,创建方法
         for (final DynamicFactory factory : this.functionFactoryList) {
             if (factory.support(methodInfo.getName())) {
-                return factory.buildFunction(Collections.singletonList(dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression())));
+                final DynamicValue dynamicValue = dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression());
+                if (dynamicValue instanceof CommaExpressionDynamicValue) {
+                    return factory.buildFunction(((CommaExpressionDynamicValue) dynamicValue).getCommaExpressionValue());
+                }
+                return factory.buildFunction(Collections.singletonList(dynamicValue));
             }
         }
 

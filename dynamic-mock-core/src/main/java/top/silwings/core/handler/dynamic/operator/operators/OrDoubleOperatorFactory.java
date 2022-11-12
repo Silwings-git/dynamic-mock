@@ -55,10 +55,6 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
             return TypeUtils.toBoolean(childNodeValueList.get(0)) || TypeUtils.toBoolean(childNodeValueList.get(1));
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

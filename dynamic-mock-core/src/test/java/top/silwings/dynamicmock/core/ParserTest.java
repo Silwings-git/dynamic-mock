@@ -149,11 +149,13 @@ public class ParserTest {
                 "\"${#search(abc.abc)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"age\": \"${#search(age)}\"," +
                 "\"zbd\": \"${#search(zbd)}\"," +
-                "\"happy\": \"${             10  + 1-1        == 11-1 }\"" +
+                "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
+                "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
 
         private final String test004 = "{\n" +
-                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"" +
+                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
         private final ParameterContext parameterContext = new ParameterContext();
 

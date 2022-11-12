@@ -53,10 +53,6 @@ public class SearchFunctionFactory implements FunctionFactory {
             return context.getParameterContext().searchParameter(String.valueOf(childNodeValueList.get(0)));
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
 }

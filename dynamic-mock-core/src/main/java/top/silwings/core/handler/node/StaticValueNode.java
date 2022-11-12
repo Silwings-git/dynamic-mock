@@ -20,6 +20,10 @@ public class StaticValueNode implements Node {
         this.context = context;
     }
 
+    public static Node from(final Object obj) {
+        return new StaticValueNode(obj);
+    }
+
     @Override
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
         return this.context;

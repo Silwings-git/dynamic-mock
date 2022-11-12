@@ -89,7 +89,7 @@ public class JsonNodeParser {
             return this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1));
 
         } else {
-            return new StaticValueNode(obj);
+            return StaticValueNode.from(obj);
         }
     }
 

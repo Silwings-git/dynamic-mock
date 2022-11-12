@@ -57,10 +57,6 @@ public class SubtractionOperatorFactory implements OperatorFactory {
             return TypeUtils.toBigDecimal(childNodeValueList.get(0)).subtract(TypeUtils.toBigDecimal(childNodeValueList.get(1)));
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

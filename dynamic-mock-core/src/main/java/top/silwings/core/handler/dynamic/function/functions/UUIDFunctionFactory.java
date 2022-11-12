@@ -10,6 +10,7 @@ import top.silwings.core.handler.dynamic.function.FunctionFactory;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName UUIDFunctionFactory
@@ -45,12 +46,11 @@ public class UUIDFunctionFactory implements FunctionFactory {
             if (this.getNodeCount() > 0 && CollectionUtils.isEmpty(childNodeValueList) && childNodeValueList.size() < this.getNodeCount()) {
                 throw new DynamicDataException("缺少参数");
             }
+            childNodeValueList.forEach(e -> System.out.println("UUID打印: " + e));
+            if (CollectionUtils.isNotEmpty(childNodeValueList)) {
+                return childNodeValueList.stream().map(String::valueOf).collect(Collectors.joining("-"));
+            }
             return UUID.randomUUID().toString();
-        }
-
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
         }
 
     }

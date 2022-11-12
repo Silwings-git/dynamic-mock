@@ -59,10 +59,6 @@ public class AdditionOperatorFactory implements OperatorFactory {
             }
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

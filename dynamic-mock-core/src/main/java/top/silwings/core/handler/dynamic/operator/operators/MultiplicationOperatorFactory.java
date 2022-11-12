@@ -55,10 +55,6 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
             return TypeUtils.toBigDecimal(childNodeValueList.get(0)).multiply(TypeUtils.toBigDecimal(childNodeValueList.get(1)));
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

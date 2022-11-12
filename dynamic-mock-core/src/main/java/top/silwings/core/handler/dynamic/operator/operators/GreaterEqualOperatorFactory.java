@@ -55,10 +55,6 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
             return TypeUtils.toBigDecimal(childNodeValueList.get(0)).compareTo(TypeUtils.toBigDecimal(childNodeValueList.get(1))) >= 0;
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

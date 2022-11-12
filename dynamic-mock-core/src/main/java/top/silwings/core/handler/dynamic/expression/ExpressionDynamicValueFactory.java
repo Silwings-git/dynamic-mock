@@ -8,8 +8,8 @@ import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.dynamic.expression.expressions.ListExpressionDynamicValue;
-import top.silwings.core.handler.dynamic.expression.expressions.SingleValueExpressionDynamicValue;
+import top.silwings.core.handler.dynamic.expression.expressions.CommaExpressionDynamicValue;
+import top.silwings.core.handler.dynamic.expression.expressions.StaticValueExpressionDynamicValue;
 import top.silwings.core.handler.dynamic.operator.OperationDynamicValueFactory;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class ExpressionDynamicValueFactory {
 
         if (commaPriorityResult.hasCommaPriority()) {
             final List<DynamicValue> dynamicValueList = commaPriorityResult.getList().stream().map(dynamicValueFactory::buildDynamicValue).collect(Collectors.toList());
-            return ListExpressionDynamicValue.from(dynamicValueList);
+            return CommaExpressionDynamicValue.from(dynamicValueList);
         } else {
             // 判断是否以括号开头结尾
             // 没有逗号的情况下直接判断 expression
@@ -66,7 +66,7 @@ public class ExpressionDynamicValueFactory {
                 final List<String> parseList = this.operatorExpressionParser.parse(expression);
                 if (parseList.size() == 1) {
                     // 不包含操作符的常量字符
-                    return SingleValueExpressionDynamicValue.from(parseList.get(0));
+                    return StaticValueExpressionDynamicValue.from(parseList.get(0));
                 } else {
                     return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
                 }

@@ -48,10 +48,6 @@ public class IsBlankFunctionFactory implements FunctionFactory {
                     && StringUtils.isBlank((CharSequence) childNodeValueList.get(0)));
         }
 
-        @Override
-        public int getNodeCount() {
-            return 1;
-        }
     }
 
 }

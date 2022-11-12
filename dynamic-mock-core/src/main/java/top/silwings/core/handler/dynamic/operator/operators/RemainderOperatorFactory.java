@@ -56,10 +56,6 @@ public class RemainderOperatorFactory implements OperatorFactory {
 
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override

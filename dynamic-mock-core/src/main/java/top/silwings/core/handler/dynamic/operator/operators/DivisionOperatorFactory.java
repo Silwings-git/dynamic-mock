@@ -56,10 +56,6 @@ public class DivisionOperatorFactory implements OperatorFactory {
             return TypeUtils.toBigDecimal(childNodeValueList.get(0)).divide(TypeUtils.toBigDecimal(childNodeValueList.get(1)), MathContext.DECIMAL64);
         }
 
-        @Override
-        public int getNodeCount() {
-            return this.getChildNodes().size();
-        }
     }
 
     @Override
