@@ -33,8 +33,8 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new ArithmeticNoEqualOperator(param, this.arithmeticEqualOperatorFactory);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new ArithmeticNoEqualOperator(dynamicValueList, this.arithmeticEqualOperatorFactory);
     }
 
     /**
@@ -44,18 +44,13 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:30
      * @Since
      **/
-    public static class ArithmeticNoEqualOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class ArithmeticNoEqualOperator extends AbstractDynamicValue {
 
         private final ArithmeticEqualOperatorFactory.ArithmeticEqualOperator arithmeticEqualOperator;
 
-        public ArithmeticNoEqualOperator(final DynamicValue param, final ArithmeticEqualOperatorFactory arithmeticEqualOperatorFactory) {
-            super(param);
-            this.arithmeticEqualOperator = (ArithmeticEqualOperatorFactory.ArithmeticEqualOperator) arithmeticEqualOperatorFactory.buildFunction(param);
-        }
-
-        @Override
-        public Boolean interpret(final Context context) {
-            return !this.arithmeticEqualOperator.interpret(context);
+        public ArithmeticNoEqualOperator(final List<DynamicValue> dynamicValueList, final ArithmeticEqualOperatorFactory arithmeticEqualOperatorFactory) {
+            super(dynamicValueList);
+            this.arithmeticEqualOperator = (ArithmeticEqualOperatorFactory.ArithmeticEqualOperator) arithmeticEqualOperatorFactory.buildFunction(dynamicValueList);
         }
 
         @Override

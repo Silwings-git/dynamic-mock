@@ -26,29 +26,18 @@ public class IsBlankFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public IsBlankFunction buildFunction(final DynamicValue param) {
-        return IsBlankFunction.from(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return IsBlankFunction.from(dynamicValueList);
     }
 
     public static class IsBlankFunction extends AbstractDynamicValue {
 
-        public IsBlankFunction(final DynamicValue param) {
-            super(param);
+        public IsBlankFunction(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
-        public static IsBlankFunction from(final DynamicValue param) {
-            return new IsBlankFunction(param);
-        }
-
-        @Override
-        public Boolean interpret(final Context parameterContext) {
-
-            final List<Object> paramList = this.getParams(parameterContext);
-
-            return CollectionUtils.isEmpty(paramList)
-                    || null == paramList.get(0)
-                    || (paramList.get(0) instanceof String
-                    && StringUtils.isBlank((CharSequence) paramList.get(0)));
+        public static IsBlankFunction from(final List<DynamicValue> dynamicValueList) {
+            return new IsBlankFunction(dynamicValueList);
         }
 
         @Override

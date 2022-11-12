@@ -1,6 +1,5 @@
 package top.silwings.core.handler.dynamic.expression.expressions;
 
-import org.apache.commons.collections4.CollectionUtils;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.node.Node;
@@ -28,17 +27,12 @@ public class SingleValueExpressionDynamicValue implements DynamicValue {
     }
 
     @Override
-    public Object interpret(final Context context) {
-        return this.content;
-    }
-
-    @Override
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
         return this.content;
     }
 
     @Override
-    public List<? extends Node> getChildNodes() {
+    public List<Node> getChildNodes() {
         return Collections.emptyList();
     }
 

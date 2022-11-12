@@ -10,7 +10,6 @@ import top.silwings.core.handler.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -31,8 +30,8 @@ public class SubtractionOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new SubtractionOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new SubtractionOperator(dynamicValueList);
     }
 
 
@@ -43,20 +42,10 @@ public class SubtractionOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:24
      * @Since
      **/
-    public static class SubtractionOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class SubtractionOperator extends AbstractDynamicValue {
 
-        public SubtractionOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public BigDecimal interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (CollectionUtils.isEmpty(paramList) || paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要至少 1,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBigDecimal(paramList.get(0)).subtract(TypeUtils.toBigDecimal(paramList.get(1)));
+        public SubtractionOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -70,7 +59,7 @@ public class SubtractionOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

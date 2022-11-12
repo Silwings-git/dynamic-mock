@@ -6,28 +6,28 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @ClassName StaticTextNode
+ * @ClassName StaticValueNode
  * @Description
  * @Author Silwings
- * @Date 2022/10/28 15:35
+ * @Date 2022/11/12 14:58
  * @Since
  **/
-public class ValueNode implements Node {
+public class StaticValueNode implements Node {
 
-    private final Node context;
+    private final Object context;
 
-    public ValueNode(final Node context) {
+    public StaticValueNode(final Object context) {
         this.context = context;
     }
 
     @Override
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
-        return childNodeValueList.get(0);
+        return this.context;
     }
 
     @Override
     public List<Node> getChildNodes() {
-        return Collections.singletonList(this.context);
+        return Collections.emptyList();
     }
 
     @Override

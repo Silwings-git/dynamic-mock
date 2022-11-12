@@ -6,7 +6,6 @@ import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,18 +35,6 @@ public class ObjectNode implements Node {
     }
 
     @Override
-    public Object interpret(final Context context) {
-
-        final HashMap<Object, Object> hashMap = new HashMap<>();
-
-        for (final BinaryTreeNode binaryTreeNode : this.binaryTreeNodeList) {
-            hashMap.put(binaryTreeNode.getLeft().interpret(context), binaryTreeNode.getRight().interpret(context));
-        }
-
-        return hashMap;
-    }
-
-    @Override
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
 
         final HashMap<Object, Object> hashMap = new HashMap<>();
@@ -68,8 +55,8 @@ public class ObjectNode implements Node {
     }
 
     @Override
-    public List<? extends Node> getChildNodes() {
-        return this.binaryTreeNodeList;
+    public List<Node> getChildNodes() {
+        return new ArrayList<>(this.binaryTreeNodeList);
     }
 
     @Override
@@ -92,24 +79,18 @@ public class ObjectNode implements Node {
         private Node right;
 
         @Override
-        public List<Object> interpret(final Context context) {
-            return Stream.of(this.left.interpret(context), this.right.interpret(context)).collect(Collectors.toList());
-        }
-
-        @Override
         public List<Node> getChildNodes() {
             return Stream.of(this.left, this.right).collect(Collectors.toList());
         }
 
         @Override
         public Object interpret(final Context context, final List<Object> childNodeValueList) {
-             Collections.reverse(childNodeValueList);
             return childNodeValueList;
         }
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 }

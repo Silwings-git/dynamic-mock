@@ -4,7 +4,6 @@ import top.silwings.core.handler.Context;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName ArrayNode
@@ -24,11 +23,6 @@ public class ArrayNode implements Node {
     public ArrayNode add(final Node node) {
         this.nodeList.add(node);
         return this;
-    }
-
-    @Override
-    public List<Object> interpret(final Context context) {
-        return this.nodeList.stream().map(node -> node.interpret(context)).collect(Collectors.toList());
     }
 
     @Override

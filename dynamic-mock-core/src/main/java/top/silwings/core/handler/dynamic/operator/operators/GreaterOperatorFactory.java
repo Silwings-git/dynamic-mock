@@ -9,7 +9,6 @@ import top.silwings.core.handler.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,8 +29,8 @@ public class GreaterOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new GreaterOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new GreaterOperator(dynamicValueList);
     }
 
     /**
@@ -41,20 +40,10 @@ public class GreaterOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:33
      * @Since
      **/
-    public static class GreaterOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class GreaterOperator extends AbstractDynamicValue {
 
-        public GreaterOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public Boolean interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < this.getNodeCount()) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) > 0;
+        public GreaterOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -68,7 +57,7 @@ public class GreaterOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

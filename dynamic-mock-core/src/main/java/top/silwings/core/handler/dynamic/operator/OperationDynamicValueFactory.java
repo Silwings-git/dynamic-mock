@@ -4,13 +4,13 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.dynamic.expression.expressions.ListExpressionDynamicValue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName OperationDynamicValueFactory
@@ -50,7 +50,7 @@ public class OperationDynamicValueFactory {
                 final DynamicValue secondValue = cache.removeLast();
                 final DynamicValue firstValue = cache.removeLast();
 
-                cache.add(this.buildOperator(symbol, ListExpressionDynamicValue.of(firstValue, secondValue)));
+                cache.add(this.buildOperator(symbol, firstValue, secondValue));
 
             } else {
 
@@ -65,12 +65,12 @@ public class OperationDynamicValueFactory {
         return cache.get(0);
     }
 
-    private DynamicValue buildOperator(final String symbol, final DynamicValue dynamicValue) {
+    private DynamicValue buildOperator(final String symbol, final DynamicValue firstValue, final DynamicValue secondValue) {
 
         final OperatorFactory factory = this.filter(symbol);
 
         if (null != factory) {
-            return factory.buildFunction(dynamicValue);
+            return factory.buildFunction(Stream.of(firstValue, secondValue).collect(Collectors.toList()));
         }
 
         throw new DynamicDataException("操作符不存在");

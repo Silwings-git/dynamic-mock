@@ -9,7 +9,6 @@ import top.silwings.core.handler.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,8 +29,8 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new MultiplicationOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new MultiplicationOperator(dynamicValueList);
     }
 
     /**
@@ -41,20 +40,10 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:26
      * @Since
      **/
-    public static class MultiplicationOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class MultiplicationOperator extends AbstractDynamicValue {
 
-        public MultiplicationOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public BigDecimal interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBigDecimal(paramList.get(0)).multiply(TypeUtils.toBigDecimal(paramList.get(1)));
+        public MultiplicationOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -68,7 +57,7 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

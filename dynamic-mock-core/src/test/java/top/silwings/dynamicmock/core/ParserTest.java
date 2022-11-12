@@ -1,6 +1,7 @@
 package top.silwings.dynamicmock.core;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.silwings.core.MockSpringApplication;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.ParameterContext;
@@ -19,6 +21,7 @@ import top.silwings.core.repository.definition.RequestDefinition;
 import top.silwings.core.utils.NodeTraversalUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -81,7 +84,7 @@ public class ParserTest {
                 .parameterContext(parameterContext)
                 .build();
 
-        System.out.println(JSON.toJSONString(dynamicValue.interpret(context)));
+        System.out.println(JSON.toJSONString(dynamicValue.interpret(context, Collections.emptyList())));
     }
 
     @Test
@@ -96,7 +99,7 @@ public class ParserTest {
                 .builder(new StringBuilder(testData.getTest002().length()))
                 .build();
 
-        final Object interpret = analyze1.interpret(context);
+        final Object interpret = analyze1.interpret(context, Collections.emptyList());
 
         log.info(JSON.toJSONString(interpret));
     }
@@ -116,12 +119,17 @@ public class ParserTest {
 
             final int nodeCount = ele.getNodeCount();
 
+            if (stack.size() < nodeCount) {
+                throw new DynamicDataException("缺少参数");
+            }
+
             final List<Object> arrayList = new ArrayList<>();
             if (nodeCount > 0) {
                 for (int i = 0; i < nodeCount; i++) {
                     arrayList.add(stack.pop());
                 }
             }
+            Collections.reverse(arrayList);
 
             final Object interpret = ele.interpret(testData.getContext(), arrayList);
 
@@ -129,7 +137,7 @@ public class ParserTest {
 
         }
 
-        log.info(JSON.toJSONString(stack.pop()));
+        log.info(JSON.toJSONString(stack.pop(), SerializerFeature.WriteMapNullValue));
     }
 
     @Getter
@@ -140,7 +148,12 @@ public class ParserTest {
                 "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"${#search(abc.abc)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"age\": \"${#search(age)}\"," +
+                "\"zbd\": \"${#search(zbd)}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"" +
+                "}";
+
+        private final String test004 = "{\n" +
+                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"" +
                 "}";
         private final ParameterContext parameterContext = new ParameterContext();
 

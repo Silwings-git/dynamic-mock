@@ -29,8 +29,8 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new GreaterEqualOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new GreaterEqualOperator(dynamicValueList);
     }
 
     /**
@@ -40,20 +40,10 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:34
      * @Since
      **/
-    public static class GreaterEqualOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class GreaterEqualOperator extends AbstractDynamicValue {
 
-        public GreaterEqualOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public Boolean interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) >= 0;
+        public GreaterEqualOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -67,7 +57,7 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

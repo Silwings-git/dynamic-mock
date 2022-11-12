@@ -8,6 +8,7 @@ import top.silwings.core.handler.dynamic.DynamicFactory;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +43,7 @@ public class FunctionDynamicValueFactory {
         // 使用名称找到对应函数的工厂,创建方法
         for (final DynamicFactory factory : this.functionFactoryList) {
             if (factory.support(methodInfo.getName())) {
-                return factory.buildFunction(dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression()));
+                return factory.buildFunction(Collections.singletonList(dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression())));
             }
         }
 

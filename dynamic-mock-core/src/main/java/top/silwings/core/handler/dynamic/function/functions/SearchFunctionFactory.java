@@ -26,8 +26,8 @@ public class SearchFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public SearchFunction buildFunction(final DynamicValue param) {
-        return SearchFunction.from(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return SearchFunction.from(dynamicValueList);
     }
 
     public static class SearchFunction extends AbstractDynamicValue {
@@ -36,23 +36,12 @@ public class SearchFunctionFactory implements FunctionFactory {
         // TODO_Silwings: 2022/11/9  
         private static final List<String> searchScope = new ArrayList<>();
 
-        public SearchFunction(final DynamicValue param) {
-            super(param);
+        public SearchFunction(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
-        public static SearchFunction from(final DynamicValue param) {
-            return new SearchFunction(param);
-        }
-
-        @Override
-        public Object interpret(final Context parameterContext) {
-
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.isEmpty()) {
-                throw new DynamicDataException("缺少搜索词.");
-            }
-
-            return parameterContext.getParameterContext().searchParameter(String.valueOf(paramList.get(0)));
+        public static SearchFunction from(final List<DynamicValue> dynamicValueList) {
+            return new SearchFunction(dynamicValueList);
         }
 
         @Override

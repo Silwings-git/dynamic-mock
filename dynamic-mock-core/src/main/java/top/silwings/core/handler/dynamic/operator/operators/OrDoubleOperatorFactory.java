@@ -29,8 +29,8 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new OrOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new OrOperator(dynamicValueList);
     }
 
     /**
@@ -40,20 +40,10 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:38
      * @Since
      **/
-    public static class OrOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class OrOperator extends AbstractDynamicValue {
 
-        public OrOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public Object interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBoolean(paramList.get(0)) || TypeUtils.toBoolean(paramList.get(1));
+        public OrOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -67,7 +57,7 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

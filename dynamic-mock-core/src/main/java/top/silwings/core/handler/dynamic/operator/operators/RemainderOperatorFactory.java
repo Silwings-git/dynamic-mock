@@ -9,7 +9,6 @@ import top.silwings.core.handler.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.dynamic.operator.OperatorType;
 import top.silwings.core.utils.TypeUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,8 +29,8 @@ public class RemainderOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
-        return new RemainderOperator(param);
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return new RemainderOperator(dynamicValueList);
     }
 
     /**
@@ -41,20 +40,10 @@ public class RemainderOperatorFactory implements OperatorFactory {
      * @Date 2022/11/7 21:28
      * @Since
      **/
-    public static class RemainderOperator extends AbstractDynamicValue implements DynamicValue {
+    public static class RemainderOperator extends AbstractDynamicValue {
 
-        public RemainderOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public BigDecimal interpret(final Context parameterContext) {
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            return TypeUtils.toBigDecimal(paramList.get(0)).divideAndRemainder(TypeUtils.toBigDecimal(paramList.get(1)))[1];
+        public RemainderOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -69,7 +58,7 @@ public class RemainderOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

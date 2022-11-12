@@ -7,6 +7,7 @@ import top.silwings.core.handler.node.Node;
 import top.silwings.core.repository.definition.MockHandlerDefinition;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class MockHandlerFactory {
         // 解析自定义空间时使用空上下文
         final Context emptyContext = Context.builder().build();
 
-        parse.interpret(emptyContext);
+        parse.interpret(emptyContext, Collections.emptyList());
 
         return JSON.parseObject(emptyContext.getJsonStr());
     }

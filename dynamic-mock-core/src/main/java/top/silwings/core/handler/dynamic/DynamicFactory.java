@@ -1,5 +1,7 @@
 package top.silwings.core.handler.dynamic;
 
+import java.util.List;
+
 /**
  * @ClassName FunctionDynamicValue
  * @Description 函数接口
@@ -11,6 +13,6 @@ public interface DynamicFactory {
 
     boolean support(String methodName);
 
-    DynamicValue buildFunction(DynamicValue param);
+    DynamicValue buildFunction(List<DynamicValue> dynamicValueList);
 
 }

@@ -5,6 +5,7 @@ import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.node.Node;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,23 +35,13 @@ public class ListExpressionDynamicValue implements DynamicValue {
     }
 
     @Override
-    public List<Object> interpret(final Context context) {
-        if (CollectionUtils.isEmpty(this.paramsList)) {
-            return Collections.emptyList();
-        }
-        return this.paramsList.stream()
-                .map(dynamicValue -> dynamicValue.interpret(context))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
         return CollectionUtils.isEmpty(childNodeValueList) ? Collections.emptyList() : childNodeValueList;
     }
 
     @Override
-    public List<? extends Node> getChildNodes() {
-        return this.paramsList;
+    public List<Node> getChildNodes() {
+        return new ArrayList<>(this.paramsList);
     }
 
     @Override

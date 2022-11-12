@@ -29,7 +29,7 @@ public class AdditionOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final DynamicValue param) {
+    public DynamicValue buildFunction(final List<DynamicValue> param) {
         return new AdditionOperator(param);
     }
 
@@ -42,23 +42,8 @@ public class AdditionOperatorFactory implements OperatorFactory {
      **/
     public static class AdditionOperator extends AbstractDynamicValue {
 
-        public AdditionOperator(final DynamicValue param) {
-            super(param);
-        }
-
-        @Override
-        public Object interpret(final Context parameterContext) {
-
-            final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
-            }
-
-            try {
-                return TypeUtils.toBigDecimal(paramList.get(0)).add(TypeUtils.toBigDecimal(paramList.get(1)));
-            } catch (Exception e) {
-                return new StringBuilder().append(paramList.get(0)).append(paramList.get(1));
-            }
+        public AdditionOperator(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
         }
 
         @Override
@@ -76,7 +61,7 @@ public class AdditionOperatorFactory implements OperatorFactory {
 
         @Override
         public int getNodeCount() {
-            return 2;
+            return this.getChildNodes().size();
         }
     }
 

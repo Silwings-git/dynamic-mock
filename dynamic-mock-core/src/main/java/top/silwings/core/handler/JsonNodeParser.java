@@ -9,7 +9,7 @@ import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.node.ArrayNode;
 import top.silwings.core.handler.node.Node;
 import top.silwings.core.handler.node.ObjectNode;
-import top.silwings.core.handler.node.ValueNode;
+import top.silwings.core.handler.node.StaticValueNode;
 
 import java.util.Map;
 
@@ -86,10 +86,10 @@ public class JsonNodeParser {
 
             final String str = (String) obj;
             // 在构建Expression时需要去掉表达式的首尾标志符,即 '${' 和 '}'
-            return new ValueNode(this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1)));
+            return this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1));
 
         } else {
-            return new ValueNode(obj);
+            return new StaticValueNode(obj);
         }
     }
 
