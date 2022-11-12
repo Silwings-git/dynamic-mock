@@ -201,6 +201,10 @@ public class ExpressionDynamicValueFactory {
 
         private List<String> parse(final String str, final List<String> symbolList) {
 
+            if (StringUtils.isBlank(str)) {
+                return Collections.singletonList(str);
+            }
+
             // 获取所有操作符所在位置
             final List<OperatorIndex> indexList = new ArrayList<>();
             for (final String symbol : symbolList) {

@@ -48,7 +48,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
             }
             childNodeValueList.forEach(e -> System.out.println("UUID打印: " + e));
             if (CollectionUtils.isNotEmpty(childNodeValueList)) {
-                return childNodeValueList.stream().map(String::valueOf).collect(Collectors.joining("-"));
+                return childNodeValueList.stream().map(String::valueOf).collect(Collectors.joining("U"));
             }
             return UUID.randomUUID().toString();
         }

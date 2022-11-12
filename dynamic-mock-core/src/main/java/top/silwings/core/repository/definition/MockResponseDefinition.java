@@ -1,5 +1,6 @@
 package top.silwings.core.repository.definition;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.core.utils.ConvertUtils;
@@ -41,4 +42,7 @@ public class MockResponseDefinition {
         return ConvertUtils.getNoNullOrDefault(this.headers, Collections.emptyMap());
     }
 
+    public Object getBody() {
+        return JSON.isValidObject(this.body) ? JSON.parseObject(this.body) : this.body;
+    }
 }

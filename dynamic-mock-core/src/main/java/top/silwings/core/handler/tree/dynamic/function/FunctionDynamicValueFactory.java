@@ -1,6 +1,7 @@
 package top.silwings.core.handler.tree.dynamic.function;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Parser;
@@ -44,10 +45,16 @@ public class FunctionDynamicValueFactory {
         // 使用名称找到对应函数的工厂,创建方法
         for (final DynamicFactory factory : this.functionFactoryList) {
             if (factory.support(methodInfo.getName())) {
+
+                if (StringUtils.isBlank(methodInfo.getParamsExpression())) {
+                    return factory.buildFunction(Collections.emptyList());
+                }
+
                 final DynamicValue dynamicValue = dynamicValueFactory.buildDynamicValue(methodInfo.getParamsExpression());
                 if (dynamicValue instanceof CommaExpressionDynamicValue) {
                     return factory.buildFunction(((CommaExpressionDynamicValue) dynamicValue).getCommaExpressionValue());
                 }
+
                 return factory.buildFunction(Collections.singletonList(dynamicValue));
             }
         }

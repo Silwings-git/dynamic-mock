@@ -53,7 +53,8 @@ public class MockHandlerDefinitionMock {
         definition.setHeaders(null);
         definition.setBody("{" +
                 "\"${#uuid(def)}\": \"${#uuid(#uuid(3*(1+1)--2-6))}\"," +
-                "\"uuidKey\": \"${#uuid(1,2)}\"" +
+                "\"uuidKeyA\": \"${#uuid(1,2)}\"," +
+                "\"uuidKeyB\": \"${#uuid()}\"" +
                 "}");
 
         return definition;

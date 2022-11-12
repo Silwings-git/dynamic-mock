@@ -151,7 +151,7 @@ public class ParserTest {
     public void test006() {
 
         String expression = "1==2";
-        expression = "1 == 1";
+        expression = "#uuid()";
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(expression);
 
