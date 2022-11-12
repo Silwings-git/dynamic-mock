@@ -1,5 +1,8 @@
 package top.silwings.core.handler;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,13 +13,19 @@ import java.util.Map;
  * @Date 2022/10/29 18:44
  * @Since
  **/
-public class ParameterContext {
+@Getter
+@Setter
+public class HandlerContext {
 
-    public static final ParameterContext EMPTY_CONTEXT = new ParameterContext();
+    /**
+     * 自定义空间
+     */
+    private Map<?, ?> customizeSpace;
+
 
     private final Map<String, Object> parameterMap;
 
-    public ParameterContext() {
+    public HandlerContext() {
         this.parameterMap = new HashMap<>();
     }
 
@@ -26,10 +35,6 @@ public class ParameterContext {
 
     public Object searchParameter(final String parameterName) {
         return this.parameterMap.get(parameterName);
-    }
-
-    public static ParameterContext emptyContext() {
-        return EMPTY_CONTEXT;
     }
 
 }

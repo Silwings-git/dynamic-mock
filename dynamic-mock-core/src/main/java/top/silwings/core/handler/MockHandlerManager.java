@@ -1,5 +1,6 @@
 package top.silwings.core.handler;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
 
@@ -18,11 +19,6 @@ public class MockHandlerManager {
 
     private final List<MockHandler> mockHandlerList = new ArrayList<>();
 
-    /**
-     * 404处理器
-     */
-    private final MockHandler noHandlerMockHandler = MockHandler.builder().build();
-
     public MockHandlerManager() {
         this.mockHandlerList.add(MockHandler.builder().build());
     }
@@ -38,7 +34,7 @@ public class MockHandlerManager {
         throw new NoMockHandlerFoundException(requestInfo);
     }
 
-    public MockResponse mock(final Context context) {
+    public ResponseEntity<Object> mock(final Context context) {
 
         final MockHandler mockHandler = this.filter(RequestInfo.from(context));
 

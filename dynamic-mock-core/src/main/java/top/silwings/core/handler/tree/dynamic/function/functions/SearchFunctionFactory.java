@@ -50,7 +50,7 @@ public class SearchFunctionFactory implements FunctionFactory {
                 throw new DynamicDataException("缺少搜索词.");
             }
 
-            return context.getParameterContext().searchParameter(String.valueOf(childNodeValueList.get(0)));
+            return context.getHandlerContext().searchParameter(String.valueOf(childNodeValueList.get(0)));
         }
 
     }

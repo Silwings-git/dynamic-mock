@@ -14,7 +14,7 @@ import java.util.Map;
  **/
 @Getter
 @Setter
-public class RequestDefinition {
+public class MockTaskDefinition {
 
     /**
      * 请求地址
@@ -39,6 +39,6 @@ public class RequestDefinition {
     /**
      * 请求表单参数
      */
-    private Map<String, String> params;
+    private Map<String, ?> uriVariables;
 
 }

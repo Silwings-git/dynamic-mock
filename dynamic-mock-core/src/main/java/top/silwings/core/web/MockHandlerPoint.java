@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.MockHandlerManager;
-import top.silwings.core.handler.MockResponse;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +43,7 @@ public class MockHandlerPoint {
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public ResponseEntity<Object> returnMediaTypeNotSupportError(final HttpServletRequest request) {
 
-        final MockResponse response = this.mockHandlerManager.mock(Context.from(request));
-
-        return response.result();
+        return this.mockHandlerManager.mock(Context.from(request));
     }
 
     private Object execute(final HttpServletRequest request) {

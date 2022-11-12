@@ -14,7 +14,7 @@ import java.util.List;
  **/
 @Getter
 @Setter
-public class HttpRequestInfoDefinition {
+public class MockTaskInfoDefinition {
 
     /**
      * 任务名称
@@ -49,6 +49,6 @@ public class HttpRequestInfoDefinition {
     /**
      * 请求信息
      */
-    private RequestDefinition request;
+    private MockTaskDefinition request;
 
 }

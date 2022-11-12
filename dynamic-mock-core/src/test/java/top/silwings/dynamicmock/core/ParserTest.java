@@ -12,12 +12,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import top.silwings.core.MockSpringApplication;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.HandlerContext;
 import top.silwings.core.handler.JsonNodeParser;
-import top.silwings.core.handler.ParameterContext;
 import top.silwings.core.handler.tree.Node;
+import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.definition.RequestDefinition;
+import top.silwings.core.repository.definition.MockTaskDefinition;
 import top.silwings.core.utils.NodeTraversalUtils;
 
 import java.util.ArrayList;
@@ -70,21 +71,21 @@ public class ParserTest {
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
-        final ParameterContext parameterContext = new ParameterContext();
-        parameterContext.putParameter("paramA", -1);
-        parameterContext.putParameter("param", 20);
-        parameterContext.putParameter("40", true);
-        parameterContext.putParameter("age", 18);
-        parameterContext.putParameter("2", 15);
-        parameterContext.putParameter("true", 10);
-        parameterContext.putParameter("10", "御坂美琴");
-        parameterContext.putParameter("10true", "御坂美琴");
+        final HandlerContext handlerContext = new HandlerContext();
+        handlerContext.putParameter("paramA", -1);
+        handlerContext.putParameter("param", 20);
+        handlerContext.putParameter("40", true);
+        handlerContext.putParameter("age", 18);
+        handlerContext.putParameter("2", 15);
+        handlerContext.putParameter("true", 10);
+        handlerContext.putParameter("10", "御坂美琴");
+        handlerContext.putParameter("10true", "御坂美琴");
 
         final Context context = Context.builder()
-                .parameterContext(parameterContext)
+                .handlerContext(handlerContext)
                 .build();
 
-        System.out.println(JSON.toJSONString(dynamicValue.interpret(context, Collections.emptyList())));
+        System.out.println(JSON.toJSONString(new NodeInterpreter(dynamicValue).interpret(context)));
     }
 
     @Test
@@ -95,8 +96,7 @@ public class ParserTest {
         final Node analyze1 = this.jsonNodeParser.parse(testData.getTest002());
 
         final Context context = Context.builder()
-                .parameterContext(testData.getParameterContext())
-                .builder(new StringBuilder(testData.getTest002().length()))
+                .handlerContext(testData.getHandlerContext())
                 .build();
 
         final Object interpret = analyze1.interpret(context, Collections.emptyList());
@@ -140,6 +140,22 @@ public class ParserTest {
         log.info(JSON.toJSONString(stack.pop(), SerializerFeature.WriteMapNullValue));
     }
 
+    @Test
+    public void test006() {
+
+        String expression = "1==2";
+        expression = "1 == 1";
+
+        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(expression);
+
+        final NodeInterpreter nodeInterpreter = new NodeInterpreter(dynamicValue);
+
+        final Object interpret = nodeInterpreter.interpret(Context.builder().build());
+
+        System.out.println("interpret = " + interpret);
+
+    }
+
     @Getter
     public static class TestData {
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
@@ -157,20 +173,19 @@ public class ParserTest {
                 "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
-        private final ParameterContext parameterContext = new ParameterContext();
+        private final HandlerContext handlerContext = new HandlerContext();
 
         final Context context;
 
         public TestData() {
-            this.parameterContext.putParameter("param", 1);
-            this.parameterContext.putParameter("2", "name");
-            this.parameterContext.putParameter("name", "御坂美琴");
-            this.parameterContext.putParameter("age", 14);
-            this.parameterContext.putParameter("abc.abc", "A御坂美琴A");
-            this.parameterContext.putParameter("def", "B御坂美琴B");
+            this.handlerContext.putParameter("param", 1);
+            this.handlerContext.putParameter("2", "name");
+            this.handlerContext.putParameter("name", "御坂美琴");
+            this.handlerContext.putParameter("age", 14);
+            this.handlerContext.putParameter("abc.abc", "A御坂美琴A");
+            this.handlerContext.putParameter("def", "B御坂美琴B");
             context = Context.builder()
-                    .parameterContext(this.parameterContext)
-                    .builder(new StringBuilder())
+                    .handlerContext(this.handlerContext)
                     .build();
         }
     }
@@ -178,11 +193,11 @@ public class ParserTest {
     @Test
     public void test003() {
 
-        final RequestDefinition httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
+        final MockTaskDefinition httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
                 "  \"map\": {\n" +
                 "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
                 "  }\n" +
-                "}", RequestDefinition.class);
+                "}", MockTaskDefinition.class);
 
         System.out.println(httpTaskRequestInfoDefinition);
 

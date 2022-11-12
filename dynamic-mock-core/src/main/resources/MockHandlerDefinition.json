@@ -68,7 +68,7 @@
           "name": "${#search(customSpace.name)}",
           "id": "${#uuid()}"
         },
-        "params": {
+        "uriVariables": {
           "${#search(requestBody.name)}": "${${#search(requestBody.userList)}}",
           "timestemp": "${#now()}",
           "index": "10"

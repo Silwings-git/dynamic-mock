@@ -1,0 +1,26 @@
+package top.silwings.core.utils;
+
+import top.silwings.core.exceptions.DynamicMockException;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @ClassName ThreadDelayUtils
+ * @Description
+ * @Author Silwings
+ * @Date 2022/11/12 19:15
+ * @Since
+ **/
+public class DelayUtils {
+
+    public static void delay(final int delayTime, final TimeUnit timeUnit) {
+        if (delayTime > 0) {
+            try {
+                timeUnit.sleep(delayTime);
+            } catch (InterruptedException e) {
+                throw new DynamicMockException(e);
+            }
+        }
+    }
+
+}

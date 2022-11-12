@@ -3,6 +3,7 @@ package top.silwings.core.handler;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
+import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,20 +28,12 @@ public class Context {
      */
     private final HttpMethod httpMethod;
 
-    private final StringBuilder builder;
+    private final HandlerContext handlerContext;
 
-    private final ParameterContext parameterContext;
+    private final DynamicValueFactory dynamicValueFactory;
 
-    public StringBuilder getBuilder() {
-        return this.builder;
-    }
-
-    public String getJsonStr() {
-        return this.builder.toString();
-    }
-
-    public ParameterContext getParameterContext() {
-        return parameterContext;
+    public HandlerContext getHandlerContext() {
+        return handlerContext;
     }
 
     public static Context from(final HttpServletRequest request) {
