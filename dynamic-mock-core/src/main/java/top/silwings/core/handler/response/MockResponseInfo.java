@@ -2,10 +2,10 @@ package top.silwings.core.handler.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.handler.AbstractMockSupport;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.DelayUtils;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @Since
  **/
 @Builder
-public class MockResponseInfo {
+public class MockResponseInfo extends AbstractMockSupport {
 
     private final String name;
 
@@ -32,19 +32,9 @@ public class MockResponseInfo {
 
     private final NodeInterpreter responseInterpreter;
 
-    public boolean support(final Context context) {
-
-        if (CollectionUtils.isEmpty(this.supportInterpreterList)) {
-            return true;
-        }
-
-        for (final NodeInterpreter interpreter : this.supportInterpreterList) {
-            if (!Boolean.TRUE.equals(interpreter.interpret(context))) {
-                return false;
-            }
-        }
-
-        return true;
+    @Override
+    protected List<NodeInterpreter> getSupportInterpreterList() {
+        return this.supportInterpreterList;
     }
 
     public MockResponse getMockResponse(final Context context) {
@@ -56,8 +46,6 @@ public class MockResponseInfo {
         }
 
         final Map<?, ?> map = (Map<?, ?>) interpret;
-
-        // TODO_Silwings: 2022/11/12 待优化
 
         return MockResponse.builder()
                 .delayTime(this.delayTime)

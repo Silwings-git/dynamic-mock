@@ -92,11 +92,11 @@ public class MockHandler {
         }
 
         // 筛选同步task
-        for (final MockTaskInfo mockTask : this.syncTaskInfoList) {
-            if (mockTask.support(context)) {
+        for (final MockTaskInfo mockTaskInfo : this.syncTaskInfoList) {
+            if (mockTaskInfo.support(context)) {
                 // -- 初始化同步定时任务
                 // TODO_Silwings: 2022/11/12 初始化同步定时任务
-                new TaskQueue().registerAsyncTask(mockTask);
+                new TaskQueue().registerAsyncTask(mockTaskInfo);
             }
         }
 

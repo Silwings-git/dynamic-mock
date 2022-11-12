@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.AbstractMockSupport;
 import top.silwings.core.handler.tree.NodeInterpreter;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @Since
  **/
 @Builder
-public class MockTaskInfo {
+public class MockTaskInfo extends AbstractMockSupport {
 
     private final String name;
 
@@ -34,8 +34,9 @@ public class MockTaskInfo {
 
     private final NodeInterpreter mockTaskInterpreter;
 
-    public boolean support(final Context context) {
-        return false;
+    @Override
+    protected List<NodeInterpreter> getSupportInterpreterList() {
+        return this.supportInterpreterList;
     }
 
     public boolean isAsync() {
