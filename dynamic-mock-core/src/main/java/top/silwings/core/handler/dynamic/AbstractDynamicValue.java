@@ -1,6 +1,7 @@
 package top.silwings.core.handler.dynamic;
 
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.node.Node;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,4 +39,8 @@ public abstract class AbstractDynamicValue implements DynamicValue {
         }
     }
 
+    @Override
+    public List<Node> getChildNodes() {
+        return Collections.singletonList(this.param);
+    }
 }

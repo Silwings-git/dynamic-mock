@@ -3,6 +3,7 @@ package top.silwings.core.handler.dynamic.expression.expressions;
 import org.apache.commons.collections4.CollectionUtils;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
+import top.silwings.core.handler.node.Node;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,11 @@ public class ListExpressionDynamicValue implements DynamicValue {
         return this.paramsList.stream()
                 .map(dynamicValue -> dynamicValue.interpret(context))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<? extends Node> getChildNodes() {
+        return this.paramsList;
     }
 
 }

@@ -2,6 +2,10 @@ package top.silwings.core.handler.dynamic.expression.expressions;
 
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
+import top.silwings.core.handler.node.Node;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @ClassName SingleValueExpressionDynamicValue
@@ -27,4 +31,8 @@ public class SingleValueExpressionDynamicValue implements DynamicValue {
         return this.content;
     }
 
+    @Override
+    public List<? extends Node> getChildNodes() {
+        return Collections.emptyList();
+    }
 }

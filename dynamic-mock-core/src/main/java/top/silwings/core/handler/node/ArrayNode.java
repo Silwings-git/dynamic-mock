@@ -31,4 +31,9 @@ public class ArrayNode implements Node {
         return this.nodeList.stream().map(node -> node.interpret(context)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Node> getChildNodes() {
+        return this.nodeList;
+    }
+
 }

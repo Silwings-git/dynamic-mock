@@ -3,6 +3,9 @@ package top.silwings.core.handler.node;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @ClassName StaticTextNode
  * @Description
@@ -26,6 +29,11 @@ public class ValueNode implements Node {
         }
 
         return this.context;
+    }
+
+    @Override
+    public List<? extends Node> getChildNodes() {
+        return Collections.emptyList();
     }
 
 }

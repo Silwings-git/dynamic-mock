@@ -2,6 +2,8 @@ package top.silwings.core.handler.node;
 
 import top.silwings.core.handler.Context;
 
+import java.util.List;
+
 /**
  * @ClassName Node
  * @Description
@@ -12,4 +14,5 @@ import top.silwings.core.handler.Context;
 public interface Node {
     Object interpret(Context context);
 
+    List<? extends Node> getChildNodes();
 }

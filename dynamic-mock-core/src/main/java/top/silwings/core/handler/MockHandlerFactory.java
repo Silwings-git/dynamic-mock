@@ -46,6 +46,8 @@ public class MockHandlerFactory {
 
         final Node parse = this.jsonNodeParser.parse(JSON.toJSONString(definition.getCustomizeSpace()));
 
+        // TODO_Silwings: 2022/11/12 这里不执行解释,每一个请求执行一次解释
+
         // 解析自定义空间时使用空上下文
         final Context emptyContext = Context.builder().build();
 
