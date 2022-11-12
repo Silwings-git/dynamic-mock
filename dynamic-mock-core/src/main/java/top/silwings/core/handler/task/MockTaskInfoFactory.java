@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.definition.ResponseInfoDefinition;
+import top.silwings.core.repository.definition.MockTaskInfoDefinition;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.stream.Collectors;
@@ -30,7 +30,7 @@ public class MockTaskInfoFactory {
         this.jsonNodeParser = jsonNodeParser;
     }
 
-    public MockTaskInfo buildTask(final ResponseInfoDefinition definition) {
+    public MockTaskInfo buildTask(final MockTaskInfoDefinition definition) {
         return MockTaskInfo.builder()
                 .name(definition.getName())
                 .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
@@ -38,7 +38,7 @@ public class MockTaskInfoFactory {
                 .async(Boolean.TRUE.equals(definition.getAsync()))
                 .cron(ConvertUtils.getNoBlankOrDefault(definition.getCron(), DEFAULT_CRON))
                 .numberOfExecute(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
-                .mockTaskInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getResponseDefinition())))
+                .mockTaskInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getMockTaskDefinition())))
                 .build();
     }
 }

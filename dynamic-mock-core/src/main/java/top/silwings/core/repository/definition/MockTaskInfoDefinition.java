@@ -49,6 +49,6 @@ public class MockTaskInfoDefinition {
     /**
      * 请求信息
      */
-    private MockTaskDefinition request;
+    private MockTaskDefinition mockTaskDefinition;
 
 }

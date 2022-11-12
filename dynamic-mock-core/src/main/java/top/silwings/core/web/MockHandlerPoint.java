@@ -41,24 +41,9 @@ public class MockHandlerPoint {
     }
 
     @ExceptionHandler(value = NoHandlerFoundException.class)
-    public ResponseEntity<Object> returnMediaTypeNotSupportError(final HttpServletRequest request) {
+    public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
 
         return this.mockHandlerManager.mock(Context.from(request));
-    }
-
-    private Object execute(final HttpServletRequest request) {
-
-        // 1.检查是否有支持的MockHandler
-        // 2.request -> Context
-        // 3.将Context交给MockHandler执行
-        // 4.1 筛选需要异步执行的task,注册task
-        // 4.2 筛选第一个符合执行要求的Response,并获得解释值
-        // 4.3 筛选需要同步执行的task,等待延迟时间后执行一次.如果执行次数大于1,想task pool注册
-        // 4.4 响应响应信息
-        // 4.5 构建返回信息并返回
-        // 5.如果没有支持的MockHandler,响应404信息.
-
-        return null;
     }
 
     private TempData executeA(final HttpServletRequest request) throws IOException {

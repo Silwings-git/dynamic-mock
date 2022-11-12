@@ -14,7 +14,7 @@ import java.util.List;
  **/
 @Getter
 @Setter
-public class ResponseInfoDefinition {
+public class MockResponseInfoDefinition {
 
     /**
      * 返回值名称
@@ -32,23 +32,8 @@ public class ResponseInfoDefinition {
     private Integer delayTime;
 
     /**
-     * 是否异步执行
-     */
-    private Boolean async;
-
-    /**
-     * cron
-     */
-    private String cron;
-
-    /**
-     * 执行次数
-     */
-    private Integer numberOfExecute;
-
-    /**
      * 请求信息
      */
-    private ResponseDefinition responseDefinition;
+    private MockResponseDefinition mockResponseDefinition;
 
 }

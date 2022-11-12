@@ -2,7 +2,9 @@ package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +57,31 @@ public class MockHandlerDefinition {
     /**
      * 响应信息集
      */
-    private List<ResponseInfoDefinition> responses;
+    private List<MockResponseInfoDefinition> responses;
 
     /**
      * 任务集
      */
-    private List<ResponseInfoDefinition> tasks;
+    private List<MockTaskInfoDefinition> tasks;
 
+    public List<String> getHttpMethods() {
+        return ConvertUtils.getNoNullOrDefault(this.httpMethods, Collections.emptyList());
+    }
+
+    public Integer getDelayTime() {
+        return ConvertUtils.getNoNullOrDefault(this.delayTime, 0);
+    }
+
+    public Map<String, Object> getCustomizeSpace() {
+        return ConvertUtils.getNoNullOrDefault(this.customizeSpace, Collections.emptyMap());
+    }
+
+    public List<MockResponseInfoDefinition> getResponses() {
+        return ConvertUtils.getNoNullOrDefault(this.responses, Collections.emptyList());
+
+    }
+
+    public List<MockTaskInfoDefinition> getTasks() {
+        return ConvertUtils.getNoNullOrDefault(this.tasks, Collections.emptyList());
+    }
 }

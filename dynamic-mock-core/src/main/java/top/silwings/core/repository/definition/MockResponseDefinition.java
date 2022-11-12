@@ -2,7 +2,9 @@ package top.silwings.core.repository.definition;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Map;
  **/
 @Getter
 @Setter
-public class ResponseDefinition {
+public class MockResponseDefinition {
 
     /**
      * 状态码
@@ -30,5 +32,13 @@ public class ResponseDefinition {
      * 响应体
      */
     private String body;
+
+    public void setStatus(final Integer status) {
+        this.status = status;
+    }
+
+    public Map<String, String> getHeaders() {
+        return ConvertUtils.getNoNullOrDefault(this.headers, Collections.emptyMap());
+    }
 
 }

@@ -8,18 +8,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.silwings.core.MockSpringApplication;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.HandlerContext;
 import top.silwings.core.handler.JsonNodeParser;
+import top.silwings.core.handler.MockHandler;
+import top.silwings.core.handler.MockHandlerFactory;
+import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.repository.definition.MockHandlerDefinition;
 import top.silwings.core.repository.definition.MockTaskDefinition;
 import top.silwings.core.utils.NodeTraversalUtils;
+import top.silwings.core.web.MockHandlerPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,6 +161,31 @@ public class ParserTest {
 
         System.out.println("interpret = " + interpret);
 
+    }
+
+    @Autowired
+    private MockHandlerManager mockHandlerManager;
+
+    @Autowired
+    private MockHandlerFactory mockHandlerFactory;
+
+    @Autowired
+    private MockHandlerPoint mockHandlerPoint;
+
+    @Test
+    public void test007() {
+
+        final MockHandlerDefinition definition = MockHandlerDefinitionMock.build();
+        final MockHandler mockHandler = this.mockHandlerFactory.buildMockHandler(definition);
+        this.mockHandlerManager.registerHandler(mockHandler);
+
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod(definition.getHttpMethods().get(0));
+        request.setRequestURI(definition.getRequestUri());
+
+        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
+
+        log.info(JSON.toJSONString(responseEntity));
     }
 
     @Getter
