@@ -52,17 +52,26 @@ public class SubtractionOperatorFactory implements OperatorFactory {
         @Override
         public BigDecimal interpret(final Context parameterContext) {
             final List<Object> paramList = this.getParams(parameterContext);
-            if (CollectionUtils.isEmpty(paramList)) {
+            if (CollectionUtils.isEmpty(paramList) || paramList.size() < 2) {
                 throw new DynamicDataException("参数长度错误,需要至少 1,实际 " + paramList.size());
-            }
-
-            if (paramList.size() == 1) {
-                return BigDecimal.ZERO.subtract(TypeUtils.toBigDecimal(paramList.get(0)));
             }
 
             return TypeUtils.toBigDecimal(paramList.get(0)).subtract(TypeUtils.toBigDecimal(paramList.get(1)));
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            if (CollectionUtils.isEmpty(childNodeValueList) || childNodeValueList.size() < this.getNodeCount()) {
+                throw new DynamicDataException("参数长度错误,需要至少 2,实际 " + childNodeValueList.size());
+            }
+
+            return TypeUtils.toBigDecimal(childNodeValueList.get(0)).subtract(TypeUtils.toBigDecimal(childNodeValueList.get(1)));
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 2;
+        }
     }
 
     @Override

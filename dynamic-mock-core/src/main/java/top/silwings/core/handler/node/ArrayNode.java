@@ -32,8 +32,17 @@ public class ArrayNode implements Node {
     }
 
     @Override
+    public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        return childNodeValueList;
+    }
+
+    @Override
     public List<Node> getChildNodes() {
         return this.nodeList;
     }
 
+    @Override
+    public int getNodeCount() {
+        return this.getChildNodes().size();
+    }
 }

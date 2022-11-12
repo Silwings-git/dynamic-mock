@@ -49,11 +49,25 @@ public class ArithmeticEqualOperatorFactory implements OperatorFactory {
         @Override
         public Boolean interpret(final Context parameterContext) {
             final List<Object> paramList = this.getParams(parameterContext);
-            if (paramList.size() < 2) {
+            if (paramList.size() < this.getNodeCount()) {
                 throw new DynamicDataException("参数长度错误,需要 2,实际 " + paramList.size());
             }
 
             return TypeUtils.toBigDecimal(paramList.get(0)).compareTo(TypeUtils.toBigDecimal(paramList.get(1))) == 0;
+        }
+
+        @Override
+        public Boolean interpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() < 2) {
+                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+            }
+
+            return TypeUtils.toBigDecimal(childNodeValueList.get(0)).compareTo(TypeUtils.toBigDecimal(childNodeValueList.get(1))) == 0;
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 2;
         }
     }
 

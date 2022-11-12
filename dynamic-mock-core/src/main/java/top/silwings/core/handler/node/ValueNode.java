@@ -1,5 +1,6 @@
 package top.silwings.core.handler.node;
 
+import org.apache.commons.collections4.CollectionUtils;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.dynamic.DynamicValue;
 
@@ -32,8 +33,22 @@ public class ValueNode implements Node {
     }
 
     @Override
+    public Object interpret(final Context context, final List<Object> childNodeValueList) {
+
+        if (this.context instanceof DynamicValue) {
+            return ((DynamicValue) this.context).interpret(context);
+        }
+
+        return this.context;
+    }
+
+    @Override
     public List<? extends Node> getChildNodes() {
         return Collections.emptyList();
     }
 
+    @Override
+    public int getNodeCount() {
+        return 0;
+    }
 }

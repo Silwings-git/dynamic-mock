@@ -2,9 +2,11 @@ package top.silwings.core.handler.node;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +47,35 @@ public class ObjectNode implements Node {
         return hashMap;
     }
 
+    @Override
+    public Object interpret(final Context context, final List<Object> childNodeValueList) {
+
+        final HashMap<Object, Object> hashMap = new HashMap<>();
+
+        for (final Object obj : childNodeValueList) {
+
+            if (obj instanceof List) {
+                final List<?> list = ((List<?>) obj);
+                if (list.size() < 2) {
+                    throw new DynamicDataException("缺少映射数据");
+                }
+                hashMap.put(list.get(0), list.get(1));
+            }
+
+        }
+
+        return hashMap;
+    }
+
+    @Override
+    public List<? extends Node> getChildNodes() {
+        return this.binaryTreeNodeList;
+    }
+
+    @Override
+    public int getNodeCount() {
+        return this.getChildNodes().size();
+    }
 
     @Getter
     @Setter
@@ -69,11 +100,16 @@ public class ObjectNode implements Node {
         public List<Node> getChildNodes() {
             return Stream.of(this.left, this.right).collect(Collectors.toList());
         }
-    }
 
-    @Override
-    public List<? extends Node> getChildNodes() {
-        return this.binaryTreeNodeList;
-    }
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+             Collections.reverse(childNodeValueList);
+            return childNodeValueList;
+        }
 
+        @Override
+        public int getNodeCount() {
+            return 2;
+        }
+    }
 }

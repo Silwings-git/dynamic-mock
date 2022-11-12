@@ -7,6 +7,8 @@ import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.dynamic.operator.OperatorType;
 
+import java.util.List;
+
 /**
  * @ClassName ArithmeticNoEqualOperatorFactory
  * @Description
@@ -56,6 +58,15 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
             return !this.arithmeticEqualOperator.interpret(context);
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            return Boolean.FALSE.equals(this.arithmeticEqualOperator.interpret(context, childNodeValueList));
+        }
+
+        @Override
+        public int getNodeCount() {
+            return this.arithmeticEqualOperator.getNodeCount();
+        }
     }
 
     @Override

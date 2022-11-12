@@ -55,6 +55,19 @@ public class SearchFunctionFactory implements FunctionFactory {
             return parameterContext.getParameterContext().searchParameter(String.valueOf(paramList.get(0)));
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.isEmpty() || childNodeValueList.size() < this.getNodeCount()) {
+                throw new DynamicDataException("缺少搜索词.");
+            }
+
+            return context.getParameterContext().searchParameter(String.valueOf(childNodeValueList.get(0)));
+        }
+
+        @Override
+        public int getNodeCount() {
+            return this.getChildNodes().size();
+        }
     }
 
 }

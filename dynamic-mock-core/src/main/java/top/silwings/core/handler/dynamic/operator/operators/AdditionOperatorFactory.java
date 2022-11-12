@@ -61,6 +61,23 @@ public class AdditionOperatorFactory implements OperatorFactory {
             }
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() < this.getNodeCount()) {
+                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+            }
+
+            try {
+                return TypeUtils.toBigDecimal(childNodeValueList.get(0)).add(TypeUtils.toBigDecimal(childNodeValueList.get(1)));
+            } catch (Exception e) {
+                return new StringBuilder().append(childNodeValueList.get(0)).append(childNodeValueList.get(1));
+            }
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 2;
+        }
     }
 
     @Override

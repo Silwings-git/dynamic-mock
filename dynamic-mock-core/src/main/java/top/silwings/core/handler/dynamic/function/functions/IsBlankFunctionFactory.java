@@ -51,6 +51,18 @@ public class IsBlankFunctionFactory implements FunctionFactory {
                     && StringUtils.isBlank((CharSequence) paramList.get(0)));
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            return CollectionUtils.isEmpty(childNodeValueList)
+                    || null == childNodeValueList.get(0)
+                    || (childNodeValueList.get(0) instanceof String
+                    && StringUtils.isBlank((CharSequence) childNodeValueList.get(0)));
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 1;
+        }
     }
 
 }

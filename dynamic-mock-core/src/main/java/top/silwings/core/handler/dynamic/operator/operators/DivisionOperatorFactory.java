@@ -58,6 +58,19 @@ public class DivisionOperatorFactory implements OperatorFactory {
             return TypeUtils.toBigDecimal(paramList.get(0)).divide(TypeUtils.toBigDecimal(paramList.get(1)), MathContext.DECIMAL64);
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() < this.getNodeCount()) {
+                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+            }
+
+            return TypeUtils.toBigDecimal(childNodeValueList.get(0)).divide(TypeUtils.toBigDecimal(childNodeValueList.get(1)), MathContext.DECIMAL64);
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 2;
+        }
     }
 
     @Override

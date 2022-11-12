@@ -16,7 +16,7 @@ import java.util.Stack;
  **/
 public class NodeTraversalUtils {
 
-    public List<Node> postOrderTraversal(final Node root) {
+    public static List<Node> postOrderTraversal(final Node root) {
 
         // 如果根节点为空，则直接返回空列表
         if (root == null) {

@@ -56,6 +56,19 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
             return TypeUtils.toBoolean(paramList.get(0)) || TypeUtils.toBoolean(paramList.get(1));
         }
 
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() < this.getNodeCount()) {
+                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+            }
+
+            return TypeUtils.toBoolean(childNodeValueList.get(0)) || TypeUtils.toBoolean(childNodeValueList.get(1));
+        }
+
+        @Override
+        public int getNodeCount() {
+            return 2;
+        }
     }
 
     @Override

@@ -44,8 +44,17 @@ public class ListExpressionDynamicValue implements DynamicValue {
     }
 
     @Override
+    public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        return CollectionUtils.isEmpty(childNodeValueList) ? Collections.emptyList() : childNodeValueList;
+    }
+
+    @Override
     public List<? extends Node> getChildNodes() {
         return this.paramsList;
     }
 
+    @Override
+    public int getNodeCount() {
+        return this.getChildNodes().size();
+    }
 }

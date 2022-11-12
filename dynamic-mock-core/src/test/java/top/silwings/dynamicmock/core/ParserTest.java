@@ -16,6 +16,11 @@ import top.silwings.core.handler.dynamic.DynamicValue;
 import top.silwings.core.handler.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.node.Node;
 import top.silwings.core.repository.definition.RequestDefinition;
+import top.silwings.core.utils.NodeTraversalUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 @Slf4j
 @SpringBootTest(classes = MockSpringApplication.class)
@@ -96,6 +101,37 @@ public class ParserTest {
         log.info(JSON.toJSONString(interpret));
     }
 
+    @Test
+    public void test004() {
+
+        final TestData testData = new TestData();
+
+        final Node node = this.jsonNodeParser.parse(testData.getTest002());
+
+        final List<Node> nodeList = NodeTraversalUtils.postOrderTraversal(node);
+
+        final Stack<Object> stack = new Stack<>();
+
+        for (final Node ele : nodeList) {
+
+            final int nodeCount = ele.getNodeCount();
+
+            final List<Object> arrayList = new ArrayList<>();
+            if (nodeCount > 0) {
+                for (int i = 0; i < nodeCount; i++) {
+                    arrayList.add(stack.pop());
+                }
+            }
+
+            final Object interpret = ele.interpret(testData.getContext(), arrayList);
+
+            stack.push(interpret);
+
+        }
+
+        log.info(JSON.toJSONString(stack.pop()));
+    }
+
     @Getter
     public static class TestData {
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
@@ -108,6 +144,8 @@ public class ParserTest {
                 "}";
         private final ParameterContext parameterContext = new ParameterContext();
 
+        final Context context;
+
         public TestData() {
             this.parameterContext.putParameter("param", 1);
             this.parameterContext.putParameter("2", "name");
@@ -115,6 +153,10 @@ public class ParserTest {
             this.parameterContext.putParameter("age", 14);
             this.parameterContext.putParameter("abc.abc", "A御坂美琴A");
             this.parameterContext.putParameter("def", "B御坂美琴B");
+            context = Context.builder()
+                    .parameterContext(this.parameterContext)
+                    .builder(new StringBuilder())
+                    .build();
         }
     }
 
