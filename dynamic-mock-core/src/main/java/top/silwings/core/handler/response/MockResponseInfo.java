@@ -26,20 +26,15 @@ public class MockResponseInfo {
 
     private final String name;
 
-    private final List<String> supportList;
-
-    // TODO_Silwings: 2022/11/12 初始化解释器
     private final List<NodeInterpreter> supportInterpreterList;
 
     private final int delayTime;
-
-    private final MockResponse mockResponse;
 
     private final NodeInterpreter responseInterpreter;
 
     public boolean support(final Context context) {
 
-        if (CollectionUtils.isEmpty(this.supportList)) {
+        if (CollectionUtils.isEmpty(this.supportInterpreterList)) {
             return true;
         }
 

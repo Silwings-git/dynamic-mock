@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.handler.Context;
+import top.silwings.core.handler.tree.NodeInterpreter;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class MockTaskInfo {
 
     private final String name;
 
-    private final List<String> supportList;
+    private final List<NodeInterpreter> supportInterpreterList;
 
     private final int delayTime;
 
@@ -31,7 +32,7 @@ public class MockTaskInfo {
 
     private final int numberOfExecute;
 
-    private final Request request;
+    private final NodeInterpreter mockTaskInterpreter;
 
     public boolean support(final Context context) {
         return false;
@@ -47,7 +48,7 @@ public class MockTaskInfo {
 
     @Getter
     @Builder
-    private static class Request {
+    private static class MockTask {
         private final String requestUrl;
         private final HttpMethod httpMethod;
         private final HttpHeaders headers;
