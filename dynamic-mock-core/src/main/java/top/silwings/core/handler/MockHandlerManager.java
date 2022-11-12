@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName MockHandlerManager
@@ -17,15 +17,23 @@ import java.util.List;
 @Component
 public class MockHandlerManager {
 
-    private final List<MockHandler> mockHandlerList = new ArrayList<>();
+    private final Map<String, MockHandler> handlerMap;
 
     public MockHandlerManager() {
-        this.mockHandlerList.add(MockHandler.builder().build());
+        this.handlerMap = new ConcurrentHashMap<>();
+    }
+
+    public void registerHandler(final MockHandler mockHandler) {
+        this.handlerMap.put(mockHandler.getId(), mockHandler);
+    }
+
+    public void unregisterHandler(final String id) {
+        this.handlerMap.remove(id);
     }
 
     private MockHandler filter(final RequestInfo requestInfo) {
 
-        for (final MockHandler mockHandler : this.mockHandlerList) {
+        for (final MockHandler mockHandler : this.handlerMap.values()) {
             if (mockHandler.support(requestInfo)) {
                 return mockHandler;
             }
