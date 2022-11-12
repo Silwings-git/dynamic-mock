@@ -33,6 +33,10 @@ public class JsonNodeParser {
         return this.doParse(JSON.parseObject(jsonSource));
     }
 
+    public Node parse(final Object source) {
+        return this.doParse(JSON.parseObject(JSON.toJSONString(source)));
+    }
+
     /**
      * 将JSON对象解析成Node树
      *

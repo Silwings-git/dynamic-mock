@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import top.silwings.core.handler.response.MockResponseInfo;
+import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.TaskQueue;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.PathMacther;
@@ -50,13 +52,13 @@ public class MockHandler {
     /**
      * 自定义空间
      */
-    private NodeInterpreter customizeSpaceTree;
+    private NodeInterpreter customizeSpaceInterpreter;
 
-    private List<MockResponse> responseList;
+    private List<MockResponseInfo> responseInfoList;
 
-    private List<MockTask> syncTaskList;
+    private List<MockTaskInfo> syncTaskInfoList;
 
-    private List<MockTask> asyncTaskList;
+    private List<MockTaskInfo> asyncTaskInfoList;
 
     public boolean support(final RequestInfo requestInfo) {
         return PathMacther.match(this.getRequestUri(), requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
@@ -65,13 +67,13 @@ public class MockHandler {
     public ResponseEntity<Object> mock(final Context context) {
 
         // 初始化自定义空间
-        final Object customizeSpace = this.customizeSpaceTree.interpret(context);
+        final Object customizeSpace = this.customizeSpaceInterpreter.interpret(context);
         if (customizeSpace instanceof Map) {
             context.getHandlerContext().setCustomizeSpace((Map<?, ?>) customizeSpace);
         }
 
         // 筛选异步定时任务
-        for (final MockTask mockTask : this.asyncTaskList) {
+        for (final MockTaskInfo mockTask : this.asyncTaskInfoList) {
             if (mockTask.support(context)) {
                 // -- 初始化异步定时任务
                 // TODO_Silwings: 2022/11/12 初始化异步定时任务
@@ -79,18 +81,18 @@ public class MockHandler {
             }
         }
 
-        MockResponse.Response response = null;
+        MockResponseInfo.MockResponse mockResponse = null;
 
         // 筛选Response
-        for (final MockResponse mockResponse : this.responseList) {
-            if (mockResponse.support(context)) {
+        for (final MockResponseInfo mockResponseInfo : this.responseInfoList) {
+            if (mockResponseInfo.support(context)) {
                 // -- 初始化Response
-                response = mockResponse.getResponse(context);
+                mockResponse = mockResponseInfo.getMockResponse(context);
             }
         }
 
         // 筛选同步task
-        for (final MockTask mockTask : this.syncTaskList) {
+        for (final MockTaskInfo mockTask : this.syncTaskInfoList) {
             if (mockTask.support(context)) {
                 // -- 初始化同步定时任务
                 // TODO_Silwings: 2022/11/12 初始化同步定时任务
@@ -98,11 +100,11 @@ public class MockHandler {
             }
         }
 
-        if (null == response) {
+        if (null == mockResponse) {
             return ResponseEntity.ok().build();
         }
 
-        return response
+        return mockResponse
                 .delay()
                 .toResponseEntity();
     }

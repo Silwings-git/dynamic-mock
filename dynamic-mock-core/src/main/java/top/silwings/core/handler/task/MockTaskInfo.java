@@ -1,22 +1,23 @@
-package top.silwings.core.handler;
+package top.silwings.core.handler.task;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import top.silwings.core.handler.Context;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName MockTask
- * @Description
+ * @ClassName MockResponse
+ * @Description Mock响应
  * @Author Silwings
- * @Date 2022/11/12 17:36
+ * @Date 2022/11/10 22:17
  * @Since
  **/
 @Builder
-public class MockTask {
+public class MockTaskInfo {
 
     private final String name;
 
@@ -34,6 +35,14 @@ public class MockTask {
 
     public boolean support(final Context context) {
         return false;
+    }
+
+    public boolean isAsync() {
+        return this.async;
+    }
+
+    public boolean isSync() {
+        return !this.async;
     }
 
     @Getter

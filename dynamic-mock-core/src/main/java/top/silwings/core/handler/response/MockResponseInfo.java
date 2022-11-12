@@ -1,4 +1,4 @@
-package top.silwings.core.handler;
+package top.silwings.core.handler.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.DelayUtils;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @Since
  **/
 @Builder
-public class MockResponse {
+public class MockResponseInfo {
 
     private final String name;
 
@@ -32,7 +33,7 @@ public class MockResponse {
 
     private final int delayTime;
 
-    private final Response response;
+    private final MockResponse mockResponse;
 
     private final NodeInterpreter responseInterpreter;
 
@@ -51,7 +52,7 @@ public class MockResponse {
         return true;
     }
 
-    public Response getResponse(final Context context) {
+    public MockResponse getMockResponse(final Context context) {
 
         final Object interpret = this.responseInterpreter.interpret(context);
 
@@ -63,7 +64,7 @@ public class MockResponse {
 
         // TODO_Silwings: 2022/11/12 待优化
 
-        return Response.builder()
+        return MockResponse.builder()
                 .delayTime(this.delayTime)
                 .status(Integer.parseInt(String.valueOf(map.get("status"))))
                 .headers(this.buildHeader(map.get("headers")))
@@ -97,19 +98,17 @@ public class MockResponse {
 
     @Getter
     @Builder
-    public static class Response {
+    public static class MockResponse {
         private final int delayTime;
         private final int status;
         private final HttpHeaders headers;
         private final Object body;
 
         public ResponseEntity<Object> toResponseEntity() {
-
-            // TODO_Silwings: 2022/11/12 需要后移到外部做延迟处理
             return new ResponseEntity<>(this.body, this.headers, this.status);
         }
 
-        public Response delay() {
+        public MockResponse delay() {
             DelayUtils.delay(this.delayTime, TimeUnit.MILLISECONDS);
             return this;
         }

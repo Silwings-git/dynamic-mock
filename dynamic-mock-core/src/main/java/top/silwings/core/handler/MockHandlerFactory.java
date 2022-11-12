@@ -2,9 +2,14 @@ package top.silwings.core.handler;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import top.silwings.core.handler.response.MockResponseInfoFactory;
+import top.silwings.core.handler.task.MockTaskInfo;
+import top.silwings.core.handler.task.MockTaskInfoFactory;
+import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.repository.definition.MockHandlerDefinition;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -19,8 +24,14 @@ public class MockHandlerFactory {
 
     private final JsonNodeParser jsonNodeParser;
 
-    public MockHandlerFactory(final JsonNodeParser jsonNodeParser) {
+    private final MockResponseInfoFactory mockResponseInfoFactory;
+
+    private final MockTaskInfoFactory mockTaskInfoFactory;
+
+    public MockHandlerFactory(final JsonNodeParser jsonNodeParser, final MockResponseInfoFactory mockResponseInfoFactory, final MockTaskInfoFactory mockTaskInfoFactory) {
         this.jsonNodeParser = jsonNodeParser;
+        this.mockResponseInfoFactory = mockResponseInfoFactory;
+        this.mockTaskInfoFactory = mockTaskInfoFactory;
     }
 
     public MockHandler buildMockHandler(final MockHandlerDefinition definition) {
@@ -32,26 +43,29 @@ public class MockHandlerFactory {
                 .httpMethodList(definition.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).collect(Collectors.toList()))
                 .requestUri(definition.getRequestUri())
                 .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0));
-//                .customizeSpace(this.buildCustomizeSpace(definition));
 
-        return null;
+        // 自定义空间
+        builder.customizeSpaceInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getCustomizeSpace())));
 
+        // 响应信息
+        builder.responseInfoList(
+                definition.getResponses().stream()
+                        .map(this.mockResponseInfoFactory::buildResponseInfo)
+                        .collect(Collectors.toList())
+        );
 
+        // Task信息
+        final List<MockTaskInfo> mockTaskInfoList = definition.getTasks().stream()
+                .map(this.mockTaskInfoFactory::buildTask)
+                .collect(Collectors.toList());
+
+        // 同步Task
+        builder.syncTaskInfoList(mockTaskInfoList.stream().filter(MockTaskInfo::isSync).collect(Collectors.toList()));
+
+        // 异步Task
+        builder.syncTaskInfoList(mockTaskInfoList.stream().filter(MockTaskInfo::isAsync).collect(Collectors.toList()));
+
+        return builder.build();
     }
-//
-//    private Map<String, Object> buildCustomizeSpace(final MockHandlerDefinition definition) {
-//
-//        final Node parse = this.jsonNodeParser.parse(JSON.toJSONString(definition.getCustomizeSpace()));
-//
-//        // TODO_Silwings: 2022/11/12 这里不执行解释,每一个请求执行一次解释
-//
-//        // 解析自定义空间时使用空上下文
-//        final Context emptyContext = Context.builder().build();
-//
-//        parse.interpret(emptyContext, Collections.emptyList());
-//
-//        return JSON.parseObject(emptyContext.getJsonStr());
-//    }
-//
 
 }
