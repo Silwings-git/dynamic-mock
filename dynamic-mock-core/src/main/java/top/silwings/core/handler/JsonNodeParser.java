@@ -5,11 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.NodeParseException;
-import top.silwings.core.handler.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.node.ArrayNode;
-import top.silwings.core.handler.node.Node;
-import top.silwings.core.handler.node.ObjectNode;
-import top.silwings.core.handler.node.StaticValueNode;
+import top.silwings.core.handler.tree.Node;
+import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.tree.structure.ArrayNode;
+import top.silwings.core.handler.tree.structure.ObjectNode;
+import top.silwings.core.handler.tree.structure.StaticValueNode;
 
 import java.util.Map;
 
