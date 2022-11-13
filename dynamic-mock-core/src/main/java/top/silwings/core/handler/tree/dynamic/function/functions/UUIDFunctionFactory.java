@@ -1,5 +1,6 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * @Date 2022/11/8 22:30
  * @Since
  **/
+@Slf4j
 @Component
 public class UUIDFunctionFactory implements FunctionFactory {
     @Override
@@ -46,7 +48,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
             if (this.getNodeCount() > 0 && CollectionUtils.isEmpty(childNodeValueList) && childNodeValueList.size() < this.getNodeCount()) {
                 throw new DynamicDataException("缺少参数");
             }
-            childNodeValueList.forEach(e -> System.out.println("UUID打印: " + e));
+            childNodeValueList.forEach(e -> log.info("UUID打印: " + e));
             if (CollectionUtils.isNotEmpty(childNodeValueList)) {
                 return childNodeValueList.stream().map(String::valueOf).collect(Collectors.joining("U"));
             }

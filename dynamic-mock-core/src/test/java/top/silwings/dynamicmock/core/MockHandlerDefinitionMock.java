@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -31,11 +32,21 @@ public class MockHandlerDefinitionMock {
         definition.setRequestUri("/user/{name}");
         definition.setLabel("test");
         definition.setDelayTime(0);
-        definition.setCustomizeSpace(null);
+        definition.setCustomizeSpace(buildCustomizeSpace());
         definition.setResponses(buildResponseInfo());
-        definition.setTasks(buildTasksInfo());
+//        definition.setTasks(buildTasksInfo());
 
         return definition;
+    }
+
+    private static Map<String, Object> buildCustomizeSpace() {
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("name", "御坂美琴");
+        map.put("phoneNumbers", Arrays.asList("180", "188"));
+        map.put("11", "Random");
+
+        return map;
     }
 
     private static List<MockTaskInfoDefinition> buildTasksInfo() {
@@ -109,7 +120,11 @@ public class MockHandlerDefinitionMock {
         definition.setBody("{" +
                 "\"${#uuid(def)}\": \"${#uuid(#uuid(3*(1+1)--2-6))}\"," +
                 "\"uuidKeyA\": \"${#uuid(1,2)}\"," +
-                "\"uuidKeyB\": \"${#uuid()}\"" +
+                "\"uuidKeyB\": \"${#uuid()}\"," +
+                "\"name\": \"${#search(name)}\"," +
+                "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
+                "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
+                "\"random\": \"${#search($.+(1+2*5))}\"" +
                 "}");
 
         return definition;

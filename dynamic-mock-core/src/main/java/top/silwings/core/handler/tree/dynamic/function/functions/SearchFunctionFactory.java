@@ -47,16 +47,20 @@ public class SearchFunctionFactory implements FunctionFactory {
                 throw new DynamicDataException("缺少搜索词.");
             }
 
-            final SearchScope searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
-            if (null == searchScope) {
-                return null;
+            SearchScope searchScope = null;
+
+            if (childNodeValueList.size() > 1) {
+                searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
+                if (null == searchScope) {
+                    return null;
+                }
             }
 
             if (this.getNodeCount() < 2 || SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
 
                 // 自定义空间内查询
                 return JSONPath.eval(context.getHandlerContext().getCustomizeSpace(), String.valueOf(childNodeValueList.get(0)));
-            }else {
+            } else {
 
                 // 请求信息内查询
                 return JSONPath.eval(context.getHandlerContext().getRequestInfo(), String.valueOf(childNodeValueList.get(0)));
