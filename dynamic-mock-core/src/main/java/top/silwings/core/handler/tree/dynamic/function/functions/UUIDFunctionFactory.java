@@ -1,7 +1,6 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
@@ -11,7 +10,6 @@ import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName UUIDFunctionFactory
@@ -33,6 +31,10 @@ public class UUIDFunctionFactory implements FunctionFactory {
         return UUIDFunction.from(dynamicValueList);
     }
 
+    /**
+     * uuid函数
+     * #uuid()
+     */
     public static class UUIDFunction extends AbstractDynamicValue {
 
         public UUIDFunction(final List<DynamicValue> dynamicValueList) {
@@ -45,13 +47,10 @@ public class UUIDFunctionFactory implements FunctionFactory {
 
         @Override
         public Object interpret(final Context context, final List<Object> childNodeValueList) {
-            if (this.getNodeCount() > 0 && CollectionUtils.isEmpty(childNodeValueList) && childNodeValueList.size() < this.getNodeCount()) {
+            if (this.getNodeCount() > 0 && childNodeValueList.size() < this.getNodeCount()) {
                 throw new DynamicDataException("缺少参数");
             }
-            childNodeValueList.forEach(e -> log.info("UUID打印: " + e));
-            if (CollectionUtils.isNotEmpty(childNodeValueList)) {
-                return childNodeValueList.stream().map(String::valueOf).collect(Collectors.joining("U"));
-            }
+
             return UUID.randomUUID().toString();
         }
 

@@ -1,0 +1,97 @@
+package top.silwings.core.handler.tree.dynamic.function.functions;
+
+import com.alibaba.fastjson2.util.TypeUtils;
+import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.DynamicFunctionParamValidateException;
+import top.silwings.core.handler.Context;
+import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
+import top.silwings.core.handler.tree.dynamic.DynamicValue;
+import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * @ClassName PageDataFunctionFactory
+ * @Description 分页数据
+ * @Author Silwings
+ * @Date 2022/11/13 17:56
+ * @Since
+ **/
+@Component
+public class PageDataFunctionFactory implements FunctionFactory {
+
+    @Override
+    public boolean support(final String methodName) {
+        return "pageData".equalsIgnoreCase(methodName);
+    }
+
+    @Override
+    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+        return PageDataFunction.from(dynamicValueList);
+    }
+
+    /**
+     * 分页数据函数
+     * #pageData(#search(当前页),#search(每页数量),总数据量,数据)
+     * 注意声明表达式
+     * 示例:
+     * {
+     * "body": "${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),100,{\"code\": \"${#search(name)}\",\"status\": \"${#uuid()}\"})}"
+     * }
+     * 结果:
+     * {"body":[{"code":"Misaka Mikoto","status":"36bef3d9-7732-4750-89bd-7ce3a1ad60d2"}]}
+     */
+    public static class PageDataFunction extends AbstractDynamicValue {
+
+        public PageDataFunction(final List<DynamicValue> dynamicValueList) {
+            super(dynamicValueList);
+        }
+
+        public static PageDataFunction from(final List<DynamicValue> dynamicValueList) {
+            return new PageDataFunction(dynamicValueList);
+        }
+
+        @Override
+        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+
+            if (this.getNodeCount() != childNodeValueList.size() || this.getNodeCount() != 4) {
+                throw new DynamicFunctionParamValidateException("pageDate");
+            }
+
+            // 计算当前页返回数量
+            final int pageNum = TypeUtils.toInteger(childNodeValueList.get(0));
+            final int pageSize = TypeUtils.toInteger(childNodeValueList.get(1));
+            final int total = TypeUtils.toInteger(childNodeValueList.get(2));
+
+            if (pageNum <= 0 || pageSize < 0 || total < 0) {
+                throw new DynamicFunctionParamValidateException("pageDate");
+            }
+
+            int returnSize = 0;
+
+            final int diff = total - (pageNum - 1) * pageSize;
+            if (diff > pageSize) {
+                returnSize = pageSize;
+            } else {
+                returnSize = diff;
+            }
+
+            if (returnSize <= 0 || null == childNodeValueList.get(3)) {
+                return Collections.emptyList();
+            }
+
+            // 分页数据解释器
+            final NodeInterpreter pageDataInterpreter = new NodeInterpreter(context.getJsonNodeParser().parse(childNodeValueList.get(3)));
+
+            return Stream.iterate(0, t -> t + 1)
+                    .limit(returnSize)
+                    .map(i -> pageDataInterpreter.interpret(context))
+                    .collect(Collectors.toList());
+        }
+    }
+
+}

@@ -35,17 +35,20 @@ public class Context {
 
     private final IdGenerator idGenerator;
 
+    private final JsonNodeParser jsonNodeParser;
+
     public HandlerContext getHandlerContext() {
         return handlerContext;
     }
 
-    public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator) {
+    public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonNodeParser jsonNodeParser) {
         return Context.builder()
                 .requestURI(request.getRequestURI())
                 .httpMethod(HttpMethod.valueOf(request.getMethod()))
                 .handlerContext(HandlerContext.from(request))
                 .mockTaskManager(mockTaskManager)
                 .idGenerator(idGenerator)
+                .jsonNodeParser(jsonNodeParser)
                 .build();
     }
 

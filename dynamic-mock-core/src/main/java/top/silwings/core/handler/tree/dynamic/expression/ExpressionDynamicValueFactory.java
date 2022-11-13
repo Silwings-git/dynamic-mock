@@ -53,7 +53,7 @@ public class ExpressionDynamicValueFactory {
             return StaticValueExpressionDynamicValue.from(this.keepOriginalExpressionParser.parse(expression));
         }
 
-        // 检查是否有转义包裹,如果有当做一个整体返回
+
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
 
         if (commaPriorityResult.hasCommaPriority()) {
@@ -126,9 +126,9 @@ public class ExpressionDynamicValueFactory {
         final char[] charArray = expression.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             final char c = charArray[i];
-            if ('(' == c) {
+            if ('(' == c || '{' == c || '[' == c) {
                 num++;
-            } else if (')' == c) {
+            } else if (')' == c || '}' == c || ']' == c) {
                 num--;
             } else if (',' == c && num == 0) {
                 indexList.add(i);

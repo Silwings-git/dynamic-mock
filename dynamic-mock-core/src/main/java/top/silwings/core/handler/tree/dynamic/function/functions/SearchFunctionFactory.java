@@ -31,6 +31,11 @@ public class SearchFunctionFactory implements FunctionFactory {
         return SearchFunction.from(dynamicValueList);
     }
 
+    /**
+     * 搜索函数
+     * #search(搜索词)
+     * #search(搜索词,搜索范围)
+     */
     public static class SearchFunction extends AbstractDynamicValue {
 
         public SearchFunction(final List<DynamicValue> dynamicValueList) {
@@ -80,7 +85,7 @@ public class SearchFunctionFactory implements FunctionFactory {
                 return null;
             }
             for (final SearchScope value : values()) {
-                if (value.name().equals(str.toUpperCase())) {
+                if (value.name().equalsIgnoreCase(str)) {
                     return value;
                 }
             }

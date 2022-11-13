@@ -29,11 +29,10 @@ public class JsonNodeParser {
         this.dynamicValueFactory = dynamicValueFactory;
     }
 
-    public Node parse(final String jsonSource) {
-        return this.doParse(JSON.parseObject(jsonSource));
-    }
-
     public Node parse(final Object bean) {
+        if (bean instanceof String) {
+            return this.doParse(JSON.parseObject((String) bean));
+        }
         return this.doParse(JSON.parseObject(JSON.toJSONString(bean)));
     }
 

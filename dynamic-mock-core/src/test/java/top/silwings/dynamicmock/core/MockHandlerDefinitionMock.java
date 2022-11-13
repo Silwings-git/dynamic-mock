@@ -28,7 +28,7 @@ public class MockHandlerDefinitionMock {
         final MockHandlerDefinition definition = new MockHandlerDefinition();
         definition.setId(String.valueOf(random.nextInt(1000)));
         definition.setName("MockHandlerDefinitionMock#build");
-        definition.setHttpMethods(Arrays.asList("GET"));
+        definition.setHttpMethods(Arrays.asList("GET", "POST"));
         definition.setRequestUri("/user/{name}");
         definition.setLabel("test");
         definition.setDelayTime(0);
@@ -113,19 +113,24 @@ public class MockHandlerDefinitionMock {
     }
 
     private static MockResponseDefinition buildResponse() {
+        final HashMap<String, String> body = new HashMap<>();
 
         final MockResponseDefinition definition = new MockResponseDefinition();
         definition.setStatus(201);
         definition.setHeaders(null);
-        definition.setBody("{" +
-                "\"${#uuid(def)}\": \"${#uuid(#uuid(3*(1+1)--2-6))}\"," +
-                "\"uuidKeyA\": \"${#uuid(1,2)}\"," +
-                "\"uuidKeyB\": \"${#uuid()}\"," +
-                "\"name\": \"${#search(name)}\"," +
-                "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
-                "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
-                "\"random\": \"${#search($.+(1+2*5))}\"" +
-                "}");
+
+        final String s = "{" +
+//                "\"${#uuid()}\": \"${#uuid()}\"," +
+//                "\"uuidKeyA\": \"${#uuid()}\"," +
+//                "\"uuidKeyB\": \"${#uuid()}\"," +
+//                "\"name\": \"${#search(name)}\"," +
+//                "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
+//                "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
+//                "\"random\": \"${#search($.+(1+2*5))}\"," +
+                " \"body\": \"${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),101,{\\\"code\\\": \\\"${#search(name)}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
+                "}";
+        definition.setBody(s);
+
 
         return definition;
     }

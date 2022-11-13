@@ -30,6 +30,10 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         return IsBlankFunction.from(dynamicValueList);
     }
 
+    /**
+     * 判空函数
+     * #isBlank(待检查字符)
+     */
     public static class IsBlankFunction extends AbstractDynamicValue {
 
         public IsBlankFunction(final List<DynamicValue> dynamicValueList) {

@@ -1,5 +1,6 @@
 package top.silwings.core.handler.tree.dynamic.operator.operators;
 
+import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
@@ -7,7 +8,6 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorType;
-import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
 

@@ -29,6 +29,7 @@ import top.silwings.core.repository.definition.MockTaskDefinition;
 import top.silwings.core.utils.NodeTraversalUtils;
 import top.silwings.core.web.MockHandlerPoint;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -188,8 +189,9 @@ public class ParserTest {
         this.mockHandlerManager.registerHandler(mockHandler);
 
         final MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setMethod(definition.getHttpMethods().get(0));
+        request.setMethod(definition.getHttpMethods().get(1));
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
+        request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
         final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
 
