@@ -8,11 +8,13 @@ import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTask;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.utils.DelayUtils;
 import top.silwings.core.utils.PathMatcherUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName MockHandler
@@ -111,6 +113,11 @@ public class MockHandler {
         return mockResponse
                 .delay()
                 .toResponseEntity();
+    }
+
+    public MockHandler delay() {
+        DelayUtils.delay(this.getDelayTime(), TimeUnit.MILLISECONDS);
+        return this;
     }
 
 }

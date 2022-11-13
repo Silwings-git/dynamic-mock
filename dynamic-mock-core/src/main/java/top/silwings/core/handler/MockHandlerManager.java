@@ -46,7 +46,7 @@ public class MockHandlerManager {
 
         final MockHandler mockHandler = this.filter(RequestInfo.from(context));
 
-        return mockHandler.mock(context);
+        return mockHandler.delay().mock(context);
     }
 
 }
