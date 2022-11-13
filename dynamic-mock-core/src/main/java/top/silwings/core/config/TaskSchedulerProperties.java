@@ -18,6 +18,19 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({"classpath:application.yml"})
 public class TaskSchedulerProperties {
 
-    private int threadPoolSize = 1;
+    /**
+     * 核心线程数
+     */
+    private int corePoolSize = 20;
+
+    /**
+     * 最大线程数
+     */
+    private int maxPoolSize = 50;
+
+    /**
+     * 等待队列容量
+     */
+    private int queueCapacity = 200;
 
 }

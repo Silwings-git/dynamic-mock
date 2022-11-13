@@ -67,7 +67,7 @@ public class MockTaskManager {
         }
     }
 
-    @Async("httpTaskScheduler")
+    @Async("asyncTaskPool")
     @Scheduled(cron = "* * * * * ?")
     public void execute() {
 

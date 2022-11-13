@@ -34,7 +34,6 @@ public class MockTaskInfoFactory {
         return MockTaskInfo.builder()
                 .name(definition.getName())
                 .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
-                .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
                 .async(Boolean.TRUE.equals(definition.getAsync()))
                 .cron(ConvertUtils.getNoBlankOrDefault(definition.getCron(), DEFAULT_CRON))
                 .numberOfExecute(ConvertUtils.getNoNullOrDefault(definition.getNumberOfExecute(), 1))

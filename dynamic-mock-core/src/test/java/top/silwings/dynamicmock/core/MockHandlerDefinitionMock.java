@@ -40,17 +40,38 @@ public class MockHandlerDefinitionMock {
 
     private static List<MockTaskInfoDefinition> buildTasksInfo() {
 
-        final MockTaskInfoDefinition mockTaskInfoDefinition = new MockTaskInfoDefinition();
-        mockTaskInfoDefinition.setName("MockHandlerDefinitionMock#build");
-        mockTaskInfoDefinition.setSupport(Collections.emptyList());
-        mockTaskInfoDefinition.setDelayTime(0);
-        mockTaskInfoDefinition.setAsync(true);
-        mockTaskInfoDefinition.setCron(null);
-        mockTaskInfoDefinition.setNumberOfExecute(-1);
-        mockTaskInfoDefinition.setMockTaskDefinition(buildMockTask());
+        final MockTaskInfoDefinition def1 = new MockTaskInfoDefinition();
+        def1.setName("MockHandlerDefinitionMock#build");
+        def1.setSupport(Collections.emptyList());
+        def1.setAsync(true);
+        def1.setCron(null);
+        def1.setNumberOfExecute(60);
+        def1.setMockTaskDefinition(buildMockTask());
+
+        final MockTaskInfoDefinition def2 = new MockTaskInfoDefinition();
+        def2.setName("MockHandlerDefinitionMock#build#同步任务");
+        def2.setSupport(Collections.emptyList());
+        def2.setAsync(false);
+        def2.setCron(null);
+        def2.setNumberOfExecute(1);
+        def2.setMockTaskDefinition(buildMockTask2());
 
 
-        return Collections.singletonList(mockTaskInfoDefinition);
+        return Arrays.asList(def1, def2);
+    }
+
+    private static MockTaskDefinition buildMockTask2() {
+        final MockTaskDefinition definition = new MockTaskDefinition();
+
+        final HashMap<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put("name", "${#uuid()}");
+        uriVariables.put("age", Arrays.asList("10", "20"));
+
+        definition.setRequestUrl("http://localhost:8080/silwings");
+        definition.setHttpMethod("GET");
+        definition.setUriVariables(uriVariables);
+
+        return definition;
     }
 
     private static MockTaskDefinition buildMockTask() {
@@ -62,7 +83,7 @@ public class MockHandlerDefinitionMock {
         headers.put("dp", Arrays.asList("1", "${#uuid()}"));
 
 
-        definition.setRequestUrl("http://localhost:8080/silwings");
+        definition.setRequestUrl("http://localhost:8080/404");
         definition.setHttpMethod("GET");
         definition.setHeaders(headers);
 

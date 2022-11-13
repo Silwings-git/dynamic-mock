@@ -29,12 +29,12 @@ public class MockTaskDefinition {
     /**
      * 请求头
      */
-    private Map<String, Object> headers;
+    private Map<String, ?> headers;
 
     /**
      * 请求体
      */
-    private Map<String, Object> body;
+    private Map<String, ?> body;
 
     /**
      * 请求表单参数

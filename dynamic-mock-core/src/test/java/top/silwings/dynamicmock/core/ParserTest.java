@@ -196,9 +196,9 @@ public class ParserTest {
 
         log.info("unregisterAll");
 
-        this.mockTaskManager.unregisterAll();
+//        this.mockTaskManager.unregisterAll();
 
-        TimeUnit.SECONDS.sleep(15);
+        TimeUnit.SECONDS.sleep(150);
 
     }
 

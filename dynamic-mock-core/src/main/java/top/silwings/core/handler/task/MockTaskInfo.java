@@ -30,8 +30,6 @@ public class MockTaskInfo extends AbstractMockSupport {
 
     private final List<NodeInterpreter> supportInterpreterList;
 
-    private final int delayTime;
-
     private final boolean async;
 
     private final String cron;
@@ -65,6 +63,7 @@ public class MockTaskInfo extends AbstractMockSupport {
 
         return MockTask.builder()
                 .taskId(MOCK_TASK_ID_PREFIX.concat(context.getIdGenerator().generateId().toString()))
+                .name(this.name)
                 .requestUrl(String.valueOf(map.get("requestUrl")))
                 .httpMethod(HttpMethod.valueOf(String.valueOf(map.get("httpMethod")).toUpperCase()))
                 .headers(HttpHeaderConverter.from(map.get("headers")))

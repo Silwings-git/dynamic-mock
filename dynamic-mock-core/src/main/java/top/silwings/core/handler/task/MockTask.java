@@ -36,6 +36,11 @@ public class MockTask implements Delayed {
     private final String taskId;
 
     /**
+     * 任务名称
+     */
+    private final String name;
+
+    /**
      * 请求地址
      */
     private final String requestUrl;
@@ -115,7 +120,8 @@ public class MockTask implements Delayed {
                         .headers(this.getHeaders())
                         .body(this.getBody());
 
-        log.info("MockTask request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
+        log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
+                this.getTaskId(),
                 this.getRequestUrl(),
                 this.getHttpMethod(),
                 JSON.toJSONString(this.getHeaders()),
@@ -124,7 +130,7 @@ public class MockTask implements Delayed {
 
         final ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
-        log.info("MockTask request result:{}", JSON.toJSONString(response));
+        log.info("MockTask {} result:{}", this.getTaskId(), JSON.toJSONString(response));
     }
 
     private boolean preSend(final MockTaskManager mockTaskManager) {

@@ -27,11 +27,6 @@ public class MockTaskInfoDefinition {
     private List<String> support;
 
     /**
-     * 延迟执行时间
-     */
-    private Integer delayTime;
-
-    /**
      * 是否异步执行
      */
     private Boolean async;
