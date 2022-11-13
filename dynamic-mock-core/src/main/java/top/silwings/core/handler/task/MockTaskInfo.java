@@ -72,7 +72,8 @@ public class MockTaskInfo extends AbstractMockSupport {
                 .uriVariables(UriVariableConvertor.from(map.get("uriVariables")))
                 .cronExpression(CronExpression.parse(this.cron))
                 .numberOfExecute(new AtomicInteger(this.numberOfExecute))
-                .build();
+                .build()
+                .init();
     }
 
 }

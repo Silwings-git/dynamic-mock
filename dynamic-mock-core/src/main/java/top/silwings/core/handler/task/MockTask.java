@@ -73,19 +73,13 @@ public class MockTask implements Delayed {
 
     private long nextRunTime;
 
-    public long resetNextRunTime() {
+    private void resetNextRunTime() {
         final LocalDateTime nextTime = this.cronExpression.next(LocalDateTime.now());
         if (null != nextTime) {
             this.nextRunTime = nextTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            return this.nextRunTime;
         } else {
             this.cancelTask();
-            return System.currentTimeMillis();
         }
-    }
-
-    public long getNextRunTime() {
-        return this.nextRunTime == 0 ? this.resetNextRunTime() : this.nextRunTime;
     }
 
     public void cancelTask() {
@@ -153,4 +147,8 @@ public class MockTask implements Delayed {
         return true;
     }
 
+    public MockTask init() {
+        this.resetNextRunTime();
+        return this;
+    }
 }
