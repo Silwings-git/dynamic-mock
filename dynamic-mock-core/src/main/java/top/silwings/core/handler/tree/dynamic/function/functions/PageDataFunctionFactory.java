@@ -71,14 +71,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
                 throw new DynamicFunctionParamValidateException("pageDate");
             }
 
-            int returnSize = 0;
-
-            final int diff = total - (pageNum - 1) * pageSize;
-            if (diff > pageSize) {
-                returnSize = pageSize;
-            } else {
-                returnSize = diff;
-            }
+            final int returnSize = Math.min(total - (pageNum - 1) * pageSize, pageSize);
 
             if (returnSize <= 0 || null == childNodeValueList.get(3)) {
                 return Collections.emptyList();
