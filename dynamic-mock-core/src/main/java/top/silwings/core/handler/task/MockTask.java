@@ -1,10 +1,15 @@
 package top.silwings.core.handler.task;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.support.CronExpression;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Date 2022/11/13 10:07
  * @Since
  **/
+@Slf4j
 @Getter
 @Builder
 public class MockTask implements Delayed {
@@ -92,4 +98,33 @@ public class MockTask implements Delayed {
     public int compareTo(final Delayed other) {
         return Long.compare(this.getDelay(TimeUnit.MILLISECONDS), other.getDelay(TimeUnit.MILLISECONDS));
     }
+
+    protected void sendHttpRequest(final MockTaskManager mockTaskManager) {
+
+        if (this.getNumberOfExecute() == 0) {
+            return;
+        }
+
+        if (this.getNumberOfExecute() > 0) {
+            final int num = this.numberOfExecute.decrementAndGet();
+            if (num > 0) {
+                mockTaskManager.registerAsyncTask(this);
+            }
+        }
+
+        final RestTemplate restTemplate = mockTaskManager.getRestTemplate();
+
+        final RequestEntity<Object> request =
+                RequestEntity
+                        .method(this.getHttpMethod(), this.getRequestUrl(), this.getUriVariables())
+                        .headers(this.getHeaders())
+                        .body(this.getBody());
+
+        log.info("MockTask request info:{}", JSON.toJSONString(request));
+
+        final ResponseEntity<String> response = restTemplate.exchange(request, String.class);
+
+        log.info("MockTask request result:{}", JSON.toJSONString(response));
+    }
+
 }

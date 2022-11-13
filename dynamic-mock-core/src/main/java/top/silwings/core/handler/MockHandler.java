@@ -95,11 +95,7 @@ public class MockHandler {
             if (mockTaskInfo.support(context)) {
                 // -- 初始化同步定时任务
                 final MockTask mockTask = mockTaskInfo.getMockTask(context);
-                int remainingExecutions = context.getMockTaskManager().executeTask(mockTask);
-                // 如果剩余可执行次数大于0,将其注册到异步任务队列
-                if (remainingExecutions > 0) {
-                    context.getMockTaskManager().registerAsyncTask(mockTask);
-                }
+                context.getMockTaskManager().executeTask(mockTask);
             }
         }
 

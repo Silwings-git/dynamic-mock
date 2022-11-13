@@ -1,6 +1,10 @@
 package top.silwings.core.handler.task;
 
+import lombok.Getter;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -17,14 +21,15 @@ import java.util.concurrent.DelayQueue;
 @Component
 public class MockTaskManager {
 
-    private final MockTaskHandler mockTaskHandler;
-
     private final Map<String, WeakReference<MockTask>> mockTaskCache;
 
     private final DelayQueue<MockTask> taskDelayQueue;
 
-    public MockTaskManager(final MockTaskHandler mockTaskHandler) {
-        this.mockTaskHandler = mockTaskHandler;
+    @Getter
+    private final RestTemplate restTemplate;
+
+    public MockTaskManager(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
         this.mockTaskCache = new WeakHashMap<>();
         this.taskDelayQueue = new DelayQueue<>();
     }
@@ -49,6 +54,15 @@ public class MockTaskManager {
         }
     }
 
+    @Async("httpTaskScheduler")
+    @Scheduled(cron = "* * * * * ?")
+    public void execute() {
+        this.pollNextTask().sendHttpRequest(this);
+    }
+
+    private MockTask pollNextTask() {
+        return this.taskDelayQueue.poll();
+    }
 
     /**
      * 执行一次任务,并返回剩余可执行次数
@@ -56,11 +70,8 @@ public class MockTaskManager {
      * @param mockTask
      * @return
      */
-    public int executeTask(final MockTask mockTask) {
-
-        this.mockTaskHandler.execute(mockTask);
-
-        return mockTask.getNumberOfExecute();
+    public void executeTask(final MockTask mockTask) {
+        mockTask.sendHttpRequest(this);
     }
 
 }
