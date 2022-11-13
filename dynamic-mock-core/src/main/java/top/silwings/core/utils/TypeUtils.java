@@ -13,6 +13,10 @@ import java.math.BigDecimal;
  **/
 public class TypeUtils {
 
+    private TypeUtils() {
+        throw new AssertionError();
+    }
+
     public static BigDecimal toBigDecimal(Object value) {
         if (value == null || value instanceof BigDecimal) {
             return (BigDecimal) value;

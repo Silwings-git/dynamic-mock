@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit;
  **/
 public class DelayUtils {
 
+    private DelayUtils() {
+        throw new AssertionError();
+    }
+
     public static void delay(final int delayTime, final TimeUnit timeUnit) {
         if (delayTime > 0) {
             try {

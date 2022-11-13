@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractMockSupport;
 import top.silwings.core.handler.Context;
@@ -50,33 +51,9 @@ public class MockResponseInfo extends AbstractMockSupport {
         return MockResponse.builder()
                 .delayTime(this.delayTime)
                 .status(Integer.parseInt(String.valueOf(map.get("status"))))
-                .headers(this.buildHeader(map.get("headers")))
+                .headers(HttpHeaderConverter.from(map.get("headers")))
                 .body(map.get("body"))
                 .build();
-    }
-
-    private HttpHeaders buildHeader(final Object headers) {
-
-        final HttpHeaders httpHeaders = new HttpHeaders();
-
-        if (headers instanceof Map) {
-
-            for (final Map.Entry<?, ?> entry : ((Map<?, ?>) headers).entrySet()) {
-
-                final String headerName = String.valueOf(entry.getKey());
-                final Object entryValue = entry.getValue();
-
-                if (entryValue instanceof List) {
-
-                    ((List<?>) entryValue).forEach(headerValue -> httpHeaders.add(headerName, String.valueOf(headerValue)));
-                } else {
-
-                    httpHeaders.add(headerName, String.valueOf(entryValue));
-                }
-            }
-        }
-
-        return httpHeaders;
     }
 
     @Getter

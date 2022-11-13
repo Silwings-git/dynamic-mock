@@ -11,6 +11,10 @@ import org.apache.commons.lang3.StringUtils;
  **/
 public class ConvertUtils {
 
+    private ConvertUtils() {
+        throw new AssertionError();
+    }
+
     public static <T> T getNoNullOrDefault(final T t, final T defaultValue) {
         return null == t ? defaultValue : t;
     }

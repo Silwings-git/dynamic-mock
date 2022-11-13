@@ -5,10 +5,10 @@ import lombok.Getter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.handler.response.MockResponseInfo;
+import top.silwings.core.handler.task.MockTask;
 import top.silwings.core.handler.task.MockTaskInfo;
-import top.silwings.core.handler.task.TaskQueue;
 import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.utils.PathMacther;
+import top.silwings.core.utils.PathMatcherUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class MockHandler {
     private List<MockTaskInfo> asyncTaskInfoList;
 
     public boolean support(final RequestInfo requestInfo) {
-        return PathMacther.match(this.getRequestUri(), requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
+        return PathMatcherUtils.match(this.getRequestUri(), requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
     }
 
     public ResponseEntity<Object> mock(final Context context) {
@@ -73,11 +73,10 @@ public class MockHandler {
         }
 
         // 筛选异步定时任务
-        for (final MockTaskInfo mockTask : this.asyncTaskInfoList) {
-            if (mockTask.support(context)) {
+        for (final MockTaskInfo mockTaskInfo : this.asyncTaskInfoList) {
+            if (mockTaskInfo.support(context)) {
                 // -- 初始化异步定时任务
-                // TODO_Silwings: 2022/11/12 初始化异步定时任务
-                new TaskQueue().registerAsyncTask(mockTask);
+                context.getMockTaskManager().registerAsyncTask(mockTaskInfo.getMockTask(context));
             }
         }
 
@@ -95,8 +94,12 @@ public class MockHandler {
         for (final MockTaskInfo mockTaskInfo : this.syncTaskInfoList) {
             if (mockTaskInfo.support(context)) {
                 // -- 初始化同步定时任务
-                // TODO_Silwings: 2022/11/12 初始化同步定时任务
-                new TaskQueue().registerAsyncTask(mockTaskInfo);
+                final MockTask mockTask = mockTaskInfo.getMockTask(context);
+                int remainingExecutions = context.getMockTaskManager().executeTask(mockTask);
+                // 如果剩余可执行次数大于0,将其注册到异步任务队列
+                if (remainingExecutions > 0) {
+                    context.getMockTaskManager().registerAsyncTask(mockTask);
+                }
             }
         }
 

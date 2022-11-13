@@ -1,14 +1,18 @@
 package top.silwings.core.handler.task;
 
 import lombok.Builder;
-import lombok.Getter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.support.CronExpression;
+import top.silwings.core.converter.HttpHeaderConverter;
+import top.silwings.core.converter.UriVariableConvertor;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractMockSupport;
+import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @ClassName MockResponse
@@ -19,6 +23,8 @@ import java.util.Map;
  **/
 @Builder
 public class MockTaskInfo extends AbstractMockSupport {
+
+    private static final String MOCK_TASK_ID_PREFIX = "Task#";
 
     private final String name;
 
@@ -47,14 +53,26 @@ public class MockTaskInfo extends AbstractMockSupport {
         return !this.async;
     }
 
-    @Getter
-    @Builder
-    private static class MockTask {
-        private final String requestUrl;
-        private final HttpMethod httpMethod;
-        private final HttpHeaders headers;
-        private final Object body;
-        private final Map<String, ?> uriVariables;
+    public MockTask getMockTask(final Context context) {
+
+        final Object interpret = this.mockTaskInterpreter.interpret(context);
+
+        if (!(interpret instanceof Map)) {
+            throw new DynamicMockException();
+        }
+
+        final Map<?, ?> map = (Map<?, ?>) interpret;
+
+        return MockTask.builder()
+                .taskId(MOCK_TASK_ID_PREFIX.concat(context.getIdGenerator().generateId().toString()))
+                .requestUrl(String.valueOf(map.get("requestUrl")))
+                .httpMethod(HttpMethod.valueOf(String.valueOf(map.get("httpMethod")).toUpperCase()))
+                .headers(HttpHeaderConverter.from(map.get("headers")))
+                .body(map.get("body"))
+                .uriVariables(UriVariableConvertor.from(map.get("uriVariables")))
+                .cronExpression(CronExpression.parse(this.cron))
+                .numberOfExecute(new AtomicInteger(this.numberOfExecute))
+                .build();
     }
 
 }

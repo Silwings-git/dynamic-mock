@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.IdGenerator;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.MockHandlerManager;
+import top.silwings.core.handler.task.MockTaskManager;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -34,16 +36,23 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class MockHandlerPoint {
 
-    private MockHandlerManager mockHandlerManager;
+    private final MockHandlerManager mockHandlerManager;
 
-    public MockHandlerPoint(final MockHandlerManager mockHandlerManager) {
+    private final MockTaskManager mockTaskManager;
+
+    private final IdGenerator idGenerator;
+
+    public MockHandlerPoint(final MockHandlerManager mockHandlerManager, final MockTaskManager mockTaskManager, final IdGenerator idGenerator) {
         this.mockHandlerManager = mockHandlerManager;
+        this.mockTaskManager = mockTaskManager;
+        this.idGenerator = idGenerator;
+
     }
 
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
 
-        return this.mockHandlerManager.mock(Context.from(request));
+        return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator));
     }
 
     private TempData executeA(final HttpServletRequest request) throws IOException {

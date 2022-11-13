@@ -3,6 +3,8 @@ package top.silwings.core.handler;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
+import org.springframework.util.IdGenerator;
+import top.silwings.core.handler.task.MockTaskManager;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,16 +31,21 @@ public class Context {
 
     private final HandlerContext handlerContext;
 
+    private final MockTaskManager mockTaskManager;
+
+    private final IdGenerator idGenerator;
+
     public HandlerContext getHandlerContext() {
         return handlerContext;
     }
 
-    public static Context from(final HttpServletRequest request) {
-        // TODO_Silwings: 2022/11/10 基于request构建上下文信息
+    public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator) {
         return Context.builder()
                 .requestURI(request.getRequestURI())
                 .httpMethod(HttpMethod.valueOf(request.getMethod()))
                 .handlerContext(new HandlerContext())
+                .mockTaskManager(mockTaskManager)
+                .idGenerator(idGenerator)
                 .build();
     }
 

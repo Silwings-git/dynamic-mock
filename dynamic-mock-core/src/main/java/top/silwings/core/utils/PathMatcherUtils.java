@@ -9,12 +9,16 @@ import org.springframework.util.AntPathMatcher;
  * @Date 2022/11/12 18:01
  * @Since
  **/
-public class PathMacther {
+public class PathMatcherUtils {
 
-    private static final AntPathMatcher macther = new AntPathMatcher();
+    private PathMatcherUtils() {
+        throw new AssertionError();
+    }
+
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     public static boolean match(final String pattern, final String path) {
-        return macther.match(pattern, path);
+        return matcher.match(pattern, path);
     }
 
 
