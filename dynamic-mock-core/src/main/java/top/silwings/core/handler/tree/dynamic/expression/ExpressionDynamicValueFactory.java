@@ -37,14 +37,23 @@ public class ExpressionDynamicValueFactory {
 
     private final OperationDynamicValueFactory operationDynamicValueFactory;
 
+    private final KeepOriginalExpressionParser keepOriginalExpressionParser;
+
     public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
         this.operationDynamicValueFactory = operationDynamicValueFactory;
         this.precedenceExpressionParser = new PrecedenceExpressionParser();
         this.operatorExpressionParser = new OperatorExpressionParser(operationDynamicValueFactory);
+        this.keepOriginalExpressionParser = new KeepOriginalExpressionParser();
     }
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 
+        // 是否保持原样
+        if (this.keepOriginalExpressionParser.support(expression)) {
+            return StaticValueExpressionDynamicValue.from(this.keepOriginalExpressionParser.parse(expression));
+        }
+
+        // 检查是否有转义包裹,如果有当做一个整体返回
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
 
         if (commaPriorityResult.hasCommaPriority()) {
@@ -172,6 +181,25 @@ public class ExpressionDynamicValueFactory {
                 return matcher.group("content");
             } else {
                 throw new DynamicDataException("优先表达式解析失败.");
+            }
+        }
+    }
+
+    public static class KeepOriginalExpressionParser implements Parser<String, String> {
+
+        private static final String REGEX = "^<(?<content>.*)>$";
+        private static final Pattern PATTERN = Pattern.compile(REGEX);
+
+        public boolean support(final String expression) {
+            return PATTERN.matcher(expression).find();
+        }
+
+        public String parse(final String expression) {
+            final Matcher matcher = PATTERN.matcher(expression);
+            if (matcher.find()) {
+                return matcher.group("content");
+            } else {
+                throw new DynamicDataException("保持原始表达式解析失败.");
             }
         }
     }

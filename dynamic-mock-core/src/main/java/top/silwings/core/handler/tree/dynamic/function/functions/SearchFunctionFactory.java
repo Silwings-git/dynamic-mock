@@ -1,5 +1,7 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
+import com.alibaba.fastjson.JSONPath;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
@@ -7,7 +9,6 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,10 +33,6 @@ public class SearchFunctionFactory implements FunctionFactory {
 
     public static class SearchFunction extends AbstractDynamicValue {
 
-        // 搜索范围
-        // TODO_Silwings: 2022/11/9  
-        private static final List<String> searchScope = new ArrayList<>();
-
         public SearchFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
@@ -50,9 +47,41 @@ public class SearchFunctionFactory implements FunctionFactory {
                 throw new DynamicDataException("缺少搜索词.");
             }
 
-            return context.getHandlerContext().searchParameter(String.valueOf(childNodeValueList.get(0)));
-        }
+            final SearchScope searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
+            if (null == searchScope) {
+                return null;
+            }
 
+            if (this.getNodeCount() < 2 || SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
+
+                // 自定义空间内查询
+                return JSONPath.eval(context.getHandlerContext().getCustomizeSpace(), String.valueOf(childNodeValueList.get(0)));
+            }else {
+
+                // 请求信息内查询
+                return JSONPath.eval(context.getHandlerContext().getRequestInfo(), String.valueOf(childNodeValueList.get(0)));
+            }
+        }
+    }
+
+    public enum SearchScope {
+        // 自定义空间
+        CUSTOMIZESPACE,
+        // 请求信息
+        REQUESTINFO,
+        ;
+
+        public static SearchScope valueOfName(final String str) {
+            if (StringUtils.isBlank(str)) {
+                return null;
+            }
+            for (final SearchScope value : values()) {
+                if (value.name().equals(str.toUpperCase())) {
+                    return value;
+                }
+            }
+            return null;
+        }
     }
 
 }

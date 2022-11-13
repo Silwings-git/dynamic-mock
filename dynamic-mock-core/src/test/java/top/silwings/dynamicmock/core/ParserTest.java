@@ -78,6 +78,9 @@ public class ParserTest {
         str = "#isBlank() && false";
         str = "#search(#isBlank())";
         str = "#search(10+#isBlank())";
+        str = "<2+2>";
+        str = "2+2";
+        str = "<2+2";
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
