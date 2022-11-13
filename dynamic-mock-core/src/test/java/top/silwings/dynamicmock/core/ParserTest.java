@@ -8,9 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.MockSpringApplication;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
@@ -22,11 +24,11 @@ import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.handler.tree.NodeReader;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.repository.definition.MockHandlerDefinition;
 import top.silwings.core.repository.definition.MockTaskDefinition;
-import top.silwings.core.utils.NodeTraversalUtils;
 import top.silwings.core.web.MockHandlerPoint;
 
 import java.nio.charset.StandardCharsets;
@@ -40,6 +42,8 @@ import java.util.Stack;
 @SpringBootTest(classes = MockSpringApplication.class)
 @RunWith(SpringRunner.class)
 public class ParserTest {
+
+    private final NoHandlerFoundException noHandlerFoundException = new NoHandlerFoundException("GET", "", new HttpHeaders());
 
     @Autowired
     private DynamicValueFactory dynamicValueFactory;
@@ -124,7 +128,7 @@ public class ParserTest {
 
         final Node node = this.jsonNodeParser.parse(testData.getTest002());
 
-        final List<Node> nodeList = NodeTraversalUtils.postOrderTraversal(node);
+        final List<Node> nodeList = NodeReader.postOrderTraversal(node);
 
         final Stack<Object> stack = new Stack<>();
 
@@ -182,7 +186,7 @@ public class ParserTest {
     private MockTaskManager mockTaskManager;
 
     @Test
-    public void test007() throws InterruptedException {
+    public void test007() throws InterruptedException, NoHandlerFoundException {
 
         final MockHandlerDefinition definition = MockHandlerDefinitionMock.build();
         final MockHandler mockHandler = this.mockHandlerFactory.buildMockHandler(definition);
@@ -193,7 +197,7 @@ public class ParserTest {
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
+        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(this.noHandlerFoundException, request);
 
         log.info(JSON.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
     }
@@ -203,8 +207,8 @@ public class ParserTest {
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
         private final String test002 = "{\n" +
                 "\"id\":\"${#uuid(abc)}\"," +
-                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
-                "\"${#search(abc.abc)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"${#search(def)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"${#search(<abcabc>)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
                 "\"age\": \"${#search(age)}\"," +
                 "\"zbd\": \"${#search(zbd)}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
@@ -221,10 +225,10 @@ public class ParserTest {
 
         public TestData() {
             this.handlerContext.addCustomizeParam("param", 1);
-            this.handlerContext.addCustomizeParam("2", "name");
+            this.handlerContext.addCustomizeParam("a2", "name");
             this.handlerContext.addCustomizeParam("name", "御坂美琴");
             this.handlerContext.addCustomizeParam("age", 14);
-            this.handlerContext.addCustomizeParam("abc.abc", "A御坂美琴A");
+            this.handlerContext.addCustomizeParam("abcabc", "A御坂美琴A");
             this.handlerContext.addCustomizeParam("def", "B御坂美琴B");
             context = Context.builder()
                     .handlerContext(this.handlerContext)
