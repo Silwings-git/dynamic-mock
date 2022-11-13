@@ -43,7 +43,7 @@ public class Context {
         return Context.builder()
                 .requestURI(request.getRequestURI())
                 .httpMethod(HttpMethod.valueOf(request.getMethod()))
-                .handlerContext(new HandlerContext())
+                .handlerContext(HandlerContext.from(request))
                 .mockTaskManager(mockTaskManager)
                 .idGenerator(idGenerator)
                 .build();

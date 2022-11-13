@@ -31,6 +31,7 @@ import top.silwings.core.web.MockHandlerPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -80,15 +81,15 @@ public class ParserTest {
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
-        final HandlerContext handlerContext = new HandlerContext();
-        handlerContext.putParameter("paramA", -1);
-        handlerContext.putParameter("param", 20);
-        handlerContext.putParameter("40", true);
-        handlerContext.putParameter("age", 18);
-        handlerContext.putParameter("2", 15);
-        handlerContext.putParameter("true", 10);
-        handlerContext.putParameter("10", "御坂美琴");
-        handlerContext.putParameter("10true", "御坂美琴");
+        final HandlerContext handlerContext = HandlerContext.builder().customizeSpace(new HashMap<>()).build();
+        handlerContext.addCustomizeParam("paramA", -1);
+        handlerContext.addCustomizeParam("param", 20);
+        handlerContext.addCustomizeParam("40", true);
+        handlerContext.addCustomizeParam("age", 18);
+        handlerContext.addCustomizeParam("2", 15);
+        handlerContext.addCustomizeParam("true", 10);
+        handlerContext.addCustomizeParam("10", "御坂美琴");
+        handlerContext.addCustomizeParam("10true", "御坂美琴");
 
         final Context context = Context.builder()
                 .handlerContext(handlerContext)
@@ -193,13 +194,6 @@ public class ParserTest {
         log.info(JSON.toJSONString(responseEntity));
 
         TimeUnit.SECONDS.sleep(10);
-
-        log.info("unregisterAll");
-
-//        this.mockTaskManager.unregisterAll();
-
-        TimeUnit.SECONDS.sleep(150);
-
     }
 
     @Getter
@@ -219,17 +213,17 @@ public class ParserTest {
                 "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
-        private final HandlerContext handlerContext = new HandlerContext();
+        private final HandlerContext handlerContext = HandlerContext.builder().customizeSpace(new HashMap<>()).build();
 
         final Context context;
 
         public TestData() {
-            this.handlerContext.putParameter("param", 1);
-            this.handlerContext.putParameter("2", "name");
-            this.handlerContext.putParameter("name", "御坂美琴");
-            this.handlerContext.putParameter("age", 14);
-            this.handlerContext.putParameter("abc.abc", "A御坂美琴A");
-            this.handlerContext.putParameter("def", "B御坂美琴B");
+            this.handlerContext.addCustomizeParam("param", 1);
+            this.handlerContext.addCustomizeParam("2", "name");
+            this.handlerContext.addCustomizeParam("name", "御坂美琴");
+            this.handlerContext.addCustomizeParam("age", 14);
+            this.handlerContext.addCustomizeParam("abc.abc", "A御坂美琴A");
+            this.handlerContext.addCustomizeParam("def", "B御坂美琴B");
             context = Context.builder()
                     .handlerContext(this.handlerContext)
                     .build();

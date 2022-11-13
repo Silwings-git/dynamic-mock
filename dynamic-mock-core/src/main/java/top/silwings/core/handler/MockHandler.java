@@ -10,6 +10,7 @@ import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.PathMatcherUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,9 +68,13 @@ public class MockHandler {
     public ResponseEntity<Object> mock(final Context context) {
 
         // 初始化自定义空间
-        final Object customizeSpace = this.customizeSpaceInterpreter.interpret(context);
-        if (customizeSpace instanceof Map) {
-            context.getHandlerContext().setCustomizeSpace((Map<?, ?>) customizeSpace);
+        final Object space = this.customizeSpaceInterpreter.interpret(context);
+        if (space instanceof Map && ((Map<?, ?>) space).size() > 0) {
+            final Map<String, Object> customizeSpace = new HashMap<>();
+            for (final Map.Entry<?, ?> entry : ((Map<?, ?>) space).entrySet()) {
+                customizeSpace.put(String.valueOf(entry.getKey()), entry.getValue());
+            }
+            context.getHandlerContext().setCustomizeSpace(customizeSpace);
         }
 
         // 筛选异步定时任务
