@@ -3,9 +3,12 @@ package top.silwings.dynamicmock.core;
 import top.silwings.core.repository.definition.MockHandlerDefinition;
 import top.silwings.core.repository.definition.MockResponseDefinition;
 import top.silwings.core.repository.definition.MockResponseInfoDefinition;
+import top.silwings.core.repository.definition.MockTaskDefinition;
+import top.silwings.core.repository.definition.MockTaskInfoDefinition;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +33,38 @@ public class MockHandlerDefinitionMock {
         definition.setDelayTime(0);
         definition.setCustomizeSpace(null);
         definition.setResponses(buildResponseInfo());
-        definition.setTasks(null);
+        definition.setTasks(buildTasksInfo());
+
+        return definition;
+    }
+
+    private static List<MockTaskInfoDefinition> buildTasksInfo() {
+
+        final MockTaskInfoDefinition mockTaskInfoDefinition = new MockTaskInfoDefinition();
+        mockTaskInfoDefinition.setName("MockHandlerDefinitionMock#build");
+        mockTaskInfoDefinition.setSupport(Collections.emptyList());
+        mockTaskInfoDefinition.setDelayTime(0);
+        mockTaskInfoDefinition.setAsync(true);
+        mockTaskInfoDefinition.setCron(null);
+        mockTaskInfoDefinition.setNumberOfExecute(-1);
+        mockTaskInfoDefinition.setMockTaskDefinition(buildMockTask());
+
+
+        return Collections.singletonList(mockTaskInfoDefinition);
+    }
+
+    private static MockTaskDefinition buildMockTask() {
+
+        final MockTaskDefinition definition = new MockTaskDefinition();
+
+        final HashMap<String, Object> headers = new HashMap<>();
+        headers.put("userAuthToken", "${#uuid()}");
+        headers.put("dp", Arrays.asList("1", "${#uuid()}"));
+
+
+        definition.setRequestUrl("http://localhost:8080/silwings");
+        definition.setHttpMethod("GET");
+        definition.setHeaders(headers);
 
         return definition;
     }

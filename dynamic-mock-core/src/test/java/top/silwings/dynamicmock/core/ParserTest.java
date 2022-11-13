@@ -19,6 +19,7 @@ import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
+import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @SpringBootTest(classes = MockSpringApplication.class)
@@ -172,8 +174,11 @@ public class ParserTest {
     @Autowired
     private MockHandlerPoint mockHandlerPoint;
 
+    @Autowired
+    private MockTaskManager mockTaskManager;
+
     @Test
-    public void test007() {
+    public void test007() throws InterruptedException {
 
         final MockHandlerDefinition definition = MockHandlerDefinitionMock.build();
         final MockHandler mockHandler = this.mockHandlerFactory.buildMockHandler(definition);
@@ -186,6 +191,15 @@ public class ParserTest {
         final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
 
         log.info(JSON.toJSONString(responseEntity));
+
+        TimeUnit.SECONDS.sleep(10);
+
+        log.info("unregisterAll");
+
+        this.mockTaskManager.unregisterAll();
+
+        TimeUnit.SECONDS.sleep(15);
+
     }
 
     @Getter

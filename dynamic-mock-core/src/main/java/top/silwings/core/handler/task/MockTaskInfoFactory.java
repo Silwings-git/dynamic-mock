@@ -37,7 +37,7 @@ public class MockTaskInfoFactory {
                 .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
                 .async(Boolean.TRUE.equals(definition.getAsync()))
                 .cron(ConvertUtils.getNoBlankOrDefault(definition.getCron(), DEFAULT_CRON))
-                .numberOfExecute(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
+                .numberOfExecute(ConvertUtils.getNoNullOrDefault(definition.getNumberOfExecute(), 1))
                 .mockTaskInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getMockTaskDefinition())))
                 .build();
     }

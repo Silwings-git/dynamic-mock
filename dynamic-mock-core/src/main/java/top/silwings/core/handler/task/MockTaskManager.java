@@ -54,10 +54,28 @@ public class MockTaskManager {
         }
     }
 
+    public void unregisterAll() {
+        synchronized (this) {
+            this.mockTaskCache.values().forEach(ref -> {
+                if (null != ref) {
+                    final MockTask task = ref.get();
+                    if (null != task) {
+                        task.cancelTask();
+                    }
+                }
+            });
+        }
+    }
+
     @Async("httpTaskScheduler")
     @Scheduled(cron = "* * * * * ?")
     public void execute() {
-        this.pollNextTask().sendHttpRequest(this);
+
+        final MockTask task = this.pollNextTask();
+
+        if (null != task) {
+            task.sendHttpRequest(this);
+        }
     }
 
     private MockTask pollNextTask() {

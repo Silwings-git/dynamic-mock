@@ -2,6 +2,7 @@ package top.silwings.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @ClassName MockSpringApplication
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Date 2022/11/10 23:05
  * @Since
  **/
+@EnableScheduling
 @SpringBootApplication
 public class MockSpringApplication {
 

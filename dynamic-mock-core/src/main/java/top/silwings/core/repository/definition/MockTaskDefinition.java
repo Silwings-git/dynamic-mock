@@ -29,7 +29,7 @@ public class MockTaskDefinition {
     /**
      * 请求头
      */
-    private Map<String, String> headers;
+    private Map<String, Object> headers;
 
     /**
      * 请求体

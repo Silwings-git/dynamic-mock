@@ -71,14 +71,21 @@ public class MockTask implements Delayed {
      */
     private final AtomicInteger numberOfExecute;
 
-    public long getNextRunTime() {
+    private long nextRunTime;
+
+    public long resetNextRunTime() {
         final LocalDateTime nextTime = this.cronExpression.next(LocalDateTime.now());
         if (null != nextTime) {
-            return nextTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            this.nextRunTime = nextTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            return this.nextRunTime;
         } else {
             this.cancelTask();
             return System.currentTimeMillis();
         }
+    }
+
+    public long getNextRunTime() {
+        return this.nextRunTime == 0 ? this.resetNextRunTime() : this.nextRunTime;
     }
 
     public void cancelTask() {
@@ -101,15 +108,9 @@ public class MockTask implements Delayed {
 
     protected void sendHttpRequest(final MockTaskManager mockTaskManager) {
 
-        if (this.getNumberOfExecute() == 0) {
+        // 当可执行次数为0时表示该任务已终止
+        if (!this.preSend(mockTaskManager)) {
             return;
-        }
-
-        if (this.getNumberOfExecute() > 0) {
-            final int num = this.numberOfExecute.decrementAndGet();
-            if (num > 0) {
-                mockTaskManager.registerAsyncTask(this);
-            }
         }
 
         final RestTemplate restTemplate = mockTaskManager.getRestTemplate();
@@ -120,11 +121,36 @@ public class MockTask implements Delayed {
                         .headers(this.getHeaders())
                         .body(this.getBody());
 
-        log.info("MockTask request info:{}", JSON.toJSONString(request));
+        log.info("MockTask request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
+                this.getRequestUrl(),
+                this.getHttpMethod(),
+                JSON.toJSONString(this.getHeaders()),
+                JSON.toJSONString(this.getUriVariables()),
+                JSON.toJSONString(this.getRequestUrl()));
 
         final ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
         log.info("MockTask request result:{}", JSON.toJSONString(response));
+    }
+
+    private boolean preSend(final MockTaskManager mockTaskManager) {
+
+        if (this.getNumberOfExecute() == 0) {
+            return false;
+        }
+
+        // 减少一次可执行次数
+        if (this.getNumberOfExecute() > 0) {
+            this.numberOfExecute.decrementAndGet();
+        }
+
+        // 仍然有可执行次数时再次注册
+        if (this.getNumberOfExecute() != 0) {
+            this.resetNextRunTime();
+            mockTaskManager.registerAsyncTask(this);
+        }
+
+        return true;
     }
 
 }
