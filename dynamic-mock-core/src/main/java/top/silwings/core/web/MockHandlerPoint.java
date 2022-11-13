@@ -5,6 +5,7 @@ import org.springframework.util.IdGenerator;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import top.silwings.core.exceptions.NoMockHandlerFoundException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandlerManager;
@@ -38,9 +39,13 @@ public class MockHandlerPoint {
     }
 
     @ExceptionHandler(value = NoHandlerFoundException.class)
-    public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
+    public ResponseEntity<Object> executeMock(final NoHandlerFoundException exception, final HttpServletRequest request) throws NoHandlerFoundException {
 
-        return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser));
+        try {
+            return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser));
+        } catch (NoMockHandlerFoundException e) {
+            throw exception;
+        }
     }
 
 }

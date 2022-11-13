@@ -1,5 +1,7 @@
 package top.silwings.core.config;
 
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +10,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,7 +32,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  **/
 @Configuration
 @EnableConfigurationProperties({TaskSchedulerProperties.class})
-public class DynamicMockConfig implements AsyncConfigurer {
+public class DynamicMockConfig implements AsyncConfigurer, WebMvcConfigurer {
+
+    @Value("${project.version}")
+    private String projectVersion;
 
     @Bean
     public IdGenerator idGenerator() {
@@ -44,6 +58,34 @@ public class DynamicMockConfig implements AsyncConfigurer {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+    }
+
+    @Bean
+    public ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("Dynamic-Mock Restful API")
+                .description("Dynamic-Mock restful api")
+                .termsOfServiceUrl("https://gitee.com/silwings")
+                .contact(new Contact("Silwings", "https://gitee.com/silwings", "silwings@163.com"))
+                .version(this.projectVersion)
+                .build();
+    }
+
+    @Bean
+    public Docket createRestApi(final ApiInfo apiInfo) {
+        return new Docket(DocumentationType.SPRING_WEB)
+                .apiInfo(apiInfo)
+                .groupName("core")
+                .select()
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+                .paths(PathSelectors.any())
+                .build();
     }
 
 }

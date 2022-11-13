@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * @ClassName MockSpringApplication
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @Date 2022/11/10 23:05
  * @Since
  **/
+@EnableSwagger2WebMvc
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication

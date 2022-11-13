@@ -11,6 +11,13 @@
     <artifactId>dynamic-mock-admin</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>top.silwings</groupId>
+            <artifactId>dynamic-mock-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>
