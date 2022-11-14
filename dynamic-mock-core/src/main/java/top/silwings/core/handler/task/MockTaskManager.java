@@ -67,10 +67,4 @@ public class MockTaskManager {
         }
     }
 
-    public void executeTask(final MockTask mockTask) {
-        if (null != mockTask) {
-            mockTask.run();
-        }
-    }
-
 }

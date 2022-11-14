@@ -102,7 +102,7 @@ public class MockHandler {
             if (mockTaskInfo.support(context)) {
                 final MockTask mockTask = mockTaskInfo.getMockTask(context);
                 // 同步定时任务仅执行一次
-                context.getMockTaskManager().executeTask(mockTask);
+                mockTask.run();
             }
         }
 

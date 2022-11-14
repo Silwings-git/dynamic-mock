@@ -77,7 +77,11 @@ public class MockTask implements Runnable {
 
     @Override
     public void run() {
-        this.sendRequest(this.asyncRestTemplate);
+        try {
+            this.sendRequest(this.asyncRestTemplate);
+        } catch (Exception e) {
+            log.error("MockTask run err.", e);
+        }
     }
 
     protected void sendRequest(final AsyncRestTemplate asyncRestTemplate) {
@@ -88,7 +92,7 @@ public class MockTask implements Runnable {
                         .headers(this.getHeaders())
                         .body(this.getBody());
 
-        log.debug("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
+        log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
                 this.getTaskId(),
                 this.getRequestUrl(),
                 this.getHttpMethod(),

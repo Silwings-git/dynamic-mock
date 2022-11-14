@@ -23,14 +23,4 @@ public class TaskSchedulerProperties {
      */
     private int corePoolSize = 20;
 
-    /**
-     * 最大线程数
-     */
-    private int maxPoolSize = 50;
-
-    /**
-     * 等待队列容量
-     */
-    private int queueCapacity = 200;
-
 }

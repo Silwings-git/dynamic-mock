@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
 import org.springframework.web.client.AsyncRestTemplate;
@@ -41,15 +41,14 @@ public class DynamicMockConfig implements AsyncConfigurer, WebMvcConfigurer {
         return new JdkIdGenerator();
     }
 
-    @Bean("mockTaskThreadPool")
-    public ThreadPoolTaskExecutor mockTaskThreadPool(final TaskSchedulerProperties properties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-
-        executor.setCorePoolSize(properties.getCorePoolSize());
-        executor.setMaxPoolSize(properties.getMaxPoolSize());
-        executor.setQueueCapacity(properties.getQueueCapacity());
+    @Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler(final TaskSchedulerProperties properties) {
+        final ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
+        executor.setPoolSize(properties.getCorePoolSize());
         executor.setThreadNamePrefix("MockTask-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
         executor.initialize();
         return executor;
     }

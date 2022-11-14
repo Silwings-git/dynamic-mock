@@ -56,7 +56,7 @@ public class MockHandlerDefinitionMock {
         def1.setSupport(Collections.emptyList());
         def1.setAsync(true);
         def1.setCron(null);
-        def1.setNumberOfExecute(60);
+        def1.setNumberOfExecute(3);
         def1.setMockTaskDefinition(buildMockTask());
 
         final MockTaskInfoDefinition def2 = new MockTaskInfoDefinition();
