@@ -34,7 +34,7 @@ public class MockHandlerDefinitionMock {
         definition.setDelayTime(0);
         definition.setCustomizeSpace(buildCustomizeSpace());
         definition.setResponses(buildResponseInfo());
-//        definition.setTasks(buildTasksInfo());
+        definition.setTasks(buildTasksInfo());
 
         return definition;
     }

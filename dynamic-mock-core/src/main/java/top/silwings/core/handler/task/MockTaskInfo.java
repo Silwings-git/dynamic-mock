@@ -2,17 +2,15 @@ package top.silwings.core.handler.task;
 
 import lombok.Builder;
 import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.support.CronExpression;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.converter.UriVariableConvertor;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.AbstractMockSupport;
+import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @ClassName MockResponse
@@ -22,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Since
  **/
 @Builder
-public class MockTaskInfo extends AbstractMockSupport {
+public class MockTaskInfo extends AbstractSupportAble {
 
     private static final String MOCK_TASK_ID_PREFIX = "Task#";
 
@@ -69,10 +67,10 @@ public class MockTaskInfo extends AbstractMockSupport {
                 .headers(HttpHeaderConverter.from(map.get("headers")))
                 .body(map.get("body"))
                 .uriVariables(UriVariableConvertor.from(map.get("uriVariables")))
-                .cronExpression(CronExpression.parse(this.cron))
-                .numberOfExecute(new AtomicInteger(this.numberOfExecute))
-                .build()
-                .init();
+                .cron(this.cron)
+                .numberOfExecute(this.numberOfExecute)
+                .asyncRestTemplate(context.getAsyncRestTemplate())
+                .build();
     }
 
 }

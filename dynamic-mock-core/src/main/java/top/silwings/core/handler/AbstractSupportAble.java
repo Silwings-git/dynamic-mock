@@ -12,7 +12,7 @@ import java.util.List;
  * @Date 2022/11/12 22:08
  * @Since
  **/
-public abstract class AbstractMockSupport {
+public abstract class AbstractSupportAble {
 
     protected abstract List<NodeInterpreter> getSupportInterpreterList();
 

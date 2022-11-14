@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.IdGenerator;
+import org.springframework.web.client.AsyncRestTemplate;
 import top.silwings.core.handler.task.MockTaskManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +38,13 @@ public class Context {
 
     private final JsonNodeParser jsonNodeParser;
 
+    private final AsyncRestTemplate asyncRestTemplate;
+
     public HandlerContext getHandlerContext() {
         return handlerContext;
     }
 
-    public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonNodeParser jsonNodeParser) {
+    public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonNodeParser jsonNodeParser, final AsyncRestTemplate asyncRestTemplate) {
         return Context.builder()
                 .requestURI(request.getRequestURI())
                 .httpMethod(HttpMethod.valueOf(request.getMethod()))
@@ -49,6 +52,7 @@ public class Context {
                 .mockTaskManager(mockTaskManager)
                 .idGenerator(idGenerator)
                 .jsonNodeParser(jsonNodeParser)
+                .asyncRestTemplate(asyncRestTemplate)
                 .build();
     }
 

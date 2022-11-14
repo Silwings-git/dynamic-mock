@@ -100,8 +100,8 @@ public class MockHandler {
         // 筛选同步task
         for (final MockTaskInfo mockTaskInfo : this.syncTaskInfoList) {
             if (mockTaskInfo.support(context)) {
-                // -- 初始化同步定时任务
                 final MockTask mockTask = mockTaskInfo.getMockTask(context);
+                // 同步定时任务仅执行一次
                 context.getMockTaskManager().executeTask(mockTask);
             }
         }

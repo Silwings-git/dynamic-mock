@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @SpringBootTest(classes = MockSpringApplication.class)
@@ -200,6 +201,8 @@ public class ParserTest {
         final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(this.noHandlerFoundException, request);
 
         log.info(JSON.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
+
+        TimeUnit.SECONDS.sleep(30);
     }
 
     @Getter

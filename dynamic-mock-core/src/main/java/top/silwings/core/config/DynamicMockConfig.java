@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -20,7 +20,6 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -42,8 +41,8 @@ public class DynamicMockConfig implements AsyncConfigurer, WebMvcConfigurer {
         return new JdkIdGenerator();
     }
 
-    @Bean("asyncTaskPool")
-    public Executor asyncTaskPool(final TaskSchedulerProperties properties) {
+    @Bean("mockTaskThreadPool")
+    public ThreadPoolTaskExecutor mockTaskThreadPool(final TaskSchedulerProperties properties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         executor.setCorePoolSize(properties.getCorePoolSize());
@@ -56,8 +55,8 @@ public class DynamicMockConfig implements AsyncConfigurer, WebMvcConfigurer {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public AsyncRestTemplate asyncRestTemplate() {
+        return new AsyncRestTemplate();
     }
 
     @Override

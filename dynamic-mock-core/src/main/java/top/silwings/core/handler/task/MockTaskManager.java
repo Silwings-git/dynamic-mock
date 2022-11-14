@@ -1,15 +1,12 @@
 package top.silwings.core.handler.task;
 
-import lombok.Getter;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.DelayQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @ClassName MockTaskManager
@@ -21,75 +18,59 @@ import java.util.concurrent.DelayQueue;
 @Component
 public class MockTaskManager {
 
-    private final Map<String, WeakReference<MockTask>> mockTaskCache;
+    private final Map<String, WeakReference<AutoCancelTask>> taskCache;
 
-    private final DelayQueue<MockTask> taskDelayQueue;
+    private final ThreadPoolTaskScheduler mockTaskThreadPool;
 
-    @Getter
-    private final RestTemplate restTemplate;
-
-    public MockTaskManager(final RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-        this.mockTaskCache = new WeakHashMap<>();
-        this.taskDelayQueue = new DelayQueue<>();
+    public MockTaskManager(final ThreadPoolTaskScheduler mockTaskThreadPool) {
+        this.mockTaskThreadPool = mockTaskThreadPool;
+        this.taskCache = new WeakHashMap<>();
     }
 
     public void registerAsyncTask(final MockTask mockTask) {
         synchronized (this) {
-            taskDelayQueue.add(mockTask);
-            this.mockTaskCache.put(mockTask.getTaskId(), new WeakReference<>(mockTask));
+            final AutoCancelTask autoCancelTask = AutoCancelTask.builder()
+                    .taskId(mockTask.getTaskId())
+                    .cron(mockTask.getCron())
+                    .numberOfExecute(new AtomicInteger(mockTask.getNumberOfExecute()))
+                    .task(mockTask)
+                    .build()
+                    // 执行注册
+                    .schedule(this.mockTaskThreadPool);
+            this.taskCache.put(autoCancelTask.getTaskId(), new WeakReference<>(autoCancelTask));
         }
     }
 
-    public void unregisterTask(final String taskId) {
+    public void unregisterTask(final String taskId, final boolean mayInterruptIfRunning) {
         synchronized (this) {
-            final WeakReference<MockTask> weakReference = this.mockTaskCache.get(taskId);
+            final WeakReference<AutoCancelTask> weakReference = this.taskCache.get(taskId);
             if (null != weakReference) {
-                final MockTask mockTask = weakReference.get();
+                final AutoCancelTask mockTask = weakReference.get();
                 if (null != mockTask) {
-                    mockTask.cancelTask();
+                    mockTask.cancel(mayInterruptIfRunning);
                 }
-                this.mockTaskCache.remove(taskId);
+                this.taskCache.remove(taskId);
             }
         }
     }
 
-    public void unregisterAll() {
+    public void unregisterAll(final boolean mayInterruptIfRunning) {
         synchronized (this) {
-            this.mockTaskCache.values().forEach(ref -> {
+            this.taskCache.values().forEach(ref -> {
                 if (null != ref) {
-                    final MockTask task = ref.get();
+                    final AutoCancelTask task = ref.get();
                     if (null != task) {
-                        task.cancelTask();
+                        task.cancel(mayInterruptIfRunning);
                     }
                 }
             });
         }
     }
 
-    @Async("asyncTaskPool")
-    @Scheduled(cron = "* * * * * ?")
-    public void execute() {
-
-        final MockTask task = this.pollNextTask();
-
-        if (null != task) {
-            task.sendHttpRequest(this);
-        }
-    }
-
-    private MockTask pollNextTask() {
-        return this.taskDelayQueue.poll();
-    }
-
-    /**
-     * 执行一次任务,并返回剩余可执行次数
-     *
-     * @param mockTask
-     * @return
-     */
     public void executeTask(final MockTask mockTask) {
-        mockTask.sendHttpRequest(this);
+        if (null != mockTask) {
+            mockTask.run();
+        }
     }
 
 }

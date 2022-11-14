@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.AbstractMockSupport;
+import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.DelayUtils;
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @Since
  **/
 @Builder
-public class MockResponseInfo extends AbstractMockSupport {
+public class MockResponseInfo extends AbstractSupportAble {
 
     private final String name;
 

@@ -8,15 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.support.CronExpression;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.client.AsyncRestTemplate;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Map;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @ClassName MockTask
@@ -28,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Getter
 @Builder
-public class MockTask implements Delayed {
+public class MockTask implements Runnable {
 
     /**
      * 唯一标识
@@ -68,51 +63,24 @@ public class MockTask implements Delayed {
     /**
      * cron
      */
-    private final CronExpression cronExpression;
+    private final String cron;
 
     /**
      * 剩余执行次数
-     * 等于-1时表示没有次数限制
      */
-    private final AtomicInteger numberOfExecute;
+    private final int numberOfExecute;
 
-    private long nextRunTime;
-
-    private void resetNextRunTime() {
-        final LocalDateTime nextTime = this.cronExpression.next(LocalDateTime.now());
-        if (null != nextTime) {
-            this.nextRunTime = nextTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        } else {
-            this.cancelTask();
-        }
-    }
-
-    public void cancelTask() {
-        this.numberOfExecute.set(0);
-    }
-
-    public int getNumberOfExecute() {
-        return this.numberOfExecute.get();
-    }
+    /**
+     * http客户端
+     */
+    private final AsyncRestTemplate asyncRestTemplate;
 
     @Override
-    public long getDelay(final TimeUnit unit) {
-        return unit.convert(this.getNextRunTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+    public void run() {
+        this.sendRequest(this.asyncRestTemplate);
     }
 
-    @Override
-    public int compareTo(final Delayed other) {
-        return Long.compare(this.getDelay(TimeUnit.MILLISECONDS), other.getDelay(TimeUnit.MILLISECONDS));
-    }
-
-    protected void sendHttpRequest(final MockTaskManager mockTaskManager) {
-
-        // 当可执行次数为0时表示该任务已终止
-        if (!this.preSend(mockTaskManager)) {
-            return;
-        }
-
-        final RestTemplate restTemplate = mockTaskManager.getRestTemplate();
+    protected void sendRequest(final AsyncRestTemplate asyncRestTemplate) {
 
         final RequestEntity<Object> request =
                 RequestEntity
@@ -120,7 +88,7 @@ public class MockTask implements Delayed {
                         .headers(this.getHeaders())
                         .body(this.getBody());
 
-        log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
+        log.debug("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
                 this.getTaskId(),
                 this.getRequestUrl(),
                 this.getHttpMethod(),
@@ -128,33 +96,11 @@ public class MockTask implements Delayed {
                 JSON.toJSONString(this.getUriVariables()),
                 JSON.toJSONString(this.getRequestUrl()));
 
-        final ResponseEntity<String> response = restTemplate.exchange(request, String.class);
+        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(this.getRequestUrl(), this.getHttpMethod(), request, String.class, this.getUriVariables());
 
-        log.info("MockTask {} result:{}", this.getTaskId(), JSON.toJSONString(response));
+        future.addCallback(result -> log.debug("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.getName(), this.getHttpMethod(), result)
+                , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.getName(), this.getHttpMethod(), ex.getMessage()));
+
     }
 
-    private boolean preSend(final MockTaskManager mockTaskManager) {
-
-        if (this.getNumberOfExecute() == 0) {
-            return false;
-        }
-
-        // 减少一次可执行次数
-        if (this.getNumberOfExecute() > 0) {
-            this.numberOfExecute.decrementAndGet();
-        }
-
-        // 仍然有可执行次数时再次注册
-        if (this.getNumberOfExecute() != 0) {
-            this.resetNextRunTime();
-            mockTaskManager.registerAsyncTask(this);
-        }
-
-        return true;
-    }
-
-    public MockTask init() {
-        this.resetNextRunTime();
-        return this;
-    }
 }
