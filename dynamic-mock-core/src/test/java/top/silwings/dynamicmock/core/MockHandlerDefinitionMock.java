@@ -1,10 +1,12 @@
 package top.silwings.dynamicmock.core;
 
-import top.silwings.core.repository.definition.MockHandlerDefinition;
-import top.silwings.core.repository.definition.MockResponseDefinition;
-import top.silwings.core.repository.definition.MockResponseInfoDefinition;
-import top.silwings.core.repository.definition.MockTaskDefinition;
-import top.silwings.core.repository.definition.MockTaskInfoDefinition;
+import com.alibaba.fastjson.JSON;
+import org.springframework.http.HttpMethod;
+import top.silwings.core.repository.dto.MockHandlerDto;
+import top.silwings.core.repository.dto.MockResponseDto;
+import top.silwings.core.repository.dto.MockResponseInfoDto;
+import top.silwings.core.repository.dto.TaskInfoDto;
+import top.silwings.core.repository.dto.TaskRequestDto;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,20 +24,19 @@ import java.util.Random;
  **/
 public class MockHandlerDefinitionMock {
 
-    public static MockHandlerDefinition build() {
+    public static MockHandlerDto build() {
         final Random random = new Random();
-
-        final MockHandlerDefinition definition = new MockHandlerDefinition();
+        final MockHandlerDto definition = MockHandlerDto.builder()
+                .name("MockHandlerDefinitionMock#build")
+                .httpMethods(Arrays.asList(HttpMethod.GET, HttpMethod.POST))
+                .requestUri("/user/{name}")
+                .label("test")
+                .delayTime(0)
+                .customizeSpace(buildCustomizeSpace())
+                .responses(buildResponseInfo())
+                .tasks(buildTasksInfo())
+                .build();
         definition.setId(String.valueOf(random.nextInt(1000)));
-        definition.setName("MockHandlerDefinitionMock#build");
-        definition.setHttpMethods(Arrays.asList("GET", "POST"));
-        definition.setRequestUri("/user/{name}");
-        definition.setLabel("test");
-        definition.setDelayTime(0);
-        definition.setCustomizeSpace(buildCustomizeSpace());
-        definition.setResponses(buildResponseInfo());
-        definition.setTasks(buildTasksInfo());
-
         return definition;
     }
 
@@ -49,75 +50,75 @@ public class MockHandlerDefinitionMock {
         return map;
     }
 
-    private static List<MockTaskInfoDefinition> buildTasksInfo() {
+    private static List<TaskInfoDto> buildTasksInfo() {
 
-        final MockTaskInfoDefinition def1 = new MockTaskInfoDefinition();
-        def1.setName("MockHandlerDefinitionMock#build");
-        def1.setSupport(Collections.emptyList());
-        def1.setAsync(true);
-        def1.setCron(null);
-        def1.setNumberOfExecute(3);
-        def1.setMockTaskDefinition(buildMockTask());
+        final TaskInfoDto.TaskInfoDtoBuilder builderA = TaskInfoDto.builder();
+        builderA.name("MockHandlerDefinitionMock#build");
+        builderA.support(Collections.emptyList());
+        builderA.async(true);
+        builderA.cron(null);
+        builderA.numberOfExecute(3);
+        builderA.request(buildMockTask());
+        final TaskInfoDto def1 = builderA.build();
 
-        final MockTaskInfoDefinition def2 = new MockTaskInfoDefinition();
-        def2.setName("MockHandlerDefinitionMock#build#同步任务");
-        def2.setSupport(Collections.emptyList());
-        def2.setAsync(false);
-        def2.setCron(null);
-        def2.setNumberOfExecute(1);
-        def2.setMockTaskDefinition(buildMockTask2());
+        final TaskInfoDto.TaskInfoDtoBuilder def2 = TaskInfoDto.builder();
+        def2.name("MockHandlerDefinitionMock#build#同步任务");
+        def2.support(Collections.emptyList());
+        def2.async(false);
+        def2.cron(null);
+        def2.numberOfExecute(1);
+        def2.request(buildMockTask2());
 
-
-        return Arrays.asList(def1, def2);
+        return Arrays.asList(def1, def2.build());
     }
 
-    private static MockTaskDefinition buildMockTask2() {
-        final MockTaskDefinition definition = new MockTaskDefinition();
+    private static TaskRequestDto buildMockTask2() {
+        final TaskRequestDto.TaskRequestDtoBuilder definition = TaskRequestDto.builder();
 
-        final HashMap<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put("name", "${#uuid()}");
+        final HashMap<String, List<String>> uriVariables = new HashMap<>();
+        uriVariables.put("name", Arrays.asList("${#uuid()}"));
         uriVariables.put("age", Arrays.asList("10", "20"));
 
-        definition.setRequestUrl("http://localhost:8080/silwings");
-        definition.setHttpMethod("GET");
-        definition.setUriVariables(uriVariables);
+        definition.requestUrl("http://localhost:8080/silwings");
+        definition.httpMethod(HttpMethod.GET);
+        definition.uriVariables(uriVariables);
 
-        return definition;
+        return definition.build();
     }
 
-    private static MockTaskDefinition buildMockTask() {
+    private static TaskRequestDto buildMockTask() {
 
-        final MockTaskDefinition definition = new MockTaskDefinition();
+        final TaskRequestDto.TaskRequestDtoBuilder definition = TaskRequestDto.builder();
 
-        final HashMap<String, Object> headers = new HashMap<>();
-        headers.put("userAuthToken", "${#uuid()}");
+        final HashMap<String, List<String>> headers = new HashMap<>();
+        headers.put("userAuthToken", Arrays.asList("${#uuid()}"));
         headers.put("dp", Arrays.asList("1", "${#uuid()}"));
 
 
-        definition.setRequestUrl("http://localhost:8080/404");
-        definition.setHttpMethod("GET");
-        definition.setHeaders(headers);
+        definition.requestUrl("http://localhost:8080/404");
+        definition.httpMethod(HttpMethod.GET);
+        definition.headers(headers);
 
-        return definition;
+        return definition.build();
     }
 
-    private static List<MockResponseInfoDefinition> buildResponseInfo() {
+    private static List<MockResponseInfoDto> buildResponseInfo() {
 
-        final MockResponseInfoDefinition definition = new MockResponseInfoDefinition();
-        definition.setName("MockHandlerDefinitionMock#buildResponse");
-        definition.setSupport(Collections.emptyList());
-        definition.setDelayTime(0);
-        definition.setMockResponseDefinition(buildResponse());
+        final MockResponseInfoDto.MockResponseInfoDtoBuilder definition = MockResponseInfoDto.builder();
+        definition.name("MockHandlerDefinitionMock#buildResponse");
+        definition.support(Collections.emptyList());
+        definition.delayTime(0);
+        definition.response(buildResponse());
 
-        return Collections.singletonList(definition);
+        return Collections.singletonList(definition.build());
     }
 
-    private static MockResponseDefinition buildResponse() {
+    private static MockResponseDto buildResponse() {
         final HashMap<String, String> body = new HashMap<>();
 
-        final MockResponseDefinition definition = new MockResponseDefinition();
-        definition.setStatus(201);
-        definition.setHeaders(null);
+        final MockResponseDto.MockResponseDtoBuilder definition = MockResponseDto.builder();
+        definition.status(201);
+        definition.headers(null);
 
         final String s = "{" +
 //                "\"${#uuid()}\": \"${#uuid()}\"," +
@@ -129,10 +130,10 @@ public class MockHandlerDefinitionMock {
 //                "\"random\": \"${#search($.+(1+2*5))}\"," +
                 " \"body\": \"${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),101,{\\\"code\\\": \\\"${#search(name)}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
                 "}";
-        definition.setBody(s);
+        definition.body(JSON.parseObject(s));
 
 
-        return definition;
+        return definition.build();
     }
 
 }

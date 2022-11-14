@@ -2,8 +2,12 @@ package top.silwings.core.web.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +21,11 @@ import java.util.Map;
  **/
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")
-public class MockHandlerInfoVo {
+public class MockHandlerInfoVo extends Identity {
 
     @ApiModelProperty(value = "处理器名称", required = true, example = "获取用户信息")
     private String name;
@@ -36,7 +43,7 @@ public class MockHandlerInfoVo {
     private Integer delayTime;
 
     @ApiModelProperty(value = "自定义参数空间")
-    private Map<String, Object> customizeSpace;
+    private Map<String, ?> customizeSpace;
 
     @ApiModelProperty(value = "响应信息集")
     private List<MockResponseInfoVo> responses;

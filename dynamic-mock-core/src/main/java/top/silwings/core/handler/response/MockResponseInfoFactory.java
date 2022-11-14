@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.definition.MockResponseInfoDefinition;
+import top.silwings.core.repository.dto.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.stream.Collectors;
@@ -28,12 +28,12 @@ public class MockResponseInfoFactory {
         this.jsonNodeParser = jsonNodeParser;
     }
 
-    public MockResponseInfo buildResponseInfo(final MockResponseInfoDefinition definition) {
+    public MockResponseInfo buildResponseInfo(final MockResponseInfoDto definition) {
         return MockResponseInfo.builder()
                 .name(definition.getName())
                 .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
                 .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
-                .responseInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getMockResponseDefinition())))
+                .responseInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getResponse())))
                 .build();
     }
 

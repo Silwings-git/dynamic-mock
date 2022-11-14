@@ -1,8 +1,10 @@
-package top.silwings.core.repository.definition;
+package top.silwings.core.repository.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.http.HttpMethod;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,8 +15,8 @@ import java.util.Map;
  * @Since
  **/
 @Getter
-@Setter
-public class MockTaskDefinition {
+@Builder
+public class TaskRequestDto {
 
     /**
      * 请求地址
@@ -24,21 +26,21 @@ public class MockTaskDefinition {
     /**
      * 请求方式
      */
-    private String httpMethod;
+    private HttpMethod httpMethod;
 
     /**
      * 请求头
      */
-    private Map<String, ?> headers;
+    private Map<String, List<String>> headers;
 
     /**
      * 请求体
      */
-    private Map<String, ?> body;
+    private Object body;
 
     /**
      * 请求表单参数
      */
-    private Map<String, ?> uriVariables;
+    private Map<String, List<String>> uriVariables;
 
 }

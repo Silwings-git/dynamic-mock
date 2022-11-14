@@ -1,7 +1,7 @@
-package top.silwings.core.repository.definition;
+package top.silwings.core.repository.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import java.util.List;
  * @Since
  **/
 @Getter
-@Setter
-public class MockTaskInfoDefinition {
+@Builder
+public class TaskInfoDto {
 
     /**
      * 任务名称
@@ -29,7 +29,7 @@ public class MockTaskInfoDefinition {
     /**
      * 是否异步执行
      */
-    private Boolean async;
+    private boolean async;
 
     /**
      * cron
@@ -39,11 +39,11 @@ public class MockTaskInfoDefinition {
     /**
      * 执行次数
      */
-    private Integer numberOfExecute;
+    private int numberOfExecute;
 
     /**
      * 请求信息
      */
-    private MockTaskDefinition mockTaskDefinition;
+    private TaskRequestDto request;
 
 }

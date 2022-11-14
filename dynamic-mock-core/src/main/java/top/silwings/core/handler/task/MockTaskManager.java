@@ -20,10 +20,10 @@ public class MockTaskManager {
 
     private final Map<String, WeakReference<AutoCancelTask>> taskCache;
 
-    private final ThreadPoolTaskScheduler mockTaskThreadPool;
+    private final ThreadPoolTaskScheduler taskScheduler;
 
-    public MockTaskManager(final ThreadPoolTaskScheduler mockTaskThreadPool) {
-        this.mockTaskThreadPool = mockTaskThreadPool;
+    public MockTaskManager(final ThreadPoolTaskScheduler taskScheduler) {
+        this.taskScheduler = taskScheduler;
         this.taskCache = new WeakHashMap<>();
     }
 
@@ -36,7 +36,7 @@ public class MockTaskManager {
                     .task(mockTask)
                     .build()
                     // 执行注册
-                    .schedule(this.mockTaskThreadPool);
+                    .schedule(this.taskScheduler);
             this.taskCache.put(autoCancelTask.getTaskId(), new WeakReference<>(autoCancelTask));
         }
     }

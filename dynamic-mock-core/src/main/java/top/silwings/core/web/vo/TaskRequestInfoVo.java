@@ -2,7 +2,10 @@ package top.silwings.core.web.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -17,6 +20,9 @@ import java.util.Map;
  **/
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "Task请求信息")
 public class TaskRequestInfoVo {
 
@@ -30,7 +36,7 @@ public class TaskRequestInfoVo {
     private Map<String, List<String>> headers;
 
     @ApiModelProperty(value = "请求体,支持json和单字符串,对应请求方式下必填")
-    private String body;
+    private Object body;
 
     @ApiModelProperty(value = "路径参数", required = true)
     private Map<String, List<String>> uriVariables;

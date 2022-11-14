@@ -27,8 +27,8 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.definition.MockHandlerDefinition;
-import top.silwings.core.repository.definition.MockTaskDefinition;
+import top.silwings.core.repository.dto.MockHandlerDto;
+import top.silwings.core.repository.dto.TaskRequestDto;
 import top.silwings.core.web.MockHandlerPoint;
 
 import java.nio.charset.StandardCharsets;
@@ -189,12 +189,12 @@ public class ParserTest {
     @Test
     public void test007() throws InterruptedException, NoHandlerFoundException {
 
-        final MockHandlerDefinition definition = MockHandlerDefinitionMock.build();
+        final MockHandlerDto definition = MockHandlerDefinitionMock.build();
         final MockHandler mockHandler = this.mockHandlerFactory.buildMockHandler(definition);
         this.mockHandlerManager.registerHandler(mockHandler);
 
         final MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setMethod(definition.getHttpMethods().get(1));
+        request.setMethod(definition.getHttpMethods().get(1).name());
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
@@ -242,11 +242,11 @@ public class ParserTest {
     @Test
     public void test003() {
 
-        final MockTaskDefinition httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
+        final TaskRequestDto httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
                 "  \"map\": {\n" +
                 "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
                 "  }\n" +
-                "}", MockTaskDefinition.class);
+                "}", TaskRequestDto.class);
 
         System.out.println(httpTaskRequestInfoDefinition);
 

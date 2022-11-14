@@ -1,7 +1,7 @@
-package top.silwings.core.repository.definition;
+package top.silwings.core.repository.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import java.util.List;
  * @Since
  **/
 @Getter
-@Setter
-public class MockResponseInfoDefinition {
+@Builder
+public class MockResponseInfoDto {
 
     /**
      * 返回值名称
@@ -34,6 +34,6 @@ public class MockResponseInfoDefinition {
     /**
      * 请求信息
      */
-    private MockResponseDefinition mockResponseDefinition;
+    private MockResponseDto response;
 
 }

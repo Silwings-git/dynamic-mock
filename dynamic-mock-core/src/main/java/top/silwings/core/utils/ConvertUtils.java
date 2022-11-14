@@ -2,6 +2,8 @@ package top.silwings.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.function.Function;
+
 /**
  * @ClassName ConvertUtils
  * @Description 转换类
@@ -17,6 +19,10 @@ public class ConvertUtils {
 
     public static <T> T getNoNullOrDefault(final T t, final T defaultValue) {
         return null == t ? defaultValue : t;
+    }
+
+    public static <T, R> R getNoNullOrDefault(final T t, final R defaultValue, final Function<T, R> noNullFun) {
+        return null == t ? defaultValue : noNullFun.apply(t);
     }
 
     public static String getNoBlankOrDefault(final String value, final String defaultValue) {
