@@ -1,8 +1,10 @@
-package top.silwings.core.repository;
+package top.silwings.core.repository.db.memory;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
+import top.silwings.core.repository.MockHandlerRepository;
 import top.silwings.core.repository.dto.MockHandlerDto;
 
 /**
@@ -12,6 +14,7 @@ import top.silwings.core.repository.dto.MockHandlerDto;
  * @Date 2022/11/9 22:06
  * @Since
  **/
+@ConditionalOnMissingBean(MockHandlerRepository.class)
 @Component
 public class MemoryRepository implements MockHandlerRepository {
 
