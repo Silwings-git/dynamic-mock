@@ -2,6 +2,7 @@ package top.silwings.dynamicmock.core;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.http.HttpMethod;
+import top.silwings.core.common.Identity;
 import top.silwings.core.repository.dto.MockHandlerDto;
 import top.silwings.core.repository.dto.MockResponseDto;
 import top.silwings.core.repository.dto.MockResponseInfoDto;
@@ -35,8 +36,8 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
+                .handlerId(Identity.from(random.nextLong()))
                 .build();
-        definition.setId(String.valueOf(random.nextInt(1000)));
         return definition;
     }
 

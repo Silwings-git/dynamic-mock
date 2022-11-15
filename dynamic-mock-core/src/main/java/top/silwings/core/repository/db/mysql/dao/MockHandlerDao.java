@@ -1,4 +1,4 @@
-package top.silwings.core.repository.db.mysql;
+package top.silwings.core.repository.db.mysql.dao;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +19,13 @@ import javax.persistence.Table;
 @Table(name = "dm_mock_handler")
 public class MockHandlerDao {
 
+    public static final String C_HANDLER_ID = "name";
+    public static final String C_NAME = "name";
+    public static final String C_REQUEST_URI = "requestUri";
+    public static final String C_LABEL = "label";
+
     @Id
-    private Long id;
+    private Long handlerId;
 
     @Column(name = "name")
     private String name;
@@ -33,6 +38,12 @@ public class MockHandlerDao {
 
     @Column(name = "label")
     private String label;
+
+    /**
+     * 延迟执行时间
+     */
+    @Column(name = "delay_time")
+    private Integer delayTime;
 
     @Column(name = "customize_space")
     private String customizeSpace;

@@ -6,7 +6,6 @@ import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.repository.dto.MockHandlerDto;
-import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,11 +36,11 @@ public class MockHandlerFactory {
 
         // 基本信息
         final MockHandler.MockHandlerBuilder builder = MockHandler.builder();
-        builder.id(definition.getId())
+        builder.handlerId(definition.getHandlerId())
                 .name(definition.getName())
                 .httpMethodList(definition.getHttpMethods())
                 .requestUri(definition.getRequestUri())
-                .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0));
+                .delayTime(definition.getDelayTime());
 
         // 自定义空间
         builder.customizeSpaceInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getCustomizeSpace())));

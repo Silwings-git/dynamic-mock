@@ -2,7 +2,8 @@ package top.silwings.core.common;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.Objects;
 
 /**
  * @ClassName Identity
@@ -12,13 +13,33 @@ import lombok.Setter;
  * @Since
  **/
 @Getter
-@Setter
 public class Identity {
 
     /**
      * 唯一标识符
      */
-    @ApiModelProperty(value = "唯一标识符",example = "Code001")
-    private String id;
+    @ApiModelProperty(value = "唯一标识符", example = "Code001")
+    private final long id;
+
+    public Identity(final long id) {
+        this.id = id;
+    }
+
+    public static Identity from(final Long id) {
+        return new Identity(Objects.requireNonNull(id));
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Identity identity = (Identity) o;
+        return Objects.equals(id, identity.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

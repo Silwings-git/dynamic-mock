@@ -17,7 +17,9 @@ import java.util.Map;
  **/
 @Getter
 @Builder
-public class MockHandlerDto extends Identity {
+public class MockHandlerDto {
+
+    private Identity handlerId;
 
     /**
      * 名称
@@ -42,7 +44,7 @@ public class MockHandlerDto extends Identity {
     /**
      * 延迟执行时间
      */
-    private Integer delayTime;
+    private int delayTime;
 
     /**
      * 自定义空间

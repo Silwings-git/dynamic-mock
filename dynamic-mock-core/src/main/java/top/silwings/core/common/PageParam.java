@@ -1,6 +1,7 @@
 package top.silwings.core.common;
 
 import lombok.Getter;
+import org.apache.ibatis.session.RowBounds;
 
 /**
  * @ClassName PageParam
@@ -23,5 +24,9 @@ public class PageParam {
 
     public static PageParam of(final int pageNum, final int pageSize) {
         return new PageParam(pageNum, pageSize);
+    }
+
+    public RowBounds toRowBounds() {
+        return new PageRowBounds((this.pageNum - 1) * this.pageSize, this.pageSize);
     }
 }

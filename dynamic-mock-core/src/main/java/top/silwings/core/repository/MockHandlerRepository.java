@@ -1,8 +1,11 @@
 package top.silwings.core.repository;
 
+import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
 import top.silwings.core.repository.dto.MockHandlerDto;
+
+import java.util.List;
 
 /**
  * @ClassName MockHandlerRepository
@@ -12,13 +15,13 @@ import top.silwings.core.repository.dto.MockHandlerDto;
  * @Since
  **/
 public interface MockHandlerRepository {
-    String create(MockHandlerDto mockHandlerDto);
+    Identity create(MockHandlerDto mockHandlerDto);
 
-    String update(MockHandlerDto mockHandlerDto);
+    Identity update(MockHandlerDto mockHandlerDto);
 
-    MockHandlerDto get(String id);
+    MockHandlerDto find(Identity handlerId);
 
-    PageData<MockHandlerDto> query(String name, String httpMethod, String requestUri, String label, PageParam pageParam);
+    PageData<MockHandlerDto> query(List<Long> handlerIdList, String name, String httpMethod, String requestUri, String label, PageParam pageParam);
 
-    void delete(String id);
+    void delete(Identity handlerId);
 }

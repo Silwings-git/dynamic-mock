@@ -2,6 +2,7 @@ package top.silwings.core.handler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import top.silwings.core.common.Identity;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
 
 import java.util.Map;
@@ -17,18 +18,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class MockHandlerManager {
 
-    private final Map<String, MockHandler> handlerMap;
+    private final Map<Identity, MockHandler> handlerMap;
 
     public MockHandlerManager() {
         this.handlerMap = new ConcurrentHashMap<>();
     }
 
     public void registerHandler(final MockHandler mockHandler) {
-        this.handlerMap.put(mockHandler.getId(), mockHandler);
+        this.handlerMap.put(mockHandler.getHandlerId(), mockHandler);
     }
 
-    public void unregisterHandler(final String id) {
-        this.handlerMap.remove(id);
+    public void unregisterHandler(final Identity handlerId) {
+        this.handlerMap.remove(handlerId);
     }
 
     private MockHandler filter(final RequestInfo requestInfo) {

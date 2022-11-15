@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import top.silwings.core.common.Identity;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,10 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")
-public class MockHandlerInfoVo extends Identity {
+public class MockHandlerInfoVo {
+
+    @ApiModelProperty(value = "处理器id", required = true, example = "H1")
+    private String handlerId;
 
     @ApiModelProperty(value = "处理器名称", required = true, example = "获取用户信息")
     private String name;

@@ -1,8 +1,8 @@
 package top.silwings.core.common;
 
 import lombok.Getter;
-import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,11 +13,25 @@ import java.util.List;
  * @Since
  **/
 @Getter
-@Setter
 public class PageData<T> {
 
-    private List<T> list;
+    private static final PageData EMPTY = new PageData<>(Collections.emptyList(), 0L);
 
-    private long total;
+    private final List<T> list;
+
+    private final long total;
+
+    public static <T> PageData<T> empty() {
+        return (PageData<T>) EMPTY;
+    }
+
+    public PageData(final List<T> list, final long total) {
+        this.list = list;
+        this.total = total;
+    }
+
+    public static <T> PageData<T> of(final List<T> list, final long total) {
+        return new PageData<>(list, total);
+    }
 
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import top.silwings.core.common.Identity;
 import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTask;
 import top.silwings.core.handler.task.MockTaskInfo;
@@ -30,7 +31,7 @@ public class MockHandler {
     /**
      * 唯一标识符
      */
-    private String id;
+    private Identity handlerId;
 
     /**
      * 名称
