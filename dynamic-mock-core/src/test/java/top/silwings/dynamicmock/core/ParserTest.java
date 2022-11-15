@@ -16,7 +16,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.MockSpringApplication;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
-import top.silwings.core.handler.HandlerContext;
+import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
@@ -89,18 +89,18 @@ public class ParserTest {
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
-        final HandlerContext handlerContext = HandlerContext.builder().customizeSpace(new HashMap<>()).build();
-        handlerContext.addCustomizeParam("paramA", -1);
-        handlerContext.addCustomizeParam("param", 20);
-        handlerContext.addCustomizeParam("40", true);
-        handlerContext.addCustomizeParam("age", 18);
-        handlerContext.addCustomizeParam("2", 15);
-        handlerContext.addCustomizeParam("true", 10);
-        handlerContext.addCustomizeParam("10", "御坂美琴");
-        handlerContext.addCustomizeParam("10true", "御坂美琴");
+        final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
+        requestContext.addCustomizeParam("paramA", -1);
+        requestContext.addCustomizeParam("param", 20);
+        requestContext.addCustomizeParam("40", true);
+        requestContext.addCustomizeParam("age", 18);
+        requestContext.addCustomizeParam("2", 15);
+        requestContext.addCustomizeParam("true", 10);
+        requestContext.addCustomizeParam("10", "御坂美琴");
+        requestContext.addCustomizeParam("10true", "御坂美琴");
 
         final Context context = Context.builder()
-                .handlerContext(handlerContext)
+                .requestContext(requestContext)
                 .build();
 
         System.out.println(JSON.toJSONString(new NodeInterpreter(dynamicValue).interpret(context)));
@@ -114,7 +114,7 @@ public class ParserTest {
         final Node analyze1 = this.jsonNodeParser.parse(testData.getTest002());
 
         final Context context = Context.builder()
-                .handlerContext(testData.getHandlerContext())
+                .requestContext(testData.getRequestContext())
                 .build();
 
         final Object interpret = analyze1.interpret(context, Collections.emptyList());
@@ -222,19 +222,19 @@ public class ParserTest {
                 "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
-        private final HandlerContext handlerContext = HandlerContext.builder().customizeSpace(new HashMap<>()).build();
+        private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
 
         final Context context;
 
         public TestData() {
-            this.handlerContext.addCustomizeParam("param", 1);
-            this.handlerContext.addCustomizeParam("a2", "name");
-            this.handlerContext.addCustomizeParam("name", "御坂美琴");
-            this.handlerContext.addCustomizeParam("age", 14);
-            this.handlerContext.addCustomizeParam("abcabc", "A御坂美琴A");
-            this.handlerContext.addCustomizeParam("def", "B御坂美琴B");
+            this.requestContext.addCustomizeParam("param", 1);
+            this.requestContext.addCustomizeParam("a2", "name");
+            this.requestContext.addCustomizeParam("name", "御坂美琴");
+            this.requestContext.addCustomizeParam("age", 14);
+            this.requestContext.addCustomizeParam("abcabc", "A御坂美琴A");
+            this.requestContext.addCustomizeParam("def", "B御坂美琴B");
             context = Context.builder()
-                    .handlerContext(this.handlerContext)
+                    .requestContext(this.requestContext)
                     .build();
         }
     }

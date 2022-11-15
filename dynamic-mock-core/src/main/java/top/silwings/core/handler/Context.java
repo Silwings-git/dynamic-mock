@@ -30,7 +30,7 @@ public class Context {
      */
     private final HttpMethod httpMethod;
 
-    private final HandlerContext handlerContext;
+    private final RequestContext requestContext;
 
     private final MockTaskManager mockTaskManager;
 
@@ -40,15 +40,15 @@ public class Context {
 
     private final AsyncRestTemplate asyncRestTemplate;
 
-    public HandlerContext getHandlerContext() {
-        return handlerContext;
+    public RequestContext getRequestContext() {
+        return requestContext;
     }
 
     public static Context from(final HttpServletRequest request, final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonNodeParser jsonNodeParser, final AsyncRestTemplate asyncRestTemplate) {
         return Context.builder()
                 .requestURI(request.getRequestURI())
                 .httpMethod(HttpMethod.valueOf(request.getMethod()))
-                .handlerContext(HandlerContext.from(request))
+                .requestContext(RequestContext.from(request))
                 .mockTaskManager(mockTaskManager)
                 .idGenerator(idGenerator)
                 .jsonNodeParser(jsonNodeParser)

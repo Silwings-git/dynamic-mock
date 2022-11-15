@@ -64,11 +64,11 @@ public class SearchFunctionFactory implements FunctionFactory {
             if (this.getNodeCount() < 2 || SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
 
                 // 自定义空间内查询
-                return JSONPath.eval(context.getHandlerContext().getCustomizeSpace(), String.valueOf(childNodeValueList.get(0)));
+                return JSONPath.eval(context.getRequestContext().getCustomizeSpace(), String.valueOf(childNodeValueList.get(0)));
             } else {
 
                 // 请求信息内查询
-                return JSONPath.eval(context.getHandlerContext().getRequestInfo(), String.valueOf(childNodeValueList.get(0)));
+                return JSONPath.eval(context.getRequestContext().getRequestInfo(), String.valueOf(childNodeValueList.get(0)));
             }
         }
     }

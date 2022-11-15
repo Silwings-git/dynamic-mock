@@ -1,9 +1,12 @@
 package top.silwings.core.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
  **/
 @Getter
 @Builder
-public class HandlerContext {
+public class RequestContext {
 
     /**
      * 自定义空间
@@ -39,8 +42,8 @@ public class HandlerContext {
      */
     private final RequestInfo requestInfo;
 
-    public static HandlerContext from(final HttpServletRequest request) {
-        return HandlerContext.builder()
+    public static RequestContext from(final HttpServletRequest request) {
+        return RequestContext.builder()
                 .customizeSpace(Collections.emptyMap())
                 .requestInfo(RequestInfo.from(request))
                 .build();
@@ -50,10 +53,7 @@ public class HandlerContext {
         this.customizeSpace.put(key, value);
     }
 
-    public Object searchParameter(final String parameterName) {
-        return this.customizeSpace.get(parameterName);
-    }
-
+    @Slf4j
     @Getter
     @Setter
     @Builder
@@ -124,21 +124,38 @@ public class HandlerContext {
          */
         private final Object body;
 
+        /**
+         * application/json
+         */
+        private final Map<String, ?> jsonBody;
+
+        /**
+         * text/plain
+         */
+        private final String textBody;
+
+        /**
+         * x-www-form-urlencoded
+         */
+        private final Map<String, List<String>> formBody;
+
+        /**
+         * form-data
+         */
+        private final Map<String, List<String>> parameterMap;
+
         public static RequestInfo from(final HttpServletRequest request) {
+
+            final RequestInfoBuilder builder = RequestInfo.builder();
+
+            buildBodyAndParameter(request, builder);
 
             final Cookie[] cookieArray = request.getCookies();
 
-            String bodyStr = null;
-            try {
-                bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-            } catch (IOException e) {
-                bodyStr = "Failed to parse the request body.";
-            }
-
-            return RequestInfo.builder()
+            return builder
                     .authType(request.getAuthType())
                     .contextPath(request.getContextPath())
-                    .cookies(null == cookieArray ? Collections.emptyList() : Arrays.asList(cookieArray))
+                    .cookies(null == cookieArray ? Collections.emptyList() : Arrays.stream(cookieArray).collect(Collectors.toList()))
                     .headers(getHeaders(request))
                     .method(request.getMethod())
                     .pathInfo(request.getPathInfo())
@@ -148,8 +165,55 @@ public class HandlerContext {
                     .requestURI(request.getRequestURI())
                     .requestURL(request.getRequestURL().toString())
                     .servletPath(request.getServletPath())
-                    .body(JSON.isValidObject(bodyStr) ? JSON.parseObject(bodyStr) : bodyStr)
                     .build();
+        }
+
+        private static void buildBodyAndParameter(final HttpServletRequest request, final RequestInfoBuilder builder) {
+            final Map<String, List<String>> parameters = new HashMap<>();
+            builder.parameterMap(parameters)
+                    .body(Collections.emptyMap())
+                    .jsonBody(Collections.emptyMap())
+                    .textBody("")
+                    .formBody(Collections.emptyMap());
+
+            final String contentType = request.getContentType();
+            if (contentType.contains("form-data")) {
+                final Map<String, String[]> map = request.getParameterMap();
+                map.forEach((key, value) -> parameters.put(key, Arrays.stream(value).collect(Collectors.toList())));
+            } else {
+                buildBody(request, builder, contentType);
+            }
+        }
+
+        private static void buildBody(final HttpServletRequest request, final RequestInfoBuilder builder, final String contentType) {
+            String bodyStr = "";
+            try {
+                bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            } catch (IOException e) {
+                log.error("解析请求失败.", e);
+            }
+            if (contentType.contains("x-www-form-urlencoded")) {
+                final Map<String, List<String>> formMap = new HashMap<>();
+                builder.body(formMap)
+                        .formBody(formMap);
+                if (StringUtils.isNotBlank(bodyStr)) {
+                    final String[] split = bodyStr.split("&");
+                    for (final String kv : split) {
+                        final String[] kvArray = kv.split("=");
+                        final List<String> valueList = formMap.computeIfAbsent(kvArray[0], key -> new ArrayList<>());
+                        valueList.add(kvArray.length == 2 ? kvArray[1] : "");
+                    }
+                }
+            } else if (contentType.contains("json")) {
+                if (JSON.isValidObject(bodyStr)) {
+                    final JSONObject jsonBody = JSON.parseObject(bodyStr);
+                    builder.body(jsonBody)
+                            .jsonBody(jsonBody);
+                }
+            } else {
+                builder.body(bodyStr)
+                        .textBody(bodyStr);
+            }
         }
 
         private static List<Map<String, String>> getHeaders(final HttpServletRequest request) {

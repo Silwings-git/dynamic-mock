@@ -76,7 +76,7 @@ public class MockHandler {
             for (final Map.Entry<?, ?> entry : ((Map<?, ?>) space).entrySet()) {
                 customizeSpace.put(String.valueOf(entry.getKey()), entry.getValue());
             }
-            context.getHandlerContext().setCustomizeSpace(customizeSpace);
+            context.getRequestContext().setCustomizeSpace(customizeSpace);
         }
 
         // 筛选异步定时任务
