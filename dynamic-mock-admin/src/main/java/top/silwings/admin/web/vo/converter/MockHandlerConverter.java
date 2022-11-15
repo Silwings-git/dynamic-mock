@@ -1,4 +1,4 @@
-package top.silwings.core.web.vo.converter;
+package top.silwings.admin.web.vo.converter;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -8,11 +8,11 @@ import top.silwings.core.repository.dto.MockResponseInfoDto;
 import top.silwings.core.repository.dto.TaskInfoDto;
 import top.silwings.core.repository.dto.TaskRequestDto;
 import top.silwings.core.utils.ConvertUtils;
-import top.silwings.core.web.vo.MockHandlerInfoVo;
-import top.silwings.core.web.vo.MockResponseInfoVo;
-import top.silwings.core.web.vo.MockResponseVo;
-import top.silwings.core.web.vo.TaskInfoVo;
-import top.silwings.core.web.vo.TaskRequestInfoVo;
+import top.silwings.admin.web.vo.MockHandlerInfoVo;
+import top.silwings.admin.web.vo.MockResponseInfoVo;
+import top.silwings.admin.web.vo.MockResponseVo;
+import top.silwings.admin.web.vo.TaskInfoVo;
+import top.silwings.admin.web.vo.TaskRequestInfoVo;
 
 import java.util.stream.Collectors;
 

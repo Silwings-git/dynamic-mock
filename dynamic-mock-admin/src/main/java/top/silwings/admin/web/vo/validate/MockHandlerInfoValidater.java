@@ -1,6 +1,6 @@
-package top.silwings.core.web.vo.validate;
+package top.silwings.admin.web.vo.validate;
 
-import top.silwings.core.web.vo.MockHandlerInfoVo;
+import top.silwings.admin.web.vo.MockHandlerInfoVo;
 
 /**
  * @ClassName MockHandlerInfoValidater

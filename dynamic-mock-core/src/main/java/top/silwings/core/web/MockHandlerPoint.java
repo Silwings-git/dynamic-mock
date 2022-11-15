@@ -1,5 +1,6 @@
 package top.silwings.core.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.IdGenerator;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 2022/11/10 21:27
  * @Since
  **/
+@Slf4j
 @RestControllerAdvice
 public class MockHandlerPoint {
 
@@ -48,6 +50,7 @@ public class MockHandlerPoint {
         try {
             return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser, this.asyncRestTemplate));
         } catch (NoMockHandlerFoundException e) {
+            log.error("NoMockHandlerFoundException", e);
             throw exception;
         }
     }

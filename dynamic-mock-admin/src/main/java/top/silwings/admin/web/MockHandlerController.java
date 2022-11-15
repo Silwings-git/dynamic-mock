@@ -1,4 +1,4 @@
-package top.silwings.core.web;
+package top.silwings.admin.web;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +15,8 @@ import top.silwings.core.common.PageResult;
 import top.silwings.core.common.Result;
 import top.silwings.core.repository.MockHandlerRepository;
 import top.silwings.core.repository.dto.MockHandlerDto;
-import top.silwings.core.web.vo.MockHandlerInfoVo;
-import top.silwings.core.web.vo.converter.MockHandlerConverter;
+import top.silwings.admin.web.vo.MockHandlerInfoVo;
+import top.silwings.admin.web.vo.converter.MockHandlerConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
