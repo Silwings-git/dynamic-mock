@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.repository.db.mysql.dao.MockHandlerDao;
 import top.silwings.core.repository.dto.MockHandlerDto;
@@ -31,6 +32,7 @@ public class MockHandlerDaoConverter {
 
         final MockHandlerDao dao = new MockHandlerDao();
         dao.setHandlerId(mockHandlerDto.getHandlerId().getId());
+        dao.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
         dao.setName(mockHandlerDto.getName());
         if (CollectionUtils.isNotEmpty(mockHandlerDto.getHttpMethods())) {
             dao.setHttpMethods(mockHandlerDto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.joining(",")));
@@ -49,6 +51,7 @@ public class MockHandlerDaoConverter {
 
         return MockHandlerDto.builder()
                 .handlerId(Identity.from(mockHandlerDao.getHandlerId()))
+                .enableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDao.getEnableStatus(), EnableStatus.DISABLE, EnableStatus::valueOfCode))
                 .name(mockHandlerDao.getName())
                 .httpMethods(Arrays.stream(mockHandlerDao.getHttpMethods().split(",")).map(HttpMethod::resolve).collect(Collectors.toList()))
                 .requestUri(mockHandlerDao.getRequestUri())

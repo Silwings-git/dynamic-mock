@@ -84,7 +84,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     public MockHandlerDto find(final Identity handlerId) {
 
         final MockHandlerDao findCondition = new MockHandlerDao();
-        findCondition.setHandlerId(Objects.requireNonNull(handlerId.getId()));
+        findCondition.setHandlerId(handlerId.getId());
 
         final MockHandlerDao mockHandlerDao = this.mockHandlerMapper.selectOne(findCondition);
 

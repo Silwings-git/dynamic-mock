@@ -19,6 +19,7 @@ import javax.persistence.Table;
 @Table(name = "dm_mock_handler")
 public class MockHandlerDao {
 
+    public static final String C_ENABLE_STATUS = "enableStatus";
     public static final String C_HANDLER_ID = "name";
     public static final String C_NAME = "name";
     public static final String C_REQUEST_URI = "requestUri";
@@ -26,6 +27,9 @@ public class MockHandlerDao {
 
     @Id
     private Long handlerId;
+
+    @Column(name = "enable_status")
+    private String enableStatus;
 
     @Column(name = "name")
     private String name;

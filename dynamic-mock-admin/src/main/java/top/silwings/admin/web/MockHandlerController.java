@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
 import top.silwings.admin.web.vo.MockHandlerInfoVo;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.core.common.Identity;
@@ -58,26 +59,26 @@ public class MockHandlerController {
     }
 
     @GetMapping("/{handlerId}")
-    public Result<MockHandlerInfoVo> find(@PathVariable("handlerId") final Long handlerId) {
+    public Result<MockHandlerInfoResultVo> find(@PathVariable("handlerId") final Long handlerId) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerRepository.find(Identity.from(handlerId));
 
-        final MockHandlerInfoVo mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
+        final MockHandlerInfoResultVo mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
         return Result.ok(mockHandlerInfoVo);
     }
 
     @GetMapping("/{pageNum}/{pageSize}")
-    public PageResult<MockHandlerInfoVo> query(@PathVariable("pageNum") final Integer pageNum,
-                                               @PathVariable("pageSize") final Integer pageSize,
-                                               @RequestParam("name") final String name,
-                                               @RequestParam("httpMethod") final String httpMethod,
-                                               @RequestParam("requestUri") final String requestUri,
-                                               @RequestParam("label") final String label) {
+    public PageResult<MockHandlerInfoResultVo> query(@PathVariable("pageNum") final Integer pageNum,
+                                                     @PathVariable("pageSize") final Integer pageSize,
+                                                     @RequestParam("name") final String name,
+                                                     @RequestParam("httpMethod") final String httpMethod,
+                                                     @RequestParam("requestUri") final String requestUri,
+                                                     @RequestParam("label") final String label) {
 
         final PageData<MockHandlerDto> pageData = this.mockHandlerRepository.query(null, name, httpMethod, requestUri, label, PageParam.of(pageNum, pageSize));
 
-        final List<MockHandlerInfoVo> mockHandlerInfoVoList = pageData.getList().stream()
+        final List<MockHandlerInfoResultVo> mockHandlerInfoVoList = pageData.getList().stream()
                 .map(this.mockHandlerVoConverter::convert)
                 .collect(Collectors.toList());
 

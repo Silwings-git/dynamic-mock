@@ -3,11 +3,13 @@ package top.silwings.admin.web.vo.converter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
 import top.silwings.admin.web.vo.MockHandlerInfoVo;
 import top.silwings.admin.web.vo.MockResponseInfoVo;
 import top.silwings.admin.web.vo.MockResponseVo;
 import top.silwings.admin.web.vo.TaskInfoVo;
 import top.silwings.admin.web.vo.TaskRequestInfoVo;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.repository.dto.MockHandlerDto;
 import top.silwings.core.repository.dto.MockResponseDto;
@@ -31,6 +33,7 @@ public class MockHandlerVoConverter {
     public MockHandlerDto convert(final MockHandlerInfoVo vo) {
         return MockHandlerDto.builder()
                 .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Long.parseLong(vo.getHandlerId())))
+                .enableStatus(EnableStatus.DISABLE)
                 .name(vo.getName())
                 .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).collect(Collectors.toList()))
                 .requestUri(vo.getRequestUri())
@@ -42,18 +45,22 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    public MockHandlerInfoVo convert(final MockHandlerDto dto) {
-        return MockHandlerInfoVo.builder()
-                .handlerId(String.valueOf(dto.getHandlerId().getId()))
-                .name(dto.getName())
-                .httpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()))
-                .requestUri(dto.getRequestUri())
-                .label(dto.getLabel())
-                .delayTime(dto.getDelayTime())
-                .customizeSpace(dto.getCustomizeSpace())
-                .responses(dto.getResponses().stream().map(this::convert).collect(Collectors.toList()))
-                .tasks(dto.getTasks().stream().map(this::convert).collect(Collectors.toList()))
+    public MockHandlerInfoResultVo convert(final MockHandlerDto dto) {
+        final MockHandlerInfoResultVo resultVo = MockHandlerInfoResultVo.builder()
+                .enableStatus(dto.getEnableStatus().code())
                 .build();
+
+        resultVo.setHandlerId(String.valueOf(dto.getHandlerId().getId()));
+        resultVo.setName(dto.getName());
+        resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
+        resultVo.setRequestUri(dto.getRequestUri());
+        resultVo.setLabel(dto.getLabel());
+        resultVo.setDelayTime(dto.getDelayTime());
+        resultVo.setCustomizeSpace(dto.getCustomizeSpace());
+        resultVo.setResponses(dto.getResponses().stream().map(this::convert).collect(Collectors.toList()));
+        resultVo.setTasks(dto.getTasks().stream().map(this::convert).collect(Collectors.toList()));
+
+        return resultVo;
     }
 
     private TaskInfoDto convert(final TaskInfoVo vo) {

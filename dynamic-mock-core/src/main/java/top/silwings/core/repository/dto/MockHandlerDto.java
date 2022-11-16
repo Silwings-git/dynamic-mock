@@ -3,6 +3,7 @@ package top.silwings.core.repository.dto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 
 import java.util.List;
@@ -19,7 +20,15 @@ import java.util.Map;
 @Builder
 public class MockHandlerDto {
 
+    /**
+     * 处理器id
+     */
     private Identity handlerId;
+
+    /**
+     * 启用状态.ture-启用,false-停用
+     */
+    private EnableStatus enableStatus;
 
     /**
      * 名称
