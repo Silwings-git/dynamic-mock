@@ -17,7 +17,6 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")

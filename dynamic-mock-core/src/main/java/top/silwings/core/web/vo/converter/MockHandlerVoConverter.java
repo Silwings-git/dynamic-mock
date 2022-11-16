@@ -3,12 +3,6 @@ package top.silwings.core.web.vo.converter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import top.silwings.core.web.vo.MockHandlerInfoResultVo;
-import top.silwings.core.web.vo.MockHandlerInfoVo;
-import top.silwings.core.web.vo.MockResponseInfoVo;
-import top.silwings.core.web.vo.MockResponseVo;
-import top.silwings.core.web.vo.TaskInfoVo;
-import top.silwings.core.web.vo.TaskRequestInfoVo;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.repository.dto.MockHandlerDto;
@@ -17,6 +11,12 @@ import top.silwings.core.repository.dto.MockResponseInfoDto;
 import top.silwings.core.repository.dto.TaskInfoDto;
 import top.silwings.core.repository.dto.TaskRequestDto;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.web.vo.MockHandlerInfoResultVo;
+import top.silwings.core.web.vo.MockHandlerInfoVo;
+import top.silwings.core.web.vo.MockResponseInfoVo;
+import top.silwings.core.web.vo.MockResponseVo;
+import top.silwings.core.web.vo.TaskInfoVo;
+import top.silwings.core.web.vo.TaskRequestInfoVo;
 
 import java.util.stream.Collectors;
 
@@ -46,10 +46,10 @@ public class MockHandlerVoConverter {
     }
 
     public MockHandlerInfoResultVo convert(final MockHandlerDto dto) {
-        final MockHandlerInfoResultVo resultVo = MockHandlerInfoResultVo.builder()
-                .enableStatus(dto.getEnableStatus().code())
-                .build();
 
+        final MockHandlerInfoResultVo resultVo = new MockHandlerInfoResultVo();
+
+        resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(String.valueOf(dto.getHandlerId().getId()));
         resultVo.setName(dto.getName());
         resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
