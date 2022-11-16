@@ -1,14 +1,14 @@
-package top.silwings.admin.web.vo.converter;
+package top.silwings.core.web.vo.converter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
-import top.silwings.admin.web.vo.MockHandlerInfoVo;
-import top.silwings.admin.web.vo.MockResponseInfoVo;
-import top.silwings.admin.web.vo.MockResponseVo;
-import top.silwings.admin.web.vo.TaskInfoVo;
-import top.silwings.admin.web.vo.TaskRequestInfoVo;
+import top.silwings.core.web.vo.MockHandlerInfoResultVo;
+import top.silwings.core.web.vo.MockHandlerInfoVo;
+import top.silwings.core.web.vo.MockResponseInfoVo;
+import top.silwings.core.web.vo.MockResponseVo;
+import top.silwings.core.web.vo.TaskInfoVo;
+import top.silwings.core.web.vo.TaskRequestInfoVo;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.repository.dto.MockHandlerDto;
