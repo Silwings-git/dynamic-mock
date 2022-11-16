@@ -3,14 +3,17 @@ package top.silwings.core.repository.db.mysql;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.repository.MockHandlerRepository;
 import top.silwings.core.repository.db.mysql.dao.MockHandlerDao;
 import top.silwings.core.repository.db.mysql.dao.MockHandlerUniqueDao;
 import top.silwings.core.repository.db.mysql.dao.converter.MockHandlerDaoConverter;
 import top.silwings.core.repository.dto.MockHandlerDto;
+import top.silwings.core.repository.dto.QueryConditionDto;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
@@ -64,7 +67,11 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final MockHandlerDao mockHandlerDao = this.mockHandlerDaoConverter.convert(mockHandlerDto);
 
-        this.mockHandlerMapper.updateByPrimaryKeySelective(mockHandlerDao);
+        final Example updateCondition = new Example(MockHandlerDao.class);
+        updateCondition.createCriteria()
+                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.getId());
+
+        this.mockHandlerMapper.updateByConditionSelective(mockHandlerDao, updateCondition);
 
         // 删除唯一表该handler的数据,重新创建
         final Example deleteCondition = new Example(MockHandlerUniqueDao.class);
@@ -88,33 +95,38 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final MockHandlerDao mockHandlerDao = this.mockHandlerMapper.selectOne(findCondition);
 
+        if (null == mockHandlerDao) {
+            throw new DynamicMockException("handler不存在");
+        }
+
         return this.mockHandlerDaoConverter.convert(mockHandlerDao);
     }
 
     @Override
-    public PageData<MockHandlerDto> query(final List<Long> handlerIdList, final String name, final String httpMethod, final String requestUri, final String label, final PageParam pageParam) {
+    public PageData<MockHandlerDto> query(final QueryConditionDto queryCondition, final PageParam pageParam) {
 
-        if (null != handlerIdList && handlerIdList.isEmpty()) {
+        if (null != queryCondition.getHandlerIdList() && queryCondition.getHandlerIdList().isEmpty()) {
             return PageData.empty();
         }
 
-        final Example queryCondition = new Example(MockHandlerDao.class);
-        final Example.Criteria criteria = queryCondition.createCriteria();
+        final Example condition = new Example(MockHandlerDao.class);
+        final Example.Criteria criteria = condition.createCriteria();
         criteria
-                .andLike(MockHandlerDao.C_NAME, ConvertUtils.getNoNullOrDefault(name, null, arg -> "%".concat(arg).concat("%")))
-                .andLike(MockHandlerDao.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(requestUri, null, arg -> arg.concat("%")))
-                .andLike(MockHandlerDao.C_LABEL, ConvertUtils.getNoNullOrDefault(label, null, arg -> "%".concat(arg).concat("%")));
+                .andLike(MockHandlerDao.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, arg -> "%".concat(arg).concat("%")))
+                .andLike(MockHandlerDao.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, arg -> arg.concat("%")))
+                .andLike(MockHandlerDao.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, arg -> "%".concat(arg).concat("%")))
+                .andEqualTo(MockHandlerDao.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
-        if (null != handlerIdList) {
-            criteria.andIn(MockHandlerDao.C_HANDLER_ID, handlerIdList);
+        if (null != queryCondition.getHandlerIdList()) {
+            criteria.andIn(MockHandlerDao.C_HANDLER_ID, queryCondition.getHandlerIdList());
         }
 
-        final long total = this.mockHandlerMapper.selectCountByExample(queryCondition);
+        final long total = this.mockHandlerMapper.selectCountByExample(condition);
         if (total <= 0) {
             return PageData.empty();
         }
 
-        final List<MockHandlerDto> mockHandlerDtoList = this.mockHandlerMapper.selectByConditionAndRowBounds(queryCondition, pageParam.toRowBounds())
+        final List<MockHandlerDto> mockHandlerDtoList = this.mockHandlerMapper.selectByConditionAndRowBounds(condition, pageParam.toRowBounds())
                 .stream()
                 .map(this.mockHandlerDaoConverter::convert)
                 .collect(Collectors.toList());
@@ -135,5 +147,19 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
         deleteUniqueCondition.createCriteria()
                 .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId);
         this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
+    }
+
+    @Transactional
+    @Override
+    public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
+
+        final MockHandlerDao mockHandler = new MockHandlerDao();
+        mockHandler.setEnableStatus(enableStatus.code());
+
+        final Example enableCondition = new Example(MockHandlerDao.class);
+        enableCondition.createCriteria()
+                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.getId());
+
+        this.mockHandlerMapper.updateByConditionSelective(mockHandler, enableCondition);
     }
 }

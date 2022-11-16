@@ -2,13 +2,13 @@ package top.silwings.core.repository.db.memory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
 import top.silwings.core.repository.MockHandlerRepository;
 import top.silwings.core.repository.dto.MockHandlerDto;
-
-import java.util.List;
+import top.silwings.core.repository.dto.QueryConditionDto;
 
 /**
  * @ClassName MemoryRepository
@@ -37,12 +37,17 @@ public class MemoryRepository implements MockHandlerRepository {
     }
 
     @Override
-    public PageData<MockHandlerDto> query(final List<Long> handlerIdList, final String name, final String httpMethod, final String requestUri, final String label, final PageParam pageParam) {
+    public PageData<MockHandlerDto> query(final QueryConditionDto queryCondition, final PageParam pageParam) {
         return null;
     }
 
     @Override
     public void delete(final Identity handlerId) {
+
+    }
+
+    @Override
+    public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
 
     }
 }

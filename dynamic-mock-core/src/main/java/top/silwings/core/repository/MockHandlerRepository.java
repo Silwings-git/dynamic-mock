@@ -1,11 +1,11 @@
 package top.silwings.core.repository;
 
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
 import top.silwings.core.repository.dto.MockHandlerDto;
-
-import java.util.List;
+import top.silwings.core.repository.dto.QueryConditionDto;
 
 /**
  * @ClassName MockHandlerRepository
@@ -21,7 +21,9 @@ public interface MockHandlerRepository {
 
     MockHandlerDto find(Identity handlerId);
 
-    PageData<MockHandlerDto> query(List<Long> handlerIdList, String name, String httpMethod, String requestUri, String label, PageParam pageParam);
+    PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
     void delete(Identity handlerId);
+
+    void updateEnableStatus(Identity handlerId, EnableStatus enableStatus);
 }

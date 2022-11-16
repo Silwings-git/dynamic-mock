@@ -29,6 +29,11 @@ public class Identity {
         return new Identity(Objects.requireNonNull(id));
     }
 
+    public static Identity from(final String id) {
+        return Identity.from(Long.parseLong(id));
+    }
+
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

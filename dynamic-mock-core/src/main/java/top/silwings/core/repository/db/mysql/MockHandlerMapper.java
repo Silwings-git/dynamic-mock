@@ -3,8 +3,8 @@ package top.silwings.core.repository.db.mysql;
 import org.apache.ibatis.annotations.Mapper;
 import tk.mybatis.mapper.common.base.insert.InsertSelectiveMapper;
 import tk.mybatis.mapper.common.base.select.SelectOneMapper;
-import tk.mybatis.mapper.common.base.update.UpdateByPrimaryKeySelectiveMapper;
 import tk.mybatis.mapper.common.condition.DeleteByConditionMapper;
+import tk.mybatis.mapper.common.condition.UpdateByConditionSelectiveMapper;
 import tk.mybatis.mapper.common.example.SelectCountByExampleMapper;
 import tk.mybatis.mapper.common.rowbounds.SelectByConditionRowBoundsMapper;
 import top.silwings.core.repository.db.mysql.dao.MockHandlerDao;
@@ -18,11 +18,11 @@ import top.silwings.core.repository.db.mysql.dao.MockHandlerDao;
  **/
 @Mapper
 public interface MockHandlerMapper extends InsertSelectiveMapper<MockHandlerDao>,
-        UpdateByPrimaryKeySelectiveMapper<MockHandlerDao>,
         SelectOneMapper<MockHandlerDao>,
         SelectCountByExampleMapper<MockHandlerDao>,
         SelectByConditionRowBoundsMapper<MockHandlerDao>,
-        DeleteByConditionMapper<MockHandlerDao> {
+        DeleteByConditionMapper<MockHandlerDao>,
+        UpdateByConditionSelectiveMapper<MockHandlerDao> {
 
 
 }

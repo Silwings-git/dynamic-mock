@@ -8,16 +8,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.silwings.core.web.vo.MockHandlerInfoResultVo;
-import top.silwings.core.web.vo.MockHandlerInfoVo;
-import top.silwings.core.web.vo.converter.MockHandlerVoConverter;
+import top.silwings.core.application.MockHandlerApplication;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageData;
 import top.silwings.core.common.PageParam;
 import top.silwings.core.common.PageResult;
 import top.silwings.core.common.Result;
-import top.silwings.core.repository.MockHandlerRepository;
 import top.silwings.core.repository.dto.MockHandlerDto;
+import top.silwings.core.repository.dto.QueryConditionDto;
+import top.silwings.core.web.vo.EnableStatusVo;
+import top.silwings.core.web.vo.MockHandlerInfoResultVo;
+import top.silwings.core.web.vo.MockHandlerInfoVo;
+import top.silwings.core.web.vo.converter.MockHandlerVoConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,12 +36,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/dynamic/mock/handler")
 public class MockHandlerController {
 
-    private final MockHandlerRepository mockHandlerRepository;
+    private final MockHandlerApplication mockHandlerApplication;
 
     private final MockHandlerVoConverter mockHandlerVoConverter;
 
-    public MockHandlerController(final MockHandlerRepository mockHandlerRepository, final MockHandlerVoConverter mockHandlerVoConverter) {
-        this.mockHandlerRepository = mockHandlerRepository;
+    public MockHandlerController(final MockHandlerApplication mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter) {
+        this.mockHandlerApplication = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
     }
 
@@ -47,13 +50,7 @@ public class MockHandlerController {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoVo);
 
-        final Identity handlerId;
-
-        if (null == mockHandlerDto.getHandlerId()) {
-            handlerId = this.mockHandlerRepository.create(mockHandlerDto);
-        } else {
-            handlerId = this.mockHandlerRepository.update(mockHandlerDto);
-        }
+        final Identity handlerId = this.mockHandlerApplication.save(mockHandlerDto);
 
         return Result.ok(handlerId.getId());
     }
@@ -61,7 +58,7 @@ public class MockHandlerController {
     @GetMapping("/{handlerId}")
     public Result<MockHandlerInfoResultVo> find(@PathVariable("handlerId") final Long handlerId) {
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerRepository.find(Identity.from(handlerId));
+        final MockHandlerDto mockHandlerDto = this.mockHandlerApplication.find(Identity.from(handlerId));
 
         final MockHandlerInfoResultVo mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
@@ -76,7 +73,15 @@ public class MockHandlerController {
                                                      @RequestParam("requestUri") final String requestUri,
                                                      @RequestParam("label") final String label) {
 
-        final PageData<MockHandlerDto> pageData = this.mockHandlerRepository.query(null, name, httpMethod, requestUri, label, PageParam.of(pageNum, pageSize));
+        final QueryConditionDto queryCondition = QueryConditionDto.builder()
+                .handlerIdList(null)
+                .name(name)
+                .httpMethod(httpMethod)
+                .requestUri(requestUri)
+                .label(label)
+                .build();
+
+        final PageData<MockHandlerDto> pageData = this.mockHandlerApplication.query(queryCondition, PageParam.of(pageNum, pageSize));
 
         final List<MockHandlerInfoResultVo> mockHandlerInfoVoList = pageData.getList().stream()
                 .map(this.mockHandlerVoConverter::convert)
@@ -88,7 +93,15 @@ public class MockHandlerController {
     @DeleteMapping("/{handlerId}")
     public Result<Void> delete(@PathVariable("handlerId") final Long handlerId) {
 
-        this.mockHandlerRepository.delete(Identity.from(handlerId));
+        this.mockHandlerApplication.delete(Identity.from(handlerId));
+
+        return Result.ok();
+    }
+
+    @PostMapping("/enableStatus")
+    public Result<Void> updateEnableStatus(@RequestBody final EnableStatusVo enableStatusVo) {
+
+        this.mockHandlerApplication.updateEnableStatus(Identity.from(enableStatusVo.getHandlerId()), EnableStatus.valueOf(enableStatusVo.getEnableStatus()));
 
         return Result.ok();
     }
