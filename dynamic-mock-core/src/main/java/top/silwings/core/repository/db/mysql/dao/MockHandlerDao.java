@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,12 +21,13 @@ import javax.persistence.Table;
 public class MockHandlerDao {
 
     public static final String C_ENABLE_STATUS = "enableStatus";
-    public static final String C_HANDLER_ID = "name";
+    public static final String C_HANDLER_ID = "handlerId";
     public static final String C_NAME = "name";
     public static final String C_REQUEST_URI = "requestUri";
     public static final String C_LABEL = "label";
 
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long handlerId;
 
     @Column(name = "enable_status")
@@ -37,7 +39,7 @@ public class MockHandlerDao {
     @Column(name = "http_methods")
     private String httpMethods;
 
-    @Column(name = "http_methods")
+    @Column(name = "request_uri")
     private String requestUri;
 
     @Column(name = "label")

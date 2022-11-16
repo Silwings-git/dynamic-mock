@@ -10,6 +10,7 @@ import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.structure.ArrayNode;
 import top.silwings.core.handler.tree.structure.ObjectNode;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class JsonNodeParser {
         if (bean instanceof String) {
             return this.doParse(JSON.parseObject((String) bean));
         }
-        return this.doParse(JSON.parseObject(JSON.toJSONString(bean)));
+        return this.doParse(JSON.parseObject(JsonUtils.toJSONString(bean)));
     }
 
     /**
@@ -87,9 +88,7 @@ public class JsonNodeParser {
 
         } else if (this.isString(obj) && this.isDynamic((String) obj)) {
 
-            final String str = (String) obj;
-            // 在构建Expression时需要去掉表达式的首尾标志符,即 '${' 和 '}'
-            return this.dynamicValueFactory.buildDynamicValue(str.substring(2, str.length() - 1));
+            return this.dynamicValueFactory.buildDynamicValue((String) obj);
 
         } else {
             return StaticValueNode.from(obj);

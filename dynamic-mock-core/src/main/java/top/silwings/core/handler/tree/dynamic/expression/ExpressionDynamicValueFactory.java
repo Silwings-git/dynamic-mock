@@ -53,7 +53,6 @@ public class ExpressionDynamicValueFactory {
             return StaticValueExpressionDynamicValue.from(this.keepOriginalExpressionParser.parse(expression));
         }
 
-
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
 
         if (commaPriorityResult.hasCommaPriority()) {

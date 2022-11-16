@@ -50,7 +50,7 @@ public class MockHandlerVoConverter {
         final MockHandlerInfoResultVo resultVo = new MockHandlerInfoResultVo();
 
         resultVo.setEnableStatus(dto.getEnableStatus().code());
-        resultVo.setHandlerId(String.valueOf(dto.getHandlerId().getId()));
+        resultVo.setHandlerId(dto.getHandlerId().stringValue());
         resultVo.setName(dto.getName());
         resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
         resultVo.setRequestUri(dto.getRequestUri());

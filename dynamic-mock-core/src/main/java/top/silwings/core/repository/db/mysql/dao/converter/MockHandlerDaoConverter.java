@@ -11,6 +11,7 @@ import top.silwings.core.repository.dto.MockHandlerDto;
 import top.silwings.core.repository.dto.MockResponseInfoDto;
 import top.silwings.core.repository.dto.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class MockHandlerDaoConverter {
     public MockHandlerDao convert(final MockHandlerDto mockHandlerDto) {
 
         final MockHandlerDao dao = new MockHandlerDao();
-        dao.setHandlerId(mockHandlerDto.getHandlerId().getId());
+        dao.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::longValue));
         dao.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
         dao.setName(mockHandlerDto.getName());
         if (CollectionUtils.isNotEmpty(mockHandlerDto.getHttpMethods())) {
@@ -40,10 +41,9 @@ public class MockHandlerDaoConverter {
         dao.setRequestUri(mockHandlerDto.getRequestUri());
         dao.setLabel(mockHandlerDto.getLabel());
         dao.setDelayTime(mockHandlerDto.getDelayTime());
-        dao.setCustomizeSpace(JSON.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
-        dao.setResponses(JSON.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
-        dao.setTasks(JSON.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getTasks(), EMPTY_LIST)));
-
+        dao.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
+        dao.setResponses(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
+        dao.setTasks(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getTasks(), EMPTY_LIST)));
         return dao;
     }
 

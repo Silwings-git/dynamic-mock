@@ -49,14 +49,14 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
         final MockHandlerDao mockHandlerDao = this.mockHandlerDaoConverter.convert(mockHandlerDto);
         mockHandlerDao.setHandlerId(null);
 
-        final long handlerId = this.mockHandlerMapper.insertSelective(mockHandlerDao);
+        this.mockHandlerMapper.insertSelective(mockHandlerDao);
 
         final List<MockHandlerUniqueDao> uniqueList = mockHandlerDto.getHttpMethods().stream()
-                .map(method -> MockHandlerUniqueDao.of(handlerId, mockHandlerDao.getRequestUri(), method.name()))
+                .map(method -> MockHandlerUniqueDao.of(mockHandlerDao.getHandlerId(), mockHandlerDao.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
         this.mockHandlerUniqueMapper.insertList(uniqueList);
 
-        return Identity.from(handlerId);
+        return Identity.from(mockHandlerDao.getHandlerId());
     }
 
     @Transactional
@@ -69,18 +69,18 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example updateCondition = new Example(MockHandlerDao.class);
         updateCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.getId());
+                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
 
         this.mockHandlerMapper.updateByConditionSelective(mockHandlerDao, updateCondition);
 
         // 删除唯一表该handler的数据,重新创建
         final Example deleteCondition = new Example(MockHandlerUniqueDao.class);
         deleteCondition.createCriteria()
-                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId.getId());
+                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteCondition);
 
         final List<MockHandlerUniqueDao> uniqueList = mockHandlerDto.getHttpMethods().stream()
-                .map(method -> MockHandlerUniqueDao.of(handlerId.getId(), mockHandlerDao.getRequestUri(), method.name()))
+                .map(method -> MockHandlerUniqueDao.of(handlerId.longValue(), mockHandlerDao.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
         this.mockHandlerUniqueMapper.insertList(uniqueList);
 
@@ -91,7 +91,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     public MockHandlerDto find(final Identity handlerId) {
 
         final MockHandlerDao findCondition = new MockHandlerDao();
-        findCondition.setHandlerId(handlerId.getId());
+        findCondition.setHandlerId(handlerId.longValue());
 
         final MockHandlerDao mockHandlerDao = this.mockHandlerMapper.selectOne(findCondition);
 
@@ -118,7 +118,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
                 .andEqualTo(MockHandlerDao.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
         if (null != queryCondition.getHandlerIdList()) {
-            criteria.andIn(MockHandlerDao.C_HANDLER_ID, queryCondition.getHandlerIdList());
+            criteria.andIn(MockHandlerDao.C_HANDLER_ID, queryCondition.getHandlerIdList().stream().map(Identity::longValue).collect(Collectors.toList()));
         }
 
         final long total = this.mockHandlerMapper.selectCountByExample(condition);
@@ -140,12 +140,12 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example deleteHandlerCondition = new Example(MockHandlerDao.class);
         deleteHandlerCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId);
+                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerMapper.deleteByCondition(deleteHandlerCondition);
 
         final Example deleteUniqueCondition = new Example(MockHandlerUniqueDao.class);
         deleteUniqueCondition.createCriteria()
-                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId);
+                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
     }
 
@@ -158,7 +158,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example enableCondition = new Example(MockHandlerDao.class);
         enableCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.getId());
+                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
 
         this.mockHandlerMapper.updateByConditionSelective(mockHandler, enableCondition);
     }

@@ -177,11 +177,13 @@ public class RequestContext {
                     .formBody(Collections.emptyMap());
 
             final String contentType = request.getContentType();
-            if (contentType.contains("form-data")) {
-                final Map<String, String[]> map = request.getParameterMap();
-                map.forEach((key, value) -> parameters.put(key, Arrays.stream(value).collect(Collectors.toList())));
-            } else {
-                buildBody(request, builder, contentType);
+            if (StringUtils.isNotBlank(contentType)) {
+                if (contentType.contains("form-data")) {
+                    final Map<String, String[]> map = request.getParameterMap();
+                    map.forEach((key, value) -> parameters.put(key, Arrays.stream(value).collect(Collectors.toList())));
+                } else {
+                    buildBody(request, builder, contentType);
+                }
             }
         }
 

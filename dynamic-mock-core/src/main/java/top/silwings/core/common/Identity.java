@@ -1,7 +1,6 @@
 package top.silwings.core.common;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
 
 import java.util.Objects;
 
@@ -12,7 +11,6 @@ import java.util.Objects;
  * @Date 2022/11/14 22:08
  * @Since
  **/
-@Getter
 public class Identity {
 
     /**
@@ -45,6 +43,19 @@ public class Identity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return this.stringValue();
+    }
+
+    public long longValue() {
+        return this.id;
+    }
+
+    public String stringValue() {
+        return String.valueOf(this.longValue());
     }
 
 }

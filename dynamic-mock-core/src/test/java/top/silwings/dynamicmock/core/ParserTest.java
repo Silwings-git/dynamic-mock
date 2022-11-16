@@ -16,11 +16,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.MockSpringApplication;
 import top.silwings.core.exceptions.DynamicDataException;
 import top.silwings.core.handler.Context;
-import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
+import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
@@ -29,10 +29,12 @@ import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.repository.dto.MockHandlerDto;
 import top.silwings.core.repository.dto.TaskRequestDto;
+import top.silwings.core.utils.JsonUtils;
 import top.silwings.core.web.MockHandlerPoint;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -86,11 +88,17 @@ public class ParserTest {
         str = "<2+2>";
         str = "2+2";
         str = "<2+2";
+        str = "#eq(#uuid(),1)";
+        str = "#eq(#search(abcMap.list[0],customizeSpace),-1)";
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
+        final HashMap<String, Object> abcMap = new HashMap<>();
+        abcMap.put("list", Arrays.asList(-1));
+
         final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
         requestContext.addCustomizeParam("paramA", -1);
+        requestContext.addCustomizeParam("abcMap", abcMap);
         requestContext.addCustomizeParam("param", 20);
         requestContext.addCustomizeParam("40", true);
         requestContext.addCustomizeParam("age", 18);
@@ -103,7 +111,7 @@ public class ParserTest {
                 .requestContext(requestContext)
                 .build();
 
-        System.out.println(JSON.toJSONString(new NodeInterpreter(dynamicValue).interpret(context)));
+        System.out.println(JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(context)));
     }
 
     @Test
@@ -119,7 +127,7 @@ public class ParserTest {
 
         final Object interpret = analyze1.interpret(context, Collections.emptyList());
 
-        log.info(JSON.toJSONString(interpret));
+        log.info(JsonUtils.toJSONString(interpret));
     }
 
     @Test
@@ -155,7 +163,7 @@ public class ParserTest {
 
         }
 
-        log.info(JSON.toJSONString(stack.pop(), SerializerFeature.WriteMapNullValue));
+        log.info(JsonUtils.toJSONString(stack.pop(), SerializerFeature.WriteMapNullValue));
     }
 
     @Test
@@ -200,7 +208,7 @@ public class ParserTest {
 
         final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(this.noHandlerFoundException, request);
 
-        log.info(JSON.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
+        log.info(JsonUtils.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
 
         TimeUnit.SECONDS.sleep(30);
     }

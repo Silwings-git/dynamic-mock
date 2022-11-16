@@ -24,7 +24,11 @@ public class DynamicValueFactory {
 
     public DynamicValue buildDynamicValue(final String expression) {
 
-        final String actualExpression = expression.replace(" ", "");
+        String actualExpression = expression.replace(" ", "");
+
+        if (this.isDynamic(expression)) {
+            actualExpression = expression.substring(2, expression.length() - 1);
+        }
 
         // 选择第一个工厂
         // 检查是否是单个函数表达式,如果是使用函数工厂,否则使用表达式工厂
@@ -33,6 +37,11 @@ public class DynamicValueFactory {
         } else {
             return this.expressionFactory.buildDynamicValue(actualExpression, this);
         }
+    }
+
+    private boolean isDynamic(final String str) {
+        // 仅以${开头,}结尾的视为动态表达式
+        return str.startsWith("${") && str.endsWith("}");
     }
 
 }

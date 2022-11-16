@@ -1,6 +1,5 @@
 package top.silwings.core.handler.task;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.AsyncRestTemplate;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Map;
 
@@ -96,9 +96,9 @@ public class MockTask implements Runnable {
                 this.getTaskId(),
                 this.getRequestUrl(),
                 this.getHttpMethod(),
-                JSON.toJSONString(this.getHeaders()),
-                JSON.toJSONString(this.getUriVariables()),
-                JSON.toJSONString(this.getRequestUrl()));
+                JsonUtils.toJSONString(this.getHeaders()),
+                JsonUtils.toJSONString(this.getUriVariables()),
+                JsonUtils.toJSONString(this.getRequestUrl()));
 
         final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(this.getRequestUrl(), this.getHttpMethod(), request, String.class, this.getUriVariables());
 

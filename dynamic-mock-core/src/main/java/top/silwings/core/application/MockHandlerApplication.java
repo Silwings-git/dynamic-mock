@@ -61,6 +61,7 @@ public class MockHandlerApplication {
     @Transactional
     public void delete(final Identity handlerId) {
         this.mockHandlerRepository.delete(handlerId);
+        this.mockHandlerManager.unregisterHandler(handlerId);
     }
 
     @Transactional

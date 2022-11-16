@@ -46,17 +46,17 @@ public class MockHandlerController {
     }
 
     @PostMapping
-    public Result<Long> save(@RequestBody final MockHandlerInfoVo mockHandlerInfoVo) {
+    public Result<Identity> save(@RequestBody final MockHandlerInfoVo mockHandlerInfoVo) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoVo);
 
         final Identity handlerId = this.mockHandlerApplication.save(mockHandlerDto);
 
-        return Result.ok(handlerId.getId());
+        return Result.ok(handlerId);
     }
 
     @GetMapping("/{handlerId}")
-    public Result<MockHandlerInfoResultVo> find(@PathVariable("handlerId") final Long handlerId) {
+    public Result<MockHandlerInfoResultVo> find(@PathVariable("handlerId") final String handlerId) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerApplication.find(Identity.from(handlerId));
 
@@ -91,7 +91,7 @@ public class MockHandlerController {
     }
 
     @DeleteMapping("/{handlerId}")
-    public Result<Void> delete(@PathVariable("handlerId") final Long handlerId) {
+    public Result<Void> delete(@PathVariable("handlerId") final String handlerId) {
 
         this.mockHandlerApplication.delete(Identity.from(handlerId));
 

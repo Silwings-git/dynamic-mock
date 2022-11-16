@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.core.common.EnableStatus;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class QueryConditionDto {
     /**
      * 处理器id集
      */
-    private List<Long> handlerIdList;
+    private List<Identity> handlerIdList;
 
     /**
      * 处理器名称右模糊
