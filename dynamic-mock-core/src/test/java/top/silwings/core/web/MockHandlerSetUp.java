@@ -48,8 +48,8 @@ public class MockHandlerSetUp {
     private static List<TaskInfoVo> buildTaskList() {
 
         final Map<String, String> body = new HashMap<>();
-        body.put("name", "${#search(customizeSpace.name)}");
-        body.put("underAge", "${#search(customizeSpace.age)<18}");
+        body.put("name", "${#search(name,customizeSpace)}");
+        body.put("underAge", "${#search(age,customizeSpace)<18}");
 
         final TaskRequestInfoVo requestInfoVo = TaskRequestInfoVo.builder()
                 .requestUrl("/test")

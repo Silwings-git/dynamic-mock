@@ -3,9 +3,9 @@ package top.silwings.core.handler.task;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.AsyncRestTemplate;
@@ -86,25 +86,27 @@ public class MockTask implements Runnable {
 
     protected void sendRequest(final AsyncRestTemplate asyncRestTemplate) {
 
-        final RequestEntity<Object> request =
-                RequestEntity
-                        .method(this.getHttpMethod(), this.getRequestUrl(), this.getUriVariables())
-                        .headers(this.getHeaders())
-                        .body(this.getBody());
+        final String actualRequestUrl = this.getActualRequestUrl(this.getRequestUrl());
+
+        final HttpEntity<Object> httpEntity = new HttpEntity<>(this.getBody(), this.getHeaders());
 
         log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
                 this.getTaskId(),
-                this.getRequestUrl(),
+                actualRequestUrl,
                 this.getHttpMethod(),
                 JsonUtils.toJSONString(this.getHeaders()),
                 JsonUtils.toJSONString(this.getUriVariables()),
-                JsonUtils.toJSONString(this.getRequestUrl()));
+                JsonUtils.toJSONString(this.getBody()));
 
-        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(this.getRequestUrl(), this.getHttpMethod(), request, String.class, this.getUriVariables());
+        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(actualRequestUrl, this.getHttpMethod(), httpEntity, String.class, this.getUriVariables());
 
         future.addCallback(result -> log.debug("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.getName(), this.getHttpMethod(), result)
                 , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.getName(), this.getHttpMethod(), ex.getMessage()));
 
+    }
+
+    private String getActualRequestUrl(final String requestUrl) {
+        return requestUrl.startsWith("http://") ? requestUrl : "http://" + requestUrl;
     }
 
 }

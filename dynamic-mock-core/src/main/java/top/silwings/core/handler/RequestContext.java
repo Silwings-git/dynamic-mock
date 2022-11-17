@@ -177,27 +177,14 @@ public class RequestContext {
                     .formBody(Collections.emptyMap());
 
             final String contentType = request.getContentType();
-            if (StringUtils.isNotBlank(contentType)) {
-                if (contentType.contains("form-data")) {
-                    final Map<String, String[]> map = request.getParameterMap();
-                    map.forEach((key, value) -> parameters.put(key, Arrays.stream(value).collect(Collectors.toList())));
-                } else {
-                    buildBody(request, builder, contentType);
-                }
-            } else {
-                // contentType为空时,默认使用json/text解析
-                try {
-                    final String bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            if (StringUtils.isBlank(contentType) || !contentType.contains("form-data")) {
 
-                    if (JSON.isValidObject(bodyStr)) {
-                        builder.body(JSON.parseObject(bodyStr));
-                    } else {
-                        builder.body(bodyStr);
-                    }
-                } catch (IOException e) {
-                    log.error("Request information parsing failed.", e);
-                }
+                buildBody(request, builder, contentType);
+
             }
+
+            final Map<String, String[]> map = request.getParameterMap();
+            map.forEach((key, value) -> parameters.put(key, Arrays.stream(value).collect(Collectors.toList())));
         }
 
         private static void buildBody(final HttpServletRequest request, final RequestInfoBuilder builder, final String contentType) {
@@ -207,27 +194,58 @@ public class RequestContext {
             } catch (IOException e) {
                 log.error("Request information parsing failed.", e);
             }
-            if (contentType.contains("x-www-form-urlencoded")) {
-                final Map<String, List<String>> formMap = new HashMap<>();
-                builder.body(formMap)
-                        .formBody(formMap);
-                if (StringUtils.isNotBlank(bodyStr)) {
-                    final String[] split = bodyStr.split("&");
-                    for (final String kv : split) {
-                        final String[] kvArray = kv.split("=");
-                        final List<String> valueList = formMap.computeIfAbsent(kvArray[0], key -> new ArrayList<>());
-                        valueList.add(kvArray.length == 2 ? kvArray[1] : "");
-                    }
-                }
+            if (StringUtils.isBlank(contentType)) {
+
+                // contentType为空时,默认使用json/text解析
+                buildBlankContentTypeBody(builder, bodyStr);
+
+            } else if (contentType.contains("x-www-form-urlencoded")) {
+
+                buildFormUrlencodedBody(builder, bodyStr);
+
             } else if (contentType.contains("json")) {
-                if (JSON.isValidObject(bodyStr)) {
-                    final JSONObject jsonBody = JSON.parseObject(bodyStr);
-                    builder.body(jsonBody)
-                            .jsonBody(jsonBody);
-                }
+
+                buildJsonBody(builder, bodyStr);
+
+            } else {
+
+                builder.body(bodyStr)
+                        .textBody(bodyStr);
+            }
+        }
+
+        private static void buildBlankContentTypeBody(final RequestInfoBuilder builder, final String bodyStr) {
+            if (JSON.isValidObject(bodyStr)) {
+                final JSONObject jsonBody = JSON.parseObject(bodyStr);
+                builder.body(jsonBody)
+                        .jsonBody(jsonBody);
             } else {
                 builder.body(bodyStr)
                         .textBody(bodyStr);
+            }
+        }
+
+        private static void buildJsonBody(final RequestInfoBuilder builder, final String bodyStr) {
+            if (JSON.isValidObject(bodyStr)) {
+                final JSONObject jsonBody = JSON.parseObject(bodyStr);
+                builder.body(jsonBody)
+                        .jsonBody(jsonBody);
+            } else {
+                log.error("The request body does not have a valid data in json format.");
+            }
+        }
+
+        private static void buildFormUrlencodedBody(final RequestInfoBuilder builder, final String bodyStr) {
+            final Map<String, List<String>> formMap = new HashMap<>();
+            builder.body(formMap)
+                    .formBody(formMap);
+            if (StringUtils.isNotBlank(bodyStr)) {
+                final String[] split = bodyStr.split("&");
+                for (final String kv : split) {
+                    final String[] kvArray = kv.split("=");
+                    final List<String> valueList = formMap.computeIfAbsent(kvArray[0], key -> new ArrayList<>());
+                    valueList.add(kvArray.length == 2 ? kvArray[1] : "");
+                }
             }
         }
 
