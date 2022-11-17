@@ -26,8 +26,8 @@ public class DynamicValueFactory {
 
         String actualExpression = expression.replace(" ", "");
 
-        if (this.isDynamic(expression)) {
-            actualExpression = expression.substring(2, expression.length() - 1);
+        if (this.isDynamic(actualExpression)) {
+            actualExpression = actualExpression.substring(2, actualExpression.length() - 1);
         }
 
         // 选择第一个工厂

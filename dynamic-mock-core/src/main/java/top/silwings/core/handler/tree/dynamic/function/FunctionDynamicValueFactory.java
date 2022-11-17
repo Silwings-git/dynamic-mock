@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.function;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.tree.dynamic.DynamicFactory;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -59,7 +59,7 @@ public class FunctionDynamicValueFactory {
             }
         }
 
-        throw new DynamicDataException("函数不存在");
+        throw new DynamicMockException("Unsupported function expression: " + expression);
     }
 
     public static class MethodExpressionParser implements Parser<String, MethodInfo> {
@@ -73,7 +73,7 @@ public class FunctionDynamicValueFactory {
             if (matcher.find()) {
                 return new MethodInfo(matcher.group("name"), matcher.group("params"));
             }
-            throw new DynamicDataException("方法解析失败");
+            throw new DynamicMockException("Function parsing failed: " + expression);
         }
 
         public boolean support(final String expression) {

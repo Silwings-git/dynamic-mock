@@ -2,7 +2,7 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 
 import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -47,14 +47,18 @@ public class ArithmeticEqualOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Boolean interpret(final Context context, final List<Object> childNodeValueList) {
-            if (childNodeValueList.size() < 2) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+        public Boolean doInterpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() < this.getNodeCount() || this.getNodeCount() != 2) {
+                throw new DynamicMockException("Parameter incorrectly of `==` operator. expect: 2, actual: " + childNodeValueList.size());
             }
 
             return TypeUtils.toBigDecimal(childNodeValueList.get(0)).compareTo(TypeUtils.toBigDecimal(childNodeValueList.get(1))) == 0;
         }
 
+        @Override
+        protected String symbol() {
+            return SYMBOL;
+        }
     }
 
     @Override

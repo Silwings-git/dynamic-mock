@@ -54,7 +54,7 @@ public class MockTaskInfo extends AbstractSupportAble {
         final Object interpret = this.mockTaskInterpreter.interpret(context);
 
         if (!(interpret instanceof Map)) {
-            throw new DynamicMockException();
+            throw new DynamicMockException("Task parsing failed: " + this.name);
         }
 
         final Map<?, ?> map = (Map<?, ?>) interpret;

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.NodeParseException;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.structure.ArrayNode;
@@ -58,7 +57,7 @@ public class JsonNodeParser {
             }
             node = objectNode;
 
-        } else if (json instanceof JSONArray) {
+        } else {
 
             final JSONArray parseArray = (JSONArray) json;
             // 每遍历到一个JSONObject,添加一层ArrayNode
@@ -67,9 +66,6 @@ public class JsonNodeParser {
                 arrayNode.add(this.buildNode(value));
             }
             node = arrayNode;
-
-        } else {
-            throw new NodeParseException();
         }
 
         return node;

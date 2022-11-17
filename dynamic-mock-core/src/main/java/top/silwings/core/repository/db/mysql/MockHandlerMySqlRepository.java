@@ -96,7 +96,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
         final MockHandlerDao mockHandlerDao = this.mockHandlerMapper.selectOne(findCondition);
 
         if (null == mockHandlerDao) {
-            throw new DynamicMockException("handler不存在");
+            throw new DynamicMockException("Mock handler does not exist: " + handlerId);
         }
 
         return this.mockHandlerDaoConverter.convert(mockHandlerDao);

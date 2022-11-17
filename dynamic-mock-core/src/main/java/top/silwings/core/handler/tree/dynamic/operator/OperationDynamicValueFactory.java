@@ -1,7 +1,8 @@
 package top.silwings.core.handler.tree.dynamic.operator;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 
@@ -35,7 +36,11 @@ public class OperationDynamicValueFactory {
         // 先将字符串转后缀表达式,再创建对象
         final List<String> suffixList = this.infixToSuffix(symbolList);
 
-        return this.buildOperationValue(suffixList, dynamicValueFactory);
+        try {
+            return this.buildOperationValue(suffixList, dynamicValueFactory);
+        } catch (Exception e) {
+            throw new DynamicMockException("Operator expression parsing failed. symbols: " + JSON.toJSONString(symbolList), e);
+        }
     }
 
     private DynamicValue buildOperationValue(final List<String> symbolList, final DynamicValueFactory dynamicValueFactory) {
@@ -59,7 +64,7 @@ public class OperationDynamicValueFactory {
         }
 
         if (cache.size() != 1) {
-            throw new DynamicDataException("无根节点");
+            throw new DynamicMockException("Missing root node");
         }
 
         return cache.get(0);
@@ -73,7 +78,7 @@ public class OperationDynamicValueFactory {
             return factory.buildFunction(Stream.of(firstValue, secondValue).collect(Collectors.toList()));
         }
 
-        throw new DynamicDataException("操作符不存在");
+        throw new DynamicMockException("Operator does not exist: " + symbol);
     }
 
     private List<String> infixToSuffix(final List<String> symbolList) {
@@ -116,7 +121,7 @@ public class OperationDynamicValueFactory {
     private int getPriority(final String symbol) {
         final OperatorFactory factory = this.filter(symbol);
         if (null == factory) {
-            throw new DynamicDataException("操作符不存在");
+            throw new DynamicMockException("Operator does not exist: " + symbol);
         }
         return factory.getPriority();
     }

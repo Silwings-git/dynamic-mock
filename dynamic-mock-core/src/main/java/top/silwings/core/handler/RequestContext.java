@@ -184,6 +184,19 @@ public class RequestContext {
                 } else {
                     buildBody(request, builder, contentType);
                 }
+            } else {
+                // contentType为空时,默认使用json/text解析
+                try {
+                    final String bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+
+                    if (JSON.isValidObject(bodyStr)) {
+                        builder.body(JSON.parseObject(bodyStr));
+                    } else {
+                        builder.body(bodyStr);
+                    }
+                } catch (IOException e) {
+                    log.error("Request information parsing failed.", e);
+                }
             }
         }
 
@@ -192,7 +205,7 @@ public class RequestContext {
             try {
                 bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             } catch (IOException e) {
-                log.error("解析请求失败.", e);
+                log.error("Request information parsing failed.", e);
             }
             if (contentType.contains("x-www-form-urlencoded")) {
                 final Map<String, List<String>> formMap = new HashMap<>();

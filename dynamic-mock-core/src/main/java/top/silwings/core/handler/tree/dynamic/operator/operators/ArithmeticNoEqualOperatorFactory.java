@@ -54,13 +54,18 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
             return Boolean.FALSE.equals(this.arithmeticEqualOperator.interpret(context, childNodeValueList));
         }
 
         @Override
         public int getNodeCount() {
             return this.arithmeticEqualOperator.getNodeCount();
+        }
+
+        @Override
+        protected String symbol() {
+            return SYMBOL;
         }
     }
 

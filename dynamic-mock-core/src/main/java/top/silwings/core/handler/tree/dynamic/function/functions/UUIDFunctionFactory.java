@@ -1,8 +1,10 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
+import com.alibaba.fastjson2.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -21,6 +23,9 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class UUIDFunctionFactory implements FunctionFactory {
+
+    private static final String SYMBOL = "#uuid(...)";
+
     @Override
     public boolean support(final String methodName) {
         return "uuid".equalsIgnoreCase(methodName);
@@ -33,7 +38,12 @@ public class UUIDFunctionFactory implements FunctionFactory {
 
     /**
      * uuid函数
-     * #uuid()
+     * #uuid(prefix,length,replace)
+     * 三个参数全部选填,但填后面的参数时,前面的参数必须全部填写,示例: #uuid(,18),#uuid(,,true)
+     * prefix: 字符类型, 生成的id以什么作为前缀
+     * length: 数值类型, 生成的id的长度(不包含prefix),有最大值限制,如果replace为true,仅支持32,否则支持36
+     * replace: 布尔类型, 是否将'-'替换为''
+     * 如果参数不合法不会抛出异常,而是忽略该参数
      */
     public static class UUIDFunction extends AbstractDynamicValue {
 
@@ -46,12 +56,61 @@ public class UUIDFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
-            if (this.getNodeCount() > 0 && childNodeValueList.size() < this.getNodeCount()) {
-                throw new DynamicDataException("缺少参数");
+        public String doInterpret(final Context context, final List<Object> childNodeValueList) {
+            if (this.getNodeCount() > 0 && childNodeValueList.size() != this.getNodeCount()) {
+                throw new DynamicMockException("Parameter incorrectly of `uuid` function");
             }
 
-            return UUID.randomUUID().toString();
+            // 前缀
+            String prefix = "";
+            if (!childNodeValueList.isEmpty()
+                    && null != childNodeValueList.get(0)
+                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(0)))) {
+
+                prefix = String.valueOf(childNodeValueList.get(0));
+            }
+
+            // 长度
+            int length = 36;
+            if (childNodeValueList.size() >= 2
+                    && null != childNodeValueList.get(1)
+                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(1)))) {
+
+                try {
+                    length = TypeUtils.toBigDecimal(childNodeValueList.get(1)).intValue();
+                } catch (Exception e) {
+                    log.error("The parameter of `uuid` function cannot be converted to a numeric value.");
+                }
+            }
+
+            // 是否替换
+            boolean replace = false;
+            if (childNodeValueList.size() >= 3 && null != childNodeValueList.get(2)) {
+
+                try {
+                    replace = TypeUtils.toBooleanValue(childNodeValueList.get(2));
+                } catch (Exception e) {
+                    log.error("The parameter of `uuid` function cannot be converted to boolean value.");
+                }
+            }
+
+            final StringBuilder builder = new StringBuilder(prefix);
+
+            String uuid = UUID.randomUUID().toString();
+            if (replace) {
+                uuid = uuid.replace("-", "");
+            }
+
+            if (length != 36 && uuid.length() > length) {
+                uuid = uuid.substring(0, length);
+            }
+
+            return builder.append(uuid).toString();
+        }
+
+        @Override
+        protected String symbol() {
+            return SYMBOL;
         }
 
     }

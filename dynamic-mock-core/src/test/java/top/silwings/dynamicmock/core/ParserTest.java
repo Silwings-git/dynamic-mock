@@ -14,7 +14,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.core.MockSpringApplication;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
@@ -90,6 +90,16 @@ public class ParserTest {
         str = "<2+2";
         str = "#eq(#uuid(),1)";
         str = "#eq(#search(abcMap.list[0],customizeSpace),-1)";
+        str = "#uuid(,,)";
+        str = "#uuid(,,false)";
+        str = "#uuid(,,true)";
+        str = "#uuid(,10)";
+        str = "#uuid(,10,true)";
+        // 触发表达式解析异常
+        str = "#uuid(UserCode-,10,true)";
+        str = "#uuid(<UserCode->,10,true)";
+        str = "             10  + 1-1        == 11-1 ";
+
 
         final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
@@ -146,7 +156,7 @@ public class ParserTest {
             final int nodeCount = ele.getNodeCount();
 
             if (stack.size() < nodeCount) {
-                throw new DynamicDataException("缺少参数");
+                throw new DynamicMockException("缺少参数");
             }
 
             final List<Object> arrayList = new ArrayList<>();
@@ -203,6 +213,7 @@ public class ParserTest {
 
         final MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod(definition.getHttpMethods().get(1).name());
+//        request.addHeader("Content-Type","application/json");
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
@@ -210,7 +221,7 @@ public class ParserTest {
 
         log.info(JsonUtils.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
 
-        TimeUnit.SECONDS.sleep(30);
+        TimeUnit.SECONDS.sleep(5);
     }
 
     @Getter

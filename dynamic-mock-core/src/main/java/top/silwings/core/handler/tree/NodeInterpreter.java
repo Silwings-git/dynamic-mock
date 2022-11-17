@@ -1,7 +1,7 @@
 package top.silwings.core.handler.tree;
 
 import lombok.Getter;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class NodeInterpreter {
             final int nodeCount = node.getNodeCount();
 
             if (stack.size() < nodeCount) {
-                throw new DynamicDataException("缺少参数");
+                throw new DynamicMockException("The number of nodes is not as expected. expect : >=" + nodeCount + " .actual: " + stack.size());
             }
 
             final List<Object> arrayList = new ArrayList<>();
@@ -54,7 +54,7 @@ public class NodeInterpreter {
 
 
         if (stack.size() != 1) {
-            throw new DynamicDataException();
+            throw new DynamicMockException("Missing root node");
         }
 
         return stack.pop();

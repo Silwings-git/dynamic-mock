@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
@@ -179,7 +179,7 @@ public class ExpressionDynamicValueFactory {
             if (matcher.find()) {
                 return matcher.group("content");
             } else {
-                throw new DynamicDataException("优先表达式解析失败.");
+                throw new DynamicMockException("Priority expression parsing failed: " + expression);
             }
         }
     }
@@ -198,7 +198,7 @@ public class ExpressionDynamicValueFactory {
             if (matcher.find()) {
                 return matcher.group("content");
             } else {
-                throw new DynamicDataException("保持原始表达式解析失败.");
+                throw new DynamicMockException("Failed to parse the original expression: " + expression);
             }
         }
     }

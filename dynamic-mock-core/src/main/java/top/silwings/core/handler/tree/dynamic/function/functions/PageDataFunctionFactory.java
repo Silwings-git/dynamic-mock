@@ -2,12 +2,13 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 
 import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicFunctionParamValidateException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.stream.Stream;
  **/
 @Component
 public class PageDataFunctionFactory implements FunctionFactory {
+
+    private static final String SYMBOL = "#pageData(...)";
 
     @Override
     public boolean support(final String methodName) {
@@ -56,19 +59,22 @@ public class PageDataFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
 
             if (this.getNodeCount() != childNodeValueList.size() || this.getNodeCount() != 4) {
-                throw new DynamicFunctionParamValidateException("pageDate");
+                throw new DynamicMockException("Parameter incorrectly of `pageData` function. expect: 4 , actual: " + childNodeValueList.size());
             }
 
             // 计算当前页返回数量
-            final int pageNum = TypeUtils.toInteger(childNodeValueList.get(0));
-            final int pageSize = TypeUtils.toInteger(childNodeValueList.get(1));
-            final int total = TypeUtils.toInteger(childNodeValueList.get(2));
+            final int pageNum = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(0)), -1);
+            final int pageSize = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), -1);
+            final int total = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(2)), -1);
 
             if (pageNum <= 0 || pageSize < 0 || total < 0) {
-                throw new DynamicFunctionParamValidateException("pageDate");
+                throw new DynamicMockException("Parameter specification error of `pageData` function." +
+                        " PageNum should be greater than or equal to 0, actual: " + childNodeValueList.get(0) +
+                        " . PageSize should be greater than 0, actual: " + childNodeValueList.get(1) +
+                        " . Total should be greater than 0, actual: " + childNodeValueList.get(2));
             }
 
             final int returnSize = Math.min(total - (pageNum - 1) * pageSize, pageSize);
@@ -84,6 +90,11 @@ public class PageDataFunctionFactory implements FunctionFactory {
                     .limit(returnSize)
                     .map(i -> pageDataInterpreter.interpret(context))
                     .collect(Collectors.toList());
+        }
+
+        @Override
+        protected String symbol() {
+            return SYMBOL;
         }
     }
 

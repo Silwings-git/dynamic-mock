@@ -122,13 +122,13 @@ public class MockHandlerDefinitionMock {
         definition.headers(null);
 
         final String s = "{" +
-//                "\"${#uuid()}\": \"${#uuid()}\"," +
-//                "\"uuidKeyA\": \"${#uuid()}\"," +
-//                "\"uuidKeyB\": \"${#uuid()}\"," +
-//                "\"name\": \"${#search(name)}\"," +
-//                "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
-//                "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
-//                "\"random\": \"${#search($.+(1+2*5))}\"," +
+                "\"${#uuid()}\": \"${#uuid()}\"," +
+                "\"uuidKeyA\": \"${#uuid()}\"," +
+                "\"uuidKeyB\": \"${#uuid()}\"," +
+                "\"name\": \"${#search(name)}\"," +
+                "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
+                "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
+                "\"random\": \"${#search($.+(1+2*5))}\"," +
                 " \"body\": \"${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),101,{\\\"code\\\": \\\"${#search(name)}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
                 "}";
         definition.body(JSON.parseObject(s));

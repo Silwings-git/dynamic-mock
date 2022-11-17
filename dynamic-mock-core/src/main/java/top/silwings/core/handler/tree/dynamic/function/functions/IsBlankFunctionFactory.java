@@ -20,6 +20,8 @@ import java.util.List;
 @Component
 public class IsBlankFunctionFactory implements FunctionFactory {
 
+    private static final String SYMBOL = "#isBlank(...)";
+
     @Override
     public boolean support(final String methodName) {
         return "isBlank".equalsIgnoreCase(methodName);
@@ -45,13 +47,17 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
             return CollectionUtils.isEmpty(childNodeValueList)
                     || null == childNodeValueList.get(0)
                     || (childNodeValueList.get(0) instanceof String
                     && StringUtils.isBlank((CharSequence) childNodeValueList.get(0)));
         }
 
+        @Override
+        protected String symbol() {
+            return SYMBOL;
+        }
     }
 
 }

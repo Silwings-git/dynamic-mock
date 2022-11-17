@@ -43,7 +43,7 @@ public class MockResponseInfo extends AbstractSupportAble {
         final Object interpret = this.responseInterpreter.interpret(context);
 
         if (!(interpret instanceof Map)) {
-            throw new DynamicMockException();
+            throw new DynamicMockException("Response parsing failed: " + this.name);
         }
 
         final Map<?, ?> map = (Map<?, ?>) interpret;

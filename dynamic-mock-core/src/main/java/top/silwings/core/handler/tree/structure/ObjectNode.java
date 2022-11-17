@@ -2,7 +2,7 @@ package top.silwings.core.handler.tree.structure;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.Node;
 
@@ -45,7 +45,7 @@ public class ObjectNode implements Node {
             if (obj instanceof List) {
                 final List<?> list = ((List<?>) obj);
                 if (list.size() < 2) {
-                    throw new DynamicDataException("缺少映射数据");
+                    throw new DynamicMockException("Missing mapping value.");
                 }
                 hashMap.put(list.get(0), list.get(1));
             }

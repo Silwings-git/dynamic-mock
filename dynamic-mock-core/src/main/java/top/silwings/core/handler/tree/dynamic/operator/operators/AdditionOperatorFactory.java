@@ -2,7 +2,7 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 
 import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicDataException;
+import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -47,9 +47,9 @@ public class AdditionOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
-            if (childNodeValueList.size() < this.getNodeCount()) {
-                throw new DynamicDataException("参数长度错误,需要 2,实际 " + childNodeValueList.size());
+        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+            if (childNodeValueList.size() != this.getNodeCount() || childNodeValueList.size() != 2) {
+                throw new DynamicMockException("Parameter incorrectly of `+` operator. expect: 2, actual: " + childNodeValueList.size());
             }
 
             try {
@@ -59,6 +59,10 @@ public class AdditionOperatorFactory implements OperatorFactory {
             }
         }
 
+        @Override
+        protected String symbol() {
+            return SYMBOL;
+        }
     }
 
     @Override
