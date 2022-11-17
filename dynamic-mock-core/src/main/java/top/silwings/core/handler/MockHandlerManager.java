@@ -1,8 +1,8 @@
 package top.silwings.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.EnableStatus;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 @Slf4j
 @Component
-public class MockHandlerManager implements ApplicationListener<ApplicationReadyEvent> {
+public class MockHandlerManager implements ApplicationRunner {
 
     private final Map<Identity, MockHandler> handlerMap;
 
@@ -71,12 +71,12 @@ public class MockHandlerManager implements ApplicationListener<ApplicationReadyE
      * 初始化全部启用的MockHandler并注册
      */
     @Override
-    public void onApplicationEvent(final ApplicationReadyEvent event) {
+    public void run(final ApplicationArguments args) {
 
         long total = -1;
 
         do {
-            final PageData<MockHandlerDto> pageData = this.mockHandlerRepository.query(QueryConditionDto.builder().enableStatus(EnableStatus.ENABLE).build(), PageParam.of(1, 1000));
+            final PageData<MockHandlerDto> pageData = this.mockHandlerRepository.query(QueryConditionDto.builder().enableStatus(EnableStatus.ENABLE).build(), PageParam.of(1, 200));
             if (total < 0) {
                 total = pageData.getTotal();
             }
@@ -85,4 +85,5 @@ public class MockHandlerManager implements ApplicationListener<ApplicationReadyE
 
         } while (total > 0L);
     }
+
 }
