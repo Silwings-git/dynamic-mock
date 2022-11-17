@@ -100,7 +100,7 @@ public class MockTask implements Runnable {
 
         final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(actualRequestUrl, this.getHttpMethod(), httpEntity, String.class, this.getUriVariables());
 
-        future.addCallback(result -> log.debug("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.getName(), this.getHttpMethod(), result)
+        future.addCallback(result -> log.info("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.getName(), this.getHttpMethod(), result)
                 , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.getName(), this.getHttpMethod(), ex.getMessage()));
 
     }
