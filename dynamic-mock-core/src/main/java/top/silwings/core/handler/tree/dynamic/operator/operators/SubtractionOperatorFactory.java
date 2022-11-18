@@ -3,11 +3,13 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorType;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class SubtractionOperatorFactory implements OperatorFactory {
 
     @Override
     public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
-        return new SubtractionOperator(dynamicValueList);
+        return SubtractionOperator.from(dynamicValueList);
     }
 
 
@@ -43,8 +45,13 @@ public class SubtractionOperatorFactory implements OperatorFactory {
      **/
     public static class SubtractionOperator extends AbstractDynamicValue {
 
-        public SubtractionOperator(final List<DynamicValue> dynamicValueList) {
+        private SubtractionOperator(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
+        }
+
+        public static SubtractionOperator from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("Operator `-` requires 2 arguments."));
+            return new SubtractionOperator(dynamicValueList);
         }
 
         @Override

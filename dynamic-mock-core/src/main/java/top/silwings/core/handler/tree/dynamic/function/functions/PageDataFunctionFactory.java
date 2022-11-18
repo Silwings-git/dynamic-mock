@@ -3,11 +3,13 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
@@ -50,11 +52,12 @@ public class PageDataFunctionFactory implements FunctionFactory {
      */
     public static class PageDataFunction extends AbstractDynamicValue {
 
-        public PageDataFunction(final List<DynamicValue> dynamicValueList) {
+        private PageDataFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
 
         public static PageDataFunction from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.hasEqualsSize(dynamicValueList, 4, () -> DynamicValueCompileException.from("The PageData function requires 4 arguments."));
             return new PageDataFunction(dynamicValueList);
         }
 

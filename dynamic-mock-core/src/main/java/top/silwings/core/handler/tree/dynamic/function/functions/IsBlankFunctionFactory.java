@@ -11,8 +11,8 @@ import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import java.util.List;
 
 /**
- * @ClassName SearchFunctionFactory
- * @Description 搜索函数工厂
+ * @ClassName IsBlankFunctionFactory
+ * @Description 判空函数工厂
  * @Author Silwings
  * @Date 2022/11/8 22:20
  * @Since
@@ -38,7 +38,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
      */
     public static class IsBlankFunction extends AbstractDynamicValue {
 
-        public IsBlankFunction(final List<DynamicValue> dynamicValueList) {
+        private IsBlankFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
 

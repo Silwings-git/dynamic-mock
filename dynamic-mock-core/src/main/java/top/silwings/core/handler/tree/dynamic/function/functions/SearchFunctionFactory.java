@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 
@@ -42,11 +44,12 @@ public class SearchFunctionFactory implements FunctionFactory {
      */
     public static class SearchFunction extends AbstractDynamicValue {
 
-        public SearchFunction(final List<DynamicValue> dynamicValueList) {
+        private SearchFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
 
         public static SearchFunction from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.hasMinimumSize(dynamicValueList, 1, () -> DynamicValueCompileException.from("The Search function requires at least 1 arguments."));
             return new SearchFunction(dynamicValueList);
         }
 

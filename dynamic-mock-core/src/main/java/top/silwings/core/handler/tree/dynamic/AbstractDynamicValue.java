@@ -45,5 +45,8 @@ public abstract class AbstractDynamicValue implements DynamicValue {
 
     protected abstract Object doInterpret(final Context context, final List<Object> childNodeValueList);
 
+    /**
+     * 返回该函数的符号
+     */
     protected abstract String symbol();
 }

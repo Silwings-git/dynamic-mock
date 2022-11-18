@@ -47,7 +47,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
      */
     public static class UUIDFunction extends AbstractDynamicValue {
 
-        public UUIDFunction(final List<DynamicValue> dynamicValueList) {
+        private UUIDFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
 

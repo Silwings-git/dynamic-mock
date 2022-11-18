@@ -84,6 +84,8 @@ public class MockHandlerManager implements ApplicationRunner {
             total -= pageData.getList().size();
 
         } while (total > 0L);
+
+        log.info("MockHandlerManager initialized.");
     }
 
 }
