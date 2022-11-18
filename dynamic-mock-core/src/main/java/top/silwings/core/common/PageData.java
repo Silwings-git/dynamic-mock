@@ -15,12 +15,14 @@ import java.util.List;
 @Getter
 public class PageData<T> {
 
+    @SuppressWarnings("unchecked")
     private static final PageData EMPTY = new PageData<>(Collections.emptyList(), 0L);
 
     private final List<T> list;
 
     private final long total;
 
+    @SuppressWarnings("unchecked")
     public static <T> PageData<T> empty() {
         return (PageData<T>) EMPTY;
     }

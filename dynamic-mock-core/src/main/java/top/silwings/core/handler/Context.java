@@ -38,6 +38,10 @@ public class Context {
 
     private final JsonNodeParser jsonNodeParser;
 
+    /**
+     * 异步http客户端
+     * 后续再考虑WebClient
+     */
     private final AsyncRestTemplate asyncRestTemplate;
 
     public RequestContext getRequestContext() {
