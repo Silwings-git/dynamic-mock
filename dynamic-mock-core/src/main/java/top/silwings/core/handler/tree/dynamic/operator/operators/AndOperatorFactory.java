@@ -49,7 +49,7 @@ public class AndOperatorFactory implements OperatorFactory {
         }
 
         public static AndOperator from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("Operator `&&` requires 2 arguments."));
+            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("The operator `&&` requires 2 arguments."));
             return new AndOperator(dynamicValueList);
         }
 

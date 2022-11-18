@@ -25,7 +25,7 @@ public enum EnableStatus {
 
     public static EnableStatus valueOfCode(final String code) {
         for (final EnableStatus status : values()) {
-            if (status.code().equals(code)) {
+            if (status.code().equalsIgnoreCase(code)) {
                 return status;
             }
         }

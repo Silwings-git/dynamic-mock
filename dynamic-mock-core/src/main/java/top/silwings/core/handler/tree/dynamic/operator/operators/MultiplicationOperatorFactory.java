@@ -49,7 +49,7 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
         }
 
         public static MultiplicationOperator from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("Operator `*` requires 2 arguments."));
+            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("The operator `*` requires 2 arguments."));
             return new MultiplicationOperator(dynamicValueList);
         }
 

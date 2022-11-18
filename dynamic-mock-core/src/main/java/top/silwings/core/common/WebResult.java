@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 public abstract class WebResult {
     protected static final String SUCCESS = "200";
-    protected static final String FAIL = "500";
+    protected static final String FAIL = "400";
 
     protected final String code;
 

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import top.silwings.core.common.Result;
-import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
@@ -54,9 +52,6 @@ public class MockHandlerPoint {
         } catch (NoMockHandlerFoundException e) {
             log.error("NoMockHandlerFoundException", e);
             throw exception;
-        } catch (DynamicMockException e) {
-            log.error("DynamicMockException", e);
-            return ResponseEntity.ok(Result.fail(e.getMessage()));
         }
     }
 
