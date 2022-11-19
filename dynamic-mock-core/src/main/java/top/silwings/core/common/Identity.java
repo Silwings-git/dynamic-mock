@@ -1,7 +1,5 @@
 package top.silwings.core.common;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
 
 /**
@@ -16,7 +14,6 @@ public class Identity {
     /**
      * 唯一标识符
      */
-    @ApiModelProperty(value = "唯一标识符", example = "Code001")
     private final long id;
 
     public Identity(final long id) {

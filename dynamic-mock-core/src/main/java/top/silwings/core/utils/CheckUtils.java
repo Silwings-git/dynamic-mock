@@ -37,7 +37,7 @@ public class CheckUtils {
      * @param exceptionSupplier 不满足时要抛出的异常
      */
     public static void hasMinimumSize(final Collection<?> collection, final int minimumSize, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue(!hasMinimumSize(collection, minimumSize), exceptionSupplier);
+        isTrue(hasMinimumSize(collection, minimumSize), exceptionSupplier);
     }
 
 
@@ -60,7 +60,7 @@ public class CheckUtils {
      * @param exceptionSupplier 不一致时要抛出的异常
      */
     public static void hasEqualsSize(final Collection<?> collection, final int size, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue(!hasEqualsSize(collection, size), exceptionSupplier);
+        isTrue(hasEqualsSize(collection, size), exceptionSupplier);
     }
 
     /**

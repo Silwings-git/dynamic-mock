@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.dto.TaskInfoDto;
+import top.silwings.core.model.dto.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.stream.Collectors;

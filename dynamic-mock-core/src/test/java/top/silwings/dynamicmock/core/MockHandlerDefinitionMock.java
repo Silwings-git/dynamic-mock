@@ -3,11 +3,11 @@ package top.silwings.dynamicmock.core;
 import com.alibaba.fastjson.JSON;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
-import top.silwings.core.repository.dto.MockHandlerDto;
-import top.silwings.core.repository.dto.MockResponseDto;
-import top.silwings.core.repository.dto.MockResponseInfoDto;
-import top.silwings.core.repository.dto.TaskInfoDto;
-import top.silwings.core.repository.dto.TaskRequestDto;
+import top.silwings.core.model.dto.MockHandlerDto;
+import top.silwings.core.model.dto.MockResponseDto;
+import top.silwings.core.model.dto.MockResponseInfoDto;
+import top.silwings.core.model.dto.TaskInfoDto;
+import top.silwings.core.model.dto.TaskRequestDto;
 
 import java.util.Arrays;
 import java.util.Collections;

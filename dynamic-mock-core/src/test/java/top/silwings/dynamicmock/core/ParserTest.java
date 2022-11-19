@@ -27,8 +27,8 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.repository.dto.MockHandlerDto;
-import top.silwings.core.repository.dto.TaskRequestDto;
+import top.silwings.core.model.dto.MockHandlerDto;
+import top.silwings.core.model.dto.TaskRequestDto;
 import top.silwings.core.utils.JsonUtils;
 import top.silwings.core.web.MockHandlerPoint;
 

@@ -2,7 +2,6 @@ package top.silwings.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * @ClassName MockSpringApplication
@@ -11,7 +10,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
  * @Date 2022/11/10 23:05
  * @Since
  **/
-@EnableSwagger2WebMvc
 @SpringBootApplication
 public class MockSpringApplication {
 
