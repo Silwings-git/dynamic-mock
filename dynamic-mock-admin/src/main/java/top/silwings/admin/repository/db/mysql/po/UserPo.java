@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @ClassName UserInfo
@@ -15,6 +16,7 @@ import javax.persistence.Id;
  **/
 @Getter
 @Setter
+@Table(name = "dm_user")
 public class UserPo {
 
     public static final String C_USER_ACCOUNT = "userAccount";

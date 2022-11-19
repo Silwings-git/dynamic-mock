@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
  * @Since
  **/
 public interface LoginService {
-    String login(String userAccount, String password, HttpServletResponse response);
+    String login(String userAccount, String password, final boolean ifRemember, HttpServletResponse response);
 
     User ifLogin(HttpServletRequest request, HttpServletResponse response);
+
+    void logout(HttpServletRequest request, HttpServletResponse response);
 }

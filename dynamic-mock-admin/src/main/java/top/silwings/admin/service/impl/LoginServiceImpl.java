@@ -35,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public String login(final String userAccount, final String password, final HttpServletResponse response) {
+    public String login(final String userAccount, final String password, final boolean ifRemember, final HttpServletResponse response) {
 
         CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from("Username or password is empty."));
         CheckUtils.isNotBlank(password, () -> DynamicMockAdminException.from("Username or password is empty."));
@@ -48,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
 
         final String userAuthToken = this.makeToken(user);
 
-        response.addHeader(LOGIN_IDENTITY_KEY, userAuthToken);
+        CookieUtils.set(response, LOGIN_IDENTITY_KEY, userAuthToken, ifRemember);
 
         return user.getUsername();
     }

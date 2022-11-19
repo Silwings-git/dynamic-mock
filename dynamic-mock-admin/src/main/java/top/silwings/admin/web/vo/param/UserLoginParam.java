@@ -23,4 +23,7 @@ public class UserLoginParam {
     @ApiModelProperty(value = "密码", required = true, example = "password")
     private String password;
 
+    @ApiModelProperty(value = "下次自动登录", example = "true")
+    private Boolean ifRemember;
+
 }
