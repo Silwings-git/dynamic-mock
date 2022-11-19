@@ -1,7 +1,14 @@
 package top.silwings.core.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import top.silwings.core.exceptions.DynamicMockException;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName JsonUtils
@@ -10,17 +17,65 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
  * @Date 2022/11/17 0:47
  * @Since
  **/
+@Slf4j
 public class JsonUtils {
+
+    public static final ObjectMapper MAPPER = new ObjectMapper();
 
     private JsonUtils() {
         throw new AssertionError();
     }
 
     public static String toJSONString(final Object body) {
-        return JSON.toJSONString(body, SerializerFeature.DisableCircularReferenceDetect);
+
+        if (body == null) {
+            return null;
+        }
+        if (body.getClass() == String.class) {
+            return (String) body;
+        }
+        try {
+            return MAPPER.writeValueAsString(body);
+        } catch (JsonProcessingException e) {
+            log.error("Json serialization error: " + body, e);
+            throw new DynamicMockException(e);
+        }
     }
 
-    public static String toJSONString(final Object body, final SerializerFeature feature) {
-        return JSON.toJSONString(body, feature);
+    public static <T> T toBean(final String jsonStr, final Class<T> tClass) {
+        try {
+            return MAPPER.readValue(jsonStr, tClass);
+        } catch (IOException e) {
+            log.error("Json parsing error: " + jsonStr, e);
+            throw new DynamicMockException(e);
+        }
     }
+
+    public static <T, E> Map<T, E> toMap(final String jsonStr, final Class<T> keyClass, final Class<E> valueClass) {
+        try {
+            return MAPPER.readValue(jsonStr, MAPPER.getTypeFactory().constructMapType(Map.class, keyClass, valueClass));
+        } catch (IOException e) {
+            log.error("Json parsing error: " + jsonStr, e);
+            throw new DynamicMockException(e);
+        }
+    }
+
+    public static <E> List<E> toList(final String jsonStr, final Class<E> eClass) {
+        try {
+            return MAPPER.readValue(jsonStr, MAPPER.getTypeFactory().constructCollectionType(List.class, eClass));
+        } catch (IOException e) {
+            log.error("Json parsing error: " + jsonStr, e);
+            throw new DynamicMockException(e);
+        }
+    }
+
+    public static <T> T nativeRead(final String jsonStr, final TypeReference<T> type) {
+        try {
+            return MAPPER.readValue(jsonStr, type);
+        } catch (IOException e) {
+            log.error("Json parsing error: " + jsonStr, e);
+            throw new DynamicMockException(e);
+        }
+    }
+
 }

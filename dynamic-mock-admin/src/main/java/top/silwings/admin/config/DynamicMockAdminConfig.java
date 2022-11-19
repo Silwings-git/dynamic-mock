@@ -2,14 +2,9 @@ package top.silwings.admin.config;
 
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.util.IdGenerator;
-import org.springframework.util.JdkIdGenerator;
-import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -19,9 +14,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import top.silwings.core.config.TaskSchedulerProperties;
-
-import java.util.concurrent.ThreadPoolExecutor;
+import top.silwings.admin.interceptors.UserInterceptor;
 
 /**
  * @ClassName DynamicMockConfig
@@ -31,32 +24,14 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @Since
  **/
 @Configuration
-@EnableConfigurationProperties({TaskSchedulerProperties.class})
-public class DynamicMockConfig implements AsyncConfigurer, WebMvcConfigurer {
+public class DynamicMockAdminConfig implements WebMvcConfigurer {
 
     @Value("${project.version}")
     private String projectVersion;
 
-    @Bean
-    public IdGenerator idGenerator() {
-        return new JdkIdGenerator();
-    }
-
-    @Bean
-    public ThreadPoolTaskScheduler threadPoolTaskScheduler(final TaskSchedulerProperties properties) {
-        final ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
-        executor.setPoolSize(properties.getCorePoolSize());
-        executor.setThreadNamePrefix("MockTask-");
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.setAwaitTerminationSeconds(60);
-        executor.initialize();
-        return executor;
-    }
-
-    @Bean
-    public AsyncRestTemplate asyncRestTemplate() {
-        return new AsyncRestTemplate();
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new UserInterceptor());
     }
 
     @Override

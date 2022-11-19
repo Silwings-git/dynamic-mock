@@ -1,6 +1,5 @@
 package top.silwings.admin.web;
 
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -127,7 +126,7 @@ public class MockHandlerControllerTest {
 
             Assert.assertNotNull(response.getBody());
 
-            log.info("Test request result: {}", JsonUtils.toJSONString(response, SerializerFeature.WriteMapNullValue));
+            log.info("Test request result: {}", JsonUtils.toJSONString(response));
 
         } catch (NoHandlerFoundException e) {
             Assert.assertTrue(false);

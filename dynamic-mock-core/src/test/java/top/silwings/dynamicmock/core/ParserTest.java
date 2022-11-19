@@ -1,7 +1,6 @@
 package top.silwings.dynamicmock.core;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -173,7 +172,7 @@ public class ParserTest {
 
         }
 
-        log.info(JsonUtils.toJSONString(stack.pop(), SerializerFeature.WriteMapNullValue));
+        log.info(JsonUtils.toJSONString(stack.pop()));
     }
 
     @Test
@@ -219,7 +218,7 @@ public class ParserTest {
 
         final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(this.noHandlerFoundException, request);
 
-        log.info(JsonUtils.toJSONString(responseEntity.getBody(), SerializerFeature.WriteMapNullValue));
+        log.info(JsonUtils.toJSONString(responseEntity.getBody()));
 
         TimeUnit.SECONDS.sleep(5);
     }
