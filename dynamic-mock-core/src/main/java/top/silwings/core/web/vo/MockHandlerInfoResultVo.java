@@ -3,10 +3,11 @@ package top.silwings.core.web.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * @ClassName MockHandlerInfoResultVo
@@ -22,7 +23,10 @@ import lombok.Setter;
 @ApiModel(description = "模拟处理器信息")
 public class MockHandlerInfoResultVo extends MockHandlerInfoVo {
 
-    @ApiModelProperty(value = "启用状态", required = true, example = "enable")
+    @ApiModelProperty(value = "启用状态", example = "enable")
     private String enableStatus;
+
+    @ApiModelProperty(value = "最后更新时间")
+    private Date updateTime;
 
 }

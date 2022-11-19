@@ -59,6 +59,7 @@ public class MockHandlerVoConverter {
         resultVo.setCustomizeSpace(dto.getCustomizeSpace());
         resultVo.setResponses(dto.getResponses().stream().map(this::convert).collect(Collectors.toList()));
         resultVo.setTasks(dto.getTasks().stream().map(this::convert).collect(Collectors.toList()));
+        resultVo.setUpdateTime(dto.getUpdateTime());
 
         return resultVo;
     }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -69,5 +70,7 @@ public class MockHandlerDto {
      * 任务集
      */
     private List<TaskInfoDto> tasks;
+
+    private Date updateTime;
 
 }

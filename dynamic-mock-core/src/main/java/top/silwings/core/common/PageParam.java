@@ -13,13 +13,16 @@ import org.apache.ibatis.session.RowBounds;
 @Getter
 public class PageParam {
 
+    private static final int MIN_PAGE_NUM = 1;
+    private static final int MAX_PAGE_SIZE = 100;
+
     private final int pageNum;
 
     private final int pageSize;
 
     public PageParam(final int pageNum, final int pageSize) {
-        this.pageNum = pageNum;
-        this.pageSize = pageSize;
+        this.pageNum = Math.min(pageNum,MIN_PAGE_NUM);
+        this.pageSize = Math.max(pageSize, MAX_PAGE_SIZE);
     }
 
     public static PageParam of(final int pageNum, final int pageSize) {
@@ -27,6 +30,6 @@ public class PageParam {
     }
 
     public RowBounds toRowBounds() {
-        return new PageRowBounds((this.pageNum - 1) * this.pageSize, this.pageSize);
+        return new RowBounds((this.pageNum - 1) * this.pageSize, this.pageSize);
     }
 }

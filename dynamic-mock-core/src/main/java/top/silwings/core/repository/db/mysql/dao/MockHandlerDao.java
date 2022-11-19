@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * @ClassName MockHandlerDao
@@ -59,5 +60,17 @@ public class MockHandlerDao {
 
     @Column(name = "tasks")
     private String tasks;
+
+    @Column(name = "create_user_code")
+    private String createUserCode;
+
+    @Column(name = "update_user_code")
+    private String updateUserCode;
+
+    @Column(name = "create_time")
+    private Date createTime;
+
+    @Column(name = "update_time")
+    private Date updateTime;
 
 }

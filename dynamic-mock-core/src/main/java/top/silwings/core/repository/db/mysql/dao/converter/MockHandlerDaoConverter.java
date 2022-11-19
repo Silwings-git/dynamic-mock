@@ -44,6 +44,7 @@ public class MockHandlerDaoConverter {
         dao.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
         dao.setResponses(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
         dao.setTasks(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getTasks(), EMPTY_LIST)));
+
         return dao;
     }
 
@@ -60,6 +61,7 @@ public class MockHandlerDaoConverter {
                 .customizeSpace(JSON.parseObject(mockHandlerDao.getCustomizeSpace()))
                 .responses(JSON.parseArray(mockHandlerDao.getResponses(), MockResponseInfoDto.class))
                 .tasks(JSON.parseArray(mockHandlerDao.getTasks(), TaskInfoDto.class))
+                .updateTime(mockHandlerDao.getUpdateTime())
                 .build();
     }
 }
