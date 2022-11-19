@@ -20,6 +20,7 @@ import javax.persistence.Table;
 public class UserPo {
 
     public static final String C_USER_ACCOUNT = "userAccount";
+    public static final String C_USERNAME = "username";
 
     @Id
     private Long id;

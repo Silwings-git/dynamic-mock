@@ -1,9 +1,9 @@
-package top.silwings.core.web.advice;
+package top.silwings.admin.web.advice;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import top.silwings.core.common.Result;
+import top.silwings.admin.common.Result;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
 

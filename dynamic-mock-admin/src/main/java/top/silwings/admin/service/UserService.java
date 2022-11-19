@@ -1,5 +1,10 @@
 package top.silwings.admin.service;
 
+import top.silwings.admin.common.PageData;
+import top.silwings.admin.common.PageParam;
+import top.silwings.admin.model.User;
+import top.silwings.admin.web.vo.param.ResetPasswordParam;
+
 /**
  * @ClassName UserService
  * @Description 用户管理
@@ -13,4 +18,8 @@ public interface UserService {
     void changePassword(String oldPassword, String newPassword);
 
     void deleteUser(String userAccount);
+
+    PageData<User> query(String searchKey, PageParam param);
+
+    void resetPassword(ResetPasswordParam param);
 }

@@ -1,5 +1,7 @@
 package top.silwings.admin.repository;
 
+import top.silwings.admin.common.PageData;
+import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.User;
 
 /**
@@ -17,4 +19,6 @@ public interface UserRepository {
     void update(User user);
 
     void delete(String userAccount);
+
+    PageData<User> query(String searchKey, PageParam param);
 }

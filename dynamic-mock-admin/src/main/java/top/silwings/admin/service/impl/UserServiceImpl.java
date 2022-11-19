@@ -4,10 +4,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
+import top.silwings.admin.common.PageData;
+import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.service.UserService;
+import top.silwings.admin.web.vo.param.ResetPasswordParam;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -53,5 +56,20 @@ public class UserServiceImpl implements UserService {
         CheckUtils.isNotEquals(UserHolder.getUser().getUserAccount(), userAccount, () -> DynamicMockAdminException.from("You cannot delete your own account."));
 
         this.userRepository.delete(userAccount);
+    }
+
+    @Override
+    public PageData<User> query(final String searchKey, final PageParam param) {
+        return this.userRepository.query(searchKey, param);
+    }
+
+    @Override
+    public void resetPassword(final ResetPasswordParam param) {
+
+        final User user = this.userRepository.findByUserAccount(param.getUserAccount());
+
+        user.resetPassword();
+
+        this.userRepository.update(user);
     }
 }

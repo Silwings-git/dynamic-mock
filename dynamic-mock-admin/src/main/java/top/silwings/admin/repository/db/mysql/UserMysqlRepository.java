@@ -5,12 +5,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.common.PageData;
+import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.repository.db.mysql.mapper.UserMapper;
 import top.silwings.admin.repository.db.mysql.po.UserPo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName UserMysqlRepository
@@ -84,5 +87,30 @@ public class UserMysqlRepository implements UserRepository {
                 .andEqualTo(UserPo.C_USER_ACCOUNT, userAccount);
 
         this.userMapper.deleteByCondition(deleteCondition);
+    }
+
+    @Override
+    public PageData<User> query(final String searchKey, final PageParam param) {
+
+        final Example queryCondition = new Example(UserPo.class);
+
+        if (StringUtils.isNotBlank(searchKey)) {
+            queryCondition.createCriteria()
+                    .andLike(UserPo.C_USER_ACCOUNT, "%".concat(searchKey))
+                    .orLike(UserPo.C_USERNAME, "%".concat(searchKey));
+        }
+
+        final int total = this.userMapper.selectCountByCondition(queryCondition);
+        if (total < 0) {
+            return PageData.empty();
+        }
+
+        final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(queryCondition, param.toRowBounds());
+
+        final List<User> userList = userPoList.stream()
+                .map(User::from)
+                .collect(Collectors.toList());
+
+        return PageData.of(userList, total);
     }
 }

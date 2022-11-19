@@ -50,7 +50,6 @@ public class MockHandlerPoint {
         try {
             return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser, this.asyncRestTemplate));
         } catch (NoMockHandlerFoundException e) {
-            log.error("NoMockHandlerFoundException", e);
             throw exception;
         }
     }

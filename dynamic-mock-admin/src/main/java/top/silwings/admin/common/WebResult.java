@@ -1,5 +1,7 @@
-package top.silwings.core.common;
+package top.silwings.admin.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 /**
@@ -10,12 +12,15 @@ import lombok.Getter;
  * @Since
  **/
 @Getter
+@ApiModel(description = "WebResult")
 public abstract class WebResult {
     protected static final String SUCCESS = "200";
     protected static final String FAIL = "400";
 
+    @ApiModelProperty(value = "响应编码")
     protected final String code;
 
+    @ApiModelProperty(value = "错误描述")
     protected final String errMsg;
 
     protected WebResult(final String code, final String errMsg) {

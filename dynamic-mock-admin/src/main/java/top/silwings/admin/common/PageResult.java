@@ -1,5 +1,7 @@
-package top.silwings.core.common;
+package top.silwings.admin.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -13,10 +15,13 @@ import java.util.List;
  * @Since
  **/
 @Getter
+@ApiModel(description = "PageResult")
 public class PageResult<T> extends WebResult {
 
+    @ApiModelProperty(value = "分页数据")
     private final List<T> pageData;
 
+    @ApiModelProperty(value = "总条数")
     private final long total;
 
     public PageResult(final String code, final String errMsg, final List<T> pageData, final long total) {

@@ -1,10 +1,7 @@
 package top.silwings.admin.repository.db.mysql.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import tk.mybatis.mapper.common.base.insert.InsertSelectiveMapper;
-import tk.mybatis.mapper.common.condition.DeleteByConditionMapper;
-import tk.mybatis.mapper.common.condition.UpdateByConditionSelectiveMapper;
-import tk.mybatis.mapper.common.rowbounds.SelectByConditionRowBoundsMapper;
+import top.silwings.admin.common.DynamicMockBaseMapper;
 import top.silwings.admin.repository.db.mysql.po.UserPo;
 
 /**
@@ -15,9 +12,6 @@ import top.silwings.admin.repository.db.mysql.po.UserPo;
  * @Since
  **/
 @Mapper
-public interface UserMapper extends SelectByConditionRowBoundsMapper<UserPo>,
-        InsertSelectiveMapper<UserPo>,
-        DeleteByConditionMapper<UserPo>,
-        UpdateByConditionSelectiveMapper<UserPo> {
+public interface UserMapper extends DynamicMockBaseMapper<UserPo> {
 
 }

@@ -5,6 +5,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.repository.MockHandlerRepository;
@@ -13,6 +15,8 @@ import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.dto.MockHandlerDto;
 
 @Slf4j
+@EnableSwagger2
+@EnableAsync
 @SpringBootApplication(scanBasePackages = {"top.silwings.core", "top.silwings.admin"})
 public class DynamicMockAdminApplication implements ApplicationRunner {
 

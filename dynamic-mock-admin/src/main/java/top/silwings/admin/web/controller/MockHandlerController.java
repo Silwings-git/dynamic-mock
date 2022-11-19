@@ -1,5 +1,6 @@
 package top.silwings.admin.web.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.common.PageResult;
+import top.silwings.admin.common.Result;
 import top.silwings.admin.service.impl.MockHandlerServiceImpl;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
@@ -19,8 +22,6 @@ import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
-import top.silwings.core.common.PageResult;
-import top.silwings.core.common.Result;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  **/
 @RestController
 @RequestMapping("/dynamic/mock/handler")
+@Api(value = "Mock 处理器管理")
 public class MockHandlerController {
 
     private final MockHandlerServiceImpl mockHandlerApplication;
@@ -47,7 +49,7 @@ public class MockHandlerController {
         this.mockHandlerVoConverter = mockHandlerVoConverter;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     @PermissionLimit
     @ApiOperation(value = "保存Mock处理器信息")
     public Result<Identity> save(@RequestBody final MockHandlerInfoParam mockHandlerInfoParam) {
@@ -59,7 +61,7 @@ public class MockHandlerController {
         return Result.ok(handlerId);
     }
 
-    @GetMapping("/{handlerId}")
+    @GetMapping("/find/{handlerId}")
     @PermissionLimit
     @ApiOperation(value = "根据id获取Mock处理器信息")
     public Result<MockHandlerInfoResult> find(@PathVariable("handlerId") final String handlerId) {
@@ -71,7 +73,7 @@ public class MockHandlerController {
         return Result.ok(mockHandlerInfoVo);
     }
 
-    @GetMapping("/{pageNum}/{pageSize}")
+    @GetMapping("/query/{pageNum}/{pageSize}")
     @PermissionLimit
     @ApiOperation(value = "分页查询Mock处理器信息")
     public PageResult<MockHandlerInfoResult> query(@PathVariable("pageNum") final Integer pageNum,
@@ -98,7 +100,7 @@ public class MockHandlerController {
         return PageResult.ok(mockHandlerInfoVoList, pageData.getTotal());
     }
 
-    @DeleteMapping("/{handlerId}")
+    @DeleteMapping("/del/{handlerId}")
     @PermissionLimit
     @ApiOperation(value = "根据id删除MOck处理器信息")
     public Result<Void> delete(@PathVariable("handlerId") final String handlerId) {

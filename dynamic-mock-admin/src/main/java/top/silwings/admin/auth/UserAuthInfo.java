@@ -2,6 +2,7 @@ package top.silwings.admin.auth;
 
 import lombok.Builder;
 import lombok.Getter;
+import top.silwings.admin.common.Role;
 import top.silwings.admin.model.User;
 
 /**
@@ -29,7 +30,7 @@ public class UserAuthInfo {
     }
 
     public boolean isAdminUser() {
-        return "root".equals(this.role);
+        return Role.ADMIN_USER.equalsCode(this.role);
     }
 
 }

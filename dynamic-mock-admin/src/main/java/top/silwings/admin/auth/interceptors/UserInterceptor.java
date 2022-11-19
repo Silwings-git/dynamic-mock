@@ -32,8 +32,13 @@ public class UserInterceptor implements HandlerInterceptor {
 
         UserHolder.removeUser();
 
-        boolean needLogin = true;
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+
+        boolean needLogin = false;
         boolean needAdminUser = false;
+
         final PermissionLimit permission = ((HandlerMethod) handler).getMethodAnnotation(PermissionLimit.class);
         if (permission != null) {
             needLogin = permission.limit();

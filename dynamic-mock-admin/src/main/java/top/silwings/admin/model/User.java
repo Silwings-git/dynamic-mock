@@ -74,4 +74,7 @@ public class User {
         return DEFAULT_PASSWORD;
     }
 
+    public void resetPassword() {
+        this.setPassword(encryptPassword(DEFAULT_PASSWORD));
+    }
 }

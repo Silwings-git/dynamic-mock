@@ -14,13 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.admin.DynamicMockAdminApplication;
+import top.silwings.admin.common.PageResult;
+import top.silwings.admin.common.Result;
 import top.silwings.admin.web.controller.MockHandlerController;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
-import top.silwings.core.common.PageResult;
-import top.silwings.core.common.Result;
 import top.silwings.core.utils.JsonUtils;
 import top.silwings.core.web.MockHandlerPoint;
 

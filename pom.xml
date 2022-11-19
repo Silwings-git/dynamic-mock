@@ -26,7 +26,7 @@
         <fastjson.version>2.0.17</fastjson.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <jmh.version>1.35</jmh.version>
-        <swagger.version>2.10.5</swagger.version>
+        <swagger.version>2.8.0</swagger.version>
         <mybatis.version>2.2.2</mybatis.version>
         <tk-mybatis.version>4.2.2</tk-mybatis.version>
         <druid.version>1.1.24</druid.version>
@@ -85,7 +85,6 @@
                 <version>${jmh.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -95,28 +94,6 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-spring-webmvc</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-
-            <!--jwt相关依赖-->
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-api</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-impl</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-jackson</artifactId>
-                <version>${jwt.version}</version>
             </dependency>
 
         </dependencies>
@@ -163,23 +140,6 @@
     </dependencies>
 
     <build>
-        <!--        <plugins>-->
-        <!--            <plugin>-->
-        <!--                <groupId>org.springframework.boot</groupId>-->
-        <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-        <!--            </plugin>-->
-
-        <!--            <plugin>-->
-        <!--                <groupId>org.apache.maven.plugins</groupId>-->
-        <!--                <artifactId>maven-compiler-plugin</artifactId>-->
-        <!--                <configuration>-->
-        <!--                    <source>${java.version}</source>-->
-        <!--                    <target>${java.version}</target>-->
-        <!--                    <encoding>UTF-8</encoding>-->
-        <!--                </configuration>-->
-        <!--            </plugin>-->
-        <!--        </plugins>-->
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
