@@ -1,5 +1,6 @@
 package top.silwings.admin.web.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class UserController {
 
     @PostMapping("/create")
     @PermissionLimit(adminUser = true)
+    @ApiOperation(value = "创建用户")
     public Result<Void> createUser(@RequestBody final UserParam userParam) {
 
         this.userService.createUser(userParam.getUsername(), userParam.getUserAccount(), userParam.getRole());
@@ -40,6 +42,7 @@ public class UserController {
 
     @PostMapping("/changePassword")
     @PermissionLimit
+    @ApiOperation(value = "修改密码")
     public Result<Void> changePassword(@RequestBody final ChangePasswordParam param) {
 
         this.userService.changePassword(param.getOldPassword(), param.getNewPassword());
@@ -49,6 +52,7 @@ public class UserController {
 
     @DeleteMapping("/{userAccount}")
     @PermissionLimit(adminUser = true)
+    @ApiOperation(value = "删除用户")
     public Result<Void> deleteUser(@PathVariable("userAccount") final String userAccount) {
 
         this.userService.deleteUser(userAccount);

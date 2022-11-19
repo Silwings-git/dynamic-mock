@@ -1,5 +1,6 @@
 package top.silwings.admin.web.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,7 @@ public class MockHandlerController {
 
     @PostMapping
     @PermissionLimit
+    @ApiOperation(value = "保存Mock处理器信息")
     public Result<Identity> save(@RequestBody final MockHandlerInfoParam mockHandlerInfoParam) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoParam);
@@ -59,6 +61,7 @@ public class MockHandlerController {
 
     @GetMapping("/{handlerId}")
     @PermissionLimit
+    @ApiOperation(value = "根据id获取Mock处理器信息")
     public Result<MockHandlerInfoResult> find(@PathVariable("handlerId") final String handlerId) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerApplication.find(Identity.from(handlerId));
@@ -70,6 +73,7 @@ public class MockHandlerController {
 
     @GetMapping("/{pageNum}/{pageSize}")
     @PermissionLimit
+    @ApiOperation(value = "分页查询Mock处理器信息")
     public PageResult<MockHandlerInfoResult> query(@PathVariable("pageNum") final Integer pageNum,
                                                    @PathVariable("pageSize") final Integer pageSize,
                                                    @RequestParam("name") final String name,
@@ -96,6 +100,7 @@ public class MockHandlerController {
 
     @DeleteMapping("/{handlerId}")
     @PermissionLimit
+    @ApiOperation(value = "根据id删除MOck处理器信息")
     public Result<Void> delete(@PathVariable("handlerId") final String handlerId) {
 
         this.mockHandlerApplication.delete(Identity.from(handlerId));
@@ -105,6 +110,7 @@ public class MockHandlerController {
 
     @PostMapping("/enableStatus")
     @PermissionLimit
+    @ApiOperation(value = "启用/停用Mock处理器")
     public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam enableStatusParam) {
 
         this.mockHandlerApplication.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOf(enableStatusParam.getEnableStatus()));

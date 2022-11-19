@@ -1,11 +1,14 @@
 package top.silwings.admin.service.impl;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.service.UserService;
+import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName UserServiceImpl
@@ -25,8 +28,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(final String username, final String userAccount, final String role) {
-
-        this.userRepository.create(username, userAccount, role);
+        try {
+            this.userRepository.create(username, userAccount, role);
+        } catch (DuplicateKeyException e) {
+            throw DynamicMockAdminException.from("Account already exists.");
+        }
     }
 
     @Override
@@ -43,6 +49,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(final String userAccount) {
+
+        CheckUtils.isNotEquals(UserHolder.getUser().getUserAccount(), userAccount, () -> DynamicMockAdminException.from("You cannot delete your own account."));
+
         this.userRepository.delete(userAccount);
     }
 }

@@ -61,11 +61,8 @@ public class MockHandlerPo {
     @Column(name = "tasks")
     private String tasks;
 
-    @Column(name = "create_user_code")
-    private String createUserCode;
-
-    @Column(name = "update_user_code")
-    private String updateUserCode;
+    @Column(name = "author")
+    private String author;
 
     @Column(name = "create_time")
     private Date createTime;

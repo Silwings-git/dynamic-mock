@@ -87,4 +87,8 @@ public class CheckUtils {
     public static void isEquals(final String argA, final String argB, final Supplier<RuntimeException> exceptionSupplier) {
         isTrue(null != argA && argA.equals(argB), exceptionSupplier);
     }
+
+    public static void isNotEquals(final String argA, final String argB, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue((null == argA && null == argB) || (StringUtils.isNotBlank(argA) && argA.equals(argB)), exceptionSupplier);
+    }
 }

@@ -1,5 +1,6 @@
 package top.silwings.admin.web.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
+    @ApiOperation(value = "登录")
     public Result<String> login(@RequestBody UserLoginParam userLoginParam, final HttpServletResponse response) {
 
         final String username = this.loginService.login(userLoginParam.getUserAccount(), userLoginParam.getPassword(), Boolean.TRUE.equals(userLoginParam.getIfRemember()), response);
@@ -37,6 +39,7 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
+    @ApiOperation(value = "登出")
     public Result<Void> logout(final HttpServletRequest request, final HttpServletResponse response) {
 
         this.loginService.logout(request, response);
