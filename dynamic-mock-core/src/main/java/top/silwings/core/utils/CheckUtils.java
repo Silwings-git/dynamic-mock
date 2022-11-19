@@ -1,6 +1,7 @@
 package top.silwings.core.utils;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -75,4 +76,15 @@ public class CheckUtils {
         }
     }
 
+    public static void isNotBlank(final String userAccount, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(StringUtils.isNotBlank(userAccount), exceptionSupplier);
+    }
+
+    public static void isNotNull(final Object userPo, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(null != userPo, exceptionSupplier);
+    }
+
+    public static void isEquals(final String argA, final String argB, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(null != argA && argA.equals(argB), exceptionSupplier);
+    }
 }

@@ -1,4 +1,4 @@
-package top.silwings.admin.repository.db.mysql.dao;
+package top.silwings.admin.repository.db.mysql.po;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "dm_mock_handler_unique")
-public class MockHandlerUniqueDao {
+public class MockHandlerUniquePo {
 
     public static final String C_HANDLER_ID = "handlerId";
 
@@ -33,8 +33,8 @@ public class MockHandlerUniqueDao {
     @Column(name = "http_method")
     private String httpMethod;
 
-    public static MockHandlerUniqueDao of(final Long handlerId, final String requestUri, final String httpMethod) {
-        final MockHandlerUniqueDao uniqueDao = new MockHandlerUniqueDao();
+    public static MockHandlerUniquePo of(final Long handlerId, final String requestUri, final String httpMethod) {
+        final MockHandlerUniquePo uniqueDao = new MockHandlerUniquePo();
         uniqueDao.setHandlerId(handlerId);
         uniqueDao.setRequestUri(requestUri);
         uniqueDao.setHttpMethod(httpMethod);

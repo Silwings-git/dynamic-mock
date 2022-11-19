@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟响应信息")
-public class MockResponseInfoVo {
+public class MockResponseInfoParam {
 
     @ApiModelProperty(value = "名称", required = true, example = "正确响应")
     private String name;
@@ -35,6 +35,6 @@ public class MockResponseInfoVo {
     private Integer delayTime;
 
     @ApiModelProperty(value = "模拟响应内容", required = true)
-    private MockResponseVo response;
+    private MockResponseParam response;
 
 }

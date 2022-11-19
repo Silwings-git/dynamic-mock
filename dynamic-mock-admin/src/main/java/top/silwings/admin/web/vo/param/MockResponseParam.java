@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟响应内容")
-public class MockResponseVo {
+public class MockResponseParam {
 
     @ApiModelProperty(value = "响应状态", required = true, example = "200")
     private Integer status;

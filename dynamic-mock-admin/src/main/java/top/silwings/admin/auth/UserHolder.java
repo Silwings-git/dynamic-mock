@@ -1,6 +1,7 @@
 package top.silwings.admin.auth;
 
 import top.silwings.admin.exceptions.UserAuthException;
+import top.silwings.admin.model.User;
 
 /**
  * @ClassName UserHolder
@@ -11,26 +12,26 @@ import top.silwings.admin.exceptions.UserAuthException;
  **/
 public class UserHolder {
 
-    private static final ThreadLocal<UserAuthInfo> TL = new ThreadLocal<>();
+    private static final ThreadLocal<User> TL = new ThreadLocal<>();
 
-    public static void setUser(final UserAuthInfo userAuthInfo) {
+    public static void setUser(final User userAuthInfo) {
         TL.remove();
         TL.set(userAuthInfo);
     }
 
-    public static UserAuthInfo getUser() {
+    public static User getUser() {
         return getUser(true);
     }
 
-    public static UserAuthInfo getUser(final boolean required) {
+    public static User getUser(final boolean required) {
 
-        final UserAuthInfo userAuthInfo = TL.get();
+        final User user = TL.get();
 
-        if (required && null == userAuthInfo) {
+        if (required && null == user) {
             throw new UserAuthException("Please log on first!");
         }
 
-        return userAuthInfo;
+        return user;
     }
 
     public static void removeUser() {

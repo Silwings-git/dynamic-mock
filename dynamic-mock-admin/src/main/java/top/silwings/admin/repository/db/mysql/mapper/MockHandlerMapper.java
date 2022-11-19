@@ -1,4 +1,4 @@
-package top.silwings.admin.repository.db.mysql;
+package top.silwings.admin.repository.db.mysql.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import tk.mybatis.mapper.common.base.insert.InsertSelectiveMapper;
@@ -7,7 +7,7 @@ import tk.mybatis.mapper.common.condition.DeleteByConditionMapper;
 import tk.mybatis.mapper.common.condition.UpdateByConditionSelectiveMapper;
 import tk.mybatis.mapper.common.example.SelectCountByExampleMapper;
 import tk.mybatis.mapper.common.rowbounds.SelectByConditionRowBoundsMapper;
-import top.silwings.admin.repository.db.mysql.dao.MockHandlerDao;
+import top.silwings.admin.repository.db.mysql.po.MockHandlerPo;
 
 /**
  * @ClassName MockHandlerMapper
@@ -17,12 +17,12 @@ import top.silwings.admin.repository.db.mysql.dao.MockHandlerDao;
  * @Since
  **/
 @Mapper
-public interface MockHandlerMapper extends InsertSelectiveMapper<MockHandlerDao>,
-        SelectOneMapper<MockHandlerDao>,
-        SelectCountByExampleMapper<MockHandlerDao>,
-        SelectByConditionRowBoundsMapper<MockHandlerDao>,
-        DeleteByConditionMapper<MockHandlerDao>,
-        UpdateByConditionSelectiveMapper<MockHandlerDao> {
+public interface MockHandlerMapper extends InsertSelectiveMapper<MockHandlerPo>,
+        SelectOneMapper<MockHandlerPo>,
+        SelectCountByExampleMapper<MockHandlerPo>,
+        SelectByConditionRowBoundsMapper<MockHandlerPo>,
+        DeleteByConditionMapper<MockHandlerPo>,
+        UpdateByConditionSelectiveMapper<MockHandlerPo> {
 
 
 }

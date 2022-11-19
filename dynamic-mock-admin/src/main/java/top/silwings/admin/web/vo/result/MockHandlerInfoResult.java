@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.result;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")
-public class MockHandlerInfoResultVo extends MockHandlerInfoVo {
+public class MockHandlerInfoResult extends MockHandlerInfoParam {
 
     @ApiModelProperty(value = "启用状态", example = "enable")
     private String enableStatus;

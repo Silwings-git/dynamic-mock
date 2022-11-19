@@ -7,7 +7,7 @@ package top.silwings.admin.exceptions;
  * @Date 2022/11/19 13:29
  * @Since
  **/
-public class UserAuthException extends RuntimeException {
+public class UserAuthException extends DynamicMockAdminException {
     public UserAuthException(final String message) {
         super(message);
     }

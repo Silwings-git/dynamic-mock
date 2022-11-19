@@ -1,14 +1,12 @@
 package top.silwings.admin.interceptors;
 
 import org.springframework.web.servlet.HandlerInterceptor;
-import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
-import top.silwings.admin.common.Payload;
-import top.silwings.admin.utils.JwtUtils;
+import top.silwings.admin.model.User;
+import top.silwings.admin.service.LoginService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 
 /**
  * @ClassName UserInterceptor
@@ -19,20 +17,24 @@ import java.util.Enumeration;
  **/
 public class UserInterceptor implements HandlerInterceptor {
 
+    private final LoginService loginService;
+
+    public UserInterceptor(final LoginService loginService) {
+        this.loginService = loginService;
+    }
+
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
 
         UserHolder.removeUser();
 
-        final Enumeration<String> headers = request.getHeaders("user-auth-token");
+        boolean needLogin = true;
 
-        if (headers.hasMoreElements()) {
-            final String jwtToken = headers.nextElement();
-            final Payload<UserAuthInfo> infoFromToken = JwtUtils.getInfoFromToken(jwtToken, UserAuthInfo.class);
+        if (needLogin) {
 
-            final UserAuthInfo userInfo = infoFromToken.getUserInfo();
+            final User user = this.loginService.ifLogin(request, response);
 
-            UserHolder.setUser(userInfo);
+            UserHolder.setUser(user);
         }
 
         return true;

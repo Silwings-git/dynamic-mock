@@ -18,3 +18,8 @@ spring:
 
 project:
   version: @project.version@
+dynamic-mock:
+  auth:
+    jwt:
+      pub-key-path: C:\Users\19105\Desktop\rsa\id_rsa.pub
+      pri-key-path: C:\Users\19105\Desktop\rsa\id_rsa

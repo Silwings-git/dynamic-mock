@@ -1,4 +1,4 @@
-package top.silwings.dynamicmock.core;
+package top.silwings.admin.web;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import top.silwings.core.MockSpringApplication;
+import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
@@ -41,7 +41,7 @@ import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@SpringBootTest(classes = MockSpringApplication.class)
+@SpringBootTest(classes = DynamicMockAdminApplication.class)
 @RunWith(SpringRunner.class)
 public class ParserTest {
 

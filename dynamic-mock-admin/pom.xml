@@ -10,12 +10,22 @@
 
     <artifactId>dynamic-mock-admin</artifactId>
 
+    <properties>
+        <start-class>top.silwings.admin.DynamicMockAdminApplication</start-class>
+    </properties>
+
     <dependencies>
 
         <dependency>
             <groupId>top.silwings</groupId>
             <artifactId>dynamic-mock-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

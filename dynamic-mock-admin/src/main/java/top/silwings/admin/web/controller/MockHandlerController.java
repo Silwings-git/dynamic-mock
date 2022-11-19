@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.silwings.admin.application.MockHandlerApplication;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.web.vo.EnableStatusVo;
-import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
-import top.silwings.admin.web.vo.MockHandlerInfoVo;
+import top.silwings.admin.service.impl.MockHandlerServiceImpl;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
+import top.silwings.admin.web.vo.param.EnableStatusParam;
+import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
+import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageResult;
@@ -36,19 +36,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/dynamic/mock/handler")
 public class MockHandlerController {
 
-    private final MockHandlerApplication mockHandlerApplication;
+    private final MockHandlerServiceImpl mockHandlerApplication;
 
     private final MockHandlerVoConverter mockHandlerVoConverter;
 
-    public MockHandlerController(final MockHandlerApplication mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter) {
+    public MockHandlerController(final MockHandlerServiceImpl mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter) {
         this.mockHandlerApplication = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
     }
 
     @PostMapping
-    public Result<Identity> save(@RequestBody final MockHandlerInfoVo mockHandlerInfoVo) {
+    public Result<Identity> save(@RequestBody final MockHandlerInfoParam mockHandlerInfoParam) {
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoVo);
+        final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoParam);
 
         final Identity handlerId = this.mockHandlerApplication.save(mockHandlerDto);
 
@@ -56,22 +56,22 @@ public class MockHandlerController {
     }
 
     @GetMapping("/{handlerId}")
-    public Result<MockHandlerInfoResultVo> find(@PathVariable("handlerId") final String handlerId) {
+    public Result<MockHandlerInfoResult> find(@PathVariable("handlerId") final String handlerId) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerApplication.find(Identity.from(handlerId));
 
-        final MockHandlerInfoResultVo mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
+        final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
         return Result.ok(mockHandlerInfoVo);
     }
 
     @GetMapping("/{pageNum}/{pageSize}")
-    public PageResult<MockHandlerInfoResultVo> query(@PathVariable("pageNum") final Integer pageNum,
-                                                     @PathVariable("pageSize") final Integer pageSize,
-                                                     @RequestParam("name") final String name,
-                                                     @RequestParam("httpMethod") final String httpMethod,
-                                                     @RequestParam("requestUri") final String requestUri,
-                                                     @RequestParam("label") final String label) {
+    public PageResult<MockHandlerInfoResult> query(@PathVariable("pageNum") final Integer pageNum,
+                                                   @PathVariable("pageSize") final Integer pageSize,
+                                                   @RequestParam("name") final String name,
+                                                   @RequestParam("httpMethod") final String httpMethod,
+                                                   @RequestParam("requestUri") final String requestUri,
+                                                   @RequestParam("label") final String label) {
 
         final QueryConditionDto queryCondition = QueryConditionDto.builder()
                 .handlerIdList(null)
@@ -83,7 +83,7 @@ public class MockHandlerController {
 
         final PageData<MockHandlerDto> pageData = this.mockHandlerApplication.query(queryCondition, PageParam.of(pageNum, pageSize));
 
-        final List<MockHandlerInfoResultVo> mockHandlerInfoVoList = pageData.getList().stream()
+        final List<MockHandlerInfoResult> mockHandlerInfoVoList = pageData.getList().stream()
                 .map(this.mockHandlerVoConverter::convert)
                 .collect(Collectors.toList());
 
@@ -99,9 +99,9 @@ public class MockHandlerController {
     }
 
     @PostMapping("/enableStatus")
-    public Result<Void> updateEnableStatus(@RequestBody final EnableStatusVo enableStatusVo) {
+    public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam enableStatusParam) {
 
-        this.mockHandlerApplication.updateEnableStatus(Identity.from(enableStatusVo.getHandlerId()), EnableStatus.valueOf(enableStatusVo.getEnableStatus()));
+        this.mockHandlerApplication.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOf(enableStatusParam.getEnableStatus()));
 
         return Result.ok();
     }

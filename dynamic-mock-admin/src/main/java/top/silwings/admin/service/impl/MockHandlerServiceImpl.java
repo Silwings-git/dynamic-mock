@@ -1,10 +1,11 @@
-package top.silwings.admin.application;
+package top.silwings.admin.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.repository.MockHandlerRepository;
+import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.MockHandler;
@@ -21,7 +22,7 @@ import top.silwings.core.model.dto.QueryConditionDto;
  * @Since
  **/
 @Service
-public class MockHandlerApplication {
+public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerRepository mockHandlerRepository;
 
@@ -29,7 +30,7 @@ public class MockHandlerApplication {
 
     private final MockHandlerFactory mockHandlerFactory;
 
-    public MockHandlerApplication(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory) {
+    public MockHandlerServiceImpl(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory) {
         this.mockHandlerRepository = mockHandlerRepository;
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerFactory = mockHandlerFactory;

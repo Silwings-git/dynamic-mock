@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(description = "启用/停用模拟处理器参数")
-public class EnableStatusVo {
+public class EnableStatusParam {
 
     @ApiModelProperty(value = "处理器ID", required = true, example = "10")
     private String handlerId;

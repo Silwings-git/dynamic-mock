@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Task请求信息")
-public class TaskRequestInfoVo {
+public class TaskRequestInfoParam {
 
     @ApiModelProperty(value = "请求地址", required = true, example = "http://localhost:8080/misaka/mikoto")
     private String requestUrl;

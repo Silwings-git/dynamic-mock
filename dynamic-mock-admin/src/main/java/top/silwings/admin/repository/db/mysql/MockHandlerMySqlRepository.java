@@ -8,8 +8,10 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.repository.MockHandlerRepository;
 import top.silwings.admin.repository.db.mysql.converter.MockHandlerDaoConverter;
-import top.silwings.admin.repository.db.mysql.dao.MockHandlerDao;
-import top.silwings.admin.repository.db.mysql.dao.MockHandlerUniqueDao;
+import top.silwings.admin.repository.db.mysql.mapper.MockHandlerMapper;
+import top.silwings.admin.repository.db.mysql.mapper.MockHandlerUniqueMapper;
+import top.silwings.admin.repository.db.mysql.po.MockHandlerPo;
+import top.silwings.admin.repository.db.mysql.po.MockHandlerUniquePo;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.exceptions.DynamicMockException;
@@ -47,17 +49,17 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     @Override
     public Identity create(final MockHandlerDto mockHandlerDto) {
 
-        final MockHandlerDao mockHandlerDao = this.mockHandlerDaoConverter.convert(mockHandlerDto);
-        mockHandlerDao.setHandlerId(null);
+        final MockHandlerPo mockHandlerPo = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        mockHandlerPo.setHandlerId(null);
 
-        this.mockHandlerMapper.insertSelective(mockHandlerDao);
+        this.mockHandlerMapper.insertSelective(mockHandlerPo);
 
-        final List<MockHandlerUniqueDao> uniqueList = mockHandlerDto.getHttpMethods().stream()
-                .map(method -> MockHandlerUniqueDao.of(mockHandlerDao.getHandlerId(), mockHandlerDao.getRequestUri(), method.name()))
+        final List<MockHandlerUniquePo> uniqueList = mockHandlerDto.getHttpMethods().stream()
+                .map(method -> MockHandlerUniquePo.of(mockHandlerPo.getHandlerId(), mockHandlerPo.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
         this.mockHandlerUniqueMapper.insertList(uniqueList);
 
-        return Identity.from(mockHandlerDao.getHandlerId());
+        return Identity.from(mockHandlerPo.getHandlerId());
     }
 
     @Transactional
@@ -66,22 +68,22 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Identity handlerId = Objects.requireNonNull(mockHandlerDto.getHandlerId());
 
-        final MockHandlerDao mockHandlerDao = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        final MockHandlerPo mockHandlerPo = this.mockHandlerDaoConverter.convert(mockHandlerDto);
 
-        final Example updateCondition = new Example(MockHandlerDao.class);
+        final Example updateCondition = new Example(MockHandlerPo.class);
         updateCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
 
-        this.mockHandlerMapper.updateByConditionSelective(mockHandlerDao, updateCondition);
+        this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
 
         // 删除唯一表该handler的数据,重新创建
-        final Example deleteCondition = new Example(MockHandlerUniqueDao.class);
+        final Example deleteCondition = new Example(MockHandlerUniquePo.class);
         deleteCondition.createCriteria()
-                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteCondition);
 
-        final List<MockHandlerUniqueDao> uniqueList = mockHandlerDto.getHttpMethods().stream()
-                .map(method -> MockHandlerUniqueDao.of(handlerId.longValue(), mockHandlerDao.getRequestUri(), method.name()))
+        final List<MockHandlerUniquePo> uniqueList = mockHandlerDto.getHttpMethods().stream()
+                .map(method -> MockHandlerUniquePo.of(handlerId.longValue(), mockHandlerPo.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
         this.mockHandlerUniqueMapper.insertList(uniqueList);
 
@@ -91,16 +93,16 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     @Override
     public MockHandlerDto find(final Identity handlerId) {
 
-        final MockHandlerDao findCondition = new MockHandlerDao();
+        final MockHandlerPo findCondition = new MockHandlerPo();
         findCondition.setHandlerId(handlerId.longValue());
 
-        final MockHandlerDao mockHandlerDao = this.mockHandlerMapper.selectOne(findCondition);
+        final MockHandlerPo mockHandlerPo = this.mockHandlerMapper.selectOne(findCondition);
 
-        if (null == mockHandlerDao) {
+        if (null == mockHandlerPo) {
             throw new DynamicMockException("Mock handler does not exist: " + handlerId);
         }
 
-        return this.mockHandlerDaoConverter.convert(mockHandlerDao);
+        return this.mockHandlerDaoConverter.convert(mockHandlerPo);
     }
 
     @Override
@@ -110,16 +112,16 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
             return PageData.empty();
         }
 
-        final Example condition = new Example(MockHandlerDao.class);
+        final Example condition = new Example(MockHandlerPo.class);
         final Example.Criteria criteria = condition.createCriteria();
         criteria
-                .andLike(MockHandlerDao.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, arg -> "%".concat(arg).concat("%")))
-                .andLike(MockHandlerDao.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, arg -> arg.concat("%")))
-                .andLike(MockHandlerDao.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, arg -> "%".concat(arg).concat("%")))
-                .andEqualTo(MockHandlerDao.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
+                .andLike(MockHandlerPo.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, arg -> "%".concat(arg).concat("%")))
+                .andLike(MockHandlerPo.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, arg -> arg.concat("%")))
+                .andLike(MockHandlerPo.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, arg -> "%".concat(arg).concat("%")))
+                .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
         if (null != queryCondition.getHandlerIdList()) {
-            criteria.andIn(MockHandlerDao.C_HANDLER_ID, queryCondition.getHandlerIdList().stream().map(Identity::longValue).collect(Collectors.toList()));
+            criteria.andIn(MockHandlerPo.C_HANDLER_ID, queryCondition.getHandlerIdList().stream().map(Identity::longValue).collect(Collectors.toList()));
         }
 
         return this.queryPageData(condition, pageParam.toRowBounds());
@@ -129,14 +131,14 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     @Override
     public void delete(final Identity handlerId) {
 
-        final Example deleteHandlerCondition = new Example(MockHandlerDao.class);
+        final Example deleteHandlerCondition = new Example(MockHandlerPo.class);
         deleteHandlerCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerMapper.deleteByCondition(deleteHandlerCondition);
 
-        final Example deleteUniqueCondition = new Example(MockHandlerUniqueDao.class);
+        final Example deleteUniqueCondition = new Example(MockHandlerUniquePo.class);
         deleteUniqueCondition.createCriteria()
-                .andEqualTo(MockHandlerUniqueDao.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.longValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
     }
 
@@ -144,12 +146,12 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     @Override
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
 
-        final MockHandlerDao mockHandler = new MockHandlerDao();
+        final MockHandlerPo mockHandler = new MockHandlerPo();
         mockHandler.setEnableStatus(enableStatus.code());
 
-        final Example enableCondition = new Example(MockHandlerDao.class);
+        final Example enableCondition = new Example(MockHandlerPo.class);
         enableCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
 
         this.mockHandlerMapper.updateByConditionSelective(mockHandler, enableCondition);
     }
@@ -157,9 +159,9 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     @Override
     public PageData<MockHandlerDto> queryEnableHandlerList(final PageParam pageParam) {
 
-        final Example queryCondition = new Example(MockHandlerDao.class);
+        final Example queryCondition = new Example(MockHandlerPo.class);
         queryCondition.createCriteria()
-                .andEqualTo(MockHandlerDao.C_ENABLE_STATUS, EnableStatus.ENABLE.code());
+                .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.ENABLE.code());
 
         return this.queryPageData(queryCondition, pageParam.toRowBounds());
     }
@@ -171,7 +173,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
             return PageData.empty();
         }
 
-        final List<MockHandlerDao> mockHandlerList = this.mockHandlerMapper.selectByConditionAndRowBounds(queryCondition, rowBounds);
+        final List<MockHandlerPo> mockHandlerList = this.mockHandlerMapper.selectByConditionAndRowBounds(queryCondition, rowBounds);
 
         final List<MockHandlerDto> mockHandlerDtoList = mockHandlerList
                 .stream()

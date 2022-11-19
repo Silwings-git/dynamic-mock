@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
  **/
 @Setter
 @Getter
-@ConfigurationProperties(prefix = "mock.task.scheduler")
+@ConfigurationProperties(prefix = "dynamic-mock.task.scheduler")
 @PropertySource({"classpath:application.yml"})
 public class TaskSchedulerProperties {
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import top.silwings.admin.repository.db.mysql.dao.MockHandlerDao;
+import top.silwings.admin.repository.db.mysql.po.MockHandlerPo;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
@@ -29,9 +29,9 @@ public class MockHandlerDaoConverter {
     private static final String EMPTY_LIST = "[]";
     private static final String EMPTY_JSON = "{}";
 
-    public MockHandlerDao convert(final MockHandlerDto mockHandlerDto) {
+    public MockHandlerPo convert(final MockHandlerDto mockHandlerDto) {
 
-        final MockHandlerDao dao = new MockHandlerDao();
+        final MockHandlerPo dao = new MockHandlerPo();
         dao.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::longValue));
         dao.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
         dao.setName(mockHandlerDto.getName());
@@ -48,20 +48,20 @@ public class MockHandlerDaoConverter {
         return dao;
     }
 
-    public MockHandlerDto convert(final MockHandlerDao mockHandlerDao) {
+    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo) {
 
         return MockHandlerDto.builder()
-                .handlerId(Identity.from(mockHandlerDao.getHandlerId()))
-                .enableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDao.getEnableStatus(), EnableStatus.DISABLE, EnableStatus::valueOfCode))
-                .name(mockHandlerDao.getName())
-                .httpMethods(Arrays.stream(mockHandlerDao.getHttpMethods().split(",")).map(HttpMethod::resolve).collect(Collectors.toList()))
-                .requestUri(mockHandlerDao.getRequestUri())
-                .label(mockHandlerDao.getLabel())
-                .delayTime(mockHandlerDao.getDelayTime())
-                .customizeSpace(JSON.parseObject(mockHandlerDao.getCustomizeSpace()))
-                .responses(JSON.parseArray(mockHandlerDao.getResponses(), MockResponseInfoDto.class))
-                .tasks(JSON.parseArray(mockHandlerDao.getTasks(), TaskInfoDto.class))
-                .updateTime(mockHandlerDao.getUpdateTime())
+                .handlerId(Identity.from(mockHandlerPo.getHandlerId()))
+                .enableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerPo.getEnableStatus(), EnableStatus.DISABLE, EnableStatus::valueOfCode))
+                .name(mockHandlerPo.getName())
+                .httpMethods(Arrays.stream(mockHandlerPo.getHttpMethods().split(",")).map(HttpMethod::resolve).collect(Collectors.toList()))
+                .requestUri(mockHandlerPo.getRequestUri())
+                .label(mockHandlerPo.getLabel())
+                .delayTime(mockHandlerPo.getDelayTime())
+                .customizeSpace(JSON.parseObject(mockHandlerPo.getCustomizeSpace()))
+                .responses(JSON.parseArray(mockHandlerPo.getResponses(), MockResponseInfoDto.class))
+                .tasks(JSON.parseArray(mockHandlerPo.getTasks(), TaskInfoDto.class))
+                .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
     }
 }

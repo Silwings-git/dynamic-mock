@@ -1,4 +1,4 @@
-package top.silwings.dynamicmock.core;
+package top.silwings.admin.web;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Task信息")
-public class TaskInfoVo {
+public class TaskInfoParam {
 
     @ApiModelProperty(value = "任务名称", required = true, example = "会员卡支付回调")
     private String name;
@@ -41,6 +41,6 @@ public class TaskInfoVo {
     private Integer numberOfExecute;
 
     @ApiModelProperty(value = "请求信息", required = true)
-    private TaskRequestInfoVo request;
+    private TaskRequestInfoParam request;
 
 }

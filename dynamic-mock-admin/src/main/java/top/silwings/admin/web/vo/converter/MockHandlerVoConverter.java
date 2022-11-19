@@ -3,12 +3,12 @@ package top.silwings.admin.web.vo.converter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
-import top.silwings.admin.web.vo.MockHandlerInfoVo;
-import top.silwings.admin.web.vo.MockResponseInfoVo;
-import top.silwings.admin.web.vo.MockResponseVo;
-import top.silwings.admin.web.vo.TaskInfoVo;
-import top.silwings.admin.web.vo.TaskRequestInfoVo;
+import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
+import top.silwings.admin.web.vo.param.MockResponseInfoParam;
+import top.silwings.admin.web.vo.param.MockResponseParam;
+import top.silwings.admin.web.vo.param.TaskInfoParam;
+import top.silwings.admin.web.vo.param.TaskRequestInfoParam;
+import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerVoConverter {
 
-    public MockHandlerDto convert(final MockHandlerInfoVo vo) {
+    public MockHandlerDto convert(final MockHandlerInfoParam vo) {
         return MockHandlerDto.builder()
                 .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Long.parseLong(vo.getHandlerId())))
                 .enableStatus(EnableStatus.DISABLE)
@@ -45,9 +45,9 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    public MockHandlerInfoResultVo convert(final MockHandlerDto dto) {
+    public MockHandlerInfoResult convert(final MockHandlerDto dto) {
 
-        final MockHandlerInfoResultVo resultVo = new MockHandlerInfoResultVo();
+        final MockHandlerInfoResult resultVo = new MockHandlerInfoResult();
 
         resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(dto.getHandlerId().stringValue());
@@ -64,7 +64,7 @@ public class MockHandlerVoConverter {
         return resultVo;
     }
 
-    private TaskInfoDto convert(final TaskInfoVo vo) {
+    private TaskInfoDto convert(final TaskInfoParam vo) {
         return TaskInfoDto.builder()
                 .name(vo.getName())
                 .support(vo.getSupport())
@@ -75,7 +75,7 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private TaskRequestDto convert(final TaskRequestInfoVo vo) {
+    private TaskRequestDto convert(final TaskRequestInfoParam vo) {
         return TaskRequestDto.builder()
                 .requestUrl(vo.getRequestUrl())
                 .httpMethod(HttpMethod.resolve(vo.getHttpMethod()))
@@ -85,7 +85,7 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private MockResponseInfoDto convert(final MockResponseInfoVo vo) {
+    private MockResponseInfoDto convert(final MockResponseInfoParam vo) {
         return MockResponseInfoDto.builder()
                 .name(vo.getName())
                 .support(vo.getSupport())
@@ -94,7 +94,7 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private MockResponseDto convert(final MockResponseVo vo) {
+    private MockResponseDto convert(final MockResponseParam vo) {
         return MockResponseDto.builder()
                 .status(vo.getStatus())
                 .headers(vo.getHeaders())
@@ -102,8 +102,8 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private TaskInfoVo convert(final TaskInfoDto dto) {
-        return TaskInfoVo.builder()
+    private TaskInfoParam convert(final TaskInfoDto dto) {
+        return TaskInfoParam.builder()
                 .name(dto.getName())
                 .support(dto.getSupport())
                 .async(dto.isAsync())
@@ -113,8 +113,8 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private TaskRequestInfoVo convert(final TaskRequestDto dto) {
-        return TaskRequestInfoVo.builder()
+    private TaskRequestInfoParam convert(final TaskRequestDto dto) {
+        return TaskRequestInfoParam.builder()
                 .requestUrl(dto.getRequestUrl())
                 .httpMethod(ConvertUtils.getNoNullOrDefault(dto.getHttpMethod(), null, HttpMethod::name))
                 .headers(dto.getHeaders())
@@ -123,8 +123,8 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private MockResponseInfoVo convert(final MockResponseInfoDto dto) {
-        return MockResponseInfoVo.builder()
+    private MockResponseInfoParam convert(final MockResponseInfoDto dto) {
+        return MockResponseInfoParam.builder()
                 .name(dto.getName())
                 .support(dto.getSupport())
                 .delayTime(dto.getDelayTime())
@@ -132,8 +132,8 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    private MockResponseVo convert(final MockResponseDto dto) {
-        return MockResponseVo.builder()
+    private MockResponseParam convert(final MockResponseDto dto) {
+        return MockResponseParam.builder()
                 .status(dto.getStatus())
                 .headers(dto.getHeaders())
                 .body(dto.getBody())

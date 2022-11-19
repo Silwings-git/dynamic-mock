@@ -1,4 +1,4 @@
-package top.silwings.admin.repository.db.mysql.dao;
+package top.silwings.admin.repository.db.mysql.po;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "dm_mock_handler")
-public class MockHandlerDao {
+public class MockHandlerPo {
 
     public static final String C_ENABLE_STATUS = "enableStatus";
     public static final String C_HANDLER_ID = "handlerId";

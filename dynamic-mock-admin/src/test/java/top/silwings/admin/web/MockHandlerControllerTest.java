@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.web.controller.MockHandlerController;
-import top.silwings.admin.web.vo.EnableStatusVo;
-import top.silwings.admin.web.vo.MockHandlerInfoResultVo;
+import top.silwings.admin.web.vo.param.EnableStatusParam;
+import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.common.PageResult;
@@ -75,33 +75,33 @@ public class MockHandlerControllerTest {
 
     private void find(final Identity handlerId) {
 
-        final Result<MockHandlerInfoResultVo> voResult = this.mockHandlerController.find(handlerId.stringValue());
+        final Result<MockHandlerInfoResult> voResult = this.mockHandlerController.find(handlerId.stringValue());
 
         Assert.assertNotNull(voResult.getData());
     }
 
     private void query() {
 
-        final PageResult<MockHandlerInfoResultVo> pageResult = this.mockHandlerController.query(1, 10, null, null, null, null);
+        final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(1, 10, null, null, null, null);
 
         Assert.assertNotNull(pageResult.getPageData());
     }
 
     private void enable(final Identity handlerId) {
 
-        final EnableStatusVo enableStatusVo = new EnableStatusVo();
-        enableStatusVo.setHandlerId(handlerId.stringValue());
-        enableStatusVo.setEnableStatus(EnableStatus.ENABLE.code());
-        final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusVo);
+        final EnableStatusParam enableStatusParam = new EnableStatusParam();
+        enableStatusParam.setHandlerId(handlerId.stringValue());
+        enableStatusParam.setEnableStatus(EnableStatus.ENABLE.code());
+        final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusParam);
 
         Assert.assertNotNull(result);
     }
 
     private void disable(final Identity handlerId) {
-        final EnableStatusVo enableStatusVo = new EnableStatusVo();
-        enableStatusVo.setHandlerId(handlerId.stringValue());
-        enableStatusVo.setEnableStatus(EnableStatus.DISABLE.code());
-        final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusVo);
+        final EnableStatusParam enableStatusParam = new EnableStatusParam();
+        enableStatusParam.setHandlerId(handlerId.stringValue());
+        enableStatusParam.setEnableStatus(EnableStatus.DISABLE.code());
+        final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusParam);
 
         Assert.assertNotNull(result);
     }

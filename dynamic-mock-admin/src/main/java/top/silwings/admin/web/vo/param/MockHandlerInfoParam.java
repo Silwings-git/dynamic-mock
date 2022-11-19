@@ -1,4 +1,4 @@
-package top.silwings.admin.web.vo;
+package top.silwings.admin.web.vo.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")
-public class MockHandlerInfoVo {
+public class MockHandlerInfoParam {
 
     @ApiModelProperty(value = "处理器id", required = true, example = "H1")
     private String handlerId;
@@ -48,9 +48,9 @@ public class MockHandlerInfoVo {
     private Map<String, ?> customizeSpace;
 
     @ApiModelProperty(value = "响应信息集")
-    private List<MockResponseInfoVo> responses;
+    private List<MockResponseInfoParam> responses;
 
     @ApiModelProperty(value = "Task信息集")
-    private List<TaskInfoVo> tasks;
+    private List<TaskInfoParam> tasks;
 
 }
