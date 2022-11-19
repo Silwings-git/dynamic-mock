@@ -48,4 +48,41 @@ public class UserMysqlRepository implements UserRepository {
         return User.from(userPoList.get(0));
     }
 
+    @Override
+    public String create(final String username, final String userAccount, final String role) {
+
+        final User user = User.newUser(username, userAccount, role);
+
+        this.userMapper.insertSelective(user.toUser());
+
+        return user.getDefaultPassword();
+    }
+
+    @Override
+    public void update(final User user) {
+
+        if (StringUtils.isBlank(user.getUserAccount())) {
+            return;
+        }
+
+        final Example saveCondition = new Example(UserPo.class);
+        saveCondition.createCriteria()
+                .andEqualTo(UserPo.C_USER_ACCOUNT, user.getUserAccount());
+
+        this.userMapper.updateByConditionSelective(user.toUser(), saveCondition);
+    }
+
+    @Override
+    public void delete(final String userAccount) {
+
+        if (StringUtils.isBlank(userAccount)) {
+            return;
+        }
+
+        final Example deleteCondition = new Example(UserPo.class);
+        deleteCondition.createCriteria()
+                .andEqualTo(UserPo.C_USER_ACCOUNT, userAccount);
+
+        this.userMapper.deleteByCondition(deleteCondition);
+    }
 }

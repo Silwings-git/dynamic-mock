@@ -11,4 +11,10 @@ import top.silwings.admin.model.User;
  **/
 public interface UserRepository {
     User findByUserAccount(String userAccount);
+
+    String create(String username, String userAccount, String role);
+
+    void update(User user);
+
+    void delete(String userAccount);
 }

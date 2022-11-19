@@ -1,7 +1,11 @@
-package top.silwings.admin.interceptors;
+package top.silwings.admin.auth.interceptors;
 
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
+import top.silwings.admin.auth.annotation.PermissionLimit;
+import top.silwings.admin.exceptions.UserAuthException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.service.LoginService;
 
@@ -29,12 +33,24 @@ public class UserInterceptor implements HandlerInterceptor {
         UserHolder.removeUser();
 
         boolean needLogin = true;
+        boolean needAdminUser = false;
+        final PermissionLimit permission = ((HandlerMethod) handler).getMethodAnnotation(PermissionLimit.class);
+        if (permission != null) {
+            needLogin = permission.limit();
+            needAdminUser = permission.adminUser();
+        }
 
         if (needLogin) {
 
             final User user = this.loginService.ifLogin(request, response);
 
-            UserHolder.setUser(user);
+            final UserAuthInfo userAuthInfo = UserAuthInfo.from(user);
+
+            if (needAdminUser && !userAuthInfo.isAdminUser()) {
+                throw new UserAuthException("Insufficient permissions!");
+            }
+
+            UserHolder.setUser(UserAuthInfo.from(user));
         }
 
         return true;

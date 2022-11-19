@@ -1,7 +1,6 @@
 package top.silwings.admin.service.impl;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
@@ -13,8 +12,6 @@ import top.silwings.core.utils.JsonUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
 
 /**
  * @ClassName LoginServiceImpl
@@ -43,8 +40,8 @@ public class LoginServiceImpl implements LoginService {
         final User user = this.userRepository.findByUserAccount(userAccount);
         CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from("Username or password error."));
 
-        final String passwordMd5 = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
-        CheckUtils.isEquals(user.getPassword(), passwordMd5, () -> DynamicMockAdminException.from("Username or password error."));
+        final String loginPassword = User.encryptPassword(password);
+        CheckUtils.isEquals(user.getPassword(), loginPassword, () -> DynamicMockAdminException.from("Username or password error."));
 
         final String userAuthToken = this.makeToken(user);
 
@@ -61,13 +58,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public User ifLogin(final HttpServletRequest request, final HttpServletResponse response) {
 
-        final Enumeration<String> headers = request.getHeaders(LOGIN_IDENTITY_KEY);
-
-        if (!headers.hasMoreElements()) {
-            return null;
-        }
-
-        final String token = headers.nextElement();
+        final String token = CookieUtils.getValue(request, LOGIN_IDENTITY_KEY);
 
         try {
             final User cookieUser = this.parseToken(token);
@@ -95,6 +86,7 @@ public class LoginServiceImpl implements LoginService {
         return user;
     }
 
+    @Override
     public void logout(final HttpServletRequest request, final HttpServletResponse response) {
         CookieUtils.remove(request, response, LOGIN_IDENTITY_KEY);
     }

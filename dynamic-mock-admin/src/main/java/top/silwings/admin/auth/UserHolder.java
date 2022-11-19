@@ -1,7 +1,6 @@
 package top.silwings.admin.auth;
 
 import top.silwings.admin.exceptions.UserAuthException;
-import top.silwings.admin.model.User;
 
 /**
  * @ClassName UserHolder
@@ -12,20 +11,20 @@ import top.silwings.admin.model.User;
  **/
 public class UserHolder {
 
-    private static final ThreadLocal<User> TL = new ThreadLocal<>();
+    private static final ThreadLocal<UserAuthInfo> TL = new ThreadLocal<>();
 
-    public static void setUser(final User userAuthInfo) {
+    public static void setUser(final UserAuthInfo userAuthInfo) {
         TL.remove();
         TL.set(userAuthInfo);
     }
 
-    public static User getUser() {
+    public static UserAuthInfo getUser() {
         return getUser(true);
     }
 
-    public static User getUser(final boolean required) {
+    public static UserAuthInfo getUser(final boolean required) {
 
-        final User user = TL.get();
+        final UserAuthInfo user = TL.get();
 
         if (required && null == user) {
             throw new UserAuthException("Please log on first!");
@@ -38,4 +37,11 @@ public class UserHolder {
         TL.remove();
     }
 
+    public static UserAuthInfo getAdminUser() {
+        final UserAuthInfo authInfo = getUser();
+        if (null != authInfo && authInfo.isAdminUser()) {
+            return authInfo;
+        }
+        throw new UserAuthException("Insufficient permissions!");
+    }
 }
