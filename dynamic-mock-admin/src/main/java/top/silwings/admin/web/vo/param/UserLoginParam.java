@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName UserLoginParamVo
@@ -26,4 +28,8 @@ public class UserLoginParam {
     @ApiModelProperty(value = "下次自动登录", example = "true")
     private Boolean ifRemember;
 
+    public void validate() {
+        CheckUtils.isNotBlank(this.getUserAccount(), () -> DynamicMockAdminException.from("The account cannot be empty."));
+        CheckUtils.isNotBlank(this.getPassword(), () -> DynamicMockAdminException.from("The password cannot be empty."));
+    }
 }

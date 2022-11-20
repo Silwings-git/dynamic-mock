@@ -24,6 +24,7 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
+import top.silwings.core.model.validator.MockHandlerValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,9 +45,12 @@ public class MockHandlerController {
 
     private final MockHandlerVoConverter mockHandlerVoConverter;
 
-    public MockHandlerController(final MockHandlerServiceImpl mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter) {
+    private final MockHandlerValidator mockHandlerValidator;
+
+    public MockHandlerController(final MockHandlerServiceImpl mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator) {
         this.mockHandlerApplication = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
+        this.mockHandlerValidator = mockHandlerValidator;
     }
 
     @PostMapping("/save")
@@ -55,6 +59,8 @@ public class MockHandlerController {
     public Result<Identity> save(@RequestBody final MockHandlerInfoParam mockHandlerInfoParam) {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoParam);
+
+        this.mockHandlerValidator.validate(mockHandlerDto);
 
         final Identity handlerId = this.mockHandlerApplication.save(mockHandlerDto);
 

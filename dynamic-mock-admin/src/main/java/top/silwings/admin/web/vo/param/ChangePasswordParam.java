@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName ChangePasswordParam
@@ -23,4 +25,9 @@ public class ChangePasswordParam {
     @ApiModelProperty(value = "新密码", required = true, example = "password")
     private String newPassword;
 
+    public void validate() {
+        CheckUtils.isNotBlank(this.getOldPassword(), () -> DynamicMockAdminException.from("The old password cannot be empty."));
+        CheckUtils.isNotBlank(this.getNewPassword(), () -> DynamicMockAdminException.from("The new password cannot be empty."));
+        CheckUtils.isNotEquals(this.getOldPassword(), this.getNewPassword(), () -> DynamicMockAdminException.from("New password and old password cannot be the same."));
+    }
 }

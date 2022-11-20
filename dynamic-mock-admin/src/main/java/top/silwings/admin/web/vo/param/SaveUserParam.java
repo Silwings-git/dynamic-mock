@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName UserParam
@@ -31,4 +34,13 @@ public class SaveUserParam {
 
     @ApiModelProperty(value = "角色", required = true, example = "user")
     private String role;
+
+    public void validate() {
+        CheckUtils.isNotBlank(this.getUsername(), () -> DynamicMockAdminException.from("The user name cannot be empty."));
+        if (StringUtils.isBlank(this.getUserId())) {
+            CheckUtils.isNotBlank(this.getUserAccount(), () -> DynamicMockAdminException.from("The user account cannot be empty"));
+            CheckUtils.isNotBlank(this.getPassword(), () -> DynamicMockAdminException.from("The user password cannot be empty"));
+            CheckUtils.isNotBlank(this.getRole(), () -> DynamicMockAdminException.from("The user role cannot be empty"));
+        }
+    }
 }

@@ -52,6 +52,8 @@ public class UserController {
     @ApiOperation(value = "保存用户")
     public Result<Void> save(@RequestBody final SaveUserParam saveUserParam) {
 
+        saveUserParam.validate();
+
         if (null != saveUserParam.getUserId()) {
             final Identity userId = Identity.from(saveUserParam.getUserId());
             this.userService.update(userId, saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
@@ -76,6 +78,8 @@ public class UserController {
     @PermissionLimit
     @ApiOperation(value = "修改密码")
     public Result<Void> changePassword(@RequestBody final ChangePasswordParam param, final HttpServletRequest request, final HttpServletResponse response) {
+
+        param.validate();
 
         this.userService.changePassword(param.getOldPassword(), param.getNewPassword());
 

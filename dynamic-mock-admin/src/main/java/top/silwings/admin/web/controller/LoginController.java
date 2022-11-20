@@ -35,6 +35,8 @@ public class LoginController {
     @ApiOperation(value = "登录")
     public Result<String> login(@RequestBody UserLoginParam userLoginParam, final HttpServletResponse response) {
 
+        userLoginParam.validate();
+
         final String username = this.loginService.login(userLoginParam.getUserAccount(), userLoginParam.getPassword(), Boolean.TRUE.equals(userLoginParam.getIfRemember()), response);
 
         return Result.ok(username);
