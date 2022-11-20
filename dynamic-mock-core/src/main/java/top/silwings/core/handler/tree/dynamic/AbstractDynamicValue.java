@@ -1,10 +1,10 @@
 package top.silwings.core.handler.tree.dynamic;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson2.JSONException;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.TypeConversionException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.Node;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +38,8 @@ public abstract class AbstractDynamicValue implements DynamicValue {
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
         try {
             return this.doInterpret(context, childNodeValueList);
-        } catch (JSONException e) {
-            throw new DynamicMockException("Dynamic operation '" + symbol() + "' execution failed. " + e.getMessage() + ": " + JSON.toJSONString(childNodeValueList), e);
+        } catch (TypeConversionException e) {
+            throw new DynamicMockException("Dynamic operation '" + symbol() + "' execution failed. " + e.getMessage() + ": " + JsonUtils.toJSONString(childNodeValueList), e);
         }
     }
 

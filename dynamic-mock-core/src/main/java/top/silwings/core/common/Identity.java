@@ -1,13 +1,5 @@
 package top.silwings.core.common;
 
-import com.alibaba.fastjson.parser.DefaultJSONParser;
-import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.ObjectSerializer;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.reader.ObjectReader;
-import com.alibaba.fastjson2.writer.ObjectWriter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -16,10 +8,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
@@ -115,57 +105,6 @@ public class Identity {
             return from(jsonParser.getValueAsString());
         }
 
-    }
-
-    public static class IdentityFastJsonObjectWriter implements ObjectWriter<Identity> {
-        @Override
-        public void write(final JSONWriter jsonWriter, final Object object, final Object fieldName, final Type fieldType, final long features) {
-            if (null == object) {
-                jsonWriter.writeNull();
-            } else {
-                if (object instanceof Identity) {
-                    jsonWriter.writeString(((Identity) object).stringValue());
-                }
-            }
-        }
-    }
-
-    public static class IdentityFastJsonObjectReader implements ObjectReader<Identity> {
-        @Override
-        public Identity readObject(final JSONReader jsonReader, final Type fieldType, final Object fieldName, final long features) {
-            final String id = jsonReader.readString();
-            if (StringUtils.isBlank(id)) {
-                return null;
-            } else {
-                return Identity.from(id);
-            }
-        }
-    }
-
-    public static class IdentityFastJsonObjectSerializer implements ObjectSerializer {
-        @Override
-        public void write(final JSONSerializer serializer, final Object object, final Object fieldName, final Type fieldType, final int features) {
-            if (object instanceof Identity) {
-                serializer.write(((Identity) object).stringValue());
-            } else {
-                serializer.write(object);
-            }
-        }
-    }
-
-    public static class IdentityFastJsonObjectDeserializer implements ObjectDeserializer {
-
-        @Override
-        public Identity deserialze(final DefaultJSONParser parser, final Type type, final Object fieldName) {
-
-            final String id = parser.parseObject(String.class);
-
-            if (StringUtils.isNotBlank(id)) {
-                return Identity.from(id);
-            }
-
-            return null;
-        }
     }
 
 }

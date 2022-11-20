@@ -1,8 +1,5 @@
 package top.silwings.core.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
@@ -11,6 +8,7 @@ import top.silwings.core.handler.tree.structure.ObjectNode;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
 import top.silwings.core.utils.JsonUtils;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -31,9 +29,9 @@ public class JsonNodeParser {
 
     public Node parse(final Object bean) {
         if (bean instanceof String) {
-            return this.doParse(JSON.parseObject((String) bean));
+            return this.doParse(JsonUtils.toBean((String) bean));
         }
-        return this.doParse(JSON.parseObject(JsonUtils.toJSONString(bean)));
+        return this.doParse(JsonUtils.toBean(JsonUtils.toJSONString(bean)));
     }
 
     /**
@@ -42,16 +40,16 @@ public class JsonNodeParser {
      * @param json json实例
      * @return 节点树
      */
-    private Node doParse(final JSON json) {
+    private Node doParse(final Object json) {
 
         final Node node;
 
-        if (json instanceof JSONObject) {
+        if (json instanceof Map) {
 
-            final JSONObject parseObject = (JSONObject) json;
+            final Map<?, ?> parseObject = (Map<?,?>) json;
             final ObjectNode objectNode = new ObjectNode();
             // 每遍历到一个JSONObject,添加一层ObjectNode
-            for (final Map.Entry<String, Object> entry : parseObject.entrySet()) {
+            for (final Map.Entry<?, ?> entry : parseObject.entrySet()) {
                 final Object value = entry.getValue();
                 objectNode.put(this.buildNode(entry.getKey()), this.buildNode(value));
             }
@@ -59,10 +57,10 @@ public class JsonNodeParser {
 
         } else {
 
-            final JSONArray parseArray = (JSONArray) json;
+            final Collection<?> parseList = (Collection<?>) json;
             // 每遍历到一个JSONObject,添加一层ArrayNode
             final ArrayNode arrayNode = new ArrayNode();
-            for (final Object value : parseArray) {
+            for (final Object value : parseList) {
                 arrayNode.add(this.buildNode(value));
             }
             node = arrayNode;
@@ -78,9 +76,9 @@ public class JsonNodeParser {
      * @return Node实例
      */
     private Node buildNode(final Object obj) {
-        if (this.isJson(obj)) {
+        if (this.isMap(obj)) {
 
-            return this.doParse((JSON) obj);
+            return this.doParse(obj);
 
         } else if (this.isString(obj) && this.isDynamic((String) obj)) {
 
@@ -100,8 +98,8 @@ public class JsonNodeParser {
         return obj instanceof String;
     }
 
-    private boolean isJson(final Object obj) {
-        return obj instanceof JSON;
+    private boolean isMap(final Object obj) {
+        return obj instanceof Map;
     }
 
 }

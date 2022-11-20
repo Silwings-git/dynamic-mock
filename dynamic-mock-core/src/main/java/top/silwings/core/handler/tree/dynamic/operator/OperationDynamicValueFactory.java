@@ -1,10 +1,10 @@
 package top.silwings.core.handler.tree.dynamic.operator;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,7 +39,7 @@ public class OperationDynamicValueFactory {
         try {
             return this.buildOperationValue(suffixList, dynamicValueFactory);
         } catch (Exception e) {
-            throw new DynamicMockException("Operator expression parsing failed. symbols: " + JSON.toJSONString(symbolList), e);
+            throw new DynamicMockException("Operator expression parsing failed. symbols: " + JsonUtils.toJSONString(symbolList), e);
         }
     }
 

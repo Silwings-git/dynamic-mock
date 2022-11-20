@@ -1,6 +1,5 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
-import com.alibaba.fastjson2.util.TypeUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
@@ -11,6 +10,7 @@ import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.TypeUtils;
 
 import java.util.Collections;
 import java.util.List;

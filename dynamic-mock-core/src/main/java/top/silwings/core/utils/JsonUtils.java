@@ -2,6 +2,7 @@ package top.silwings.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import top.silwings.core.exceptions.DynamicMockException;
@@ -50,6 +51,25 @@ public class JsonUtils {
             throw new DynamicMockException(e);
         }
     }
+
+    public static Object toBean(final String jsonStr) {
+        try {
+            return MAPPER.readValue(jsonStr, Object.class);
+        } catch (IOException e) {
+            log.error("Json parsing error: " + jsonStr, e);
+            throw new DynamicMockException(e);
+        }
+    }
+
+    public static boolean isValidJson(final String jsonStr) {
+        try {
+            MAPPER.readTree(jsonStr);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
+        }
+    }
+
 
     public static <T, E> Map<T, E> toMap(final String jsonStr, final Class<T> keyClass, final Class<E> valueClass) {
         try {

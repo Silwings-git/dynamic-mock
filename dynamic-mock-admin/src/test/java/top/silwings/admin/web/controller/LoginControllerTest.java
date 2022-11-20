@@ -77,6 +77,9 @@ public class LoginControllerTest {
         log.info("fastjson toJson: {}", JSON.toJSONString(user, serializeConfig));
         log.info("jackson toBean: {}", JsonUtils.toBean(JsonUtils.toJSONString(user), User.class));
         log.info("fastjson toBean: {}", (User) JSON.parseObject(JSON.toJSONString(user, serializeConfig), User.class, parserConfig));
+
+        final Object o = JsonUtils.toBean(JsonUtils.toJSONString(MockHandlerDefinitionMock.build()), Object.class);
+        System.out.println("o = " + o);
     }
 
     @Data
