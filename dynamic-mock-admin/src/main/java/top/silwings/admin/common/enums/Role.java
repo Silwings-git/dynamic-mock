@@ -1,4 +1,4 @@
-package top.silwings.admin.common;
+package top.silwings.admin.common.enums;
 
 /**
  * @ClassName Role

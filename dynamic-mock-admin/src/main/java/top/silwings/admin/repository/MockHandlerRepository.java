@@ -7,6 +7,8 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 
+import java.util.List;
+
 /**
  * @ClassName MockHandlerMySqlRepository
  * @Description
@@ -25,6 +27,8 @@ public interface MockHandlerRepository {
     PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
     void delete(Identity handlerId);
+
+    void delete(List<Identity> handlerIdList);
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus);
 

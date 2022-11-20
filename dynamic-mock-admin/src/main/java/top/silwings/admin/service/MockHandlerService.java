@@ -1,5 +1,9 @@
 package top.silwings.admin.service;
 
+import top.silwings.core.common.Identity;
+
+import java.util.List;
+
 /**
  * @ClassName MockHandlerService
  * @Description
@@ -8,4 +12,5 @@ package top.silwings.admin.service;
  * @Since
  **/
 public interface MockHandlerService {
+    void delete(List<Identity> collect);
 }

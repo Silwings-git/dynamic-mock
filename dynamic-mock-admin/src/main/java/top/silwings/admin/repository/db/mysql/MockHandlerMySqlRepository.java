@@ -1,5 +1,6 @@
 package top.silwings.admin.repository.db.mysql;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -143,6 +145,26 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     }
 
     @Transactional
+    @Override
+    public void delete(List<Identity> handlerIdList) {
+
+        if (CollectionUtils.isEmpty(handlerIdList)) {
+            return;
+        }
+
+        final Set<Long> handlerIdSet = handlerIdList.stream().map(Identity::longValue).collect(Collectors.toSet());
+
+        final Example deleteHandlerCondition = new Example(MockHandlerPo.class);
+        deleteHandlerCondition.createCriteria()
+                .andIn(MockHandlerPo.C_HANDLER_ID, handlerIdSet);
+        this.mockHandlerMapper.deleteByCondition(deleteHandlerCondition);
+
+        final Example deleteUniqueCondition = new Example(MockHandlerUniquePo.class);
+        deleteUniqueCondition.createCriteria()
+                .andIn(MockHandlerUniquePo.C_HANDLER_ID, handlerIdSet);
+        this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
+    }
+
     @Override
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
 

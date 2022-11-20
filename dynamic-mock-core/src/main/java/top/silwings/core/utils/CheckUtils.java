@@ -91,4 +91,8 @@ public class CheckUtils {
     public static <T> void isNotEquals(final T argA, final T argB, final Supplier<RuntimeException> exceptionSupplier) {
         isTrue(!argA.equals(argB), exceptionSupplier);
     }
+
+    public static <T> void isIn(final T obj, final Collection<T> list, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(list.contains(obj), exceptionSupplier);
+    }
 }

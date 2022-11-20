@@ -36,6 +36,7 @@ public class UserInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        // 默认不拦截
         boolean needLogin = false;
         boolean needAdminUser = false;
 

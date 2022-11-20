@@ -41,14 +41,14 @@ import java.util.stream.Collectors;
 @Api(value = "Mock 处理器管理")
 public class MockHandlerController {
 
-    private final MockHandlerServiceImpl mockHandlerApplication;
+    private final MockHandlerServiceImpl mockHandlerService;
 
     private final MockHandlerVoConverter mockHandlerVoConverter;
 
     private final MockHandlerValidator mockHandlerValidator;
 
     public MockHandlerController(final MockHandlerServiceImpl mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator) {
-        this.mockHandlerApplication = mockHandlerApplication;
+        this.mockHandlerService = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
     }
@@ -62,7 +62,7 @@ public class MockHandlerController {
 
         this.mockHandlerValidator.validate(mockHandlerDto);
 
-        final Identity handlerId = this.mockHandlerApplication.save(mockHandlerDto);
+        final Identity handlerId = this.mockHandlerService.save(mockHandlerDto);
 
         return Result.ok(handlerId);
     }
@@ -72,7 +72,7 @@ public class MockHandlerController {
     @ApiOperation(value = "根据id获取Mock处理器信息")
     public Result<MockHandlerInfoResult> find(@PathVariable("handlerId") final String handlerId) {
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerApplication.find(Identity.from(handlerId));
+        final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(Identity.from(handlerId));
 
         final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
@@ -97,7 +97,7 @@ public class MockHandlerController {
                 .label(label)
                 .build();
 
-        final PageData<MockHandlerDto> pageData = this.mockHandlerApplication.query(queryCondition, PageParam.of(pageNum, pageSize));
+        final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, PageParam.of(pageNum, pageSize));
 
         final List<MockHandlerInfoResult> mockHandlerInfoVoList = pageData.getList().stream()
                 .map(this.mockHandlerVoConverter::convert)
@@ -111,7 +111,7 @@ public class MockHandlerController {
     @ApiOperation(value = "根据id删除MOck处理器信息")
     public Result<Void> delete(@PathVariable("handlerId") final String handlerId) {
 
-        this.mockHandlerApplication.delete(Identity.from(handlerId));
+        this.mockHandlerService.delete(Identity.from(handlerId));
 
         return Result.ok();
     }
@@ -121,7 +121,7 @@ public class MockHandlerController {
     @ApiOperation(value = "启用/停用Mock处理器")
     public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam enableStatusParam) {
 
-        this.mockHandlerApplication.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOf(enableStatusParam.getEnableStatus()));
+        this.mockHandlerService.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOf(enableStatusParam.getEnableStatus()));
 
         return Result.ok();
     }

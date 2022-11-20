@@ -1,7 +1,7 @@
 package top.silwings.admin.service.impl;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.repository.MockHandlerRepository;
@@ -13,6 +13,8 @@ import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
+
+import java.util.List;
 
 /**
  * @ClassName MockHandlerApplication
@@ -36,7 +38,6 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         this.mockHandlerFactory = mockHandlerFactory;
     }
 
-    @Transactional
     public Identity save(final MockHandlerDto mockHandlerDto) {
 
         Identity handlerId;
@@ -58,14 +59,21 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         return this.mockHandlerRepository.query(queryCondition, pageParam);
     }
 
-
-    @Transactional
     public void delete(final Identity handlerId) {
         this.mockHandlerRepository.delete(handlerId);
         this.mockHandlerManager.unregisterHandler(handlerId);
     }
 
-    @Transactional
+    @Override
+    public void delete(final List<Identity> handlerIdList) {
+        if (CollectionUtils.isEmpty(handlerIdList)) {
+            return;
+        }
+
+        this.mockHandlerRepository.delete(handlerIdList);
+        handlerIdList.forEach(this.mockHandlerManager::unregisterHandler);
+    }
+
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
 
         this.mockHandlerRepository.updateEnableStatus(handlerId, enableStatus);

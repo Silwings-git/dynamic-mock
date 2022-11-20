@@ -2,7 +2,7 @@ package top.silwings.admin.auth;
 
 import lombok.Builder;
 import lombok.Getter;
-import top.silwings.admin.common.Role;
+import top.silwings.admin.common.enums.Role;
 import top.silwings.admin.model.User;
 import top.silwings.core.common.Identity;
 

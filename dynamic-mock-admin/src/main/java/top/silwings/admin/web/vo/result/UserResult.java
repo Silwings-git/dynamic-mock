@@ -18,6 +18,9 @@ import top.silwings.admin.model.User;
 @ApiModel(description = "用户信息")
 public class UserResult {
 
+    @ApiModelProperty(value = "用户id", example = "1")
+    private String userId;
+
     @ApiModelProperty(value = "用户名", example = "Misaka Mikoto")
     private String username;
 
@@ -33,6 +36,7 @@ public class UserResult {
     public static UserResult from(final User user) {
 
         final UserResult userResult = new UserResult();
+        userResult.setUserId(user.getUserId().stringValue());
         userResult.setUsername(user.getUsername());
         userResult.setUserAccount(user.getUserAccount());
         userResult.setRole(user.getRole());

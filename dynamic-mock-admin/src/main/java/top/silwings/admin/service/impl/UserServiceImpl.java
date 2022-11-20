@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(final Identity userId) {
 
-        CheckUtils.isEquals(UserHolder.getUser().getUserId(), userId, () -> DynamicMockAdminException.from("You cannot delete your own account."));
+        CheckUtils.isEquals(UserHolder.getUserId(), userId, () -> DynamicMockAdminException.from("You cannot delete your own account."));
 
         this.userRepository.delete(userId);
     }

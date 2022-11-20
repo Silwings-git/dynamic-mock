@@ -1,6 +1,7 @@
 package top.silwings.admin.auth;
 
 import top.silwings.admin.exceptions.UserAuthException;
+import top.silwings.core.common.Identity;
 
 /**
  * @ClassName UserHolder
@@ -22,6 +23,11 @@ public class UserHolder {
         return getUser(true);
     }
 
+    public static Identity getUserId() {
+        return getUser(true).getUserId();
+    }
+
+
     public static UserAuthInfo getUser(final boolean required) {
 
         final UserAuthInfo user = TL.get();
@@ -39,7 +45,7 @@ public class UserHolder {
 
     public static UserAuthInfo getAdminUser() {
         final UserAuthInfo authInfo = getUser();
-        if (null != authInfo && authInfo.isAdminUser()) {
+        if (authInfo.isAdminUser()) {
             return authInfo;
         }
         throw new UserAuthException("Insufficient permissions!");
