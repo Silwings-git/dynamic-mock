@@ -38,7 +38,7 @@ public class Project {
     public static Project from(final ProjectPo projectPo, final List<ProjectUserPo> projectUserPoList, final List<ProjectMockHandlerPo> projectMockHandlerPoList) {
 
         return Project.builder()
-                .projectId(Identity.from(projectPo.getId()))
+                .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
                 .baseUri(projectPo.getBaseUri())
                 .projectUserList(projectUserPoList.stream().map(ProjectUser::from).collect(Collectors.toList()))
@@ -48,7 +48,7 @@ public class Project {
 
     public ProjectPo toProject() {
         final ProjectPo projectPo = new ProjectPo();
-        projectPo.setId(ConvertUtils.getNoNullOrDefault(this.projectId, null, Identity::longValue));
+        projectPo.setProjectId(ConvertUtils.getNoNullOrDefault(this.projectId, null, Identity::longValue));
         projectPo.setProjectName(this.projectName);
         projectPo.setBaseUri(this.baseUri);
         return projectPo;

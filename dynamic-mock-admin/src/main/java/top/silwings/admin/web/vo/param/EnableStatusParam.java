@@ -21,6 +21,6 @@ public class EnableStatusParam {
     private String handlerId;
 
     @ApiModelProperty(value = "启用状态.enable-启用,disable-禁用", required = true, example = "enable")
-    private String enableStatus;
+    private Integer enableStatus;
 
 }

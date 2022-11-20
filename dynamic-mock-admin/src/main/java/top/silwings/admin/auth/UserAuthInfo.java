@@ -23,7 +23,7 @@ public class UserAuthInfo {
 
     private String password;
 
-    private String role;
+    private int role;
 
     public static UserAuthInfo from(final User user) {
         return UserAuthInfo.builder()

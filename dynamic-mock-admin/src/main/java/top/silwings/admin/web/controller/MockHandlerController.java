@@ -124,7 +124,7 @@ public class MockHandlerController {
     @ApiOperation(value = "启用/停用Mock处理器")
     public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam enableStatusParam) {
 
-        this.mockHandlerService.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOf(enableStatusParam.getEnableStatus()));
+        this.mockHandlerService.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOfCode(enableStatusParam.getEnableStatus()));
 
         return Result.ok();
     }

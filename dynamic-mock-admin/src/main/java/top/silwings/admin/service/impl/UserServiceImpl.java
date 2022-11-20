@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(final String username, final String userAccount, final String password, final String role) {
+    public void create(final String username, final String userAccount, final String password, final int role) {
 
         final User user = User.builder()
                 .username(username)
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(final Identity userId, final String username, final String password, final String role) {
+    public void update(final Identity userId, final String username, final String password, final int role) {
         final User user = User.builder()
                 .username(username)
                 .password(ConvertUtils.getNoBlankOrDefault(password, null, EncryptUtils::encryptPassword))

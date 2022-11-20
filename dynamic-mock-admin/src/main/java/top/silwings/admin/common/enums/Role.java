@@ -1,5 +1,7 @@
 package top.silwings.admin.common.enums;
 
+import lombok.Getter;
+
 /**
  * @ClassName Role
  * @Description
@@ -7,17 +9,23 @@ package top.silwings.admin.common.enums;
  * @Date 2022/11/19 19:46
  * @Since
  **/
+@Getter
 public enum Role {
+    // 管理员用户
+    ADMIN_USER(1),
 
     // 普通用户
-    USER,
-
-    // 管理员用户
-    ADMIN_USER,
+    USER(2),
     ;
 
-    public boolean equalsCode(final String role) {
-        return this.name().equalsIgnoreCase(role);
+    private final int code;
+
+    Role(final int code) {
+        this.code = code;
+    }
+
+    public boolean equalsCode(final Integer code) {
+        return null != code && this.code == code;
     }
 
 }

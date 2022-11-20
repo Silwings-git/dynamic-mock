@@ -54,7 +54,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         this.projectMapper.insertSelective(projectPo);
 
         final ProjectUserPo projectUserPo = new ProjectUserPo();
-        projectUserPo.setProjectId(projectPo.getId());
+        projectUserPo.setProjectId(projectPo.getProjectId());
         projectUserPo.setUserId(author.longValue());
         projectUserPo.setType(ProjectUserType.MANAGER.code());
         this.projectUserMapper.insertSelective(projectUserPo);

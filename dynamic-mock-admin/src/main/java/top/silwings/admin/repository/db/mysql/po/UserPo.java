@@ -19,12 +19,12 @@ import javax.persistence.Table;
 @Table(name = "dm_user")
 public class UserPo {
 
-    public static final String C_USER_ID = "id";
+    public static final String C_USER_ID = "userId";
     public static final String C_USER_ACCOUNT = "userAccount";
     public static final String C_USERNAME = "username";
 
     @Id
-    private Long id;
+    private Long userId;
 
     @Column(name = "username")
     private String username;
@@ -36,6 +36,6 @@ public class UserPo {
     private String password;
 
     @Column(name = "role")
-    private String role;
+    private Integer role;
 
 }

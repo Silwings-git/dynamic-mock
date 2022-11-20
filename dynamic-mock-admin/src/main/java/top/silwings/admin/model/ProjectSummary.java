@@ -25,7 +25,7 @@ public class ProjectSummary {
     public static ProjectSummary from(final ProjectPo projectPo) {
 
         return ProjectSummary.builder()
-                .projectId(Identity.from(projectPo.getId()))
+                .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
                 .baseUri(projectPo.getBaseUri())
                 .build();

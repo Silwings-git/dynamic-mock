@@ -1,9 +1,7 @@
 package top.silwings.admin.model;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import top.silwings.admin.repository.db.mysql.po.UserPo;
 import top.silwings.core.common.Identity;
 
@@ -15,25 +13,24 @@ import top.silwings.core.common.Identity;
  * @Since
  **/
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @Builder
 public class User {
 
     private static final String DEFAULT_PASSWORD = "root";
 
-    private Identity userId;
+    private final Identity userId;
 
-    private String username;
+    private final String username;
 
-    private String userAccount;
+    private final String userAccount;
 
-    private String password;
+    private final String password;
 
-    private String role;
+    private final int role;
 
     public static User from(final UserPo userPo) {
         return User.builder()
-                .userId(Identity.from(userPo.getId()))
+                .userId(Identity.from(userPo.getUserId()))
                 .username(userPo.getUsername())
                 .userAccount(userPo.getUserAccount())
                 .password(userPo.getPassword())
@@ -44,7 +41,7 @@ public class User {
     public UserPo toUser() {
         final UserPo userPo = new UserPo();
         if (null != this.userId) {
-            userPo.setId(this.userId.longValue());
+            userPo.setUserId(this.userId.longValue());
         }
         userPo.setUsername(this.username);
         userPo.setUserAccount(this.userAccount);

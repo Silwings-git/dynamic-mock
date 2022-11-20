@@ -19,11 +19,12 @@ import javax.persistence.Table;
 @Table(name = "dm_project")
 public class ProjectPo {
 
-    public static final String C_PROJECT_ID = "id";
+    public static final String C_PROJECT_ID = "projectId";
     public static final String C_PROJECT_NAME = "projectName";
 
     @Id
-    private Long id;
+    @Column(name = "project_id")
+    private Long projectId;
 
     @Column(name = "project_name")
     private String projectName;

@@ -33,14 +33,14 @@ public class SaveUserParam {
     private String password;
 
     @ApiModelProperty(value = "角色", required = true, example = "user")
-    private String role;
+    private Integer role;
 
     public void validate() {
         CheckUtils.isNotBlank(this.username, () -> DynamicMockAdminException.from("The user name cannot be empty."));
         if (StringUtils.isBlank(this.userId)) {
             CheckUtils.isNotBlank(this.userAccount, () -> DynamicMockAdminException.from("The user account cannot be empty"));
             CheckUtils.isNotBlank(this.password, () -> DynamicMockAdminException.from("The user password cannot be empty"));
-            CheckUtils.isNotBlank(this.role, () -> DynamicMockAdminException.from("The user role cannot be empty"));
+            CheckUtils.isNotNull(this.role, () -> DynamicMockAdminException.from("The user role cannot be empty"));
         }
     }
 }

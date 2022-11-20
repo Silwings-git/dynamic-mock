@@ -9,26 +9,32 @@ package top.silwings.core.common;
  **/
 public enum EnableStatus {
 
-    ENABLE("ENABLE"),
-    DISABLE("DISABLE"),
+    ENABLE(1),
+    DISABLE(2),
     ;
 
-    private final String code;
+    private final int code;
 
-    EnableStatus(final String code) {
+    EnableStatus(final int code) {
         this.code = code;
     }
 
-    public String code() {
+    public int code() {
         return this.code;
     }
 
-    public static EnableStatus valueOfCode(final String code) {
+    public static EnableStatus valueOfCode(final Integer code) {
+
+        if (null == code) {
+            return null;
+        }
+
         for (final EnableStatus status : values()) {
-            if (status.code().equalsIgnoreCase(code)) {
+            if (status.code() == code) {
                 return status;
             }
         }
+
         return null;
     }
 

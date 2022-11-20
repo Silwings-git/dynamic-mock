@@ -32,7 +32,7 @@ public class MockHandlerPo {
     private Long handlerId;
 
     @Column(name = "enable_status")
-    private String enableStatus;
+    private Integer enableStatus;
 
     @Column(name = "name")
     private String name;

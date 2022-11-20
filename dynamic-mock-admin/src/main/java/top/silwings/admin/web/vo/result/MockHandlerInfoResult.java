@@ -25,7 +25,7 @@ import java.util.Date;
 public class MockHandlerInfoResult extends MockHandlerInfoParam {
 
     @ApiModelProperty(value = "启用状态", example = "enable")
-    private String enableStatus;
+    private Integer enableStatus;
 
     @ApiModelProperty(value = "最后更新时间")
     private Date updateTime;

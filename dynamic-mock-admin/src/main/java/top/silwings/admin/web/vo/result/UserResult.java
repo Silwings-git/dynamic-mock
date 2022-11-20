@@ -28,7 +28,7 @@ public class UserResult {
     private String userAccount;
 
     @ApiModelProperty(value = "角色code", example = "123456789")
-    private String role;
+    private int role;
 
     @ApiModelProperty(value = "角色名称", example = "123456789")
     private String roleName;
@@ -41,7 +41,7 @@ public class UserResult {
         userResult.setUserAccount(user.getUserAccount());
         userResult.setRole(user.getRole());
         // TODO_Silwings: 2022/11/19 多语言
-        userResult.setRoleName(user.getRole());
+        userResult.setRoleName("");
         return userResult;
     }
 }

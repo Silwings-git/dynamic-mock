@@ -113,7 +113,10 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
             final SaveMockHandlerEvent saveMockHandlerEvent = (SaveMockHandlerEvent) event;
             final Identity projectId = saveMockHandlerEvent.getProjectId();
             if (null != projectId) {
-                this.projectRepository.createProjectHandler(projectId, saveMockHandlerEvent.getHandlerId());
+                final Identity handlerId = saveMockHandlerEvent.getHandlerId();
+                // 删除相关的handler关系重新创建
+                this.projectRepository.deleteProjectHandlerByHandlerId(handlerId);
+                this.projectRepository.createProjectHandler(projectId, handlerId);
             }
 
         }
