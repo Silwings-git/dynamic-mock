@@ -1,6 +1,7 @@
 package top.silwings.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.Identity;
@@ -35,6 +36,10 @@ public class MockHandlerManager {
         this.handlerMap.remove(handlerId);
     }
 
+    public boolean match(final String requestUri, final HttpMethod httpMethod) {
+        return null != this.filter(RequestInfo.from(requestUri, httpMethod));
+    }
+
     private MockHandler filter(final RequestInfo requestInfo) {
 
         for (final MockHandler mockHandler : this.handlerMap.values()) {
@@ -43,14 +48,20 @@ public class MockHandlerManager {
             }
         }
 
-        throw new NoMockHandlerFoundException(requestInfo);
+        return null;
     }
 
     public ResponseEntity<Object> mock(final Context context) {
 
-        final MockHandler mockHandler = this.filter(RequestInfo.from(context));
+        final RequestInfo requestInfo = RequestInfo.from(context);
 
-        return mockHandler.delay().mock(context);
+        final MockHandler mockHandler = this.filter(requestInfo);
+
+        if (null == mockHandler) {
+            throw new NoMockHandlerFoundException(requestInfo);
+        }
+
+        return mockHandler.mock(context);
     }
 
 }

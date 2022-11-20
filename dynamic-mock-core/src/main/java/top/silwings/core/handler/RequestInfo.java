@@ -28,6 +28,10 @@ public class RequestInfo {
         this.httpMethod = httpMethod;
     }
 
+    public static RequestInfo from(final String requestUri, final HttpMethod httpMethod) {
+        return new RequestInfo(requestUri, httpMethod);
+    }
+
     public static RequestInfo from(final Context context) {
 
         final String requestUri = context.getRequestURI();

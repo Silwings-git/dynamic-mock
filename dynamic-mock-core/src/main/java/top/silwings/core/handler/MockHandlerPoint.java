@@ -1,16 +1,10 @@
-package top.silwings.core.web;
+package top.silwings.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.IdGenerator;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.AsyncRestTemplate;
-import org.springframework.web.servlet.NoHandlerFoundException;
-import top.silwings.core.exceptions.NoMockHandlerFoundException;
-import top.silwings.core.handler.Context;
-import top.silwings.core.handler.JsonNodeParser;
-import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.handler.task.MockTaskManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Since
  **/
 @Slf4j
-@RestControllerAdvice
+@Component
 public class MockHandlerPoint {
 
     private final MockHandlerManager mockHandlerManager;
@@ -44,14 +38,8 @@ public class MockHandlerPoint {
         this.asyncRestTemplate = asyncRestTemplate;
     }
 
-    @ExceptionHandler(value = NoHandlerFoundException.class)
-    public ResponseEntity<Object> executeMock(final NoHandlerFoundException exception, final HttpServletRequest request) throws NoHandlerFoundException {
-
-        try {
-            return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser, this.asyncRestTemplate));
-        } catch (NoMockHandlerFoundException e) {
-            throw exception;
-        }
+    public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
+        return this.mockHandlerManager.mock(Context.from(request, this.mockTaskManager, this.idGenerator, this.jsonNodeParser, this.asyncRestTemplate));
     }
 
 }

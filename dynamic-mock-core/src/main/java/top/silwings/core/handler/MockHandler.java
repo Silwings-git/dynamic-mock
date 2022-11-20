@@ -70,6 +70,8 @@ public class MockHandler {
 
     public ResponseEntity<Object> mock(final Context context) {
 
+        this.delay();
+
         // 初始化自定义空间
         final Object space = this.customizeSpaceInterpreter.interpret(context);
         if (space instanceof Map && ((Map<?, ?>) space).size() > 0) {

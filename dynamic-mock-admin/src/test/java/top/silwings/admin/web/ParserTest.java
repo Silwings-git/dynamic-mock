@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,6 +18,7 @@ import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
+import top.silwings.core.handler.MockHandlerPoint;
 import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.handler.tree.Node;
@@ -29,7 +29,6 @@ import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.TaskRequestDto;
 import top.silwings.core.utils.JsonUtils;
-import top.silwings.core.web.MockHandlerPoint;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -44,8 +43,6 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(classes = DynamicMockAdminApplication.class)
 @RunWith(SpringRunner.class)
 public class ParserTest {
-
-    private final NoHandlerFoundException noHandlerFoundException = new NoHandlerFoundException("GET", "", new HttpHeaders());
 
     @Autowired
     private DynamicValueFactory dynamicValueFactory;
@@ -216,7 +213,7 @@ public class ParserTest {
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(this.noHandlerFoundException, request);
+        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
 
         log.info(JsonUtils.toJSONString(responseEntity.getBody()));
 

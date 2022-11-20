@@ -6,13 +6,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
@@ -21,8 +19,8 @@ import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
+import top.silwings.core.handler.MockHandlerPoint;
 import top.silwings.core.utils.JsonUtils;
-import top.silwings.core.web.MockHandlerPoint;
 
 import java.nio.charset.StandardCharsets;
 
@@ -121,15 +119,10 @@ public class MockHandlerControllerTest {
         request.addParameter("execute", "1");
         request.setContent("{\"pageNum\": \"1\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        try {
-            final ResponseEntity<Object> response = this.mockHandlerPoint.executeMock(new NoHandlerFoundException("GET", "", new HttpHeaders()), request);
+        final ResponseEntity<Object> response = this.mockHandlerPoint.executeMock(request);
 
-            Assert.assertNotNull(response.getBody());
+        Assert.assertNotNull(response.getBody());
 
-            log.info("Test request result: {}", JsonUtils.toJSONString(response));
-
-        } catch (NoHandlerFoundException e) {
-            Assert.assertTrue(false);
-        }
+        log.info("Test request result: {}", JsonUtils.toJSONString(response));
     }
 }
