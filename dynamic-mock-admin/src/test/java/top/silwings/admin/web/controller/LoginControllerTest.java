@@ -1,5 +1,9 @@
 package top.silwings.admin.web.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.enums.Role;
-import top.silwings.admin.model.User;
 import top.silwings.admin.web.vo.param.SaveUserParam;
 import top.silwings.admin.web.vo.param.UserLoginParam;
 import top.silwings.core.common.Identity;
@@ -59,6 +62,29 @@ public class LoginControllerTest {
         login();
     }
 
+    @Test
+    public void testIdentity() {
+        final SerializeConfig serializeConfig = new SerializeConfig();
+        serializeConfig.put(Identity.class, new Identity.IdentityFastJsonObjectSerializer());
+
+        final ParserConfig parserConfig = new ParserConfig();
+        parserConfig.putDeserializer(Identity.class, new Identity.IdentityFastJsonObjectDeserializer());
+
+        final User user = new User();
+        user.setUserId(Identity.from("20"));
+
+        log.info("jackson toJson: {}", JsonUtils.toJSONString(user));
+        log.info("fastjson toJson: {}", JSON.toJSONString(user, serializeConfig));
+        log.info("jackson toBean: {}", JsonUtils.toBean(JsonUtils.toJSONString(user), User.class));
+        log.info("fastjson toBean: {}", (User) JSON.parseObject(JSON.toJSONString(user, serializeConfig), User.class, parserConfig));
+    }
+
+    @Data
+    public static class User {
+        private Identity userId;
+    }
+
+
     private void login() {
         final UserLoginParam loginParam = new UserLoginParam();
         loginParam.setUserAccount(this.user.getUserAccount());
@@ -66,17 +92,10 @@ public class LoginControllerTest {
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
 
-        this.loginController.login(loginParam, new MockHttpServletResponse());
+        this.loginController.login(loginParam, mockHttpServletResponse);
 
         Assert.assertNotNull(mockHttpServletResponse.getCookie("dynamic-mock-login-identity"));
     }
 
-    public static void main(String[] args) {
-        final String ddd = JsonUtils.toJSONString(User.builder().userId(Identity.from(1L)).userAccount("ddd").build());
-        System.out.println(ddd);
-
-        final User user1 = JsonUtils.toBean(ddd, User.class);
-        System.out.println("user1 = " + user1);
-    }
 
 }
