@@ -21,6 +21,8 @@ public interface ProjectRepository {
 
     Project find(Identity projectId, final boolean findUser, final boolean findHandler);
 
+    boolean isProjectAdmin(Identity projectId, Identity userId);
+
     boolean delete(Identity projectId);
 
     PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);

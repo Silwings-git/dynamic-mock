@@ -57,7 +57,9 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
             final Project project = this.projectRepository.find(projectId, true, false);
 
             CheckUtils.isNotNull(project, () -> DynamicMockAdminException.from("Project does not exist."));
-            CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
+            if (!UserHolder.isAdminUser()) {
+                CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
+            }
 
             this.projectRepository.update(projectId, newProject);
         }
@@ -73,7 +75,9 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
             return;
         }
 
-        CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
+        if (!UserHolder.isAdminUser()) {
+            CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
+        }
 
         if (this.projectRepository.delete(projectId)) {
             this.applicationEventPublisher.publishEvent(DeleteProjectEvent.of(this, project));
@@ -95,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
 
         // 管理员或项目管理员可关联用户
         if (!UserHolder.isAdminUser()) {
-            CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
+            CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
         }
 
         this.projectRepository.createProjectUser(projectId, userId, type);

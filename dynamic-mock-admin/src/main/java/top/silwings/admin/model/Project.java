@@ -31,17 +31,14 @@ public class Project {
 
     private String baseUri;
 
-    private List<ProjectUser> projectUserList;
-
     private List<ProjectMockHandler> projectMockHandlerList;
 
-    public static Project from(final ProjectPo projectPo, final List<ProjectUserPo> projectUserPoList, final List<ProjectMockHandlerPo> projectMockHandlerPoList) {
+    public static Project from(final ProjectPo projectPo,final List<ProjectMockHandlerPo> projectMockHandlerPoList) {
 
         return Project.builder()
                 .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
                 .baseUri(projectPo.getBaseUri())
-                .projectUserList(projectUserPoList.stream().map(ProjectUser::from).collect(Collectors.toList()))
                 .projectMockHandlerList(projectMockHandlerPoList.stream().map(ProjectMockHandler::form).collect(Collectors.toList()))
                 .build();
     }
@@ -54,25 +51,4 @@ public class Project {
         return projectPo;
     }
 
-    public List<ProjectUserPo> toProjectUser() {
-        if (CollectionUtils.isEmpty(this.projectUserList)) {
-            return Collections.emptyList();
-        }
-
-        return this.projectUserList.stream()
-                .map(ProjectUser::toProjectUser)
-                .collect(Collectors.toList());
-    }
-
-    public List<Identity> getAuthorIds() {
-
-        if (CollectionUtils.isEmpty(this.projectUserList)) {
-            return Collections.emptyList();
-        }
-
-        return this.projectUserList.stream()
-                .filter(item -> ProjectUserType.MANAGER.equalsCode(item.getType()))
-                .map(ProjectUser::getUserId)
-                .collect(Collectors.toList());
-    }
 }

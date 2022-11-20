@@ -86,15 +86,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             return null;
         }
 
-        List<ProjectUserPo> projectUserPoList = Collections.emptyList();
-
-        if (findUser) {
-            final Example userCondition = new Example(ProjectUserPo.class);
-            userCondition.createCriteria()
-                    .andEqualTo(ProjectUserPo.C_PROJECT_ID, projectId.longValue());
-
-            projectUserPoList = this.projectUserMapper.selectByCondition(userCondition);
-        }
 
         List<ProjectMockHandlerPo> projectMockHandlerPoList = Collections.emptyList();
 
@@ -106,8 +97,19 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             projectMockHandlerPoList = this.projectMockHandlerMapper.selectByCondition(handlerCondition);
         }
 
-        return Project.from(projectPoList.get(0), projectUserPoList, projectMockHandlerPoList);
+        return Project.from(projectPoList.get(0),  projectMockHandlerPoList);
     }
+
+    @Override
+    public boolean isProjectAdmin(final Identity projectId, final Identity userId) {
+        final Example userCondition = new Example(ProjectUserPo.class);
+        userCondition.createCriteria()
+                .andEqualTo(ProjectUserPo.C_PROJECT_ID, projectId.longValue())
+                .andEqualTo(ProjectUserPo.C_USER_ID, userId.longValue());
+
+        return CollectionUtils.isNotEmpty(this.projectUserMapper.selectByConditionAndRowBounds(userCondition, new RowBounds(0, 1)));
+    }
+
 
     @Override
     @Transactional
