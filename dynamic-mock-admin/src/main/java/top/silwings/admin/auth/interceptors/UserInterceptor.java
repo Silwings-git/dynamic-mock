@@ -50,6 +50,10 @@ public class UserInterceptor implements HandlerInterceptor {
 
             final User user = this.loginService.ifLogin(request, response);
 
+            if (null == user) {
+                throw new UserAuthException("The account status is abnormal!");
+            }
+
             final UserAuthInfo userAuthInfo = UserAuthInfo.from(user);
 
             if (needAdminUser && !userAuthInfo.isAdminUser()) {

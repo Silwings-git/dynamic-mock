@@ -26,4 +26,8 @@ public interface ProjectRepository {
     PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);
 
     void createProjectUser(Identity projectId, Identity userId, ProjectUserType type);
+
+    void deleteProjectUserByUserId(Identity userId);
+
+    void deleteProjectHandlerByHandlerId(Identity handlerId);
 }

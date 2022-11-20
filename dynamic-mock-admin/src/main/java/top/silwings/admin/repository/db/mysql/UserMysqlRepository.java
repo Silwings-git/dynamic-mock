@@ -53,6 +53,25 @@ public class UserMysqlRepository implements UserRepository {
     }
 
     @Override
+    public User findById(final Identity userId) {
+
+        if (null == userId) {
+            return null;
+        }
+
+        final Example findCondition = new Example(UserPo.class);
+        findCondition.createCriteria()
+                .andEqualTo(UserPo.C_USER_ID, userId.longValue());
+
+        final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, new RowBounds(0, 1));
+        if (CollectionUtils.isEmpty(userPoList)) {
+            return null;
+        }
+
+        return User.from(userPoList.get(0));
+    }
+
+    @Override
     public void create(final User user) {
         this.userMapper.insertSelective(user.toUser());
     }

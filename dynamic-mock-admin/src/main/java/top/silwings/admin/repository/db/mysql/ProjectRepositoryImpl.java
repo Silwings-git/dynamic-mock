@@ -113,17 +113,25 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Transactional
     public void delete(final Identity projectId) {
 
-        final Example delPjCondition = new Example(ProjectPo.class);
-        delPjCondition.createCriteria()
+        final Example projectCondition = new Example(ProjectPo.class);
+        projectCondition.createCriteria()
                 .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.longValue());
 
-        this.projectMapper.deleteByCondition(delPjCondition);
+        this.projectMapper.deleteByCondition(projectCondition);
 
-        final Example delPuCondition = new Example(ProjectUserPo.class);
-        delPuCondition.createCriteria()
+        // 删除项目用户关系
+        final Example userCondition = new Example(ProjectUserPo.class);
+        userCondition.createCriteria()
                 .andEqualTo(ProjectUserPo.C_PROJECT_ID, projectId.longValue());
 
-        this.projectUserMapper.deleteByCondition(delPuCondition);
+        this.projectUserMapper.deleteByCondition(userCondition);
+
+        // 删除项目-Mock处理器关系
+        final Example handlerCondition = new Example(ProjectMockHandlerPo.class);
+        handlerCondition.createCriteria()
+                .andEqualTo(ProjectMockHandlerPo.C_PROJECT_ID, projectId.longValue());
+
+        this.projectMockHandlerMapper.deleteByCondition(handlerCondition);
     }
 
     @Override
@@ -159,5 +167,23 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         projectUserPo.setType(type.code());
 
         this.projectUserMapper.insertSelective(projectUserPo);
+    }
+
+    @Override
+    public void deleteProjectUserByUserId(final Identity userId) {
+        final Example delCondition = new Example(ProjectUserPo.class);
+        delCondition.createCriteria()
+                .andEqualTo(ProjectUserPo.C_USER_ID, userId.longValue());
+
+        this.projectUserMapper.deleteByCondition(delCondition);
+    }
+
+    @Override
+    public void deleteProjectHandlerByHandlerId(final Identity handlerId) {
+        final Example delCondition = new Example(ProjectMockHandlerPo.class);
+        delCondition.createCriteria()
+                .andEqualTo(ProjectMockHandlerPo.C_HANDLER_ID, handlerId.longValue());
+
+        this.projectMockHandlerMapper.deleteByCondition(delCondition);
     }
 }

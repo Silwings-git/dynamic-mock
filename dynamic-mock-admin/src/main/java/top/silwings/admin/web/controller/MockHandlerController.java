@@ -15,7 +15,7 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.service.impl.MockHandlerServiceImpl;
+import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
@@ -41,13 +41,13 @@ import java.util.stream.Collectors;
 @Api(value = "Mock 处理器管理")
 public class MockHandlerController {
 
-    private final MockHandlerServiceImpl mockHandlerService;
+    private final MockHandlerService mockHandlerService;
 
     private final MockHandlerVoConverter mockHandlerVoConverter;
 
     private final MockHandlerValidator mockHandlerValidator;
 
-    public MockHandlerController(final MockHandlerServiceImpl mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator) {
+    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator) {
         this.mockHandlerService = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;

@@ -1,22 +1,24 @@
 package top.silwings.admin.service.impl;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.enums.ProjectUserType;
+import top.silwings.admin.events.DeleteEvent;
+import top.silwings.admin.events.DeleteMockHandlerEvent;
+import top.silwings.admin.events.DeleteProjectEvent;
+import top.silwings.admin.events.DeleteUserEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.Project;
-import top.silwings.admin.model.ProjectMockHandler;
 import top.silwings.admin.model.ProjectSummary;
 import top.silwings.admin.repository.ProjectRepository;
-import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
-
-import java.util.stream.Collectors;
 
 /**
  * @ClassName ProjectServiceImpl
@@ -26,15 +28,15 @@ import java.util.stream.Collectors;
  * @Since
  **/
 @Service
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectServiceImpl implements ProjectService, ApplicationListener<DeleteEvent> {
 
     private final ProjectRepository projectRepository;
 
-    private final MockHandlerService mockHandlerService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public ProjectServiceImpl(final ProjectRepository projectRepository, final MockHandlerService mockHandlerService) {
+    public ProjectServiceImpl(final ProjectRepository projectRepository, final ApplicationEventPublisher applicationEventPublisher) {
         this.projectRepository = projectRepository;
-        this.mockHandlerService = mockHandlerService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         this.projectRepository.delete(projectId);
 
-        this.mockHandlerService.delete(project.getProjectMockHandlerList().stream().map(ProjectMockHandler::getHandlerId).collect(Collectors.toList()));
+        this.applicationEventPublisher.publishEvent(DeleteProjectEvent.of(this, project));
     }
 
     @Override
@@ -91,5 +93,16 @@ public class ProjectServiceImpl implements ProjectService {
         CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
 
         this.projectRepository.createProjectUser(projectId, userId, type);
+    }
+
+    @Override
+    public void onApplicationEvent(final DeleteEvent event) {
+
+        if (event instanceof DeleteUserEvent) {
+            this.projectRepository.deleteProjectUserByUserId(((DeleteUserEvent) event).getUser().getUserId());
+        } else if (event instanceof DeleteMockHandlerEvent) {
+            this.projectRepository.deleteProjectHandlerByHandlerId(((DeleteMockHandlerEvent) event).getHandlerId());
+        }
+
     }
 }

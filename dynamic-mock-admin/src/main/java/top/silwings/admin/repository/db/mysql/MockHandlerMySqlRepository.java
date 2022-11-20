@@ -20,6 +20,7 @@ import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -146,7 +147,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
     @Transactional
     @Override
-    public void delete(List<Identity> handlerIdList) {
+    public void delete(Collection<Identity> handlerIdList) {
 
         if (CollectionUtils.isEmpty(handlerIdList)) {
             return;

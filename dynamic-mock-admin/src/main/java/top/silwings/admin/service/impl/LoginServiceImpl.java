@@ -67,6 +67,10 @@ public class LoginServiceImpl implements LoginService {
 
                 final User dbUser = this.userRepository.findByUserAccount(cookieUser.getUserAccount());
 
+                if (null == dbUser) {
+                    this.logout(request, response);
+                }
+
                 if (dbUser != null && cookieUser.getPassword().equals(dbUser.getPassword())) {
                     return dbUser;
                 }

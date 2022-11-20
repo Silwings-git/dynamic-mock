@@ -15,6 +15,8 @@ import top.silwings.core.common.Identity;
 public interface UserRepository {
     User findByUserAccount(String userAccount);
 
+    User findById(Identity userId);
+
     void create(User user);
 
     void delete(Identity userId);
@@ -22,4 +24,5 @@ public interface UserRepository {
     PageData<User> query(String searchKey, PageParam param);
 
     void updateById(User user, Identity userId);
+
 }

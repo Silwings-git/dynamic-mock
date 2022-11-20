@@ -1,11 +1,13 @@
 package top.silwings.admin.service.impl;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.events.DeleteUserEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
@@ -14,6 +16,8 @@ import top.silwings.admin.utils.EncryptUtils;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
+
+import java.beans.Transient;
 
 /**
  * @ClassName UserServiceImpl
@@ -27,8 +31,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(final UserRepository userRepository) {
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public UserServiceImpl(final UserRepository userRepository, final ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -75,11 +82,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transient
     public void deleteUser(final Identity userId) {
 
         CheckUtils.isEquals(UserHolder.getUserId(), userId, () -> DynamicMockAdminException.from("You cannot delete your own account."));
 
+        final User user = this.userRepository.findById(userId);
+        if (null == user) {
+            return;
+        }
+
         this.userRepository.delete(userId);
+
+        this.applicationEventPublisher.publishEvent(DeleteUserEvent.of(this, user));
     }
 
     @Override

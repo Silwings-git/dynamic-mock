@@ -18,6 +18,9 @@ import javax.persistence.Table;
 @Table(name = "dm_project_mock_handler")
 public class ProjectMockHandlerPo {
 
+    public static final String C_HANDLER_ID = "handlerId";
+    public static final String C_PROJECT_ID = "projectId";
+
     @Column(name = "project_id")
     private Long projectId;
 

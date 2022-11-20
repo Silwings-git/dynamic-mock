@@ -1,9 +1,14 @@
 package top.silwings.admin.service.impl;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.events.DeleteMockHandlerEvent;
+import top.silwings.admin.events.DeleteProjectEvent;
+import top.silwings.admin.model.Project;
+import top.silwings.admin.model.ProjectMockHandler;
 import top.silwings.admin.repository.MockHandlerRepository;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
@@ -14,7 +19,8 @@ import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MockHandlerApplication
@@ -24,7 +30,7 @@ import java.util.List;
  * @Since
  **/
 @Service
-public class MockHandlerServiceImpl implements MockHandlerService {
+public class MockHandlerServiceImpl implements MockHandlerService, ApplicationListener<DeleteProjectEvent> {
 
     private final MockHandlerRepository mockHandlerRepository;
 
@@ -32,10 +38,13 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerFactory mockHandlerFactory;
 
-    public MockHandlerServiceImpl(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory) {
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public MockHandlerServiceImpl(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final ApplicationEventPublisher applicationEventPublisher) {
         this.mockHandlerRepository = mockHandlerRepository;
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerFactory = mockHandlerFactory;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public Identity save(final MockHandlerDto mockHandlerDto) {
@@ -62,16 +71,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     public void delete(final Identity handlerId) {
         this.mockHandlerRepository.delete(handlerId);
         this.mockHandlerManager.unregisterHandler(handlerId);
-    }
-
-    @Override
-    public void delete(final List<Identity> handlerIdList) {
-        if (CollectionUtils.isEmpty(handlerIdList)) {
-            return;
-        }
-
-        this.mockHandlerRepository.delete(handlerIdList);
-        handlerIdList.forEach(this.mockHandlerManager::unregisterHandler);
+        this.applicationEventPublisher.publishEvent(DeleteMockHandlerEvent.of(this, handlerId));
     }
 
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
@@ -90,5 +90,17 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
             this.mockHandlerManager.unregisterHandler(handlerId);
         }
+    }
+
+    @Override
+    public void onApplicationEvent(final DeleteProjectEvent event) {
+
+        final Project project = event.getProject();
+
+        final Set<Identity> handlerIdSet = project.getProjectMockHandlerList().stream()
+                .map(ProjectMockHandler::getHandlerId)
+                .collect(Collectors.toSet());
+
+        this.mockHandlerRepository.delete(handlerIdSet);
     }
 }
