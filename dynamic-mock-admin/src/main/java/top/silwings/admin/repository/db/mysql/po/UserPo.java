@@ -19,6 +19,7 @@ import javax.persistence.Table;
 @Table(name = "dm_user")
 public class UserPo {
 
+    public static final String C_USER_ID = "id";
     public static final String C_USER_ACCOUNT = "userAccount";
     public static final String C_USERNAME = "username";
 

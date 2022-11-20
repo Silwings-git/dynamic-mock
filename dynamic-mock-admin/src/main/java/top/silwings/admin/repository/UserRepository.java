@@ -3,6 +3,7 @@ package top.silwings.admin.repository;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.User;
+import top.silwings.core.common.Identity;
 
 /**
  * @ClassName UserRepository
@@ -14,11 +15,11 @@ import top.silwings.admin.model.User;
 public interface UserRepository {
     User findByUserAccount(String userAccount);
 
-    String create(String username, String userAccount, String role);
+    void create(User user);
 
-    void update(User user);
-
-    void delete(String userAccount);
+    void delete(Identity userId);
 
     PageData<User> query(String searchKey, PageParam param);
+
+    void updateById(User user, Identity userId);
 }

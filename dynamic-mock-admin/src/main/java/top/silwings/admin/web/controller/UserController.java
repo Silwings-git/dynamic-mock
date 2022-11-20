@@ -13,13 +13,16 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.model.User;
+import top.silwings.admin.service.LoginService;
 import top.silwings.admin.service.UserService;
 import top.silwings.admin.web.vo.param.ChangePasswordParam;
 import top.silwings.admin.web.vo.param.QueryUserParam;
-import top.silwings.admin.web.vo.param.ResetPasswordParam;
-import top.silwings.admin.web.vo.param.UserParam;
+import top.silwings.admin.web.vo.param.SaveUserParam;
 import top.silwings.admin.web.vo.result.UserResult;
+import top.silwings.core.common.Identity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,35 +40,34 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(final UserService userService) {
+    private final LoginService loginService;
+
+    public UserController(final UserService userService, final LoginService loginService) {
         this.userService = userService;
+        this.loginService = loginService;
     }
 
     @PostMapping("/save")
     @PermissionLimit(adminUser = true)
-    @ApiOperation(value = "创建用户")
-    public Result<Void> save(@RequestBody final UserParam userParam) {
+    @ApiOperation(value = "保存用户")
+    public Result<Void> save(@RequestBody final SaveUserParam saveUserParam) {
 
-        this.userService.createUser(userParam.getUsername(), userParam.getUserAccount(), userParam.getRole());
+        if (null != saveUserParam.getUserId()) {
+            final Identity userId = Identity.from(saveUserParam.getUserId());
+            this.userService.update(userId, saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
+        }
+
+        this.userService.create(saveUserParam.getUsername(), saveUserParam.getUserAccount(), saveUserParam.getUserAccount(), saveUserParam.getRole());
 
         return Result.ok();
     }
 
-    @DeleteMapping("/del/{userAccount}")
+    @DeleteMapping("/del/{userId}")
     @PermissionLimit(adminUser = true)
     @ApiOperation(value = "删除用户")
-    public Result<Void> deleteUser(@PathVariable("userAccount") final String userAccount) {
+    public Result<Void> deleteUser(@PathVariable("userId") final String userId) {
 
-        this.userService.deleteUser(userAccount);
-
-        return Result.ok();
-    }
-
-    @PostMapping("/resetPassword")
-    @PermissionLimit(adminUser = true)
-    public Result<Void> resetPassword(@RequestBody final ResetPasswordParam param) {
-
-        this.userService.resetPassword(param);
+        this.userService.deleteUser(Identity.from(userId));
 
         return Result.ok();
     }
@@ -73,9 +75,11 @@ public class UserController {
     @PostMapping("/changePassword")
     @PermissionLimit
     @ApiOperation(value = "修改密码")
-    public Result<Void> changePassword(@RequestBody final ChangePasswordParam param) {
+    public Result<Void> changePassword(@RequestBody final ChangePasswordParam param, final HttpServletRequest request, final HttpServletResponse response) {
 
         this.userService.changePassword(param.getOldPassword(), param.getNewPassword());
+
+        this.loginService.logout(request, response);
 
         return Result.ok();
     }
@@ -84,6 +88,8 @@ public class UserController {
     @PermissionLimit
     @ApiOperation(value = "分页查询用户列表")
     public PageResult<UserResult> query(@RequestBody final QueryUserParam param) {
+
+        // TODO_Silwings: 2022/11/20 补充项目条件
 
         final PageData<User> pageData = this.userService.query(param.getSearchKey(), param);
 

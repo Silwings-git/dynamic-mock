@@ -29,4 +29,8 @@ public class ConvertUtils {
         return StringUtils.isBlank(value) ? defaultValue : value;
     }
 
+    public static String getNoBlankOrDefault(final String value, final String defaultValue, final Function<String, String> noBlankFun) {
+        return StringUtils.isBlank(value) ? defaultValue : noBlankFun.apply(value);
+    }
+
 }

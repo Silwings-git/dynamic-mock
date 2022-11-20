@@ -6,6 +6,7 @@ import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.utils.CookieUtils;
+import top.silwings.admin.utils.EncryptUtils;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.JsonUtils;
 
@@ -40,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
         final User user = this.userRepository.findByUserAccount(userAccount);
         CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from("Username or password error."));
 
-        final String loginPassword = User.encryptPassword(password);
+        final String loginPassword = EncryptUtils.encryptPassword(password);
         CheckUtils.isEquals(user.getPassword(), loginPassword, () -> DynamicMockAdminException.from("Username or password error."));
 
         final String userAuthToken = this.makeToken(user);

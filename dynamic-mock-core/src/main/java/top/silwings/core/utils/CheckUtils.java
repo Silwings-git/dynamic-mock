@@ -76,19 +76,19 @@ public class CheckUtils {
         }
     }
 
-    public static void isNotBlank(final String userAccount, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue(StringUtils.isNotBlank(userAccount), exceptionSupplier);
+    public static void isNotBlank(final String str, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(StringUtils.isNotBlank(str), exceptionSupplier);
     }
 
-    public static void isNotNull(final Object userPo, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue(null != userPo, exceptionSupplier);
+    public static void isNotNull(final Object obj, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(null != obj, exceptionSupplier);
     }
 
-    public static void isEquals(final String argA, final String argB, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue(null != argA && argA.equals(argB), exceptionSupplier);
+    public static <T> void isEquals(final T argA, final T argB, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(argA.equals(argB), exceptionSupplier);
     }
 
-    public static void isNotEquals(final String argA, final String argB, final Supplier<RuntimeException> exceptionSupplier) {
-        isTrue((null == argA && null == argB) || (StringUtils.isNotBlank(argA) && argA.equals(argB)), exceptionSupplier);
+    public static <T> void isNotEquals(final T argA, final T argB, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(!argA.equals(argB), exceptionSupplier);
     }
 }

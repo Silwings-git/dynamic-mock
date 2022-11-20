@@ -11,6 +11,7 @@ import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.repository.db.mysql.mapper.UserMapper;
 import top.silwings.admin.repository.db.mysql.po.UserPo;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,39 +53,25 @@ public class UserMysqlRepository implements UserRepository {
     }
 
     @Override
-    public String create(final String username, final String userAccount, final String role) {
-
-        final User user = User.newUser(username, userAccount, role);
-
+    public void create(final User user) {
         this.userMapper.insertSelective(user.toUser());
-
-        return user.getDefaultPassword();
     }
 
     @Override
-    public void update(final User user) {
-
-        if (StringUtils.isBlank(user.getUserAccount())) {
-            return;
-        }
-
+    public void updateById(final User user, final Identity userId) {
         final Example saveCondition = new Example(UserPo.class);
         saveCondition.createCriteria()
-                .andEqualTo(UserPo.C_USER_ACCOUNT, user.getUserAccount());
+                .andEqualTo(UserPo.C_USER_ID, userId.longValue());
 
         this.userMapper.updateByConditionSelective(user.toUser(), saveCondition);
     }
 
     @Override
-    public void delete(final String userAccount) {
-
-        if (StringUtils.isBlank(userAccount)) {
-            return;
-        }
+    public void delete(final Identity userId) {
 
         final Example deleteCondition = new Example(UserPo.class);
         deleteCondition.createCriteria()
-                .andEqualTo(UserPo.C_USER_ACCOUNT, userAccount);
+                .andEqualTo(UserPo.C_USER_ID, userId.longValue());
 
         this.userMapper.deleteByCondition(deleteCondition);
     }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import top.silwings.admin.common.Role;
 import top.silwings.admin.model.User;
+import top.silwings.core.common.Identity;
 
 /**
  * @ClassName UserAuthInfo
@@ -16,6 +17,8 @@ import top.silwings.admin.model.User;
 @Builder
 public class UserAuthInfo {
 
+    private Identity userId;
+
     private String userAccount;
 
     private String password;
@@ -24,6 +27,7 @@ public class UserAuthInfo {
 
     public static UserAuthInfo from(final User user) {
         return UserAuthInfo.builder()
+                .userId(user.getUserId())
                 .userAccount(user.getUserAccount())
                 .password(user.getPassword())
                 .role(user.getRole()).build();

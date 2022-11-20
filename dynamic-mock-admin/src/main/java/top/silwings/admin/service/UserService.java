@@ -3,7 +3,7 @@ package top.silwings.admin.service;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.User;
-import top.silwings.admin.web.vo.param.ResetPasswordParam;
+import top.silwings.core.common.Identity;
 
 /**
  * @ClassName UserService
@@ -13,13 +13,14 @@ import top.silwings.admin.web.vo.param.ResetPasswordParam;
  * @Since
  **/
 public interface UserService {
-    void createUser(String username, String userAccount, String role);
+    void create(String username, String userAccount, String password, String role);
+
+    void update(Identity userId, String username, String password, String role);
 
     void changePassword(String oldPassword, String newPassword);
 
-    void deleteUser(String userAccount);
+    void deleteUser(Identity userId);
 
     PageData<User> query(String searchKey, PageParam param);
 
-    void resetPassword(ResetPasswordParam param);
 }

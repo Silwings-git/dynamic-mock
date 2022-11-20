@@ -27,7 +27,6 @@ public class UserResult {
     @ApiModelProperty(value = "角色code", example = "123456789")
     private String role;
 
-    // TODO_Silwings: 2022/11/19 多语言
     @ApiModelProperty(value = "角色名称", example = "123456789")
     private String roleName;
 
@@ -37,6 +36,8 @@ public class UserResult {
         userResult.setUsername(user.getUsername());
         userResult.setUserAccount(user.getUserAccount());
         userResult.setRole(user.getRole());
+        // TODO_Silwings: 2022/11/19 多语言
+        userResult.setRoleName(user.getRole());
         return userResult;
     }
 }

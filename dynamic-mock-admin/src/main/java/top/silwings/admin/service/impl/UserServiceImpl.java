@@ -10,8 +10,10 @@ import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.admin.repository.UserRepository;
 import top.silwings.admin.service.UserService;
-import top.silwings.admin.web.vo.param.ResetPasswordParam;
+import top.silwings.admin.utils.EncryptUtils;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
+import top.silwings.core.utils.ConvertUtils;
 
 /**
  * @ClassName UserServiceImpl
@@ -30,12 +32,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(final String username, final String userAccount, final String role) {
+    public void create(final String username, final String userAccount, final String password, final String role) {
+
+        final User user = User.builder()
+                .username(username)
+                .userAccount(userAccount)
+                .password(EncryptUtils.encryptPassword(password))
+                .role(role)
+                .build();
         try {
-            this.userRepository.create(username, userAccount, role);
+            this.userRepository.create(user);
         } catch (DuplicateKeyException e) {
             throw DynamicMockAdminException.from("Account already exists.");
         }
+    }
+
+    @Override
+    public void update(final Identity userId, final String username, final String password, final String role) {
+        final User user = User.builder()
+                .username(username)
+                .password(ConvertUtils.getNoBlankOrDefault(password, null, EncryptUtils::encryptPassword))
+                .role(role)
+                .build();
+
+        this.userRepository.updateById(user, userId);
     }
 
     @Override
@@ -45,17 +65,21 @@ public class UserServiceImpl implements UserService {
 
         final User user = this.userRepository.findByUserAccount(userAuthInfo.getUserAccount());
 
-        user.changePassword(oldPassword, newPassword);
+        CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), () -> DynamicMockAdminException.from("Original password error."));
 
-        this.userRepository.update(user);
+        final User newUser = User.builder()
+                .password(EncryptUtils.encryptPassword(newPassword))
+                .build();
+
+        this.userRepository.updateById(newUser, user.getUserId());
     }
 
     @Override
-    public void deleteUser(final String userAccount) {
+    public void deleteUser(final Identity userId) {
 
-        CheckUtils.isNotEquals(UserHolder.getUser().getUserAccount(), userAccount, () -> DynamicMockAdminException.from("You cannot delete your own account."));
+        CheckUtils.isEquals(UserHolder.getUser().getUserId(), userId, () -> DynamicMockAdminException.from("You cannot delete your own account."));
 
-        this.userRepository.delete(userAccount);
+        this.userRepository.delete(userId);
     }
 
     @Override
@@ -63,13 +87,4 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.query(searchKey, param);
     }
 
-    @Override
-    public void resetPassword(final ResetPasswordParam param) {
-
-        final User user = this.userRepository.findByUserAccount(param.getUserAccount());
-
-        user.resetPassword();
-
-        this.userRepository.update(user);
-    }
 }
