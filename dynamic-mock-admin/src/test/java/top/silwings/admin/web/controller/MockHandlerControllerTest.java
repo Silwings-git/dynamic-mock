@@ -1,4 +1,4 @@
-package top.silwings.admin.web;
+package top.silwings.admin.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.web.MockHandlerSetUp;
 import top.silwings.admin.web.controller.MockHandlerController;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
@@ -44,7 +45,7 @@ public class MockHandlerControllerTest {
     private MockHandlerPoint mockHandlerPoint;
 
     @Test
-    public void create() {
+    public void mockAdmin() {
         final Identity handlerId = this.save();
         this.update(handlerId);
         this.find(handlerId);

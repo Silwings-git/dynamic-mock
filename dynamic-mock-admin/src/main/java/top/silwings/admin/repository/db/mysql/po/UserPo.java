@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -24,6 +25,7 @@ public class UserPo {
     public static final String C_USERNAME = "username";
 
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long userId;
 
     @Column(name = "username")

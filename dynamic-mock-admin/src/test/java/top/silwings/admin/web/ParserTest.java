@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.admin.DynamicMockAdminApplication;
+import top.silwings.admin.web.controller.MockHandlerDefinitionMock;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;

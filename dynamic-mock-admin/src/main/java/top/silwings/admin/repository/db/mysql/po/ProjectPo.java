@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -23,7 +24,7 @@ public class ProjectPo {
     public static final String C_PROJECT_NAME = "projectName";
 
     @Id
-    @Column(name = "project_id")
+    @GeneratedValue(generator = "JDBC")
     private Long projectId;
 
     @Column(name = "project_name")

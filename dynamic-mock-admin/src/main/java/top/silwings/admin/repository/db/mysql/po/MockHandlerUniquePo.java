@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,6 +23,7 @@ public class MockHandlerUniquePo {
     public static final String C_HANDLER_ID = "handlerId";
 
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     @Column(name = "handler_id")
