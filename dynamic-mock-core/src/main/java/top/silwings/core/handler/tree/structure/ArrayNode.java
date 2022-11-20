@@ -38,6 +38,6 @@ public class ArrayNode implements Node {
 
     @Override
     public int getNodeCount() {
-        return this.getChildNodes().size();
+        return this.nodeList.size();
     }
 }

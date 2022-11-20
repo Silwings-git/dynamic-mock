@@ -43,12 +43,12 @@ public class User {
 
     public UserPo toUser() {
         final UserPo userPo = new UserPo();
-        if (null != this.getUserId()) {
-            userPo.setId(this.getUserId().longValue());
+        if (null != this.userId) {
+            userPo.setId(this.userId.longValue());
         }
-        userPo.setUsername(this.getUsername());
-        userPo.setUserAccount(this.getUserAccount());
-        userPo.setPassword(this.getPassword());
+        userPo.setUsername(this.username);
+        userPo.setUserAccount(this.userAccount);
+        userPo.setPassword(this.password);
         return userPo;
     }
 

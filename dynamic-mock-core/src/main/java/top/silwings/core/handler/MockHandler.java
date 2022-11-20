@@ -65,7 +65,7 @@ public class MockHandler {
     private List<MockTaskInfo> asyncTaskInfoList;
 
     public boolean support(final RequestInfo requestInfo) {
-        return PathMatcherUtils.match(this.getRequestUri(), requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
+        return PathMatcherUtils.match(this.requestUri, requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
     }
 
     public ResponseEntity<Object> mock(final Context context) {
@@ -119,7 +119,7 @@ public class MockHandler {
     }
 
     public MockHandler delay() {
-        DelayUtils.delay(this.getDelayTime(), TimeUnit.MILLISECONDS);
+        DelayUtils.delay(this.delayTime, TimeUnit.MILLISECONDS);
         return this;
     }
 

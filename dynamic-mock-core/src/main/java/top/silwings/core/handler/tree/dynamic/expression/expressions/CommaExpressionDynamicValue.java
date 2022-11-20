@@ -40,7 +40,7 @@ public class CommaExpressionDynamicValue implements DynamicValue {
 
     @Override
     public int getNodeCount() {
-        return this.getChildNodes().size();
+        return this.paramsList.size();
     }
 
     public List<DynamicValue> getCommaExpressionValue() {

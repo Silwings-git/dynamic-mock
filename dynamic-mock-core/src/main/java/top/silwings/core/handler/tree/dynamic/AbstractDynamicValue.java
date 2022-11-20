@@ -31,7 +31,7 @@ public abstract class AbstractDynamicValue implements DynamicValue {
 
     @Override
     public int getNodeCount() {
-        return this.getChildNodes().size();
+        return this.dynamicValueList.size();
     }
 
     @Override

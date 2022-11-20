@@ -62,7 +62,7 @@ public class ObjectNode implements Node {
 
     @Override
     public int getNodeCount() {
-        return this.getChildNodes().size();
+        return this.binaryTreeNodeList.size();
     }
 
     @Getter
@@ -91,7 +91,7 @@ public class ObjectNode implements Node {
 
         @Override
         public int getNodeCount() {
-            return this.getChildNodes().size();
+            return 2;
         }
     }
 }

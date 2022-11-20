@@ -29,7 +29,7 @@ public class UserLoginParam {
     private Boolean ifRemember;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.getUserAccount(), () -> DynamicMockAdminException.from("The account cannot be empty."));
-        CheckUtils.isNotBlank(this.getPassword(), () -> DynamicMockAdminException.from("The password cannot be empty."));
+        CheckUtils.isNotBlank(this.userAccount, () -> DynamicMockAdminException.from("The account cannot be empty."));
+        CheckUtils.isNotBlank(this.password, () -> DynamicMockAdminException.from("The password cannot be empty."));
     }
 }

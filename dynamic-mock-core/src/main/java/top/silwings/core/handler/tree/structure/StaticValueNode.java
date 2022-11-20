@@ -37,6 +37,6 @@ public class StaticValueNode implements Node {
 
     @Override
     public int getNodeCount() {
-        return this.getChildNodes().size();
+        return 0;
     }
 }

@@ -26,8 +26,8 @@ public class ChangePasswordParam {
     private String newPassword;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.getOldPassword(), () -> DynamicMockAdminException.from("The old password cannot be empty."));
-        CheckUtils.isNotBlank(this.getNewPassword(), () -> DynamicMockAdminException.from("The new password cannot be empty."));
-        CheckUtils.isNotEquals(this.getOldPassword(), this.getNewPassword(), () -> DynamicMockAdminException.from("New password and old password cannot be the same."));
+        CheckUtils.isNotBlank(this.oldPassword, () -> DynamicMockAdminException.from("The old password cannot be empty."));
+        CheckUtils.isNotBlank(this.newPassword, () -> DynamicMockAdminException.from("The new password cannot be empty."));
+        CheckUtils.isNotEquals(this.oldPassword, this.newPassword, () -> DynamicMockAdminException.from("New password and old password cannot be the same."));
     }
 }

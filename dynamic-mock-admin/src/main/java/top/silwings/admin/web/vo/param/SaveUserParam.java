@@ -36,11 +36,11 @@ public class SaveUserParam {
     private String role;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.getUsername(), () -> DynamicMockAdminException.from("The user name cannot be empty."));
-        if (StringUtils.isBlank(this.getUserId())) {
-            CheckUtils.isNotBlank(this.getUserAccount(), () -> DynamicMockAdminException.from("The user account cannot be empty"));
-            CheckUtils.isNotBlank(this.getPassword(), () -> DynamicMockAdminException.from("The user password cannot be empty"));
-            CheckUtils.isNotBlank(this.getRole(), () -> DynamicMockAdminException.from("The user role cannot be empty"));
+        CheckUtils.isNotBlank(this.username, () -> DynamicMockAdminException.from("The user name cannot be empty."));
+        if (StringUtils.isBlank(this.userId)) {
+            CheckUtils.isNotBlank(this.userAccount, () -> DynamicMockAdminException.from("The user account cannot be empty"));
+            CheckUtils.isNotBlank(this.password, () -> DynamicMockAdminException.from("The user password cannot be empty"));
+            CheckUtils.isNotBlank(this.role, () -> DynamicMockAdminException.from("The user role cannot be empty"));
         }
     }
 }

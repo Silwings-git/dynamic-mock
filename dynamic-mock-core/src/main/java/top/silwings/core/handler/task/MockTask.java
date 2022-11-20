@@ -86,22 +86,22 @@ public class MockTask implements Runnable {
 
     protected void sendRequest(final AsyncRestTemplate asyncRestTemplate) {
 
-        final String actualRequestUrl = this.getActualRequestUrl(this.getRequestUrl());
+        final String actualRequestUrl = this.getActualRequestUrl(this.requestUrl);
 
-        final HttpEntity<Object> httpEntity = new HttpEntity<>(this.getBody(), this.getHeaders());
+        final HttpEntity<Object> httpEntity = new HttpEntity<>(this.body, this.headers);
 
         log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
-                this.getTaskId(),
+                this.taskId,
                 actualRequestUrl,
-                this.getHttpMethod(),
-                JsonUtils.toJSONString(this.getHeaders()),
-                JsonUtils.toJSONString(this.getUriVariables()),
-                JsonUtils.toJSONString(this.getBody()));
+                this.httpMethod,
+                JsonUtils.toJSONString(this.headers),
+                JsonUtils.toJSONString(this.uriVariables),
+                JsonUtils.toJSONString(this.body));
 
-        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(actualRequestUrl, this.getHttpMethod(), httpEntity, String.class, this.getUriVariables());
+        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(actualRequestUrl, this.httpMethod, httpEntity, String.class, this.uriVariables);
 
-        future.addCallback(result -> log.info("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.getName(), this.getHttpMethod(), result)
-                , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.getName(), this.getHttpMethod(), ex.getMessage()));
+        future.addCallback(result -> log.info("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.name, this.httpMethod, result)
+                , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.name, this.httpMethod, ex.getMessage()));
 
     }
 
