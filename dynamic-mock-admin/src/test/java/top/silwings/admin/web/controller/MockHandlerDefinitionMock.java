@@ -1,6 +1,5 @@
 package top.silwings.admin.web.controller;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
@@ -8,6 +7,7 @@ import top.silwings.core.model.dto.MockResponseDto;
 import top.silwings.core.model.dto.MockResponseInfoDto;
 import top.silwings.core.model.dto.TaskInfoDto;
 import top.silwings.core.model.dto.TaskRequestDto;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -131,7 +131,7 @@ public class MockHandlerDefinitionMock {
                 "\"random\": \"${#search($.+(1+2*5))}\"," +
                 " \"body\": \"${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),101,{\\\"code\\\": \\\"${#search(name)}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
                 "}";
-        definition.body(JSON.parseObject(s));
+        definition.body(JsonUtils.toBean(s));
 
 
         return definition.build();

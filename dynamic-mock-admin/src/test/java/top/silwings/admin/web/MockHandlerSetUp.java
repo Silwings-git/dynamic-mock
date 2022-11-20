@@ -52,7 +52,7 @@ public class MockHandlerSetUp {
         body.put("underAge", "${#search(age,customizeSpace)<18}");
 
         final TaskRequestInfoParam requestInfoVo = TaskRequestInfoParam.builder()
-                .requestUrl("/test")
+                .requestUrl("localhost:8888/test")
                 .httpMethod(HttpMethod.GET.name())
                 .headers(buildHeaders())
                 .body(body)

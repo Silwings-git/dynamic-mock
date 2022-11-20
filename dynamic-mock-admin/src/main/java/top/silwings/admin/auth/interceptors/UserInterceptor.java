@@ -32,10 +32,6 @@ public class UserInterceptor implements HandlerInterceptor {
 
         UserHolder.removeUser();
 
-        if (!(handler instanceof HandlerMethod)) {
-            return true;
-        }
-
         // 默认不拦截
         boolean needLogin = false;
         boolean needAdminUser = false;
@@ -51,7 +47,7 @@ public class UserInterceptor implements HandlerInterceptor {
             final User user = this.loginService.ifLogin(request, response);
 
             if (null == user) {
-                throw new UserAuthException("The account status is abnormal!");
+                throw new UserAuthException("Please login first!");
             }
 
             final UserAuthInfo userAuthInfo = UserAuthInfo.from(user);

@@ -12,6 +12,10 @@ import top.silwings.core.common.Identity;
  **/
 public class UserHolder {
 
+    private UserHolder() {
+        throw new AssertionError();
+    }
+
     private static final ThreadLocal<UserAuthInfo> TL = new ThreadLocal<>();
 
     public static void setUser(final UserAuthInfo userAuthInfo) {
@@ -43,11 +47,8 @@ public class UserHolder {
         TL.remove();
     }
 
-    public static UserAuthInfo getAdminUser() {
-        final UserAuthInfo authInfo = getUser();
-        if (authInfo.isAdminUser()) {
-            return authInfo;
-        }
-        throw new UserAuthException("Insufficient permissions!");
+    public static boolean isAdminUser() {
+        return getUser().isAdminUser();
     }
+
 }

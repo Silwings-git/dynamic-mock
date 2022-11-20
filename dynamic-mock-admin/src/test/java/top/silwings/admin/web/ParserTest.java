@@ -1,6 +1,5 @@
 package top.silwings.admin.web;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -258,13 +257,21 @@ public class ParserTest {
     @Test
     public void test003() {
 
-        final TaskRequestDto httpTaskRequestInfoDefinition = JSON.parseObject("{\n" +
-                "  \"map\": {\n" +
+        TaskRequestDto httpTaskRequestInfoDefinition = JsonUtils.toBean("{\n" +
+                "  \"body\": {\n" +
                 "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
                 "  }\n" +
                 "}", TaskRequestDto.class);
 
-        System.out.println(httpTaskRequestInfoDefinition);
+        System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
+
+        httpTaskRequestInfoDefinition = JsonUtils.toBean("{\n" +
+                "  \"abc\": {\n" +
+                "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
+                "  }\n" +
+                "}", TaskRequestDto.class);
+
+        System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
 
     }
 

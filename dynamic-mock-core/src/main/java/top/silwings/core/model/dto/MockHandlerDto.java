@@ -1,7 +1,9 @@
 package top.silwings.core.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -19,6 +21,8 @@ import java.util.Map;
  **/
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MockHandlerDto {
 
     /**

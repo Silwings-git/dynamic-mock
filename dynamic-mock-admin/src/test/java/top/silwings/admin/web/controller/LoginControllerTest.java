@@ -1,8 +1,5 @@
 package top.silwings.admin.web.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -64,19 +61,11 @@ public class LoginControllerTest {
 
     @Test
     public void testIdentity() {
-        final SerializeConfig serializeConfig = new SerializeConfig();
-        serializeConfig.put(Identity.class, new Identity.IdentityFastJsonObjectSerializer());
-
-        final ParserConfig parserConfig = new ParserConfig();
-        parserConfig.putDeserializer(Identity.class, new Identity.IdentityFastJsonObjectDeserializer());
-
         final User user = new User();
         user.setUserId(Identity.from("20"));
 
         log.info("jackson toJson: {}", JsonUtils.toJSONString(user));
-        log.info("fastjson toJson: {}", JSON.toJSONString(user, serializeConfig));
         log.info("jackson toBean: {}", JsonUtils.toBean(JsonUtils.toJSONString(user), User.class));
-        log.info("fastjson toBean: {}", (User) JSON.parseObject(JSON.toJSONString(user, serializeConfig), User.class, parserConfig));
 
         final Object o = JsonUtils.toBean(JsonUtils.toJSONString(MockHandlerDefinitionMock.build()), Object.class);
         System.out.println("o = " + o);

@@ -70,7 +70,7 @@ public class ProjectController {
 
     @GetMapping("/query/{pageNum}/{pageSize}")
     @PermissionLimit
-    @ApiOperation(value = "删除项目信息")
+    @ApiOperation(value = "分页查询项目信息")
     public PageResult<ProjectResult> query(@PathVariable("pageNum") final Integer pageNum,
                                            @PathVariable("pageSize") final Integer pageSize,
                                            @RequestParam("projectName") final String projectName) {
@@ -86,7 +86,7 @@ public class ProjectController {
 
     @PostMapping("/associate")
     @PermissionLimit
-    @ApiOperation(value = "删除项目信息")
+    @ApiOperation(value = "关联项目人员")
     public Result<Void> associateUser(@RequestBody final AssociateUserParam param) {
 
         param.validate();

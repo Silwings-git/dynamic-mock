@@ -1,7 +1,9 @@
 package top.silwings.core.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.Map;
  **/
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskRequestDto {
 
     /**

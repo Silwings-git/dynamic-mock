@@ -1,6 +1,5 @@
 package top.silwings.admin.repository.db.mysql.converter;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -58,9 +57,9 @@ public class MockHandlerDaoConverter {
                 .requestUri(mockHandlerPo.getRequestUri())
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
-                .customizeSpace(JSON.parseObject(mockHandlerPo.getCustomizeSpace()))
-                .responses(JSON.parseArray(mockHandlerPo.getResponses(), MockResponseInfoDto.class))
-                .tasks(JSON.parseArray(mockHandlerPo.getTasks(), TaskInfoDto.class))
+                .customizeSpace(JsonUtils.toMap(mockHandlerPo.getCustomizeSpace(), String.class, Object.class))
+                .responses(JsonUtils.toList(mockHandlerPo.getResponses(), MockResponseInfoDto.class))
+                .tasks(JsonUtils.toList(mockHandlerPo.getTasks(), TaskInfoDto.class))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
     }

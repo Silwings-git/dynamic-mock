@@ -92,7 +92,11 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
         final Project project = this.projectRepository.find(projectId, true, false);
 
         CheckUtils.isNotNull(project, () -> DynamicMockAdminException.from("Project does not exist."));
-        CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
+
+        // 管理员或项目管理员可关联用户
+        if (!UserHolder.isAdminUser()) {
+            CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
+        }
 
         this.projectRepository.createProjectUser(projectId, userId, type);
     }

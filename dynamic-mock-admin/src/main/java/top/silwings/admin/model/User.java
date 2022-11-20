@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.Getter;
 import top.silwings.admin.repository.db.mysql.po.UserPo;
 import top.silwings.core.common.Identity;
+import top.silwings.core.utils.JsonUtils;
+
+import java.util.Map;
 
 /**
  * @ClassName User
@@ -35,6 +38,19 @@ public class User {
                 .userAccount(userPo.getUserAccount())
                 .password(userPo.getPassword())
                 .role(userPo.getRole())
+                .build();
+    }
+
+    public static User from(final String json) {
+
+        final Map<String, Object> map = JsonUtils.toMap(json, String.class, Object.class);
+
+        return User.builder()
+                .userId(Identity.from(String.valueOf(map.get("userId"))))
+                .username(String.valueOf(map.get("username")))
+                .userAccount(String.valueOf(map.get("userAccount")))
+                .password(String.valueOf(map.get("password")))
+                .role(Integer.parseInt(String.valueOf(map.get("role"))))
                 .build();
     }
 

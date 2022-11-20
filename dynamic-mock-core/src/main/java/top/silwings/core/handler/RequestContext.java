@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -213,8 +214,8 @@ public class RequestContext {
         }
 
         private static void buildBlankContentTypeBody(final RequestInfoBuilder builder, final String bodyStr) {
-            if (JSON.isValidObject(bodyStr)) {
-                final JSONObject jsonBody = JSON.parseObject(bodyStr);
+            if (JsonUtils.isValidJson(bodyStr)) {
+                final Map<String, ?> jsonBody = JsonUtils.toMap(bodyStr, String.class, Object.class);
                 builder.body(jsonBody)
                         .jsonBody(jsonBody);
             } else {
@@ -224,8 +225,8 @@ public class RequestContext {
         }
 
         private static void buildJsonBody(final RequestInfoBuilder builder, final String bodyStr) {
-            if (JSON.isValidObject(bodyStr)) {
-                final JSONObject jsonBody = JSON.parseObject(bodyStr);
+            if (JsonUtils.isValidJson(bodyStr)) {
+                final Map<String, ?> jsonBody = JsonUtils.toMap(bodyStr, String.class, Object.class);
                 builder.body(jsonBody)
                         .jsonBody(jsonBody);
             } else {

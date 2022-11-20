@@ -1,5 +1,6 @@
 package top.silwings.admin.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
@@ -83,12 +84,12 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private User parseToken(final String token) {
-        User user = null;
-        if (token != null) {
-            final String tokenJson = new String(new BigInteger(token, 16).toByteArray());
-            user = JsonUtils.toBean(tokenJson, User.class);
+        if (StringUtils.isBlank(token)) {
+            return null;
         }
-        return user;
+
+        final String tokenJson = new String(new BigInteger(token, 16).toByteArray());
+        return User.from(tokenJson);
     }
 
     @Override

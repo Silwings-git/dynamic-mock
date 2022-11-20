@@ -1,6 +1,5 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
-import com.alibaba.fastjson2.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,7 @@ import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
 import java.util.UUID;

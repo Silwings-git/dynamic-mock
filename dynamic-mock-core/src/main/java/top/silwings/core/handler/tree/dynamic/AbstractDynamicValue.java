@@ -1,7 +1,7 @@
 package top.silwings.core.handler.tree.dynamic;
 
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.exceptions.TypeConversionException;
+import top.silwings.core.exceptions.TypeCastException;
 import top.silwings.core.handler.Context;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.utils.JsonUtils;
@@ -38,7 +38,7 @@ public abstract class AbstractDynamicValue implements DynamicValue {
     public Object interpret(final Context context, final List<Object> childNodeValueList) {
         try {
             return this.doInterpret(context, childNodeValueList);
-        } catch (TypeConversionException e) {
+        } catch (TypeCastException e) {
             throw new DynamicMockException("Dynamic operation '" + symbol() + "' execution failed. " + e.getMessage() + ": " + JsonUtils.toJSONString(childNodeValueList), e);
         }
     }

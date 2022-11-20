@@ -2,8 +2,11 @@ package top.silwings.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import lombok.extern.slf4j.Slf4j;
 import top.silwings.core.exceptions.DynamicMockException;
 
@@ -21,7 +24,15 @@ import java.util.Map;
 @Slf4j
 public class JsonUtils {
 
+    private static final Configuration DEFAULT_PATH_TO_NULL = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
+
+
     public static final ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        // json字符中存在实体中不包含的key时忽略
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     private JsonUtils() {
         throw new AssertionError();
@@ -96,6 +107,20 @@ public class JsonUtils {
             log.error("Json parsing error: " + jsonStr, e);
             throw new DynamicMockException(e);
         }
+    }
+
+    /**
+     * 使用jsonPath从json对象读取数据
+     *
+     * @param obj      java bean
+     * @param jsonPath json path
+     * @return 如果找到返回路径元素, 找不到返回null
+     */
+    public static Object jsonPathRead(final Object obj, final String jsonPath) {
+
+        final Object json = DEFAULT_PATH_TO_NULL.jsonProvider().parse(toJSONString(obj));
+
+        return JsonPath.read(json, jsonPath);
     }
 
 }
