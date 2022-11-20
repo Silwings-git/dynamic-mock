@@ -1,6 +1,7 @@
 package top.silwings.admin.events;
 
 import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 import top.silwings.admin.model.Project;
 
 /**
@@ -11,7 +12,7 @@ import top.silwings.admin.model.Project;
  * @Since
  **/
 @Getter
-public class DeleteProjectEvent extends DeleteEvent {
+public class DeleteProjectEvent extends ApplicationEvent {
 
     private final Project project;
 

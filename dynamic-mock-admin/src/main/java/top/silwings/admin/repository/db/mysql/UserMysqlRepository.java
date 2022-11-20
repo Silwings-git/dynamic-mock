@@ -86,13 +86,13 @@ public class UserMysqlRepository implements UserRepository {
     }
 
     @Override
-    public void delete(final Identity userId) {
+    public boolean delete(final Identity userId) {
 
         final Example deleteCondition = new Example(UserPo.class);
         deleteCondition.createCriteria()
                 .andEqualTo(UserPo.C_USER_ID, userId.longValue());
 
-        this.userMapper.deleteByCondition(deleteCondition);
+        return this.userMapper.deleteByCondition(deleteCondition) > 0;
     }
 
     @Override

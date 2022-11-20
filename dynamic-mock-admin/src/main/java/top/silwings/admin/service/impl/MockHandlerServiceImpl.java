@@ -7,6 +7,7 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.events.DeleteMockHandlerEvent;
 import top.silwings.admin.events.DeleteProjectEvent;
+import top.silwings.admin.events.SaveMockHandlerEvent;
 import top.silwings.admin.model.Project;
 import top.silwings.admin.model.ProjectMockHandler;
 import top.silwings.admin.repository.MockHandlerRepository;
@@ -47,7 +48,7 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public Identity save(final MockHandlerDto mockHandlerDto) {
+    public Identity save(final MockHandlerDto mockHandlerDto, final Identity projectId) {
 
         Identity handlerId;
 
@@ -55,6 +56,10 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
             handlerId = this.mockHandlerRepository.create(mockHandlerDto);
         } else {
             handlerId = this.mockHandlerRepository.update(mockHandlerDto);
+        }
+
+        if (null != handlerId) {
+            this.applicationEventPublisher.publishEvent(SaveMockHandlerEvent.of(this, handlerId, projectId));
         }
 
         return handlerId;
@@ -69,9 +74,11 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
     }
 
     public void delete(final Identity handlerId) {
-        this.mockHandlerRepository.delete(handlerId);
+        final boolean deleted = this.mockHandlerRepository.delete(handlerId);
         this.mockHandlerManager.unregisterHandler(handlerId);
-        this.applicationEventPublisher.publishEvent(DeleteMockHandlerEvent.of(this, handlerId));
+        if (deleted) {
+            this.applicationEventPublisher.publishEvent(DeleteMockHandlerEvent.of(this, handlerId));
+        }
     }
 
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {

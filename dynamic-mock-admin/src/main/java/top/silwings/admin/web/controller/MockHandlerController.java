@@ -25,6 +25,7 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +63,9 @@ public class MockHandlerController {
 
         this.mockHandlerValidator.validate(mockHandlerDto);
 
-        final Identity handlerId = this.mockHandlerService.save(mockHandlerDto);
+        final Identity projectId = ConvertUtils.getNoBlankOrDefault(mockHandlerInfoParam.getProjectId(), null, Identity::from);
+
+        final Identity handlerId = this.mockHandlerService.save(mockHandlerDto, projectId);
 
         return Result.ok(handlerId);
     }

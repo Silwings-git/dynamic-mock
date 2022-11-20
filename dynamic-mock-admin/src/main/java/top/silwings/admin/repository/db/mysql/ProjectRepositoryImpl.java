@@ -111,13 +111,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     @Transactional
-    public void delete(final Identity projectId) {
+    public boolean delete(final Identity projectId) {
 
         final Example projectCondition = new Example(ProjectPo.class);
         projectCondition.createCriteria()
                 .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.longValue());
 
-        this.projectMapper.deleteByCondition(projectCondition);
+        final int row = this.projectMapper.deleteByCondition(projectCondition);
 
         // 删除项目用户关系
         final Example userCondition = new Example(ProjectUserPo.class);
@@ -132,6 +132,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .andEqualTo(ProjectMockHandlerPo.C_PROJECT_ID, projectId.longValue());
 
         this.projectMockHandlerMapper.deleteByCondition(handlerCondition);
+
+        return row > 0;
     }
 
     @Override
@@ -185,5 +187,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .andEqualTo(ProjectMockHandlerPo.C_HANDLER_ID, handlerId.longValue());
 
         this.projectMockHandlerMapper.deleteByCondition(delCondition);
+    }
+
+    @Override
+    public void createProjectHandler(final Identity projectId, final Identity handlerId) {
+        final ProjectMockHandlerPo projectMockHandlerPo = new ProjectMockHandlerPo();
+        projectMockHandlerPo.setProjectId(projectId.longValue());
+        projectMockHandlerPo.setHandlerId(handlerId.longValue());
+        this.projectMockHandlerMapper.insertSelective(projectMockHandlerPo);
     }
 }

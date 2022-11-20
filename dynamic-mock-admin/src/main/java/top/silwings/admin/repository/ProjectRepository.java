@@ -21,7 +21,7 @@ public interface ProjectRepository {
 
     Project find(Identity projectId, final boolean findUser, final boolean findHandler);
 
-    void delete(Identity projectId);
+    boolean delete(Identity projectId);
 
     PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);
 
@@ -30,4 +30,6 @@ public interface ProjectRepository {
     void deleteProjectUserByUserId(Identity userId);
 
     void deleteProjectHandlerByHandlerId(Identity handlerId);
+
+    void createProjectHandler(Identity projectId, Identity handlerId);
 }

@@ -1,6 +1,7 @@
 package top.silwings.admin.events;
 
 import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 import top.silwings.admin.model.User;
 
 /**
@@ -11,7 +12,7 @@ import top.silwings.admin.model.User;
  * @Since
  **/
 @Getter
-public class DeleteUserEvent extends DeleteEvent {
+public class DeleteUserEvent extends ApplicationEvent {
 
     private final User user;
 

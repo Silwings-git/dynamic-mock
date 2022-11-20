@@ -26,6 +26,9 @@ import java.util.Map;
 @ApiModel(description = "模拟处理器信息")
 public class MockHandlerInfoParam {
 
+    @ApiModelProperty(value = "项目id", required = true, example = "P1")
+    private String projectId;
+
     @ApiModelProperty(value = "处理器id", required = true, example = "H1")
     private String handlerId;
 

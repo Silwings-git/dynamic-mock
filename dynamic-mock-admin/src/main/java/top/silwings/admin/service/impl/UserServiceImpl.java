@@ -92,9 +92,9 @@ public class UserServiceImpl implements UserService {
             return;
         }
 
-        this.userRepository.delete(userId);
-
-        this.applicationEventPublisher.publishEvent(DeleteUserEvent.of(this, user));
+        if (this.userRepository.delete(userId)) {
+            this.applicationEventPublisher.publishEvent(DeleteUserEvent.of(this, user));
+        }
     }
 
     @Override

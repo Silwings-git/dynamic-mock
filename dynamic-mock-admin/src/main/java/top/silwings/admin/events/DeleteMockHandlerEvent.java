@@ -1,6 +1,7 @@
 package top.silwings.admin.events;
 
 import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
 import top.silwings.core.common.Identity;
 
 /**
@@ -11,7 +12,7 @@ import top.silwings.core.common.Identity;
  * @Since
  **/
 @Getter
-public class DeleteMockHandlerEvent extends DeleteEvent {
+public class DeleteMockHandlerEvent extends ApplicationEvent {
 
     private final Identity handlerId;
 

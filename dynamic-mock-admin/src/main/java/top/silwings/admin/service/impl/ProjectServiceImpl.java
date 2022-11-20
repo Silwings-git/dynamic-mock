@@ -1,5 +1,6 @@
 package top.silwings.admin.service.impl;
 
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,10 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.enums.ProjectUserType;
-import top.silwings.admin.events.DeleteEvent;
 import top.silwings.admin.events.DeleteMockHandlerEvent;
 import top.silwings.admin.events.DeleteProjectEvent;
 import top.silwings.admin.events.DeleteUserEvent;
+import top.silwings.admin.events.SaveMockHandlerEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.Project;
 import top.silwings.admin.model.ProjectSummary;
@@ -28,7 +29,7 @@ import top.silwings.core.utils.CheckUtils;
  * @Since
  **/
 @Service
-public class ProjectServiceImpl implements ProjectService, ApplicationListener<DeleteEvent> {
+public class ProjectServiceImpl implements ProjectService, ApplicationListener<ApplicationEvent> {
 
     private final ProjectRepository projectRepository;
 
@@ -74,9 +75,10 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<D
 
         CheckUtils.isIn(UserHolder.getUserId(), project.getAuthorIds(), () -> DynamicMockAdminException.from("Insufficient permissions."));
 
-        this.projectRepository.delete(projectId);
+        if (this.projectRepository.delete(projectId)) {
+            this.applicationEventPublisher.publishEvent(DeleteProjectEvent.of(this, project));
+        }
 
-        this.applicationEventPublisher.publishEvent(DeleteProjectEvent.of(this, project));
     }
 
     @Override
@@ -96,13 +98,24 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<D
     }
 
     @Override
-    public void onApplicationEvent(final DeleteEvent event) {
+    public void onApplicationEvent(final ApplicationEvent event) {
 
         if (event instanceof DeleteUserEvent) {
-            this.projectRepository.deleteProjectUserByUserId(((DeleteUserEvent) event).getUser().getUserId());
-        } else if (event instanceof DeleteMockHandlerEvent) {
-            this.projectRepository.deleteProjectHandlerByHandlerId(((DeleteMockHandlerEvent) event).getHandlerId());
-        }
 
+            this.projectRepository.deleteProjectUserByUserId(((DeleteUserEvent) event).getUser().getUserId());
+
+        } else if (event instanceof DeleteMockHandlerEvent) {
+
+            this.projectRepository.deleteProjectHandlerByHandlerId(((DeleteMockHandlerEvent) event).getHandlerId());
+
+        } else if (event instanceof SaveMockHandlerEvent) {
+
+            final SaveMockHandlerEvent saveMockHandlerEvent = (SaveMockHandlerEvent) event;
+            final Identity projectId = saveMockHandlerEvent.getProjectId();
+            if (null != projectId) {
+                this.projectRepository.createProjectHandler(projectId, saveMockHandlerEvent.getHandlerId());
+            }
+
+        }
     }
 }

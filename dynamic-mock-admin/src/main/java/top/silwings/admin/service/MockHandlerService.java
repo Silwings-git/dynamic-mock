@@ -17,7 +17,7 @@ import top.silwings.core.model.dto.QueryConditionDto;
 public interface MockHandlerService {
     void delete(Identity handlerId);
 
-    Identity save(MockHandlerDto mockHandlerDto);
+    Identity save(MockHandlerDto mockHandlerDto, Identity projectId);
 
     MockHandlerDto find(Identity handlerId);
 

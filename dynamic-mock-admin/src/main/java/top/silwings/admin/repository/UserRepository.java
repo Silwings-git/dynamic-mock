@@ -19,7 +19,7 @@ public interface UserRepository {
 
     void create(User user);
 
-    void delete(Identity userId);
+    boolean delete(Identity userId);
 
     PageData<User> query(String searchKey, PageParam param);
 

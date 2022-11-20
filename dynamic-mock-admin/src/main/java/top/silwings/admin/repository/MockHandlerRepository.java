@@ -26,7 +26,7 @@ public interface MockHandlerRepository {
 
     PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
-    void delete(Identity handlerId);
+    boolean delete(Identity handlerId);
 
     void delete(Collection<Identity> handlerIdList);
 

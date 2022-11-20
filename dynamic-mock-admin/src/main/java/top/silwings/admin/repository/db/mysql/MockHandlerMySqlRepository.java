@@ -132,7 +132,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
     @Transactional
     @Override
-    public void delete(final Identity handlerId) {
+    public boolean delete(final Identity handlerId) {
 
         final Example deleteHandlerCondition = new Example(MockHandlerPo.class);
         deleteHandlerCondition.createCriteria()
@@ -142,7 +142,8 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
         final Example deleteUniqueCondition = new Example(MockHandlerUniquePo.class);
         deleteUniqueCondition.createCriteria()
                 .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.longValue());
-        this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
+        final int row = this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
+        return row > 0;
     }
 
     @Transactional
