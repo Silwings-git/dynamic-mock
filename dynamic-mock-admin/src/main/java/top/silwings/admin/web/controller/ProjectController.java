@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @Since
  **/
 @RestController
-@RequestMapping("/dynamic/mock/project")
+@RequestMapping("/dynamic-mock/project")
 @Api(value = "项目管理")
 public class ProjectController {
 

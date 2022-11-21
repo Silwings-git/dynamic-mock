@@ -57,9 +57,9 @@ public class MockHandlerDaoConverter {
                 .requestUri(mockHandlerPo.getRequestUri())
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
-                .customizeSpace(JsonUtils.toMap(mockHandlerPo.getCustomizeSpace(), String.class, Object.class))
-                .responses(JsonUtils.toList(mockHandlerPo.getResponses(), MockResponseInfoDto.class))
-                .tasks(JsonUtils.toList(mockHandlerPo.getTasks(), TaskInfoDto.class))
+                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
+                .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), "[]"), MockResponseInfoDto.class))
+                .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), "[]"), TaskInfoDto.class))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
     }

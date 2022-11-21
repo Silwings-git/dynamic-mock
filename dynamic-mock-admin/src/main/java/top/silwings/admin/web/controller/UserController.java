@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @Since
  **/
 @RestController
-@RequestMapping("/dynamic/mock/user")
+@RequestMapping("/dynamic-mock/user")
 @Api(value = "用户管理")
 public class UserController {
 

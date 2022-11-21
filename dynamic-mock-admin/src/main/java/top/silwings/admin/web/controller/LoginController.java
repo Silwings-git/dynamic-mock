@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Since
  **/
 @RestController
-@RequestMapping("/dynamic/mock/auth")
+@RequestMapping("/dynamic-mock/auth")
 @Api(value = "登录控制")
 public class LoginController {
 

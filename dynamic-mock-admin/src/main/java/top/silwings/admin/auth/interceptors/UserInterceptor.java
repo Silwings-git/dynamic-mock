@@ -32,8 +32,14 @@ public class UserInterceptor implements HandlerInterceptor {
 
         UserHolder.removeUser();
 
-        // 默认不拦截
-        boolean needLogin = false;
+        if (!(handler instanceof HandlerMethod)) {
+            return true;    // proceed with the next interceptor
+        }
+
+        final String requestURI = request.getRequestURI();
+
+        // 默认拦截所有以/dynamic-mock起始的请求地址
+        boolean needLogin = requestURI.startsWith("/dynamic-mock");
         boolean needAdminUser = false;
 
         final PermissionLimit permission = ((HandlerMethod) handler).getMethodAnnotation(PermissionLimit.class);

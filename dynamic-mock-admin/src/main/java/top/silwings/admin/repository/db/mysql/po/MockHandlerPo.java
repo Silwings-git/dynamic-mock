@@ -38,7 +38,7 @@ public class MockHandlerPo {
     /**
      * 所属项目id
      */
-    @GeneratedValue(generator = "project_id")
+    @Column(name = "project_id")
     private Integer projectId;
 
     /**
