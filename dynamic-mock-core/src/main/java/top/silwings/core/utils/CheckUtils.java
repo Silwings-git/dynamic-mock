@@ -95,4 +95,8 @@ public class CheckUtils {
     public static <T> void isIn(final T obj, final Collection<T> list, final Supplier<RuntimeException> exceptionSupplier) {
         isTrue(list.contains(obj), exceptionSupplier);
     }
+
+    public static void isNotEmpty(final Collection<?> list, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(CollectionUtils.isNotEmpty(list), exceptionSupplier);
+    }
 }

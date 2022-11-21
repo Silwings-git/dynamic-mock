@@ -8,8 +8,6 @@ import lombok.Setter;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 
-import java.util.List;
-
 /**
  * @ClassName QueryConditionDto
  * @Description 查询条件
@@ -25,9 +23,9 @@ import java.util.List;
 public class QueryConditionDto {
 
     /**
-     * 处理器id集
+     * 项目id
      */
-    private List<Identity> handlerIdList;
+    private Identity projectId;
 
     /**
      * 处理器名称右模糊

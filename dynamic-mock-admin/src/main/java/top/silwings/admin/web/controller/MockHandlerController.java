@@ -2,30 +2,28 @@ package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
-import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
+import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
+import top.silwings.admin.web.vo.param.FindMockHandlerParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
+import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
-import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,50 +55,63 @@ public class MockHandlerController {
     @PostMapping("/save")
     @PermissionLimit
     @ApiOperation(value = "保存Mock处理器信息")
-    public Result<Identity> save(@RequestBody final MockHandlerInfoParam mockHandlerInfoParam) {
+    public Result<Identity> save(@RequestBody final MockHandlerInfoParam param) {
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(mockHandlerInfoParam);
+        param.validate();
+
+        UserHolder.validPermission(Identity.from(param.getProjectId()));
+
+        final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(param);
 
         this.mockHandlerValidator.validate(mockHandlerDto);
 
-        final Identity projectId = ConvertUtils.getNoBlankOrDefault(mockHandlerInfoParam.getProjectId(), null, Identity::from);
+        final Identity handlerId;
 
-        final Identity handlerId = this.mockHandlerService.save(mockHandlerDto, projectId);
+        if (null == param.getHandlerId()) {
+            handlerId = this.mockHandlerService.create(mockHandlerDto);
+        } else {
+            handlerId = this.mockHandlerService.updateById(mockHandlerDto);
+        }
 
         return Result.ok(handlerId);
     }
 
-    @GetMapping("/find/{handlerId}")
+    @PostMapping("/find")
     @PermissionLimit
     @ApiOperation(value = "根据id获取Mock处理器信息")
-    public Result<MockHandlerInfoResult> find(@PathVariable("handlerId") final String handlerId) {
+    public Result<MockHandlerInfoResult> find(@RequestBody final FindMockHandlerParam param) {
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(Identity.from(handlerId));
+        param.validate();
+
+        final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(Identity.from(param.getHandlerId()));
+
+        UserHolder.validPermission(mockHandlerDto.getProjectId());
 
         final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
         return Result.ok(mockHandlerInfoVo);
     }
 
-    @GetMapping("/query/{pageNum}/{pageSize}")
+    @PostMapping("/query")
     @PermissionLimit
     @ApiOperation(value = "分页查询Mock处理器信息")
-    public PageResult<MockHandlerInfoResult> query(@PathVariable("pageNum") final Integer pageNum,
-                                                   @PathVariable("pageSize") final Integer pageSize,
-                                                   @RequestParam("name") final String name,
-                                                   @RequestParam("httpMethod") final String httpMethod,
-                                                   @RequestParam("requestUri") final String requestUri,
-                                                   @RequestParam("label") final String label) {
+    public PageResult<MockHandlerInfoResult> query(@RequestBody QueryMockHandlerParam param) {
+
+        param.validate();
+
+        final String projectId = param.getProjectId();
+
+        UserHolder.validPermission(Identity.from(projectId));
 
         final QueryConditionDto queryCondition = QueryConditionDto.builder()
-                .handlerIdList(null)
-                .name(name)
-                .httpMethod(httpMethod)
-                .requestUri(requestUri)
-                .label(label)
+                .projectId(Identity.from(projectId))
+                .name(param.getName())
+                .httpMethod(param.getHttpMethod())
+                .requestUri(param.getRequestUri())
+                .label(param.getLabel())
                 .build();
 
-        final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, PageParam.of(pageNum, pageSize));
+        final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, param);
 
         final List<MockHandlerInfoResult> mockHandlerInfoVoList = pageData.getList().stream()
                 .map(this.mockHandlerVoConverter::convert)
@@ -109,12 +120,18 @@ public class MockHandlerController {
         return PageResult.ok(mockHandlerInfoVoList, pageData.getTotal());
     }
 
-    @DeleteMapping("/del/{handlerId}")
+    @PostMapping("/del")
     @PermissionLimit
     @ApiOperation(value = "根据id删除MOck处理器信息")
-    public Result<Void> delete(@PathVariable("handlerId") final String handlerId) {
+    public Result<Void> delete(@RequestBody final DeleteMockHandlerParam param) {
 
-        this.mockHandlerService.delete(Identity.from(handlerId));
+        param.validate();
+
+        final Identity handlerId = Identity.from(param.getHandlerId());
+
+        UserHolder.validPermission(this.mockHandlerService.findProjectId(handlerId));
+
+        this.mockHandlerService.delete(handlerId);
 
         return Result.ok();
     }
@@ -122,9 +139,15 @@ public class MockHandlerController {
     @PostMapping("/enableStatus")
     @PermissionLimit
     @ApiOperation(value = "启用/停用Mock处理器")
-    public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam enableStatusParam) {
+    public Result<Void> updateEnableStatus(@RequestBody final EnableStatusParam param) {
 
-        this.mockHandlerService.updateEnableStatus(Identity.from(enableStatusParam.getHandlerId()), EnableStatus.valueOfCode(enableStatusParam.getEnableStatus()));
+        param.validate();
+
+        final Identity handlerId = Identity.from(param.getHandlerId());
+
+        UserHolder.validPermission(this.mockHandlerService.findProjectId(handlerId));
+
+        this.mockHandlerService.updateEnableStatus(handlerId, EnableStatus.valueOfCode(param.getEnableStatus()));
 
         return Result.ok();
     }

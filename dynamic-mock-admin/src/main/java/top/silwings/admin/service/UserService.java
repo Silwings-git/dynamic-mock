@@ -21,6 +21,6 @@ public interface UserService {
 
     void deleteUser(Identity userId);
 
-    PageData<User> query(String searchKey, Integer role, PageParam pageParam);
+    PageData<User> query(String username, String userAccount, Integer role, PageParam pageParam);
 
 }

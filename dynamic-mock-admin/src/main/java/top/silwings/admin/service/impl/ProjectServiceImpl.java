@@ -81,11 +81,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PageData<Project> query(final String projectName, final PageParam pageParam) {
+    public PageData<Project> query(final List<Identity> projectIdList, final String projectName, final PageParam pageParam) {
 
         final Example example = new Example(ProjectPo.class);
-        example.createCriteria()
+        final Example.Criteria criteria = example.createCriteria();
+        criteria
                 .andLike(ProjectPo.C_PROJECT_NAME, ConvertUtils.getNoBlankOrDefault(projectName, null, name -> name + "%"));
+
+        if (null != projectIdList) {
+            if (projectIdList.isEmpty()) {
+                return PageData.empty();
+            }
+            criteria.andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        }
 
         final int total = this.projectMapper.selectCountByCondition(example);
         if (total <= 0) {

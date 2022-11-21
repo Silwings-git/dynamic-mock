@@ -15,8 +15,10 @@ import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.web.MockHandlerSetUp;
-import top.silwings.admin.web.controller.MockHandlerController;
+import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
+import top.silwings.admin.web.vo.param.FindMockHandlerParam;
+import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -74,14 +76,19 @@ public class MockHandlerControllerTest {
 
     private void find(final Identity handlerId) {
 
-        final Result<MockHandlerInfoResult> voResult = this.mockHandlerController.find(handlerId.stringValue());
+        final FindMockHandlerParam param = new FindMockHandlerParam();
+        param.setHandlerId(handlerId.stringValue());
+
+        final Result<MockHandlerInfoResult> voResult = this.mockHandlerController.find(param);
 
         Assert.assertNotNull(voResult.getData());
     }
 
     private void query() {
 
-        final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(1, 10, null, null, null, null);
+        final QueryMockHandlerParam param = new QueryMockHandlerParam();
+
+        final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(param);
 
         Assert.assertNotNull(pageResult.getPageData());
     }
@@ -107,7 +114,10 @@ public class MockHandlerControllerTest {
 
     private void delete(final Identity handlerId) {
 
-        final Result<Void> result = this.mockHandlerController.delete(handlerId.stringValue());
+        final DeleteMockHandlerParam param = new DeleteMockHandlerParam();
+        param.setHandlerId(handlerId.stringValue());
+
+        final Result<Void> result = this.mockHandlerController.delete(param);
 
         Assert.assertNotNull(result);
     }

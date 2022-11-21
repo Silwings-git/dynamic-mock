@@ -51,4 +51,8 @@ public class UserHolder {
         return getUser().isAdminUser();
     }
 
+    public static void validPermission(final Identity projectId) {
+        getUser().validPermission(projectId);
+    }
+
 }

@@ -5,6 +5,8 @@ import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.Project;
 import top.silwings.core.common.Identity;
 
+import java.util.List;
+
 /**
  * @ClassName ProjectService
  * @Description 项目管理
@@ -17,7 +19,7 @@ public interface ProjectService {
 
     void delete(Identity projectId);
 
-    PageData<Project> query(String projectName, PageParam pageParam);
+    PageData<Project> query(List<Identity> projectIdList, String projectName, PageParam pageParam);
 
     void updateById(Identity projectId, String projectName, String baseUri);
 }

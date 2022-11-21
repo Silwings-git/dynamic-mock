@@ -3,8 +3,12 @@ package top.silwings.admin.auth;
 import lombok.Builder;
 import lombok.Getter;
 import top.silwings.admin.common.enums.Role;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.User;
 import top.silwings.core.common.Identity;
+import top.silwings.core.utils.CheckUtils;
+
+import java.util.List;
 
 /**
  * @ClassName UserAuthInfo
@@ -25,6 +29,8 @@ public class UserAuthInfo {
 
     private int role;
 
+    private List<Identity> permission;
+
     public static UserAuthInfo from(final User user) {
         return UserAuthInfo.builder()
                 .userId(user.getUserId())
@@ -35,6 +41,10 @@ public class UserAuthInfo {
 
     public boolean isAdminUser() {
         return Role.ADMIN_USER.equalsCode(this.role);
+    }
+
+    public void validPermission(final Identity projectId) {
+        CheckUtils.isIn(projectId, this.permission, () -> DynamicMockAdminException.from("Insufficient permissions."));
     }
 
 }

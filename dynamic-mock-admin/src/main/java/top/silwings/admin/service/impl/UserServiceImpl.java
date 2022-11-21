@@ -133,19 +133,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageData<User> query(final String searchKey, final Integer role, final PageParam pageParam) {
+    public PageData<User> query(final String username, final String userAccount, final Integer role, final PageParam pageParam) {
 
         final Example queryCondition = new Example(UserPo.class);
         queryCondition.createCriteria()
-                .andEqualTo(UserPo.C_ROLE, role);
-
-        if (StringUtils.isNotBlank(searchKey)) {
-            final Example.Criteria criteria = queryCondition.createCriteria();
-            criteria
-                    .andLike(UserPo.C_USER_ACCOUNT, "%".concat(searchKey))
-                    .orLike(UserPo.C_USERNAME, "%".concat(searchKey));
-            queryCondition.and(criteria);
-        }
+                .andEqualTo(UserPo.C_ROLE, role)
+                .andLike(UserPo.C_USERNAME, ConvertUtils.getNoBlankOrDefault(username, null, name -> name + "%"))
+                .andLike(UserPo.C_USER_ACCOUNT, ConvertUtils.getNoBlankOrDefault(userAccount, null, account -> account + "%"));
 
         final int total = this.userMapper.selectCountByCondition(queryCondition);
         if (total < 0) {

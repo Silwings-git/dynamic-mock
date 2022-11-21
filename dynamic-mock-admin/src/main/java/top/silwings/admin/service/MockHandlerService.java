@@ -17,13 +17,19 @@ import top.silwings.core.model.dto.QueryConditionDto;
 public interface MockHandlerService {
     void delete(Identity handlerId);
 
-    Identity save(MockHandlerDto mockHandlerDto, Identity projectId);
-
     MockHandlerDto find(Identity handlerId);
+
+    Identity findProjectId(Identity handlerId);
 
     PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus);
 
     int findMockHandlerQuantityByProject(Identity projectId);
+
+    Identity create(MockHandlerDto mockHandlerDto);
+
+    Identity updateById(MockHandlerDto mockHandlerDto);
+
+    PageData<MockHandlerDto> queryEnableHandlerList(PageParam pageParam);
 }

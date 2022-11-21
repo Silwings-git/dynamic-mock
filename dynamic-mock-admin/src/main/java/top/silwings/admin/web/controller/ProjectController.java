@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
@@ -57,12 +58,13 @@ public class ProjectController {
     }
 
     @PostMapping("/query")
-    @PermissionLimit(adminUser = true)
+    @PermissionLimit
     @ApiOperation(value = "分页查询项目信息")
     public PageResult<ProjectResult> query(@RequestBody final QueryProjectParam param) {
 
-        final PageData<Project> projectPageData = this.projectService.query(param.getProjectName(), param);
+        final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermission();
 
+        final PageData<Project> projectPageData = this.projectService.query(projectIdList, param.getProjectName(), param);
         final List<ProjectResult> projectResultList = projectPageData.getList().stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());

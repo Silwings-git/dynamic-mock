@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.repository.MockHandlerRepository;
+import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.dto.MockHandlerDto;
@@ -20,14 +20,14 @@ import top.silwings.core.model.dto.MockHandlerDto;
 @SpringBootApplication(scanBasePackages = {"top.silwings.core", "top.silwings.admin"})
 public class DynamicMockAdminApplication implements ApplicationRunner {
 
-    private final MockHandlerRepository mockHandlerRepository;
+    private final MockHandlerService mockHandlerService;
 
     private final MockHandlerFactory mockHandlerFactory;
 
     private final MockHandlerManager mockHandlerManager;
 
-    public DynamicMockAdminApplication(final MockHandlerRepository mockHandlerRepository, final MockHandlerFactory mockHandlerFactory, final MockHandlerManager mockHandlerManager) {
-        this.mockHandlerRepository = mockHandlerRepository;
+    public DynamicMockAdminApplication(final MockHandlerService mockHandlerService, final MockHandlerFactory mockHandlerFactory, final MockHandlerManager mockHandlerManager) {
+        this.mockHandlerService = mockHandlerService;
         this.mockHandlerFactory = mockHandlerFactory;
         this.mockHandlerManager = mockHandlerManager;
     }
@@ -46,7 +46,7 @@ public class DynamicMockAdminApplication implements ApplicationRunner {
         long total = -1;
 
         do {
-            final PageData<MockHandlerDto> pageData = this.mockHandlerRepository.queryEnableHandlerList(PageParam.of(1, 200));
+            final PageData<MockHandlerDto> pageData = this.mockHandlerService.queryEnableHandlerList(PageParam.of(1, 200));
             if (total < 0) {
                 total = pageData.getTotal();
             }

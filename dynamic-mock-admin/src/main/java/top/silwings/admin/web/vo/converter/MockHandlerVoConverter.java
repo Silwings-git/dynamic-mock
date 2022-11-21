@@ -18,6 +18,7 @@ import top.silwings.core.model.dto.TaskInfoDto;
 import top.silwings.core.model.dto.TaskRequestDto;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -32,10 +33,11 @@ public class MockHandlerVoConverter {
 
     public MockHandlerDto convert(final MockHandlerInfoParam vo) {
         return MockHandlerDto.builder()
+                .projectId(Identity.from(vo.getProjectId()))
                 .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Integer.parseInt(vo.getHandlerId())))
                 .enableStatus(EnableStatus.DISABLE)
                 .name(vo.getName())
-                .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).collect(Collectors.toList()))
+                .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).filter(Objects::nonNull).collect(Collectors.toList()))
                 .requestUri(vo.getRequestUri())
                 .label(vo.getLabel())
                 .delayTime(vo.getDelayTime())
@@ -49,6 +51,7 @@ public class MockHandlerVoConverter {
 
         final MockHandlerInfoResult resultVo = new MockHandlerInfoResult();
 
+        resultVo.setProjectId(dto.getProjectId().stringValue());
         resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(dto.getHandlerId().stringValue());
         resultVo.setName(dto.getName());

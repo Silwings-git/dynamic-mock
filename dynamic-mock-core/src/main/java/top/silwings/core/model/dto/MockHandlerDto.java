@@ -26,6 +26,11 @@ import java.util.Map;
 public class MockHandlerDto {
 
     /**
+     * 项目id
+     */
+    private Identity projectId;
+
+    /**
      * 处理器id
      */
     private Identity handlerId;

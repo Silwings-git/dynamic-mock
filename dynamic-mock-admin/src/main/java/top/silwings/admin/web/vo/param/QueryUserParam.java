@@ -18,10 +18,13 @@ import top.silwings.admin.common.PageParam;
 @ApiModel(description = "分页查询用户列表参数")
 public class QueryUserParam extends PageParam {
 
-    @ApiModelProperty(value = "模糊查询key,支持用户名和用户账号", required = true, example = "Misaka Mikoto")
-    private String searchKey;
+    @ApiModelProperty(value = "用户名", example = "Misaka Mikoto")
+    private String username;
 
-    @ApiModelProperty(value = "角色", required = true, example = "1")
+    @ApiModelProperty(value = "账号", example = "Misaka Mikoto")
+    private String userAccount;
+
+    @ApiModelProperty(value = "角色", example = "1")
     private Integer role;
 
 }

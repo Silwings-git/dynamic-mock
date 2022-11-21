@@ -3,6 +3,7 @@ package top.silwings.admin.common;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.ibatis.session.RowBounds;
 
 /**
@@ -13,20 +14,22 @@ import org.apache.ibatis.session.RowBounds;
  * @Since
  **/
 @Getter
+@Setter
 @ApiModel(description = "分页参数")
 public class PageParam {
 
     private static final int MIN_PAGE_NUM = 1;
     private static final int MAX_PAGE_SIZE = 100;
+    private static final int DEFAULT_PAGE_SIZE = 5;
 
     @ApiModelProperty(value = "页数")
-    private final int pageNum;
+    private int pageNum;
 
     @ApiModelProperty(value = "每页数量")
-    private final int pageSize;
+    private int pageSize;
 
     public PageParam() {
-        this(MIN_PAGE_NUM, MAX_PAGE_SIZE);
+        this(MIN_PAGE_NUM, DEFAULT_PAGE_SIZE);
     }
 
     public PageParam(final int pageNum, final int pageSize) {

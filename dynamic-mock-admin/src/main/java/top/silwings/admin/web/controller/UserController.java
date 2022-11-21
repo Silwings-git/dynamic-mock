@@ -93,7 +93,7 @@ public class UserController {
     @ApiOperation(value = "分页查询用户列表")
     public PageResult<UserResult> query(@RequestBody final QueryUserParam param) {
 
-        final PageData<User> pageData = this.userService.query(param.getSearchKey(), param.getRole(), param);
+        final PageData<User> pageData = this.userService.query(param.getUsername(), param.getUserAccount(), param.getRole(), param);
 
         final List<UserResult> userResultList = pageData.getList().stream()
                 .map(UserResult::from)

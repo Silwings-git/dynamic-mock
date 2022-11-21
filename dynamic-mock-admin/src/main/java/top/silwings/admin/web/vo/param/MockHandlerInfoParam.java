@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -56,4 +58,10 @@ public class MockHandlerInfoParam {
     @ApiModelProperty(value = "Task信息集")
     private List<TaskInfoParam> tasks;
 
+    public void validate() {
+        CheckUtils.isNotBlank(this.projectId, () -> DynamicMockAdminException.from("ProjectId cannot be empty."));
+        CheckUtils.isNotBlank(this.name, () -> DynamicMockAdminException.from("Name cannot be empty."));
+        CheckUtils.isNotEmpty(this.httpMethods, () -> DynamicMockAdminException.from("HttpMethods cannot be empty."));
+        CheckUtils.isNotBlank(this.requestUri, () -> DynamicMockAdminException.from("RequestUri cannot be empty."));
+    }
 }
