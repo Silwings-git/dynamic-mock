@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,20 +21,18 @@ public class MockHandlerUniquePo {
 
     public static final String C_HANDLER_ID = "handlerId";
 
-    @Id
-    @GeneratedValue(generator = "JDBC")
-    private Long id;
-
     @Column(name = "handler_id")
-    private Long handlerId;
+    private Integer handlerId;
 
+    @Id
     @Column(name = "request_uri")
     private String requestUri;
 
+    @Id
     @Column(name = "http_method")
     private String httpMethod;
 
-    public static MockHandlerUniquePo of(final Long handlerId, final String requestUri, final String httpMethod) {
+    public static MockHandlerUniquePo of(final Integer handlerId, final String requestUri, final String httpMethod) {
         final MockHandlerUniquePo uniqueDao = new MockHandlerUniquePo();
         uniqueDao.setHandlerId(handlerId);
         uniqueDao.setRequestUri(requestUri);

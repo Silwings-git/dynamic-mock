@@ -32,7 +32,7 @@ public class MockHandlerVoConverter {
 
     public MockHandlerDto convert(final MockHandlerInfoParam vo) {
         return MockHandlerDto.builder()
-                .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Long.parseLong(vo.getHandlerId())))
+                .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Integer.parseInt(vo.getHandlerId())))
                 .enableStatus(EnableStatus.DISABLE)
                 .name(vo.getName())
                 .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).collect(Collectors.toList()))

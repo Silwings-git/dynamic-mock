@@ -2,7 +2,6 @@ package top.silwings.admin.service;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.common.enums.ProjectUserType;
 import top.silwings.admin.model.ProjectSummary;
 import top.silwings.core.common.Identity;
 
@@ -20,5 +19,4 @@ public interface ProjectService {
 
     PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);
 
-    void associateUser(Identity projectId, Identity userId, ProjectUserType type);
 }

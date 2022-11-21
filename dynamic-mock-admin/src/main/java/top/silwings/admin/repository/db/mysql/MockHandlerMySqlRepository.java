@@ -75,18 +75,18 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example updateCondition = new Example(MockHandlerPo.class);
         updateCondition.createCriteria()
-                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.intValue());
 
         this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
 
         // 删除唯一表该handler的数据,重新创建
         final Example deleteCondition = new Example(MockHandlerUniquePo.class);
         deleteCondition.createCriteria()
-                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteCondition);
 
         final List<MockHandlerUniquePo> uniqueList = mockHandlerDto.getHttpMethods().stream()
-                .map(method -> MockHandlerUniquePo.of(handlerId.longValue(), mockHandlerPo.getRequestUri(), method.name()))
+                .map(method -> MockHandlerUniquePo.of(handlerId.intValue(), mockHandlerPo.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
         this.mockHandlerUniqueMapper.insertList(uniqueList);
 
@@ -97,7 +97,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
     public MockHandlerDto find(final Identity handlerId) {
 
         final MockHandlerPo findCondition = new MockHandlerPo();
-        findCondition.setHandlerId(handlerId.longValue());
+        findCondition.setHandlerId(handlerId.intValue());
 
         final MockHandlerPo mockHandlerPo = this.mockHandlerMapper.selectOne(findCondition);
 
@@ -124,7 +124,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
         if (null != queryCondition.getHandlerIdList()) {
-            criteria.andIn(MockHandlerPo.C_HANDLER_ID, queryCondition.getHandlerIdList().stream().map(Identity::longValue).collect(Collectors.toList()));
+            criteria.andIn(MockHandlerPo.C_HANDLER_ID, queryCondition.getHandlerIdList().stream().map(Identity::intValue).collect(Collectors.toList()));
         }
 
         return this.queryPageData(condition, pageParam.toRowBounds());
@@ -136,12 +136,12 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example deleteHandlerCondition = new Example(MockHandlerPo.class);
         deleteHandlerCondition.createCriteria()
-                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerMapper.deleteByCondition(deleteHandlerCondition);
 
         final Example deleteUniqueCondition = new Example(MockHandlerUniquePo.class);
         deleteUniqueCondition.createCriteria()
-                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.intValue());
         final int row = this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
         return row > 0;
     }
@@ -154,7 +154,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
             return;
         }
 
-        final Set<Long> handlerIdSet = handlerIdList.stream().map(Identity::longValue).collect(Collectors.toSet());
+        final Set<Integer> handlerIdSet = handlerIdList.stream().map(Identity::intValue).collect(Collectors.toSet());
 
         final Example deleteHandlerCondition = new Example(MockHandlerPo.class);
         deleteHandlerCondition.createCriteria()
@@ -175,7 +175,7 @@ public class MockHandlerMySqlRepository implements MockHandlerRepository {
 
         final Example enableCondition = new Example(MockHandlerPo.class);
         enableCondition.createCriteria()
-                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.longValue());
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.intValue());
 
         this.mockHandlerMapper.updateByConditionSelective(mockHandler, enableCondition);
     }

@@ -1,18 +1,12 @@
 package top.silwings.admin.service.impl;
 
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.common.enums.ProjectUserType;
-import top.silwings.admin.events.DeleteMockHandlerEvent;
 import top.silwings.admin.events.DeleteProjectEvent;
-import top.silwings.admin.events.DeleteUserEvent;
-import top.silwings.admin.events.SaveMockHandlerEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.model.Project;
 import top.silwings.admin.model.ProjectSummary;
@@ -29,7 +23,7 @@ import top.silwings.core.utils.CheckUtils;
  * @Since
  **/
 @Service
-public class ProjectServiceImpl implements ProjectService, ApplicationListener<ApplicationEvent> {
+public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
 
@@ -57,9 +51,6 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
             final Project project = this.projectRepository.find(projectId, true, false);
 
             CheckUtils.isNotNull(project, () -> DynamicMockAdminException.from("Project does not exist."));
-            if (!UserHolder.isAdminUser()) {
-                CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
-            }
 
             this.projectRepository.update(projectId, newProject);
         }
@@ -75,10 +66,6 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
             return;
         }
 
-        if (!UserHolder.isAdminUser()) {
-            CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
-        }
-
         if (this.projectRepository.delete(projectId)) {
             this.applicationEventPublisher.publishEvent(DeleteProjectEvent.of(this, project));
         }
@@ -90,43 +77,4 @@ public class ProjectServiceImpl implements ProjectService, ApplicationListener<A
         return this.projectRepository.querySummary(projectName, pageParam);
     }
 
-    @Override
-    public void associateUser(final Identity projectId, final Identity userId, final ProjectUserType type) {
-
-        final Project project = this.projectRepository.find(projectId, true, false);
-
-        CheckUtils.isNotNull(project, () -> DynamicMockAdminException.from("Project does not exist."));
-
-        // 管理员或项目管理员可关联用户
-        if (!UserHolder.isAdminUser()) {
-            CheckUtils.isTrue(this.projectRepository.isProjectAdmin(projectId, UserHolder.getUserId()), () -> DynamicMockAdminException.from("Insufficient permissions."));
-        }
-
-        this.projectRepository.createProjectUser(projectId, userId, type);
-    }
-
-    @Override
-    public void onApplicationEvent(final ApplicationEvent event) {
-
-        if (event instanceof DeleteUserEvent) {
-
-            this.projectRepository.deleteProjectUserByUserId(((DeleteUserEvent) event).getUser().getUserId());
-
-        } else if (event instanceof DeleteMockHandlerEvent) {
-
-            this.projectRepository.deleteProjectHandlerByHandlerId(((DeleteMockHandlerEvent) event).getHandlerId());
-
-        } else if (event instanceof SaveMockHandlerEvent) {
-
-            final SaveMockHandlerEvent saveMockHandlerEvent = (SaveMockHandlerEvent) event;
-            final Identity projectId = saveMockHandlerEvent.getProjectId();
-            if (null != projectId) {
-                final Identity handlerId = saveMockHandlerEvent.getHandlerId();
-                // 删除相关的handler关系重新创建
-                this.projectRepository.deleteProjectHandlerByHandlerId(handlerId);
-                this.projectRepository.createProjectHandler(projectId, handlerId);
-            }
-
-        }
-    }
 }

@@ -2,7 +2,6 @@ package top.silwings.admin.repository;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.common.enums.ProjectUserType;
 import top.silwings.admin.model.Project;
 import top.silwings.admin.model.ProjectSummary;
 import top.silwings.core.common.Identity;
@@ -21,17 +20,8 @@ public interface ProjectRepository {
 
     Project find(Identity projectId, final boolean findUser, final boolean findHandler);
 
-    boolean isProjectAdmin(Identity projectId, Identity userId);
-
     boolean delete(Identity projectId);
 
     PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);
 
-    void createProjectUser(Identity projectId, Identity userId, ProjectUserType type);
-
-    void deleteProjectUserByUserId(Identity userId);
-
-    void deleteProjectHandlerByHandlerId(Identity handlerId);
-
-    void createProjectHandler(Identity projectId, Identity handlerId);
 }

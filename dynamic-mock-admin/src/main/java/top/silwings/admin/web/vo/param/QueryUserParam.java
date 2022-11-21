@@ -21,4 +21,7 @@ public class QueryUserParam extends PageParam {
     @ApiModelProperty(value = "模糊查询key,支持用户名和用户账号", required = true, example = "Misaka Mikoto")
     private String searchKey;
 
+    @ApiModelProperty(value = "角色", required = true, example = "1")
+    private Integer role;
+
 }

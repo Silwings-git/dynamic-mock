@@ -1,15 +1,11 @@
 package top.silwings.admin.service.impl;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.events.DeleteMockHandlerEvent;
-import top.silwings.admin.events.DeleteProjectEvent;
 import top.silwings.admin.events.SaveMockHandlerEvent;
-import top.silwings.admin.model.Project;
-import top.silwings.admin.model.ProjectMockHandler;
 import top.silwings.admin.repository.MockHandlerRepository;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
@@ -20,9 +16,6 @@ import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.dto.MockHandlerDto;
 import top.silwings.core.model.dto.QueryConditionDto;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * @ClassName MockHandlerApplication
  * @Description
@@ -31,7 +24,7 @@ import java.util.stream.Collectors;
  * @Since
  **/
 @Service
-public class MockHandlerServiceImpl implements MockHandlerService, ApplicationListener<DeleteProjectEvent> {
+public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerRepository mockHandlerRepository;
 
@@ -97,17 +90,5 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
             this.mockHandlerManager.unregisterHandler(handlerId);
         }
-    }
-
-    @Override
-    public void onApplicationEvent(final DeleteProjectEvent event) {
-
-        final Project project = event.getProject();
-
-        final Set<Identity> handlerIdSet = project.getProjectMockHandlerList().stream()
-                .map(ProjectMockHandler::getHandlerId)
-                .collect(Collectors.toSet());
-
-        this.mockHandlerRepository.delete(handlerIdSet);
     }
 }

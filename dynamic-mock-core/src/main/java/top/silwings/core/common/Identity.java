@@ -26,18 +26,18 @@ public class Identity {
     /**
      * 唯一标识符
      */
-    private final long id;
+    private final int id;
 
-    public Identity(final long id) {
+    public Identity(final int id) {
         this.id = id;
     }
 
-    public static Identity from(final Long id) {
+    public static Identity from(final Integer id) {
         return new Identity(Objects.requireNonNull(id));
     }
 
     public static Identity from(final String id) {
-        return Identity.from(Long.parseLong(id));
+        return Identity.from(Integer.parseInt(id));
     }
 
 
@@ -59,12 +59,12 @@ public class Identity {
         return this.stringValue();
     }
 
-    public long longValue() {
+    public int intValue() {
         return this.id;
     }
 
     public String stringValue() {
-        return String.valueOf(this.longValue());
+        return String.valueOf(this.intValue());
     }
 
     /**

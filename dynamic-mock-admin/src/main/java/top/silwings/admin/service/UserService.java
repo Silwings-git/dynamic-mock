@@ -15,12 +15,12 @@ import top.silwings.core.common.Identity;
 public interface UserService {
     void create(String username, String userAccount, String password, int role);
 
-    void update(Identity userId, String username, String password, int role);
+    void updateById(Identity userId, String username, String password, int role);
 
     void changePassword(String oldPassword, String newPassword);
 
     void deleteUser(Identity userId);
 
-    PageData<User> query(String searchKey, PageParam param);
+    PageData<User> query(String searchKey, Integer role, PageParam pageParam);
 
 }

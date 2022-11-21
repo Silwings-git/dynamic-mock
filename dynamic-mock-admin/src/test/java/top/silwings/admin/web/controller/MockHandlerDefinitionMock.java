@@ -36,7 +36,7 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
-                .handlerId(Identity.from(random.nextLong()))
+                .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
         return definition;
     }

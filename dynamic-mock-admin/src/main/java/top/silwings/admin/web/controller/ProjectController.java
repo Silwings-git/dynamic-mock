@@ -14,10 +14,8 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.common.enums.ProjectUserType;
 import top.silwings.admin.model.ProjectSummary;
 import top.silwings.admin.service.ProjectService;
-import top.silwings.admin.web.vo.param.AssociateUserParam;
 import top.silwings.admin.web.vo.param.SaveProjectParam;
 import top.silwings.admin.web.vo.result.ProjectResult;
 import top.silwings.core.common.Identity;
@@ -82,20 +80,6 @@ public class ProjectController {
                 .collect(Collectors.toList());
 
         return PageResult.ok(projectResultList, projectPageData.getTotal());
-    }
-
-    @PostMapping("/associate")
-    @PermissionLimit
-    @ApiOperation(value = "关联项目人员")
-    public Result<Void> associateUser(@RequestBody final AssociateUserParam param) {
-
-        param.validate();
-
-        final ProjectUserType type = ProjectUserType.valueOfCode(param.getType());
-
-        this.projectService.associateUser(Identity.from(param.getProjectId()), Identity.from(param.getUserId()), type);
-
-        return Result.ok();
     }
 
 }

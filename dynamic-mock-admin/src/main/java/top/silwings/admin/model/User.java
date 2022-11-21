@@ -57,7 +57,7 @@ public class User {
     public UserPo toUser() {
         final UserPo userPo = new UserPo();
         if (null != this.userId) {
-            userPo.setUserId(this.userId.longValue());
+            userPo.setUserId(this.userId.intValue());
         }
         userPo.setUsername(this.username);
         userPo.setUserAccount(this.userAccount);

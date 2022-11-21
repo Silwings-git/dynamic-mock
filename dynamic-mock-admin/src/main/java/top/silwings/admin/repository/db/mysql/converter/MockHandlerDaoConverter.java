@@ -31,7 +31,7 @@ public class MockHandlerDaoConverter {
     public MockHandlerPo convert(final MockHandlerDto mockHandlerDto) {
 
         final MockHandlerPo dao = new MockHandlerPo();
-        dao.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::longValue));
+        dao.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::intValue));
         dao.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
         dao.setName(mockHandlerDto.getName());
         if (CollectionUtils.isNotEmpty(mockHandlerDto.getHttpMethods())) {
