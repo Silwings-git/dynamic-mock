@@ -110,7 +110,7 @@ public class MockHandler {
         }
 
         if (null == mockResponse) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("No response available!");
         }
 
         return mockResponse
