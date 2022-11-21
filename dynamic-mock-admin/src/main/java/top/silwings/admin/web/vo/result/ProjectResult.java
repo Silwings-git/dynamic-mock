@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.admin.model.ProjectSummary;
+import top.silwings.admin.model.Project;
 
 /**
  * @ClassName ProjectResult
@@ -27,7 +27,7 @@ public class ProjectResult {
     @ApiModelProperty(value = "基础uri", example = "/misaka")
     private String baseUri;
 
-    public static ProjectResult from(final ProjectSummary project) {
+    public static ProjectResult from(final Project project) {
 
         final ProjectResult projectResult = new ProjectResult();
         projectResult.setProjectId(project.getProjectId().stringValue());

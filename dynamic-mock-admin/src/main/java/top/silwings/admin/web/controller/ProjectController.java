@@ -2,24 +2,22 @@ package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
-import top.silwings.admin.common.PageParam;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.model.ProjectSummary;
+import top.silwings.admin.model.Project;
 import top.silwings.admin.service.ProjectService;
+import top.silwings.admin.web.vo.param.DeleteProjectParam;
+import top.silwings.admin.web.vo.param.QueryProjectParam;
 import top.silwings.admin.web.vo.param.SaveProjectParam;
 import top.silwings.admin.web.vo.result.ProjectResult;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,43 +41,45 @@ public class ProjectController {
     }
 
     @PostMapping("/save")
-    @PermissionLimit
+    @PermissionLimit(adminUser = true)
     @ApiOperation(value = "保存项目信息")
     public Result<Void> save(@RequestBody SaveProjectParam param) {
 
         param.validate();
 
-        this.projectService.save(ConvertUtils.getNoBlankOrDefault(param.getProjectId(), null, Identity::from),
-                param.getProjectName(),
-                param.getBaseUri());
+        if (StringUtils.isBlank(param.getProjectId())) {
+            this.projectService.create(param.getProjectName(), param.getBaseUri());
+        } else {
+            this.projectService.updateById(Identity.from(param.getProjectId()), param.getProjectName(), param.getBaseUri());
+        }
 
         return Result.ok();
     }
 
-    @PostMapping("/del/{projectId}")
-    @PermissionLimit
-    @ApiOperation(value = "删除项目信息")
-    public Result<Void> delete(@PathVariable("projectId") final String projectId) {
-
-        this.projectService.delete(Identity.from(projectId));
-
-        return Result.ok();
-    }
-
-    @GetMapping("/query/{pageNum}/{pageSize}")
-    @PermissionLimit
+    @PostMapping("/query")
+    @PermissionLimit(adminUser = true)
     @ApiOperation(value = "分页查询项目信息")
-    public PageResult<ProjectResult> query(@PathVariable("pageNum") final Integer pageNum,
-                                           @PathVariable("pageSize") final Integer pageSize,
-                                           @RequestParam("projectName") final String projectName) {
+    public PageResult<ProjectResult> query(@RequestBody final QueryProjectParam param) {
 
-        final PageData<ProjectSummary> projectPageData = this.projectService.querySummary(projectName, PageParam.of(pageNum, pageSize));
+        final PageData<Project> projectPageData = this.projectService.query(param.getProjectName(), param);
 
         final List<ProjectResult> projectResultList = projectPageData.getList().stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());
 
         return PageResult.ok(projectResultList, projectPageData.getTotal());
+    }
+
+    @PostMapping("/del")
+    @PermissionLimit(adminUser = true)
+    @ApiOperation(value = "删除项目信息")
+    public Result<Void> delete(@RequestBody final DeleteProjectParam param) {
+
+        param.validate();
+
+        this.projectService.delete(Identity.from(param.getProjectId()));
+
+        return Result.ok();
     }
 
 }

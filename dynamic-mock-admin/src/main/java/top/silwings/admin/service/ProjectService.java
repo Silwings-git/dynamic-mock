@@ -2,7 +2,7 @@ package top.silwings.admin.service;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.model.ProjectSummary;
+import top.silwings.admin.model.Project;
 import top.silwings.core.common.Identity;
 
 /**
@@ -13,10 +13,11 @@ import top.silwings.core.common.Identity;
  * @Since
  **/
 public interface ProjectService {
-    void save(Identity projectId, String projectName, String baseUri);
+    void create(String projectName, String baseUri);
 
     void delete(Identity projectId);
 
-    PageData<ProjectSummary> querySummary(String projectName, PageParam pageParam);
+    PageData<Project> query(String projectName, PageParam pageParam);
 
+    void updateById(Identity projectId, String projectName, String baseUri);
 }

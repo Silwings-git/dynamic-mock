@@ -24,4 +24,6 @@ public interface MockHandlerService {
     PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus);
+
+    int findMockHandlerQuantityByProject(Identity projectId);
 }

@@ -2,11 +2,14 @@ package top.silwings.admin.service.impl;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.events.DeleteMockHandlerEvent;
 import top.silwings.admin.events.SaveMockHandlerEvent;
 import top.silwings.admin.repository.MockHandlerRepository;
+import top.silwings.admin.repository.db.mysql.mapper.MockHandlerMapper;
+import top.silwings.admin.repository.db.mysql.po.MockHandlerPo;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -34,11 +37,14 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public MockHandlerServiceImpl(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final ApplicationEventPublisher applicationEventPublisher) {
+    private final MockHandlerMapper mockHandlerMapper;
+
+    public MockHandlerServiceImpl(final MockHandlerRepository mockHandlerRepository, final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final ApplicationEventPublisher applicationEventPublisher, final MockHandlerMapper mockHandlerMapper) {
         this.mockHandlerRepository = mockHandlerRepository;
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerFactory = mockHandlerFactory;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.mockHandlerMapper = mockHandlerMapper;
     }
 
     public Identity save(final MockHandlerDto mockHandlerDto, final Identity projectId) {
@@ -91,4 +97,15 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             this.mockHandlerManager.unregisterHandler(handlerId);
         }
     }
+
+    @Override
+    public int findMockHandlerQuantityByProject(final Identity projectId) {
+
+        final Example example = new Example(MockHandlerPo.class);
+        example.createCriteria()
+                .andEqualTo(MockHandlerPo.C_PROJECT_ID, projectId.intValue());
+
+        return this.mockHandlerMapper.selectCountByCondition(example);
+    }
+
 }
