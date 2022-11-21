@@ -4,8 +4,8 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
-import top.silwings.core.model.dto.MockHandlerDto;
-import top.silwings.core.model.dto.QueryConditionDto;
+import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.QueryConditionDto;
 
 /**
  * @ClassName MockHandlerService

@@ -2,7 +2,7 @@ package top.silwings.admin.service;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 import top.silwings.core.common.Identity;
 
 /**
@@ -21,6 +21,8 @@ public interface UserService {
 
     void deleteUser(Identity userId);
 
-    PageData<User> query(String username, String userAccount, Integer role, PageParam pageParam);
+    PageData<UserDto> query(String username, String userAccount, Integer role, PageParam pageParam);
+
+    UserDto findByUserAccount(String userAccount, boolean required);
 
 }

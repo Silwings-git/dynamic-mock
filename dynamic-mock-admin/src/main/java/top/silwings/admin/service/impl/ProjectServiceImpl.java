@@ -6,9 +6,9 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.model.Project;
-import top.silwings.admin.repository.db.mysql.mapper.ProjectMapper;
-import top.silwings.admin.repository.db.mysql.po.ProjectPo;
+import top.silwings.admin.model.ProjectDto;
+import top.silwings.admin.repository.mapper.ProjectMapper;
+import top.silwings.admin.repository.po.ProjectPo;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.core.common.Identity;
@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PageData<Project> query(final List<Identity> projectIdList, final String projectName, final PageParam pageParam) {
+    public PageData<ProjectDto> query(final List<Identity> projectIdList, final String projectName, final PageParam pageParam) {
 
         final Example example = new Example(ProjectPo.class);
         final Example.Criteria criteria = example.createCriteria();
@@ -102,8 +102,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, pageParam.toRowBounds());
 
-        final List<Project> projectList = projectPoList.stream()
-                .map(Project::from)
+        final List<ProjectDto> projectList = projectPoList.stream()
+                .map(ProjectDto::from)
                 .collect(Collectors.toList());
 
         return PageData.of(projectList, total);

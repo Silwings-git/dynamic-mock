@@ -1,6 +1,6 @@
 package top.silwings.admin.service;
 
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface LoginService {
     String login(String userAccount, String password, final boolean ifRemember, HttpServletResponse response);
 
-    User ifLogin(HttpServletRequest request, HttpServletResponse response);
+    UserDto ifLogin(HttpServletRequest request, HttpServletResponse response);
 
     void logout(HttpServletRequest request, HttpServletResponse response);
 }

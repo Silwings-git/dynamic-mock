@@ -6,9 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
-import top.silwings.admin.web.vo.param.TaskInfoParam;
+import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "模拟处理器信息")
-public class MockHandlerInfoResult extends MockHandlerInfoParam {
+public class MockHandlerInfoResult {
 
     @ApiModelProperty(value = "项目id", example = "P1")
     private String projectId;
@@ -59,7 +58,7 @@ public class MockHandlerInfoResult extends MockHandlerInfoParam {
     private List<MockResponseInfoParam> responses;
 
     @ApiModelProperty(value = "Task信息集")
-    private List<TaskInfoParam> tasks;
+    private List<SaveTaskInfoParam> tasks;
 
     @ApiModelProperty(value = "最后更新时间")
     private Date updateTime;

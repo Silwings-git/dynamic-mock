@@ -56,7 +56,7 @@ public class MockHandlerInfoParam {
     private List<MockResponseInfoParam> responses;
 
     @ApiModelProperty(value = "Task信息集")
-    private List<TaskInfoParam> tasks;
+    private List<SaveTaskInfoParam> tasks;
 
     public void validate() {
         CheckUtils.isNotBlank(this.projectId, () -> DynamicMockAdminException.from("ProjectId cannot be empty."));

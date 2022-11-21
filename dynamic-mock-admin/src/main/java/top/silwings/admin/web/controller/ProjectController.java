@@ -12,7 +12,7 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.model.Project;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.param.DeleteProjectParam;
 import top.silwings.admin.web.vo.param.QueryProjectParam;
@@ -62,9 +62,9 @@ public class ProjectController {
     @ApiOperation(value = "分页查询项目信息")
     public PageResult<ProjectResult> query(@RequestBody final QueryProjectParam param) {
 
-        final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermission();
+        final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
 
-        final PageData<Project> projectPageData = this.projectService.query(projectIdList, param.getProjectName(), param);
+        final PageData<ProjectDto> projectPageData = this.projectService.query(projectIdList, param.getProjectName(), param);
         final List<ProjectResult> projectResultList = projectPageData.getList().stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());

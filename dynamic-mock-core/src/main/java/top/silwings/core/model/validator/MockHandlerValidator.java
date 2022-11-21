@@ -2,7 +2,7 @@ package top.silwings.core.model.validator;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.MockHandlerFactory;
-import top.silwings.core.model.dto.MockHandlerDto;
+import top.silwings.core.model.MockHandlerDto;
 
 /**
  * @ClassName MockHandlerValidator

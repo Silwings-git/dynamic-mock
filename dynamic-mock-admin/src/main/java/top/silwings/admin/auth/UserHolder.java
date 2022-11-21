@@ -31,7 +31,6 @@ public class UserHolder {
         return getUser(true).getUserId();
     }
 
-
     public static UserAuthInfo getUser(final boolean required) {
 
         final UserAuthInfo user = TL.get();

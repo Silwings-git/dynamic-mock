@@ -12,7 +12,7 @@ import top.silwings.admin.common.PageParam;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
-import top.silwings.core.model.dto.MockHandlerDto;
+import top.silwings.core.model.MockHandlerDto;
 
 @Slf4j
 @EnableSwagger2

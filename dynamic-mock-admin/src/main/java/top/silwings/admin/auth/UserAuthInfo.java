@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import top.silwings.admin.common.enums.Role;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
+import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,22 +23,34 @@ import java.util.List;
 @Builder
 public class UserAuthInfo {
 
+    /**
+     * 用户id
+     */
     private Identity userId;
 
+    /**
+     * 用户账号
+     */
     private String userAccount;
 
-    private String password;
-
+    /**
+     * 用户角色
+     * {@link Role}
+     */
     private int role;
 
-    private List<Identity> permission;
+    /**
+     * 用户权限
+     */
+    private List<Identity> permissionList;
 
-    public static UserAuthInfo from(final User user) {
+    public static UserAuthInfo from(final UserDto user) {
         return UserAuthInfo.builder()
                 .userId(user.getUserId())
                 .userAccount(user.getUserAccount())
-                .password(user.getPassword())
-                .role(user.getRole()).build();
+                .role(user.getRole())
+                .permissionList(ConvertUtils.getNoNullOrDefault(user.getPermissionList(), Collections.emptyList()))
+                .build();
     }
 
     public boolean isAdminUser() {
@@ -44,7 +58,9 @@ public class UserAuthInfo {
     }
 
     public void validPermission(final Identity projectId) {
-        CheckUtils.isIn(projectId, this.permission, () -> DynamicMockAdminException.from("Insufficient permissions."));
+        if (!isAdminUser()) {
+            CheckUtils.isIn(projectId, this.permissionList, () -> DynamicMockAdminException.from("Insufficient permissions."));
+        }
     }
 
 }

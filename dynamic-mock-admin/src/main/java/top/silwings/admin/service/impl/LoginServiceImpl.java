@@ -3,9 +3,9 @@ package top.silwings.admin.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.model.User;
-import top.silwings.admin.repository.UserRepository;
+import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
+import top.silwings.admin.service.UserService;
 import top.silwings.admin.utils.CookieUtils;
 import top.silwings.admin.utils.EncryptUtils;
 import top.silwings.core.utils.CheckUtils;
@@ -27,10 +27,10 @@ public class LoginServiceImpl implements LoginService {
 
     private static final String LOGIN_IDENTITY_KEY = "dynamic-mock-login-identity";
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public LoginServiceImpl(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public LoginServiceImpl(final UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from("Username or password is empty."));
         CheckUtils.isNotBlank(password, () -> DynamicMockAdminException.from("Username or password is empty."));
 
-        final User user = this.userRepository.findByUserAccount(userAccount);
+        final UserDto user = this.userService.findByUserAccount(userAccount, false);
         CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from("Username or password error."));
 
         final String loginPassword = EncryptUtils.encryptPassword(password);
@@ -52,21 +52,21 @@ public class LoginServiceImpl implements LoginService {
         return user.getUsername();
     }
 
-    private String makeToken(final User user) {
+    private String makeToken(final UserDto user) {
         final String tokenJson = JsonUtils.toJSONString(user);
         return new BigInteger(tokenJson.getBytes()).toString(16);
     }
 
     @Override
-    public User ifLogin(final HttpServletRequest request, final HttpServletResponse response) {
+    public UserDto ifLogin(final HttpServletRequest request, final HttpServletResponse response) {
 
         final String token = CookieUtils.getValue(request, LOGIN_IDENTITY_KEY);
 
         try {
-            final User cookieUser = this.parseToken(token);
+            final UserDto cookieUser = this.parseToken(token);
             if (cookieUser != null) {
 
-                final User dbUser = this.userRepository.findByUserAccount(cookieUser.getUserAccount());
+                final UserDto dbUser = this.userService.findByUserAccount(cookieUser.getUserAccount(), false);
 
                 if (null == dbUser) {
                     this.logout(request, response);
@@ -83,13 +83,14 @@ public class LoginServiceImpl implements LoginService {
         return null;
     }
 
-    private User parseToken(final String token) {
+    private UserDto parseToken(final String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
 
         final String tokenJson = new String(new BigInteger(token, 16).toByteArray());
-        return User.from(tokenJson);
+
+        return UserDto.from(tokenJson);
     }
 
     @Override

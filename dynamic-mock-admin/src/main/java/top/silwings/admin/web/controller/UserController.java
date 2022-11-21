@@ -11,7 +11,7 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.service.UserService;
 import top.silwings.admin.web.vo.param.ChangePasswordParam;
@@ -93,7 +93,7 @@ public class UserController {
     @ApiOperation(value = "分页查询用户列表")
     public PageResult<UserResult> query(@RequestBody final QueryUserParam param) {
 
-        final PageData<User> pageData = this.userService.query(param.getUsername(), param.getUserAccount(), param.getRole(), param);
+        final PageData<UserDto> pageData = this.userService.query(param.getUsername(), param.getUserAccount(), param.getRole(), param);
 
         final List<UserResult> userResultList = pageData.getList().stream()
                 .map(UserResult::from)

@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Task信息")
-public class TaskInfoParam {
+public class SaveTaskInfoParam {
 
     @ApiModelProperty(value = "任务名称", required = true, example = "会员卡支付回调")
     private String name;
@@ -41,6 +41,6 @@ public class TaskInfoParam {
     private Integer numberOfExecute;
 
     @ApiModelProperty(value = "请求信息", required = true)
-    private TaskRequestInfoParam request;
+    private SaveTaskRequestInfoParam request;
 
 }

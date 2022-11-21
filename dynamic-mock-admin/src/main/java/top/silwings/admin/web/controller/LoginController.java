@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.service.LoginService;
-import top.silwings.admin.web.vo.param.UserLoginParam;
+import top.silwings.admin.web.vo.param.LoginParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,11 +33,11 @@ public class LoginController {
 
     @PostMapping("/login")
     @ApiOperation(value = "登录")
-    public Result<String> login(@RequestBody UserLoginParam userLoginParam, final HttpServletResponse response) {
+    public Result<String> login(@RequestBody LoginParam loginParam, final HttpServletResponse response) {
 
-        userLoginParam.validate();
+        loginParam.validate();
 
-        final String username = this.loginService.login(userLoginParam.getUserAccount(), userLoginParam.getPassword(), Boolean.TRUE.equals(userLoginParam.getIfRemember()), response);
+        final String username = this.loginService.login(loginParam.getUserAccount(), loginParam.getPassword(), Boolean.TRUE.equals(loginParam.getIfRemember()), response);
 
         return Result.ok(username);
     }

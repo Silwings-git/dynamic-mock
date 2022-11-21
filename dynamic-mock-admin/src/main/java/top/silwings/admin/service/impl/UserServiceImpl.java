@@ -1,9 +1,6 @@
 package top.silwings.admin.service.impl;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -12,10 +9,9 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.model.User;
-import top.silwings.admin.repository.UserRepository;
-import top.silwings.admin.repository.db.mysql.mapper.UserMapper;
-import top.silwings.admin.repository.db.mysql.po.UserPo;
+import top.silwings.admin.model.UserDto;
+import top.silwings.admin.repository.mapper.UserMapper;
+import top.silwings.admin.repository.po.UserPo;
 import top.silwings.admin.service.UserService;
 import top.silwings.admin.utils.EncryptUtils;
 import top.silwings.core.common.Identity;
@@ -35,17 +31,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-
     private final UserMapper userMapper;
 
-
-    private final ApplicationEventPublisher applicationEventPublisher;
-
-    public UserServiceImpl(final UserRepository userRepository, final UserMapper userMapper, final ApplicationEventPublisher applicationEventPublisher) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(final UserMapper userMapper) {
         this.userMapper = userMapper;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -85,9 +74,7 @@ public class UserServiceImpl implements UserService {
 
         final UserAuthInfo userAuthInfo = UserHolder.getUser();
 
-        final UserPo user = this.findByUserAccount(userAuthInfo.getUserAccount());
-
-        CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from("The user account does not exist."));
+        final UserDto user = this.findByUserAccount(userAuthInfo.getUserAccount(), true);
 
         CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), () -> DynamicMockAdminException.from("Original password error."));
 
@@ -102,22 +89,28 @@ public class UserServiceImpl implements UserService {
         this.userMapper.updateByConditionSelective(pswUser, example);
     }
 
-    private UserPo findByUserAccount(final String userAccount) {
+    /**
+     * 根据用户账户查询用户信息
+     *
+     * @param userAccount 用户账户
+     * @param require     是否必须存在
+     * @return 用户信息.如果require为true却没有查询到将抛出异常
+     */
+    @Override
+    public UserDto findByUserAccount(final String userAccount, final boolean required) {
 
-        if (StringUtils.isBlank(userAccount)) {
-            return null;
-        }
+        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from("UserAccount cannot be empty."));
 
         final Example findCondition = new Example(UserPo.class);
         findCondition.createCriteria()
                 .andEqualTo(UserPo.C_USER_ACCOUNT, userAccount);
 
         final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, new RowBounds(0, 1));
-        if (CollectionUtils.isEmpty(userPoList)) {
-            return null;
+        if (required) {
+            CheckUtils.isNotEmpty(userPoList, () -> DynamicMockAdminException.from("User does not exist."));
         }
 
-        return userPoList.get(0);
+        return UserDto.from(userPoList.get(0));
     }
 
     @Override
@@ -133,7 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageData<User> query(final String username, final String userAccount, final Integer role, final PageParam pageParam) {
+    public PageData<UserDto> query(final String username, final String userAccount, final Integer role, final PageParam pageParam) {
 
         final Example queryCondition = new Example(UserPo.class);
         queryCondition.createCriteria()
@@ -148,8 +141,8 @@ public class UserServiceImpl implements UserService {
 
         final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(queryCondition, pageParam.toRowBounds());
 
-        final List<User> userList = userPoList.stream()
-                .map(User::from)
+        final List<UserDto> userList = userPoList.stream()
+                .map(UserDto::from)
                 .collect(Collectors.toList());
 
         return PageData.of(userList, total);

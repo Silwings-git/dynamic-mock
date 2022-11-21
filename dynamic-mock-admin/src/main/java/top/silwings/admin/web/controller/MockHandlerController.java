@@ -21,8 +21,8 @@ import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
-import top.silwings.core.model.dto.MockHandlerDto;
-import top.silwings.core.model.dto.QueryConditionDto;
+import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
 
 import java.util.List;

@@ -17,7 +17,7 @@ import top.silwings.core.utils.CheckUtils;
 @Getter
 @Setter
 @ApiModel(description = "登录参数")
-public class UserLoginParam {
+public class LoginParam {
 
     @ApiModelProperty(value = "账号", required = true, example = "userAccount")
     private String userAccount;

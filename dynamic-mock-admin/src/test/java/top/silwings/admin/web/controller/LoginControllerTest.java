@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.enums.Role;
+import top.silwings.admin.web.vo.param.LoginParam;
 import top.silwings.admin.web.vo.param.SaveUserParam;
-import top.silwings.admin.web.vo.param.UserLoginParam;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.JsonUtils;
 
@@ -78,7 +78,7 @@ public class LoginControllerTest {
 
 
     private void login() {
-        final UserLoginParam loginParam = new UserLoginParam();
+        final LoginParam loginParam = new LoginParam();
         loginParam.setUserAccount(this.user.getUserAccount());
         loginParam.setPassword(this.user.getPassword());
 

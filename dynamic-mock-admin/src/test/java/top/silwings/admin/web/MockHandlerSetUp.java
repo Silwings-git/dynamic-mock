@@ -4,8 +4,8 @@ import org.springframework.http.HttpMethod;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
-import top.silwings.admin.web.vo.param.TaskInfoParam;
-import top.silwings.admin.web.vo.param.TaskRequestInfoParam;
+import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
+import top.silwings.admin.web.vo.param.SaveTaskRequestInfoParam;
 import top.silwings.core.common.Identity;
 
 import java.util.Collections;
@@ -45,13 +45,13 @@ public class MockHandlerSetUp {
         return buildTestMockHandlerInfoVo(null);
     }
 
-    private static List<TaskInfoParam> buildTaskList() {
+    private static List<SaveTaskInfoParam> buildTaskList() {
 
         final Map<String, String> body = new HashMap<>();
         body.put("name", "${#search(name,customizeSpace)}");
         body.put("underAge", "${#search(age,customizeSpace)<18}");
 
-        final TaskRequestInfoParam requestInfoVo = TaskRequestInfoParam.builder()
+        final SaveTaskRequestInfoParam requestInfoVo = SaveTaskRequestInfoParam.builder()
                 .requestUrl("localhost:8888/test")
                 .httpMethod(HttpMethod.GET.name())
                 .headers(buildHeaders())
@@ -59,7 +59,7 @@ public class MockHandlerSetUp {
                 .uriVariables(new HashMap<>())
                 .build();
 
-        final TaskInfoParam mockTask = TaskInfoParam.builder()
+        final SaveTaskInfoParam mockTask = SaveTaskInfoParam.builder()
                 .name("TEST_MOCK_TASK")
                 .support(Collections.singletonList("${#search(age)==14&&#eq(#search(parameterMap.execute[0],requestInfo),1)}"))
                 .async(true)

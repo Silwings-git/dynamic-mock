@@ -1,4 +1,4 @@
-package top.silwings.core.model.dto;
+package top.silwings.core.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

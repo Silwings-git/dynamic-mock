@@ -2,9 +2,8 @@ package top.silwings.admin.model;
 
 import lombok.Builder;
 import lombok.Getter;
-import top.silwings.admin.repository.db.mysql.po.ProjectPo;
+import top.silwings.admin.repository.po.ProjectPo;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.ConvertUtils;
 
 /**
  * @ClassName Project
@@ -15,7 +14,7 @@ import top.silwings.core.utils.ConvertUtils;
  **/
 @Getter
 @Builder
-public class Project {
+public class ProjectDto {
 
     private Identity projectId;
 
@@ -23,21 +22,13 @@ public class Project {
 
     private String baseUri;
 
-    public static Project from(final ProjectPo projectPo) {
+    public static ProjectDto from(final ProjectPo projectPo) {
 
-        return Project.builder()
+        return ProjectDto.builder()
                 .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
                 .baseUri(projectPo.getBaseUri())
                 .build();
-    }
-
-    public ProjectPo toProject() {
-        final ProjectPo projectPo = new ProjectPo();
-        projectPo.setProjectId(ConvertUtils.getNoNullOrDefault(this.projectId, null, Identity::intValue));
-        projectPo.setProjectName(this.projectName);
-        projectPo.setBaseUri(this.baseUri);
-        return projectPo;
     }
 
 }

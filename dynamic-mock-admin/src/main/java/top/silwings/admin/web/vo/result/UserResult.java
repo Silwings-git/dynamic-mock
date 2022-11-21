@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 
 /**
  * @ClassName UserResult
@@ -33,7 +33,7 @@ public class UserResult {
     @ApiModelProperty(value = "角色名称", example = "123456789")
     private String roleName;
 
-    public static UserResult from(final User user) {
+    public static UserResult from(final UserDto user) {
 
         final UserResult userResult = new UserResult();
         userResult.setUserId(user.getUserId().stringValue());

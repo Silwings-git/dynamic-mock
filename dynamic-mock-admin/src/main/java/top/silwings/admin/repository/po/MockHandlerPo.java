@@ -1,4 +1,4 @@
-package top.silwings.admin.repository.db.mysql.po;
+package top.silwings.admin.repository.po;
 
 import lombok.Getter;
 import lombok.Setter;

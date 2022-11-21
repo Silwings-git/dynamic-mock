@@ -5,7 +5,7 @@ import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.model.dto.MockHandlerDto;
+import top.silwings.core.model.MockHandlerDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -6,7 +6,7 @@ import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.exceptions.UserAuthException;
-import top.silwings.admin.model.User;
+import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +50,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         if (needLogin) {
 
-            final User user = this.loginService.ifLogin(request, response);
+            final UserDto user = this.loginService.ifLogin(request, response);
 
             if (null == user) {
                 throw new UserAuthException("Please login first!");

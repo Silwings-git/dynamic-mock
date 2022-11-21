@@ -24,7 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Task请求信息")
-public class TaskRequestInfoParam {
+public class SaveTaskRequestInfoParam {
 
     @ApiModelProperty(value = "请求地址", required = true, example = "http://localhost:8080/misaka/mikoto")
     private String requestUrl;
