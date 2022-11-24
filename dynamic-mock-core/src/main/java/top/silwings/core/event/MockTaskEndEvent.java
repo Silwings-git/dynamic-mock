@@ -17,7 +17,7 @@ public class MockTaskEndEvent extends MockTaskEvent {
         super(source, mockTaskLog);
     }
 
-    public static MockTaskEndEvent from(final Object source, final MockTaskLogDto mockTaskLog) {
+    public static MockTaskEndEvent of(final Object source, final MockTaskLogDto mockTaskLog) {
         return new MockTaskEndEvent(source, mockTaskLog);
     }
 }

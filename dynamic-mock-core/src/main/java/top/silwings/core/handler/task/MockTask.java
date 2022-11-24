@@ -126,7 +126,7 @@ public class MockTask implements Runnable {
             final MockTaskLogDto mockTaskLog = startEvent.getMockTaskLog();
             mockTaskLog.setResponseInfo(JsonUtils.toJSONString(responseInfo, JsonInclude.Include.NON_NULL));
             mockTaskLog.setTiming(System.currentTimeMillis() - mockTaskLog.getRequestTime().getTime());
-            final MockTaskEndEvent endEvent = MockTaskEndEvent.from(startEvent.getSource(), mockTaskLog);
+            final MockTaskEndEvent endEvent = MockTaskEndEvent.of(startEvent.getSource(), mockTaskLog);
             DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(endEvent);
         };
     }
