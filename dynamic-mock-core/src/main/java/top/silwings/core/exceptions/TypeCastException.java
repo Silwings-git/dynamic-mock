@@ -12,4 +12,9 @@ public class TypeCastException extends DynamicMockException {
     public TypeCastException(final String message) {
         super(message);
     }
+
+    public static TypeCastException from(final String message) {
+        return new TypeCastException(message);
+    }
+
 }

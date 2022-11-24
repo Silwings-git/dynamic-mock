@@ -13,6 +13,11 @@ import java.util.Map;
  * @Since
  **/
 public class TypeUtils {
+
+    private TypeUtils() {
+        throw new AssertionError();
+    }
+
     public static Integer toInteger(Object value) {
         if (value == null || value instanceof Integer) {
             return (Integer) value;
@@ -38,11 +43,61 @@ public class TypeUtils {
             return (boolean) value ? 1 : 0;
         }
 
-        throw new TypeCastException("can not cast to integer");
+        throw TypeCastException.from("Can not cast to integer from" + value.getClass());
+    }
+
+    public static long toLong(final Object value) {
+
+        if (value == null) {
+            return 0L;
+        }
+
+        if (value instanceof Long) {
+            return (Long) value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+
+        if (value instanceof String) {
+            String str = (String) value;
+            if (str.isEmpty() || "null".equals(str)) {
+                return 0;
+            }
+            return Long.parseLong(str);
+        }
+
+        throw TypeCastException.from("Can not cast to long from " + value.getClass());
     }
 
 
-    public static BigDecimal toBigDecimal(Object value) {
+    public static double toDouble(final Object value) {
+
+        if (value == null) {
+            return 0D;
+        }
+
+        if (value instanceof Double) {
+            return (Double) value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        }
+
+        if (value instanceof String) {
+            String str = (String) value;
+            if (str.isEmpty() || "null".equals(str)) {
+                return 0D;
+            }
+            return Double.parseDouble(str);
+        }
+
+        throw TypeCastException.from("can not cast to decimal from" + value.getClass());
+    }
+
+    public static BigDecimal toBigDecimal(final Object value) {
         if (value == null || value instanceof BigDecimal) {
             return (BigDecimal) value;
         }
@@ -59,7 +114,7 @@ public class TypeUtils {
             return new BigDecimal(str);
         }
 
-        throw new TypeCastException("can not cast to decimal from " + value.getClass());
+        throw TypeCastException.from("Can not cast to decimal from " + value.getClass());
     }
 
     public static boolean toBooleanValue(Object value) {
@@ -89,7 +144,8 @@ public class TypeUtils {
             }
         }
 
-        throw new TypeCastException("can not cast to boolean");
+        throw TypeCastException.from("Can not cast to boolean from " + value.getClass());
     }
+
 
 }

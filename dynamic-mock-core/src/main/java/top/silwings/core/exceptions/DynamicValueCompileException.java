@@ -15,7 +15,7 @@ public class DynamicValueCompileException extends DynamicMockException {
         super(message);
     }
 
-    public static RuntimeException from(final String message) {
+    public static DynamicValueCompileException from(final String message) {
         return new DynamicValueCompileException(message);
     }
 

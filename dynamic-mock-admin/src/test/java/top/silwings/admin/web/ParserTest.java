@@ -30,7 +30,6 @@ import top.silwings.core.utils.JsonUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,55 +56,69 @@ public class ParserTest {
     @Test
     public void test001() {
 
-        String str;
-        str = "1+2";
-        str = "1+2*3";
-        str = "2+#search(age)";
-        str = "2+#search(age)*2";
-        str = "(2+#search(age))*2+2*4";
-        str = "#uuid(#search(1+1),#search(true))";
-        str = "#uuid(#search(1+1),#search(#search(true)))";
-        str = "1/2";
-        str = "2/1";
-        str = "2-1";
-        str = "1-2";
-        str = "-1";
-        str = "1--1";
-        str = "1--1-1";
-        str = "123,456";
-        str = "#search(#search(#search(#search(param)+#search(param))))";
-        str = "#search(#search(#search(#search(param)+(19-#search(paramA)))))";
-        str = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
-        str = "#search(abc.abc)";
-        str = "#isBlank(abc.abc)";
-        str = "#isBlank(abc.abc)";
-        str = "#isBlank()";
-        str = "#isBlank(\"\")";
-        str = "#isBlank() && true";
-        str = "#isBlank() && false";
-        str = "#search(#isBlank())";
-        str = "#search(10+#isBlank())";
-        str = "<2+2>";
-        str = "2+2";
-        str = "<2+2";
-        str = "#eq(#uuid(),1)";
-        str = "#eq(#search(abcMap.list[0],customizeSpace),-1)";
-        str = "#uuid(,,)";
-        str = "#uuid(,,false)";
-        str = "#uuid(,,true)";
-        str = "#uuid(,10)";
-        str = "#uuid(,10,true)";
+        final List<String> expressionList = new ArrayList<>();
+
+        expressionList.add("1+2");
+        expressionList.add("1+2*3");
+        expressionList.add("2+#search(age)");
+        expressionList.add("2+#search(age)*2");
+        expressionList.add("(2+#search(age))*2+2*4");
+        expressionList.add("#uuid(#search(1+1),#search(true))");
+        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
+        expressionList.add("1/2");
+        expressionList.add("2/1");
+        expressionList.add("2-1");
+        expressionList.add("1-2");
+        expressionList.add("-1");
+        expressionList.add("1--1");
+        expressionList.add("1--1-1");
+        expressionList.add("123,456");
+        expressionList.add("#search(#search(#search(#search(param)+#search(param))))");
+        expressionList.add("#search(#search(#search(#search(param)+(19-#search(paramA)))))");
+        expressionList.add("#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))");
+        expressionList.add("#search(abc.abc)");
+        expressionList.add("#isBlank(abc.abc)");
+        expressionList.add("#isBlank(abc.abc)");
+        expressionList.add("#isBlank()");
+        expressionList.add("#isBlank(\"\")");
+        expressionList.add("#isBlank() && true");
+        expressionList.add("#isBlank() && false");
+        expressionList.add("#search(#isBlank())");
+        expressionList.add("#search(10+#isBlank())");
+        expressionList.add("<2+2>");
+        expressionList.add("2+2");
+        expressionList.add("<2+2");
+        expressionList.add("#eq(#uuid(),1)");
+        expressionList.add("#eq(#search(abcMap.list[0],customizeSpace),-1)");
+        expressionList.add("#uuid(,,)");
+        expressionList.add("#uuid(,,false)");
+        expressionList.add("#uuid(,,true)");
+        expressionList.add("#uuid(,10)");
+        expressionList.add("#uuid(,10,true)");
         // 触发表达式解析异常
-        str = "#uuid(UserCode-,10,true)";
-        str = "#uuid(<UserCode->,10,true)";
-        str = "             10  + 1-1        == 11-1 ";
+//        expressionList.add("#uuid(UserCode-,10,true)");
+//        expressionList.add("#uuid(<UserCode->,10,true)");
 
+        expressionList.add("             10  + 1-1        == 11-1 ");
+        expressionList.add("#eq(#eq(1,2),false)");
+        expressionList.add("#eq(#eq(1,2),true)");
+        expressionList.add("#random()");
+        expressionList.add("#random(int)");
+        expressionList.add("#random(int,1)");
+        expressionList.add("#random(int,1,10)");
+        expressionList.add("#random(long)");
+        expressionList.add("#random(long,1)");
+        expressionList.add("#random(long,1,10)");
+        expressionList.add("#random(double)");
+        expressionList.add("#random(double,1)");
+        expressionList.add("#random(double,1.9999999999999999,2.000000000000001)");
+        expressionList.add("#random(boolean)");
+        expressionList.add("#random(boolean,1)");
+        expressionList.add("#random(boolean,1,2)");
 
-        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
         final HashMap<String, Object> abcMap = new HashMap<>();
-        abcMap.put("list", Arrays.asList(-1));
-
+        abcMap.put("list", Collections.singletonList(-1));
         final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
         requestContext.addCustomizeParam("paramA", -1);
         requestContext.addCustomizeParam("abcMap", abcMap);
@@ -116,6 +129,13 @@ public class ParserTest {
         requestContext.addCustomizeParam("true", 10);
         requestContext.addCustomizeParam("10", "御坂美琴");
         requestContext.addCustomizeParam("10true", "御坂美琴");
+
+        expressionList.forEach(exp -> this.extracted(exp, requestContext));
+    }
+
+    private void extracted(final String str, final RequestContext requestContext) {
+
+        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
 
         final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(requestContext)

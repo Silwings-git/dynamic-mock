@@ -1,5 +1,7 @@
 package top.silwings.core.exceptions;
 
+import java.util.function.Supplier;
+
 /**
  * @ClassName EasyMockException
  * @Description
@@ -25,7 +27,28 @@ public class DynamicMockException extends RuntimeException {
         super(cause);
     }
 
-    protected DynamicMockException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public static DynamicMockException from(final String message) {
+        return new DynamicMockException(message);
     }
+
+    public static Supplier<RuntimeException> supplier(final String message) {
+        return () -> DynamicMockException.from(message);
+    }
+
+    public static DynamicMockException of(final String message, final Throwable cause) {
+        return new DynamicMockException(message, cause);
+    }
+
+    public static Supplier<RuntimeException> supplier(final String message, final Throwable cause) {
+        return () -> DynamicMockException.of(message, cause);
+    }
+
+    public static DynamicMockException from(final Throwable cause) {
+        return new DynamicMockException(cause);
+    }
+
+    public static Supplier<RuntimeException> supplier(final Throwable cause) {
+        return () -> DynamicMockException.from(cause);
+    }
+
 }
