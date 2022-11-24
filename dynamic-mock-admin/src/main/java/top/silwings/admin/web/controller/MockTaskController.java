@@ -8,17 +8,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
+import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.common.UnregisterType;
 import top.silwings.admin.service.MockHandlerService;
+import top.silwings.admin.service.MockTaskLogService;
+import top.silwings.admin.web.vo.param.DeleteTaskLogParam;
+import top.silwings.admin.web.vo.param.QueryTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskParam;
 import top.silwings.admin.web.vo.param.UnregisterTaskParam;
+import top.silwings.admin.web.vo.result.MockTaskLogResult;
 import top.silwings.admin.web.vo.result.TaskResult;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.task.AutoCancelTask;
 import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockTaskLogDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +45,12 @@ public class MockTaskController {
 
     private final MockTaskManager mockTaskManager;
 
-    public MockTaskController(final MockHandlerService mockHandlerService, final MockTaskManager mockTaskManager) {
+    private final MockTaskLogService mockTaskLogService;
+
+    public MockTaskController(final MockHandlerService mockHandlerService, final MockTaskManager mockTaskManager, final MockTaskLogService mockTaskLogService) {
         this.mockHandlerService = mockHandlerService;
         this.mockTaskManager = mockTaskManager;
+        this.mockTaskLogService = mockTaskLogService;
     }
 
     @PostMapping("/query")
@@ -114,6 +123,43 @@ public class MockTaskController {
     private void validPermission(final Identity handlerId) {
         final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
         UserHolder.validPermission(projectId);
+    }
+
+
+    @PostMapping("/log/query")
+    @PermissionLimit
+    @ApiOperation(value = "查询任务日志列表")
+    public PageResult<MockTaskLogResult> queryTaskLog(@RequestBody final QueryTaskLogParam param) {
+
+        param.validate();
+
+        final Identity handlerId = Identity.from(param.getHandlerId());
+
+        this.validPermission(handlerId);
+
+        final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(handlerId, param.getName(), param);
+
+        final List<MockTaskLogResult> MockTaskLogResultList = pageData.getList().stream()
+                .map(MockTaskLogResult::from)
+                .collect(Collectors.toList());
+
+        return PageResult.ok(MockTaskLogResultList, pageData.getTotal());
+    }
+
+    @PostMapping("/log/del")
+    @PermissionLimit
+    @ApiOperation(value = "删除任务日志")
+    public Result<Void> delTaskLog(@RequestBody final DeleteTaskLogParam param) {
+
+        param.validate();
+
+        final Identity handlerId = Identity.from(param.getHandlerId());
+
+        this.validPermission(handlerId);
+
+        this.mockTaskLogService.delete(handlerId, Identity.from(param.getLogId()));
+
+        return Result.ok();
     }
 
 }

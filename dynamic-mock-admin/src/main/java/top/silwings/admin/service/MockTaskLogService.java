@@ -18,4 +18,6 @@ public interface MockTaskLogService {
     Identity updateByLogId(MockTaskLogDto mockTaskLog);
 
     PageData<MockTaskLogDto> query(Identity handlerId, String name, PageParam pageParam);
+
+    void delete(Identity handlerId, Identity logId);
 }
