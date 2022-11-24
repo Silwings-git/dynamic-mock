@@ -30,6 +30,6 @@ public class SaveProjectParam {
     private String baseUri;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.projectName, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "projectName"));
+        CheckUtils.isNotBlank(this.projectName, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectName"));
     }
 }

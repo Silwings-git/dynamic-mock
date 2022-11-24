@@ -24,6 +24,6 @@ public class DeleteProjectParam {
     private String projectId;
 
     public void validate() {
-        CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
+        CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
     }
 }

@@ -1,5 +1,7 @@
 package top.silwings.core.exceptions;
 
+import java.util.function.Supplier;
+
 /**
  * @ClassName DynamicValueCompileException
  * @Description
@@ -15,6 +17,10 @@ public class DynamicValueCompileException extends DynamicMockException {
 
     public static RuntimeException from(final String message) {
         return new DynamicValueCompileException(message);
+    }
+
+    public static Supplier<RuntimeException> supplier(final String message) {
+        return () -> DynamicValueCompileException.from(message);
     }
 
 }

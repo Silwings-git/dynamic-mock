@@ -3,6 +3,7 @@ package top.silwings.admin.exceptions;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * @ClassName DynamicMockAdminException
@@ -22,6 +23,14 @@ public class DynamicMockAdminException extends RuntimeException {
         super(errorCode.getCode());
         this.errorCode = Objects.requireNonNull(errorCode);
         this.args = args;
+    }
+
+    public static Supplier<RuntimeException> supplier(final ErrorCode errorCode) {
+        return () -> DynamicMockAdminException.from(errorCode);
+    }
+
+    public static Supplier<RuntimeException> supplier(final ErrorCode errorCode, final String arg) {
+        return () -> DynamicMockAdminException.of(errorCode, arg);
     }
 
     public static DynamicMockAdminException from(final ErrorCode errorCode) {

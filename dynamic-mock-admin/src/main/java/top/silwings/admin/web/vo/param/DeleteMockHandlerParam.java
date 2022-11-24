@@ -24,7 +24,7 @@ public class DeleteMockHandlerParam {
     private String handlerId;
 
     public void validate() {
-        CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
+        CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
     }
 
 }

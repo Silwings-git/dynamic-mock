@@ -37,14 +37,14 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String login(final String userAccount, final String password, final boolean ifRemember, final HttpServletResponse response) {
 
-        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
-        CheckUtils.isNotBlank(password, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
+        CheckUtils.isNotBlank(userAccount, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
+        CheckUtils.isNotBlank(password, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final UserDto user = this.userService.findByUserAccount(userAccount, false);
-        CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
+        CheckUtils.isNotNull(user, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final String loginPassword = EncryptUtils.encryptPassword(password);
-        CheckUtils.isEquals(user.getPassword(), loginPassword, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
+        CheckUtils.isEquals(user.getPassword(), loginPassword, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final String userAuthToken = this.makeToken(user);
 

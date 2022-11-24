@@ -29,10 +29,10 @@ public class QueryTaskParam {
 
     public void validate() {
 
-        CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
+        CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
 
         if (StringUtils.isNotBlank(this.handlerId)) {
-            CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
+            CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
         }
     }
 

@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         final UserDto user = this.findByUserAccount(userAuthInfo.getUserAccount(), true);
 
-        CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), () -> DynamicMockAdminException.from(ErrorCode.USER_OLD_PASSWORD_ERROR));
+        CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), DynamicMockAdminException.supplier(ErrorCode.USER_OLD_PASSWORD_ERROR));
 
         final UserPo pswUser = UserPo.builder()
                 .password(EncryptUtils.encryptPassword(newPassword))
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByUserAccount(final String userAccount, final boolean required) {
 
-        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "userAccount"));
+        CheckUtils.isNotBlank(userAccount, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "userAccount"));
 
         final Example findCondition = new Example(UserPo.class);
         findCondition.createCriteria()
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
         final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, new RowBounds(0, 1));
         if (required) {
-            CheckUtils.isNotEmpty(userPoList, () -> DynamicMockAdminException.from(ErrorCode.USER_NOT_EXIST));
+            CheckUtils.isNotEmpty(userPoList, DynamicMockAdminException.supplier(ErrorCode.USER_NOT_EXIST));
         }
 
         return UserDto.from(userPoList.get(0));
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(final Identity userId) {
 
-        CheckUtils.isEquals(UserHolder.getUserId(), userId, () -> DynamicMockAdminException.from(ErrorCode.USER_UPDATE_LOGIN_USER_LIMIT));
+        CheckUtils.isEquals(UserHolder.getUserId(), userId, DynamicMockAdminException.supplier(ErrorCode.USER_UPDATE_LOGIN_USER_LIMIT));
 
         final Example deleteCondition = new Example(UserPo.class);
         deleteCondition.createCriteria()

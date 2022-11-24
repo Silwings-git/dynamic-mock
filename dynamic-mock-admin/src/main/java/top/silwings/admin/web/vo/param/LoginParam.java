@@ -30,7 +30,7 @@ public class LoginParam {
     private Boolean remember;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.userAccount, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "userAccount"));
-        CheckUtils.isNotBlank(this.password, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "password"));
+        CheckUtils.isNotBlank(this.userAccount, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "userAccount"));
+        CheckUtils.isNotBlank(this.password, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "password"));
     }
 }

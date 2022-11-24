@@ -70,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 项目下包含Mock处理器时不允许删除
         final int handlerQuantity = this.mockHandlerService.findMockHandlerQuantityByProject(projectId);
-        CheckUtils.isTrue(handlerQuantity <= 0, () -> DynamicMockAdminException.from(ErrorCode.PROJECT_PROHIBIT_DELETION));
+        CheckUtils.isTrue(handlerQuantity <= 0, DynamicMockAdminException.supplier(ErrorCode.PROJECT_PROHIBIT_DELETION));
 
         final Example example = new Example(ProjectPo.class);
         example.createCriteria()

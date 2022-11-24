@@ -45,7 +45,7 @@ public class EqualsFunctionFactory implements FunctionFactory {
         }
 
         public static EqualsFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasMinimumSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("The Equals function requires at least 2 arguments."));
+            CheckUtils.hasMinimumSize(dynamicValueList, 2, DynamicValueCompileException.supplier("The Equals function requires at least 2 arguments."));
             return new EqualsFunction(dynamicValueList);
         }
 

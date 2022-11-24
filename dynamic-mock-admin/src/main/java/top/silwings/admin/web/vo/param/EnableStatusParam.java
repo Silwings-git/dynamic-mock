@@ -28,7 +28,7 @@ public class EnableStatusParam {
     private Integer enableStatus;
 
     public void validate() {
-        CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
-        CheckUtils.isNotNull(EnableStatus.valueOfCode(this.enableStatus), () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "enableStatus"));
+        CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+        CheckUtils.isNotNull(EnableStatus.valueOfCode(this.enableStatus), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "enableStatus"));
     }
 }

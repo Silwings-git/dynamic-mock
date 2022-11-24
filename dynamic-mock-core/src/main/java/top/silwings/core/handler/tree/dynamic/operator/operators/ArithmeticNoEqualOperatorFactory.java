@@ -66,7 +66,7 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
         }
 
         public static ArithmeticNoEqualOperator of(final List<DynamicValue> dynamicValueList, final ArithmeticEqualOperatorFactory arithmeticEqualOperatorFactory) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("The operator `!=` requires 2 arguments."));
+            CheckUtils.hasEqualsSize(dynamicValueList, 2, DynamicValueCompileException.supplier("The operator `!=` requires 2 arguments."));
             return new ArithmeticNoEqualOperator(dynamicValueList, arithmeticEqualOperatorFactory);
         }
 

@@ -58,7 +58,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
         }
 
         public static PageDataFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 4, () -> DynamicValueCompileException.from("The PageData function requires 4 arguments."));
+            CheckUtils.hasEqualsSize(dynamicValueList, 4, DynamicValueCompileException.supplier("The PageData function requires 4 arguments."));
             return new PageDataFunction(dynamicValueList);
         }
 

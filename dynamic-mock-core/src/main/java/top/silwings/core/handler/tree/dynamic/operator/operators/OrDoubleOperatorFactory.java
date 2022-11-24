@@ -59,7 +59,7 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
         }
 
         public static OrOperator from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 2, () -> DynamicValueCompileException.from("The operator `||` requires 2 arguments."));
+            CheckUtils.hasEqualsSize(dynamicValueList, 2, DynamicValueCompileException.supplier("The operator `||` requires 2 arguments."));
             return new OrOperator(dynamicValueList);
         }
 

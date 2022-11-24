@@ -38,18 +38,18 @@ public class UnregisterTaskParam {
 
     public void validate() {
         final UnregisterType type = UnregisterType.valueOfCode(this.unregisterType);
-        CheckUtils.isNotNull(type, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "unregisterType"));
+        CheckUtils.isNotNull(type, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "unregisterType"));
 
         if (UnregisterType.TASK.equals(type)) {
-            CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
-            CheckUtils.isNotBlank(this.taskCode, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "taskCode"));
+            CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+            CheckUtils.isNotBlank(this.taskCode, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "taskCode"));
         } else if (UnregisterType.MOCK_HANDLER.equals(type)) {
-            CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
+            CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
         } else {
-            CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
+            CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
         }
 
-        CheckUtils.isNotNull(this.interrupt, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "interrupt"));
+        CheckUtils.isNotNull(this.interrupt, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "interrupt"));
     }
 
 }

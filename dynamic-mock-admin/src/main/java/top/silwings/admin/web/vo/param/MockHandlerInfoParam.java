@@ -61,10 +61,10 @@ public class MockHandlerInfoParam {
     private List<SaveTaskInfoParam> tasks;
 
     public void validate() {
-        CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
-        CheckUtils.isNotBlank(this.name, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "name"));
-        CheckUtils.hasMinimumSize(this.httpMethods, 1, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "httpMethods"));
-        this.httpMethods.forEach(method -> CheckUtils.isNotNull(HttpMethod.resolve(method), () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "httpMethods")));
-        CheckUtils.isNotBlank(this.requestUri, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "requestUri"));
+        CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
+        CheckUtils.isNotBlank(this.name, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "name"));
+        CheckUtils.hasMinimumSize(this.httpMethods, 1, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "httpMethods"));
+        this.httpMethods.forEach(method -> CheckUtils.isNotNull(HttpMethod.resolve(method), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "httpMethods")));
+        CheckUtils.isNotBlank(this.requestUri, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "requestUri"));
     }
 }

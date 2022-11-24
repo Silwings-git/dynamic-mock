@@ -27,7 +27,7 @@ public class ChangePasswordParam {
     private String newPassword;
 
     public void validate() {
-        CheckUtils.minLength(this.oldPassword, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "oldPassword"));
-        CheckUtils.minLength(this.newPassword, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "newPassword"));
+        CheckUtils.minLength(this.oldPassword, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "oldPassword"));
+        CheckUtils.minLength(this.newPassword, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "newPassword"));
     }
 }

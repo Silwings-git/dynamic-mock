@@ -37,11 +37,11 @@ public class SaveUserParam {
     private Integer role;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.username, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "username"));
+        CheckUtils.isNotBlank(this.username, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "username"));
         if (StringUtils.isBlank(this.userId)) {
-            CheckUtils.minLength(this.userAccount, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "userAccount"));
-            CheckUtils.minLength(this.password, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "password"));
-            CheckUtils.isNotNull(this.role, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "role"));
+            CheckUtils.minLength(this.userAccount, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "userAccount"));
+            CheckUtils.minLength(this.password, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "password"));
+            CheckUtils.isNotNull(this.role, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "role"));
         }
     }
 }

@@ -60,7 +60,7 @@ public class UserAuthInfo {
 
     public void validPermission(final Identity projectId) {
         if (!isAdminUser()) {
-            CheckUtils.isIn(projectId, this.permissionList, () -> DynamicMockAdminException.from(ErrorCode.AUTH_INSUFFICIENT_PERMISSIONS));
+            CheckUtils.isIn(projectId, this.permissionList, DynamicMockAdminException.supplier(ErrorCode.AUTH_INSUFFICIENT_PERMISSIONS));
         }
     }
 

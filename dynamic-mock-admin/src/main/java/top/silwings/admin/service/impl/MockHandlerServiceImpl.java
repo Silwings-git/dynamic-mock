@@ -88,6 +88,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         final Identity handlerId = mockHandlerDto.getHandlerId();
 
         final MockHandlerPo mockHandlerPo = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        // 更新后的Mock Handler需要重新注册
+        mockHandlerPo.setEnableStatus(EnableStatus.DISABLE.code());
 
         final Example updateCondition = new Example(MockHandlerPo.class);
         updateCondition.createCriteria()
@@ -110,6 +112,9 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             log.error("Mock Handler唯一表插入数据失败.", e);
             throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
         }
+
+        // 更新成功后取消注册该handler
+        this.mockHandlerManager.unregisterHandler(handlerId);
 
         return handlerId;
     }
@@ -140,7 +145,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final List<MockHandlerPo> mockHandlerPoList = this.mockHandlerMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
 
-        CheckUtils.isNotEmpty(mockHandlerPoList, () -> DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_NOT_EXIST));
+        CheckUtils.isNotEmpty(mockHandlerPoList, DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_NOT_EXIST));
 
         return Identity.from(mockHandlerPoList.get(0).getProjectId());
     }

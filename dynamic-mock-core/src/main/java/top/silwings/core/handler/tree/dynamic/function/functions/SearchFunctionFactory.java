@@ -69,7 +69,7 @@ public class SearchFunctionFactory implements FunctionFactory {
         }
 
         public static SearchFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasMinimumSize(dynamicValueList, 1, () -> DynamicValueCompileException.from("The Search function requires at least 1 arguments."));
+            CheckUtils.hasMinimumSize(dynamicValueList, 1, DynamicValueCompileException.supplier("The Search function requires at least 1 arguments."));
             return new SearchFunction(dynamicValueList);
         }
 
