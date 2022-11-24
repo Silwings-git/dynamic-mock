@@ -66,20 +66,6 @@ public class FunctionDynamicValueFactory {
 
         private static final String REGEX = "^((#)(?<name>\\w+)\\()(?<params>.*)(\\))$";
 
-        public MethodInfo parse(final String expression) {
-            final Pattern compile = Pattern.compile(REGEX);
-            final Matcher matcher = compile.matcher(expression);
-
-            if (matcher.find()) {
-                return new MethodInfo(matcher.group("name"), matcher.group("params"));
-            }
-            throw new DynamicMockException("Function parsing failed: " + expression);
-        }
-
-        public boolean support(final String expression) {
-            return Pattern.compile(REGEX).matcher(expression).find() && isSymmetry(expression);
-        }
-
         private static boolean isSymmetry(final String expression) {
 
             // 优先级为1的右括号应有且仅有一个且位于最后
@@ -99,6 +85,20 @@ public class FunctionDynamicValueFactory {
 
             return true;
         }
+
+        public MethodInfo parse(final String expression) {
+            final Pattern compile = Pattern.compile(REGEX);
+            final Matcher matcher = compile.matcher(expression);
+
+            if (matcher.find()) {
+                return MethodInfo.of(matcher.group("name"), matcher.group("params"));
+            }
+            throw new DynamicMockException("Function parsing failed: " + expression);
+        }
+
+        public boolean support(final String expression) {
+            return Pattern.compile(REGEX).matcher(expression).find() && isSymmetry(expression);
+        }
     }
 
     @Getter
@@ -111,7 +111,7 @@ public class FunctionDynamicValueFactory {
             this.paramsExpression = paramsExpression;
         }
 
-        public static MethodInfo from(final String name, final String paramsExpression) {
+        public static MethodInfo of(final String name, final String paramsExpression) {
             return new MethodInfo(name, paramsExpression);
         }
     }

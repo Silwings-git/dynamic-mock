@@ -1,6 +1,7 @@
 package top.silwings.core.handler.task;
 
 import org.springframework.stereotype.Component;
+import top.silwings.core.common.Identity;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
@@ -30,8 +31,9 @@ public class MockTaskInfoFactory {
         this.jsonNodeParser = jsonNodeParser;
     }
 
-    public MockTaskInfo buildTask(final TaskInfoDto definition) {
+    public MockTaskInfo buildTask(final Identity handlerId, final TaskInfoDto definition) {
         return MockTaskInfo.builder()
+                .handlerId(handlerId)
                 .name(definition.getName())
                 .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
                 .async(definition.isAsync())
@@ -40,4 +42,5 @@ public class MockTaskInfoFactory {
                 .mockTaskInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getRequest())))
                 .build();
     }
+
 }

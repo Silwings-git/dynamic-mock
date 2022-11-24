@@ -2,7 +2,7 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
@@ -39,6 +39,16 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
         return ArithmeticNoEqualOperator.of(dynamicValueList, this.arithmeticEqualOperatorFactory);
     }
 
+    @Override
+    public int getPriority() {
+        return OperatorType.COMPARISON.getPriority();
+    }
+
+    @Override
+    public String getOperatorSymbol() {
+        return SYMBOL;
+    }
+
     /**
      * @ClassName ArithmeticNoEqualExtOperation
      * @Description 数值不等
@@ -61,8 +71,8 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
-            return Boolean.FALSE.equals(this.arithmeticEqualOperator.interpret(context, childNodeValueList));
+        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+            return Boolean.FALSE.equals(this.arithmeticEqualOperator.interpret(mockHandlerContext, childNodeValueList));
         }
 
         @Override
@@ -74,15 +84,5 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
         protected String symbol() {
             return SYMBOL;
         }
-    }
-
-    @Override
-    public int getPriority() {
-        return OperatorType.COMPARISON.getPriority();
-    }
-
-    @Override
-    public String getOperatorSymbol() {
-        return SYMBOL;
     }
 }

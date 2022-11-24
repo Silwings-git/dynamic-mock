@@ -37,7 +37,7 @@ public class MockHandlerManager {
     }
 
     public boolean match(final String requestUri, final HttpMethod httpMethod) {
-        return null != this.filter(RequestInfo.from(requestUri, httpMethod));
+        return null != this.filter(RequestInfo.of(requestUri, httpMethod));
     }
 
     private MockHandler filter(final RequestInfo requestInfo) {
@@ -51,9 +51,9 @@ public class MockHandlerManager {
         return null;
     }
 
-    public ResponseEntity<Object> mock(final Context context) {
+    public ResponseEntity<Object> mock(final MockHandlerContext mockHandlerContext) {
 
-        final RequestInfo requestInfo = RequestInfo.from(context);
+        final RequestInfo requestInfo = RequestInfo.from(mockHandlerContext);
 
         final MockHandler mockHandler = this.filter(requestInfo);
 
@@ -61,7 +61,7 @@ public class MockHandlerManager {
             throw new NoMockHandlerFoundException(requestInfo);
         }
 
-        return mockHandler.mock(context);
+        return mockHandler.mock(mockHandlerContext);
     }
 
 }

@@ -12,7 +12,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
-import top.silwings.admin.common.enums.Role;
+import top.silwings.admin.common.Role;
 import top.silwings.admin.web.vo.param.LoginParam;
 import top.silwings.admin.web.vo.param.SaveUserParam;
 import top.silwings.core.common.Identity;
@@ -71,12 +71,6 @@ public class LoginControllerTest {
         System.out.println("o = " + o);
     }
 
-    @Data
-    public static class User {
-        private Identity userId;
-    }
-
-
     private void login() {
         final LoginParam loginParam = new LoginParam();
         loginParam.setUserAccount(this.user.getUserAccount());
@@ -87,6 +81,11 @@ public class LoginControllerTest {
         this.loginController.login(loginParam, mockHttpServletResponse);
 
         Assert.assertNotNull(mockHttpServletResponse.getCookie("dynamic-mock-login-identity"));
+    }
+
+    @Data
+    public static class User {
+        private Identity userId;
     }
 
 

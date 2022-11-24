@@ -31,15 +31,14 @@ import java.util.stream.Collectors;
 public class RequestContext {
 
     /**
+     * HTTP请求信息
+     */
+    private final RequestInfo requestInfo;
+    /**
      * 自定义空间
      */
     @Setter
     private Map<String, Object> customizeSpace;
-
-    /**
-     * HTTP请求信息
-     */
-    private final RequestInfo requestInfo;
 
     public static RequestContext from(final HttpServletRequest request) {
         return RequestContext.builder()

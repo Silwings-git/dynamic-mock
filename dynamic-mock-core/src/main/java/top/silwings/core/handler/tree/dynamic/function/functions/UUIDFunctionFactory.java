@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
@@ -56,7 +56,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public String doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public String doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             if (this.getNodeCount() > 0 && childNodeValueList.size() != this.getNodeCount()) {
                 throw new DynamicMockException("Parameter incorrectly of `uuid` function");
             }

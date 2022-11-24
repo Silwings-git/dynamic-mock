@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
@@ -47,7 +47,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             return CollectionUtils.isEmpty(childNodeValueList)
                     || null == childNodeValueList.get(0)
                     || (childNodeValueList.get(0) instanceof String

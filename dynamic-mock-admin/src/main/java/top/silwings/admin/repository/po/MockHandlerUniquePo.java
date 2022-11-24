@@ -21,23 +21,24 @@ public class MockHandlerUniquePo {
 
     public static final String C_HANDLER_ID = "handlerId";
 
+    @Id
+    private Integer id;
+
     @Column(name = "handler_id")
     private Integer handlerId;
 
-    @Id
     @Column(name = "request_uri")
     private String requestUri;
 
-    @Id
     @Column(name = "http_method")
     private String httpMethod;
 
     public static MockHandlerUniquePo of(final Integer handlerId, final String requestUri, final String httpMethod) {
-        final MockHandlerUniquePo uniqueDao = new MockHandlerUniquePo();
-        uniqueDao.setHandlerId(handlerId);
-        uniqueDao.setRequestUri(requestUri);
-        uniqueDao.setHttpMethod(httpMethod);
-        return uniqueDao;
+        final MockHandlerUniquePo uniquePo = new MockHandlerUniquePo();
+        uniquePo.setHandlerId(handlerId);
+        uniquePo.setRequestUri(requestUri);
+        uniquePo.setHttpMethod(httpMethod);
+        return uniquePo;
     }
 
 }

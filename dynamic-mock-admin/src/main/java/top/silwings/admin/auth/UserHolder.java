@@ -1,6 +1,6 @@
 package top.silwings.admin.auth;
 
-import top.silwings.admin.exceptions.UserAuthException;
+import top.silwings.admin.exceptions.UserNotLoggedOnException;
 import top.silwings.core.common.Identity;
 
 /**
@@ -12,19 +12,19 @@ import top.silwings.core.common.Identity;
  **/
 public class UserHolder {
 
+    private static final ThreadLocal<UserAuthInfo> TL = new ThreadLocal<>();
+
     private UserHolder() {
         throw new AssertionError();
     }
 
-    private static final ThreadLocal<UserAuthInfo> TL = new ThreadLocal<>();
+    public static UserAuthInfo getUser() {
+        return getUser(true);
+    }
 
     public static void setUser(final UserAuthInfo userAuthInfo) {
         TL.remove();
         TL.set(userAuthInfo);
-    }
-
-    public static UserAuthInfo getUser() {
-        return getUser(true);
     }
 
     public static Identity getUserId() {
@@ -36,13 +36,13 @@ public class UserHolder {
         final UserAuthInfo user = TL.get();
 
         if (required && null == user) {
-            throw new UserAuthException("Please log on first!");
+            throw new UserNotLoggedOnException();
         }
 
         return user;
     }
 
-    public static void removeUser() {
+    public static void remove() {
         TL.remove();
     }
 

@@ -1,7 +1,9 @@
 package top.silwings.admin.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.admin.repository.po.UserPo;
 import top.silwings.core.common.Identity;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  **/
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserDto {
 

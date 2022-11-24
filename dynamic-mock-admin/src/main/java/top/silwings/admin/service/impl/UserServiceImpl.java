@@ -9,6 +9,7 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.UserDto;
 import top.silwings.admin.repository.mapper.UserMapper;
 import top.silwings.admin.repository.po.UserPo;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
         try {
             this.userMapper.insertSelective(user);
         } catch (DuplicateKeyException e) {
-            throw DynamicMockAdminException.from("Account already exists.");
+            throw DynamicMockAdminException.from(ErrorCode.USER_DUPLICATE_ACCOUNT);
         }
     }
 
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         final UserDto user = this.findByUserAccount(userAuthInfo.getUserAccount(), true);
 
-        CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), () -> DynamicMockAdminException.from("Original password error."));
+        CheckUtils.isEquals(user.getPassword(), EncryptUtils.encryptPassword(oldPassword), () -> DynamicMockAdminException.from(ErrorCode.USER_OLD_PASSWORD_ERROR));
 
         final UserPo pswUser = UserPo.builder()
                 .password(EncryptUtils.encryptPassword(newPassword))
@@ -93,13 +94,13 @@ public class UserServiceImpl implements UserService {
      * 根据用户账户查询用户信息
      *
      * @param userAccount 用户账户
-     * @param require     是否必须存在
+     * @param required    是否必须存在
      * @return 用户信息.如果require为true却没有查询到将抛出异常
      */
     @Override
     public UserDto findByUserAccount(final String userAccount, final boolean required) {
 
-        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from("UserAccount cannot be empty."));
+        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "userAccount"));
 
         final Example findCondition = new Example(UserPo.class);
         findCondition.createCriteria()
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
         final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, new RowBounds(0, 1));
         if (required) {
-            CheckUtils.isNotEmpty(userPoList, () -> DynamicMockAdminException.from("User does not exist."));
+            CheckUtils.isNotEmpty(userPoList, () -> DynamicMockAdminException.from(ErrorCode.USER_NOT_EXIST));
         }
 
         return UserDto.from(userPoList.get(0));
@@ -116,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(final Identity userId) {
 
-        CheckUtils.isEquals(UserHolder.getUserId(), userId, () -> DynamicMockAdminException.from("You cannot delete your own account."));
+        CheckUtils.isEquals(UserHolder.getUserId(), userId, () -> DynamicMockAdminException.from(ErrorCode.USER_UPDATE_LOGIN_USER_LIMIT));
 
         final Example deleteCondition = new Example(UserPo.class);
         deleteCondition.createCriteria()

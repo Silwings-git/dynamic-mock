@@ -7,6 +7,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -19,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @Since
  **/
 @Configuration
-@EnableConfigurationProperties({TaskSchedulerProperties.class})
+@EnableConfigurationProperties({TaskSchedulerProperties.class, MockTaskLogProperties.class})
 public class DynamicMockConfig implements WebMvcConfigurer {
 
     @Bean
@@ -42,6 +43,13 @@ public class DynamicMockConfig implements WebMvcConfigurer {
     @Bean
     public AsyncRestTemplate asyncRestTemplate() {
         return new AsyncRestTemplate();
+    }
+
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder()
+                .defaultHeader("Requester", "Dynamic-Mock-Service")
+                .build();
     }
 
 }

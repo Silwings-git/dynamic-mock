@@ -1,5 +1,6 @@
 package top.silwings.core.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -24,10 +25,8 @@ import java.util.Map;
 @Slf4j
 public class JsonUtils {
 
-    private static final Configuration DEFAULT_PATH_TO_NULL = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
-
-
     public static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final Configuration DEFAULT_PATH_TO_NULL = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
 
     static {
         // json字符中存在实体中不包含的key时忽略
@@ -48,6 +47,22 @@ public class JsonUtils {
         }
         try {
             return MAPPER.writeValueAsString(body);
+        } catch (JsonProcessingException e) {
+            log.error("Json serialization error: " + body, e);
+            throw new DynamicMockException(e);
+        }
+    }
+
+    public static String toJSONString(final Object body, final JsonInclude.Include include) {
+
+        if (body == null) {
+            return null;
+        }
+        if (body.getClass() == String.class) {
+            return (String) body;
+        }
+        try {
+            return new ObjectMapper().setSerializationInclusion(include).writeValueAsString(body);
         } catch (JsonProcessingException e) {
             log.error("Json serialization error: " + body, e);
             throw new DynamicMockException(e);

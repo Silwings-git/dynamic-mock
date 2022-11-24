@@ -1,5 +1,6 @@
 package top.silwings.admin.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
@@ -23,6 +25,7 @@ import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
  * @Date 2022/11/16 21:49
  * @Since
  **/
+@Slf4j
 @Service
 public class MockHandlerServiceImpl implements MockHandlerService {
 
@@ -70,7 +74,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         try {
             this.mockHandlerUniqueMapper.insertList(uniqueList);
         } catch (Exception e) {
-            throw DynamicMockAdminException.from("Request path already exists.");
+            log.error("Mock Handler唯一表插入数据失败.", e);
+            throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
         }
 
         return Identity.from(mockHandlerPo.getHandlerId());
@@ -99,7 +104,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         final List<MockHandlerUniquePo> uniqueList = mockHandlerDto.getHttpMethods().stream()
                 .map(method -> MockHandlerUniquePo.of(handlerId.intValue(), mockHandlerPo.getRequestUri(), method.name()))
                 .collect(Collectors.toList());
-        this.mockHandlerUniqueMapper.insertList(uniqueList);
+        try {
+            this.mockHandlerUniqueMapper.insertList(uniqueList);
+        } catch (Exception e) {
+            log.error("Mock Handler唯一表插入数据失败.", e);
+            throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
+        }
 
         return handlerId;
     }
@@ -130,7 +140,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final List<MockHandlerPo> mockHandlerPoList = this.mockHandlerMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
 
-        CheckUtils.isNotEmpty(mockHandlerPoList, () -> DynamicMockAdminException.from("MockHandler does not exist."));
+        CheckUtils.isNotEmpty(mockHandlerPoList, () -> DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_NOT_EXIST));
 
         return Identity.from(mockHandlerPoList.get(0).getProjectId());
     }
@@ -142,7 +152,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         final Example condition = new Example(MockHandlerPo.class);
         final Example.Criteria criteria = condition.createCriteria();
         criteria
-                .andEqualTo(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectId())
+                .andEqualTo(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectId().intValue())
                 .andLike(MockHandlerPo.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, name -> "%" + name + "%"))
                 .andLike(MockHandlerPo.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, uri -> "%" + uri + "%"))
                 .andLike(MockHandlerPo.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, label -> "%" + label + "%"))
@@ -227,6 +237,33 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .collect(Collectors.toList());
 
         return PageData.of(mockHandlerDtoList, total);
+    }
+
+
+    /**
+     * 根据项目id查询所属的全部处理器id
+     *
+     * @param projectId 项目id
+     * @return 项目id下全部处理器id
+     */
+    @Override
+    public List<Identity> findHandlerIds(final Identity projectId) {
+
+        if (null == projectId) {
+            return Collections.emptyList();
+        }
+
+        final Example example = new Example(MockHandlerPo.class);
+        example.createCriteria()
+                .andEqualTo(MockHandlerPo.C_PROJECT_ID, projectId.intValue());
+
+        example.selectProperties(MockHandlerPo.C_HANDLER_ID);
+
+        return this.mockHandlerMapper.selectByCondition(example)
+                .stream()
+                .map(MockHandlerPo::getHandlerId)
+                .map(Identity::from)
+                .collect(Collectors.toList());
     }
 
 }

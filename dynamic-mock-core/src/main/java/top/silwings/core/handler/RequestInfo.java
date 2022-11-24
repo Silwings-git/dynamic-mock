@@ -28,14 +28,14 @@ public class RequestInfo {
         this.httpMethod = httpMethod;
     }
 
-    public static RequestInfo from(final String requestUri, final HttpMethod httpMethod) {
+    public static RequestInfo of(final String requestUri, final HttpMethod httpMethod) {
         return new RequestInfo(requestUri, httpMethod);
     }
 
-    public static RequestInfo from(final Context context) {
+    public static RequestInfo from(final MockHandlerContext mockHandlerContext) {
 
-        final String requestUri = context.getRequestURI();
-        final HttpMethod method = context.getHttpMethod();
+        final String requestUri = mockHandlerContext.getRequestURI();
+        final HttpMethod method = mockHandlerContext.getHttpMethod();
 
         return new RequestInfo(requestUri, method);
     }

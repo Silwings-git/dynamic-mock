@@ -30,8 +30,8 @@
           ]
         },
         "body": {
-          "name": "${#search(customSpace.name)}",
-          "age": "${#search(customSpace.age)}"
+          "name": "${#search(name,customSpace)}",
+          "age": "${#search(age,customSpace)}"
         }
       }
     },

@@ -7,6 +7,8 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.QueryConditionDto;
 
+import java.util.List;
+
 /**
  * @ClassName MockHandlerService
  * @Description
@@ -32,4 +34,6 @@ public interface MockHandlerService {
     Identity updateById(MockHandlerDto mockHandlerDto);
 
     PageData<MockHandlerDto> queryEnableHandlerList(PageParam pageParam);
+
+    List<Identity> findHandlerIds(Identity projectId);
 }

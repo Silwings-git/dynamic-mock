@@ -1,6 +1,6 @@
 package top.silwings.core.handler.tree;
 
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public interface Node {
 
-    Object interpret(Context context, List<Object> childNodeValueList);
+    Object interpret(MockHandlerContext mockHandlerContext, List<Object> childNodeValueList);
 
     List<Node> getChildNodes();
 

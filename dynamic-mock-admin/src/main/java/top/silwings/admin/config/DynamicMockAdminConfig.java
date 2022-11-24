@@ -14,6 +14,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import top.silwings.admin.auth.interceptors.UserInterceptor;
+import top.silwings.admin.auth.interceptors.WebContextInterceptor;
 import top.silwings.admin.service.LoginService;
 
 /**
@@ -34,9 +35,9 @@ public class DynamicMockAdminConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new WebContextInterceptor());
         registry.addInterceptor(new UserInterceptor(this.loginService));
     }
-
 
     @Bean
     public Docket createRestApi() {

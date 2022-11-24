@@ -1,9 +1,10 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
 import org.springframework.stereotype.Component;
+import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
@@ -62,7 +63,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             if (this.getNodeCount() != childNodeValueList.size() || this.getNodeCount() != 4) {
                 throw new DynamicMockException("Parameter incorrectly of `pageData` function. expect: 4 , actual: " + childNodeValueList.size());
@@ -87,11 +88,11 @@ public class PageDataFunctionFactory implements FunctionFactory {
             }
 
             // 分页数据解释器
-            final NodeInterpreter pageDataInterpreter = new NodeInterpreter(context.getJsonNodeParser().parse(childNodeValueList.get(3)));
+            final NodeInterpreter pageDataInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(childNodeValueList.get(3)));
 
             return Stream.iterate(0, t -> t + 1)
                     .limit(returnSize)
-                    .map(i -> pageDataInterpreter.interpret(context))
+                    .map(i -> pageDataInterpreter.interpret(mockHandlerContext))
                     .collect(Collectors.toList());
         }
 

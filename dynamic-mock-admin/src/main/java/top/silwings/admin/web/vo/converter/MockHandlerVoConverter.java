@@ -32,13 +32,14 @@ import java.util.stream.Collectors;
 public class MockHandlerVoConverter {
 
     public MockHandlerDto convert(final MockHandlerInfoParam vo) {
+        final String requestUri = vo.getRequestUri();
         return MockHandlerDto.builder()
                 .projectId(Identity.from(vo.getProjectId()))
                 .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Integer.parseInt(vo.getHandlerId())))
                 .enableStatus(EnableStatus.DISABLE)
                 .name(vo.getName())
                 .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).filter(Objects::nonNull).collect(Collectors.toList()))
-                .requestUri(vo.getRequestUri())
+                .requestUri(requestUri.startsWith("/") ? requestUri : "/" + requestUri)
                 .label(vo.getLabel())
                 .delayTime(vo.getDelayTime())
                 .customizeSpace(vo.getCustomizeSpace())

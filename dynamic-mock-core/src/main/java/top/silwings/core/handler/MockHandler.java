@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.common.Identity;
+import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTask;
 import top.silwings.core.handler.task.MockTaskInfo;
@@ -68,25 +69,25 @@ public class MockHandler {
         return PathMatcherUtils.match(this.requestUri, requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
     }
 
-    public ResponseEntity<Object> mock(final Context context) {
+    public ResponseEntity<Object> mock(final MockHandlerContext mockHandlerContext) {
 
         this.delay();
 
         // 初始化自定义空间
-        final Object space = this.customizeSpaceInterpreter.interpret(context);
+        final Object space = this.customizeSpaceInterpreter.interpret(mockHandlerContext);
         if (space instanceof Map && ((Map<?, ?>) space).size() > 0) {
             final Map<String, Object> customizeSpace = new HashMap<>();
             for (final Map.Entry<?, ?> entry : ((Map<?, ?>) space).entrySet()) {
                 customizeSpace.put(String.valueOf(entry.getKey()), entry.getValue());
             }
-            context.getRequestContext().setCustomizeSpace(customizeSpace);
+            mockHandlerContext.getRequestContext().setCustomizeSpace(customizeSpace);
         }
 
         // 筛选异步定时任务
         for (final MockTaskInfo mockTaskInfo : this.asyncTaskInfoList) {
-            if (mockTaskInfo.support(context)) {
+            if (mockTaskInfo.support(mockHandlerContext)) {
                 // -- 初始化异步定时任务
-                context.getMockTaskManager().registerAsyncTask(mockTaskInfo.getMockTask(context));
+                DynamicMockContext.getInstance().getMockTaskManager().registerAsyncTask(mockTaskInfo.getMockTask(mockHandlerContext));
             }
         }
 
@@ -94,16 +95,16 @@ public class MockHandler {
 
         // 筛选Response
         for (final MockResponseInfo mockResponseInfo : this.responseInfoList) {
-            if (mockResponseInfo.support(context)) {
+            if (mockResponseInfo.support(mockHandlerContext)) {
                 // -- 初始化Response
-                mockResponse = mockResponseInfo.getMockResponse(context);
+                mockResponse = mockResponseInfo.getMockResponse(mockHandlerContext);
             }
         }
 
         // 筛选同步task
         for (final MockTaskInfo mockTaskInfo : this.syncTaskInfoList) {
-            if (mockTaskInfo.support(context)) {
-                final MockTask mockTask = mockTaskInfo.getMockTask(context);
+            if (mockTaskInfo.support(mockHandlerContext)) {
+                final MockTask mockTask = mockTaskInfo.getMockTask(mockHandlerContext);
                 // 同步定时任务仅执行一次
                 mockTask.run();
             }

@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
@@ -35,6 +35,16 @@ public class RemainderOperatorFactory implements OperatorFactory {
         return RemainderOperator.from(dynamicValueList);
     }
 
+    @Override
+    public int getPriority() {
+        return OperatorType.ARITHMETIC_TWO.getPriority();
+    }
+
+    @Override
+    public String getOperatorSymbol() {
+        return SYMBOL;
+    }
+
     /**
      * @ClassName RemainderExtOperation
      * @Description 模
@@ -54,7 +64,7 @@ public class RemainderOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             if (childNodeValueList.size() < this.getNodeCount() || this.getNodeCount() != 2) {
                 throw new DynamicMockException("Parameter incorrectly of `%` operator. expect: 2, actual: " + childNodeValueList.size());
             }
@@ -67,15 +77,5 @@ public class RemainderOperatorFactory implements OperatorFactory {
             return SYMBOL;
         }
 
-    }
-
-    @Override
-    public int getPriority() {
-        return OperatorType.ARITHMETIC_TWO.getPriority();
-    }
-
-    @Override
-    public String getOperatorSymbol() {
-        return SYMBOL;
     }
 }

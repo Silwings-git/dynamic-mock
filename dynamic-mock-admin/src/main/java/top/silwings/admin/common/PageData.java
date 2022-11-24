@@ -22,14 +22,14 @@ public class PageData<T> {
 
     private final long total;
 
-    @SuppressWarnings("unchecked")
-    public static <T> PageData<T> empty() {
-        return (PageData<T>) EMPTY;
-    }
-
     public PageData(final List<T> list, final long total) {
         this.list = list;
         this.total = total;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> PageData<T> empty() {
+        return (PageData<T>) EMPTY;
     }
 
     public static <T> PageData<T> of(final List<T> list, final long total) {

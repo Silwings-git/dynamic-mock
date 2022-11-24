@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.DelayUtils;
 
@@ -38,9 +38,9 @@ public class MockResponseInfo extends AbstractSupportAble {
         return this.supportInterpreterList;
     }
 
-    public MockResponse getMockResponse(final Context context) {
+    public MockResponse getMockResponse(final MockHandlerContext mockHandlerContext) {
 
-        final Object interpret = this.responseInterpreter.interpret(context);
+        final Object interpret = this.responseInterpreter.interpret(mockHandlerContext);
 
         if (!(interpret instanceof Map)) {
             throw new DynamicMockException("Response parsing failed: " + this.name);

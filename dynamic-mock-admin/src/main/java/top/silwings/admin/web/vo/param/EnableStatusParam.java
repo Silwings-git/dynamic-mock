@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.utils.CheckUtils;
 
@@ -27,7 +28,7 @@ public class EnableStatusParam {
     private Integer enableStatus;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.handlerId, () -> DynamicMockAdminException.from("HandlerId cannot be empty."));
-        CheckUtils.isNotNull(EnableStatus.valueOfCode(this.enableStatus), () -> DynamicMockAdminException.from("EnableStatus cannot be empty."));
+        CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
+        CheckUtils.isNotNull(EnableStatus.valueOfCode(this.enableStatus), () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "enableStatus"));
     }
 }

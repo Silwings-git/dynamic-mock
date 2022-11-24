@@ -3,6 +3,7 @@ package top.silwings.admin.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.service.UserService;
@@ -36,14 +37,14 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String login(final String userAccount, final String password, final boolean ifRemember, final HttpServletResponse response) {
 
-        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from("Username or password is empty."));
-        CheckUtils.isNotBlank(password, () -> DynamicMockAdminException.from("Username or password is empty."));
+        CheckUtils.isNotBlank(userAccount, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
+        CheckUtils.isNotBlank(password, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final UserDto user = this.userService.findByUserAccount(userAccount, false);
-        CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from("Username or password error."));
+        CheckUtils.isNotNull(user, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final String loginPassword = EncryptUtils.encryptPassword(password);
-        CheckUtils.isEquals(user.getPassword(), loginPassword, () -> DynamicMockAdminException.from("Username or password error."));
+        CheckUtils.isEquals(user.getPassword(), loginPassword, () -> DynamicMockAdminException.from(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
 
         final String userAuthToken = this.makeToken(user);
 

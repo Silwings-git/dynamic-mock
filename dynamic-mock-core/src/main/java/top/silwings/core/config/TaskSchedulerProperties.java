@@ -21,6 +21,11 @@ public class TaskSchedulerProperties {
     /**
      * 核心线程数
      */
-    private int corePoolSize = 20;
+    private int corePoolSize = Runtime.getRuntime().availableProcessors() * 2;
+
+    /**
+     * 最大任务池容量
+     */
+    private int maxTaskPoolSize = 1000;
 
 }

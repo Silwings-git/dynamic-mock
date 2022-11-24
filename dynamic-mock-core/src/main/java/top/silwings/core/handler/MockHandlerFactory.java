@@ -54,7 +54,7 @@ public class MockHandlerFactory {
 
         // Task信息
         final List<MockTaskInfo> mockTaskInfoList = definition.getTasks().stream()
-                .map(this.mockTaskInfoFactory::buildTask)
+                .map(taskDef -> this.mockTaskInfoFactory.buildTask(definition.getHandlerId(), taskDef))
                 .collect(Collectors.toList());
 
         // 同步Task

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -23,6 +24,6 @@ public class DeleteProjectParam {
     private String projectId;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.projectId, () -> DynamicMockAdminException.from("Project name cannot be empty."));
+        CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
     }
 }

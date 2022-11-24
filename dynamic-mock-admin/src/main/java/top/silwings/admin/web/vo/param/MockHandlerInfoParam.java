@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpMethod;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class MockHandlerInfoParam {
     @ApiModelProperty(value = "处理器名称", required = true, example = "获取用户信息")
     private String name;
 
-    @ApiModelProperty(value = "支持的请求方式", required = true)
+    @ApiModelProperty(value = "支持的请求方式,至少包含一个合法的http请求方法", required = true)
     private List<String> httpMethods;
 
     @ApiModelProperty(value = "支持的请求URI", required = true, example = "/findUser")
@@ -59,9 +61,10 @@ public class MockHandlerInfoParam {
     private List<SaveTaskInfoParam> tasks;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.projectId, () -> DynamicMockAdminException.from("ProjectId cannot be empty."));
-        CheckUtils.isNotBlank(this.name, () -> DynamicMockAdminException.from("Name cannot be empty."));
-        CheckUtils.isNotEmpty(this.httpMethods, () -> DynamicMockAdminException.from("HttpMethods cannot be empty."));
-        CheckUtils.isNotBlank(this.requestUri, () -> DynamicMockAdminException.from("RequestUri cannot be empty."));
+        CheckUtils.isInteger(this.projectId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "projectId"));
+        CheckUtils.isNotBlank(this.name, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "name"));
+        CheckUtils.hasMinimumSize(this.httpMethods, 1, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "httpMethods"));
+        this.httpMethods.forEach(method -> CheckUtils.isNotNull(HttpMethod.resolve(method), () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "httpMethods")));
+        CheckUtils.isNotBlank(this.requestUri, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "requestUri"));
     }
 }

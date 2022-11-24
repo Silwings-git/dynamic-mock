@@ -19,7 +19,7 @@ public class TypeUtils {
         }
 
         if (value instanceof Number) {
-            return Integer.valueOf(((Number) value).intValue());
+            return ((Number) value).intValue();
         }
 
         if (value instanceof String) {
@@ -35,7 +35,7 @@ public class TypeUtils {
         }
 
         if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue() ? 1 : 0;
+            return (boolean) value ? 1 : 0;
         }
 
         throw new TypeCastException("can not cast to integer");
@@ -68,43 +68,13 @@ public class TypeUtils {
         }
 
         if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue();
+            return (Boolean) value;
         }
 
         if (value instanceof String) {
             String str = (String) value;
             if (str.isEmpty() || "null".equals(str)) {
                 return false;
-            }
-            return Boolean.parseBoolean(str);
-        }
-
-        if (value instanceof Number) {
-            int intValue = ((Number) value).intValue();
-            if (intValue == 1) {
-                return true;
-            }
-            if (intValue == 0) {
-                return false;
-            }
-        }
-
-        throw new TypeCastException("can not cast to boolean");
-    }
-
-    public static Boolean toBoolean(Object value) {
-        if (value == null) {
-            return null;
-        }
-
-        if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue();
-        }
-
-        if (value instanceof String) {
-            String str = (String) value;
-            if (str.isEmpty() || "null".equals(str)) {
-                return null;
             }
             return Boolean.parseBoolean(str);
         }

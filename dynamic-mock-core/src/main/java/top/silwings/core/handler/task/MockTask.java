@@ -1,17 +1,27 @@
 package top.silwings.core.handler.task;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import reactor.core.publisher.Mono;
+import top.silwings.core.common.Identity;
+import top.silwings.core.config.DynamicMockContext;
+import top.silwings.core.config.MockTaskLogProperties;
+import top.silwings.core.event.MockTaskEndEvent;
+import top.silwings.core.event.MockTaskStartEvent;
+import top.silwings.core.model.MockTaskLogDto;
+import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @ClassName MockTask
@@ -26,9 +36,9 @@ import java.util.Map;
 public class MockTask implements Runnable {
 
     /**
-     * 唯一标识
+     * 处理器id
      */
-    private final String taskId;
+    private final Identity handlerId;
 
     /**
      * 任务名称
@@ -71,42 +81,162 @@ public class MockTask implements Runnable {
     private final int numberOfExecute;
 
     /**
-     * http客户端
+     * 承载该任务的定时任务
      */
-    private final AsyncRestTemplate asyncRestTemplate;
+    @Setter
+    private AutoCancelTask autoCancelTask;
+
+    private static Function<ClientResponse, Mono<ResponseInfo>> getResponseInfo() {
+        return res -> {
+
+            final MockTaskLogProperties mockTaskLogProperties = DynamicMockContext.getInstance().getMockTaskLogProperties();
+
+            if (!mockTaskLogProperties.isLogResponse()) {
+                return Mono.just(ResponseInfo.builder().build());
+            }
+
+            final ResponseInfo.ResponseInfoBuilder infoBuilder = ResponseInfo.builder();
+
+            if (mockTaskLogProperties.isLogHttpStatus()) {
+                infoBuilder.httpStatus(res.rawStatusCode());
+            }
+
+            if (mockTaskLogProperties.isLogResponseHeaders()) {
+                infoBuilder.headers(res.headers().asHttpHeaders());
+            }
+
+            return res.bodyToMono(String.class)
+                    .map(body -> {
+                        if (mockTaskLogProperties.isLogResponseBody()) {
+                            infoBuilder.body(body);
+                        }
+                        return infoBuilder.build();
+                    });
+        };
+    }
+
+    private static Consumer<ResponseInfo> publishEndEvent(final MockTaskStartEvent startEvent) {
+
+        if (!DynamicMockContext.getInstance().getMockTaskLogProperties().isEnableLog()) {
+            return responseInfo -> {
+            };
+        }
+
+        return responseInfo -> {
+            final MockTaskLogDto mockTaskLog = startEvent.getMockTaskLog();
+            mockTaskLog.setResponseInfo(JsonUtils.toJSONString(responseInfo, JsonInclude.Include.NON_NULL));
+            mockTaskLog.setTiming(System.currentTimeMillis() - mockTaskLog.getRequestTime().getTime());
+            final MockTaskEndEvent endEvent = MockTaskEndEvent.from(startEvent.getSource(), mockTaskLog);
+            DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(endEvent);
+        };
+    }
+
+    private static MockTaskStartEvent publishStartEvent(final MockTask mockTask) {
+
+        final MockTaskLogProperties mockTaskLogProperties = DynamicMockContext.getInstance().getMockTaskLogProperties();
+
+        if (!mockTaskLogProperties.isEnableLog()) {
+            return MockTaskStartEvent.from(mockTask, null);
+        }
+
+        final MockTaskLogDto taskLog = MockTaskLogDto.builder()
+                .taskCode(ConvertUtils.getNoNullOrDefault(mockTask.getAutoCancelTask(), null, AutoCancelTask::getTaskCode))
+                .handlerId(mockTask.getHandlerId())
+                .name(mockTask.getName())
+                .registrationTime(ConvertUtils.getNoNullOrDefault(mockTask.getAutoCancelTask(), null, at -> new Date(at.getRegistrationTime())))
+                .requestInfo(mockTaskLogProperties.isLogRequestInfo() ? JsonUtils.toJSONString(RequestInfo.from(mockTask), JsonInclude.Include.NON_NULL) : "{}")
+                .requestTime(new Date())
+                .build();
+
+        final MockTaskStartEvent event = MockTaskStartEvent.from(mockTask, taskLog);
+
+        DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(event);
+
+        return event;
+    }
 
     @Override
     public void run() {
         try {
-            this.sendRequest(this.asyncRestTemplate);
+            this.sendRequest();
         } catch (Exception e) {
             log.error("MockTask run err.", e);
         }
     }
 
-    protected void sendRequest(final AsyncRestTemplate asyncRestTemplate) {
+    protected void sendRequest() {
 
-        final String actualRequestUrl = this.getActualRequestUrl(this.requestUrl);
+        final MockTaskStartEvent startEvent = publishStartEvent(this);
 
-        final HttpEntity<Object> httpEntity = new HttpEntity<>(this.body, this.headers);
-
-        log.info("MockTask {} request. requestUrl:{} , method:{} ,headers: {} , uriVariables: {} , body:{}",
-                this.taskId,
-                actualRequestUrl,
-                this.httpMethod,
-                JsonUtils.toJSONString(this.headers),
-                JsonUtils.toJSONString(this.uriVariables),
-                JsonUtils.toJSONString(this.body));
-
-        final ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(actualRequestUrl, this.httpMethod, httpEntity, String.class, this.uriVariables);
-
-        future.addCallback(result -> log.info("HttpTask {} 执行 {} 请求成功.响应信息: {}", this.name, this.httpMethod, result)
-                , ex -> log.error("HttpTask {} 执行 {} 请求失败. 错误信息: {}", this.name, this.httpMethod, ex.getMessage()));
-
+        DynamicMockContext.getInstance()
+                .getWebClient()
+                .method(this.httpMethod)
+                .uri(this.getActualRequestUrl(this.requestUrl), this.uriVariables)
+                .headers(h -> h.addAll(this.headers))
+                .bodyValue(this.body)
+                .exchangeToMono(getResponseInfo())
+                .subscribe(publishEndEvent(startEvent));
     }
 
     private String getActualRequestUrl(final String requestUrl) {
-        return requestUrl.startsWith("http://") ? requestUrl : "http://" + requestUrl;
+        return requestUrl.startsWith("http://") || requestUrl.startsWith("https://") ? requestUrl : "http://" + requestUrl;
+    }
+
+    @Getter
+    @Builder
+    public static class RequestInfo {
+        /**
+         * 请求地址
+         */
+        private final String requestUrl;
+
+        /**
+         * 请求方式
+         */
+        private final HttpMethod httpMethod;
+
+        /**
+         * 请求头
+         */
+        private final HttpHeaders headers;
+
+        /**
+         * 请求体
+         */
+        private final Object body;
+
+        /**
+         * uri参数
+         */
+        private final Map<String, ?> uriVariables;
+
+        public static RequestInfo from(final MockTask mockTask) {
+            return RequestInfo.builder()
+                    .requestUrl(mockTask.getRequestUrl())
+                    .httpMethod(mockTask.getHttpMethod())
+                    .headers(mockTask.getHeaders())
+                    .body(mockTask.getBody())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class ResponseInfo {
+
+        /**
+         * 响应头
+         */
+        private final HttpHeaders headers;
+        /**
+         * 响应体
+         */
+        private final String body;
+        /**
+         * 状态码
+         */
+        private final Integer httpStatus;
+
     }
 
 }

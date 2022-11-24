@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -23,7 +24,7 @@ public class DeleteMockHandlerParam {
     private String handlerId;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.handlerId, () -> DynamicMockAdminException.from("HandlerId cannot be empty."));
+        CheckUtils.isInteger(this.handlerId, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "handlerId"));
     }
 
 }

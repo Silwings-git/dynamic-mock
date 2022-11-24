@@ -82,6 +82,32 @@ public class ExpressionDynamicValueFactory {
         }
     }
 
+    private GroupByCommaPriorityResult groupByCommaPriority(final String expression) {
+
+        // 将expression中的方法参数列表以外的逗号去除
+        final List<Integer> indexList = new ArrayList<>();
+
+        int num = 0;
+
+        final char[] charArray = expression.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            final char c = charArray[i];
+            if ('(' == c || '{' == c || '[' == c) {
+                num++;
+            } else if (')' == c || '}' == c || ']' == c) {
+                num--;
+            } else if (',' == c && num == 0) {
+                indexList.add(i);
+            }
+        }
+
+        final StringBuilder builder = new StringBuilder(expression);
+        // 逗号和空格长度均为1,所以在替换时可以不考虑角标偏移
+        indexList.forEach(index -> builder.replace(index, index + 1, " "));
+
+        return GroupByCommaPriorityResult.of(Arrays.stream(builder.toString().split(" ")).collect(Collectors.toList()), CollectionUtils.isNotEmpty(indexList));
+    }
+
     @Getter
     public static class OperatorIndex implements Comparable<OperatorIndex> {
         private final String symbol;
@@ -114,33 +140,6 @@ public class ExpressionDynamicValueFactory {
             return Objects.hash(this.symbol, this.index);
         }
     }
-
-    private GroupByCommaPriorityResult groupByCommaPriority(final String expression) {
-
-        // 将expression中的方法参数列表以外的逗号去除
-        final List<Integer> indexList = new ArrayList<>();
-
-        int num = 0;
-
-        final char[] charArray = expression.toCharArray();
-        for (int i = 0; i < charArray.length; i++) {
-            final char c = charArray[i];
-            if ('(' == c || '{' == c || '[' == c) {
-                num++;
-            } else if (')' == c || '}' == c || ']' == c) {
-                num--;
-            } else if (',' == c && num == 0) {
-                indexList.add(i);
-            }
-        }
-
-        final StringBuilder builder = new StringBuilder(expression);
-        // 逗号和空格长度均为1,所以在替换时可以不考虑角标偏移
-        indexList.forEach(index -> builder.replace(index, index + 1, " "));
-
-        return GroupByCommaPriorityResult.of(Arrays.stream(builder.toString().split(" ")).collect(Collectors.toList()), CollectionUtils.isNotEmpty(indexList));
-    }
-
 
     private static class GroupByCommaPriorityResult {
         private final List<String> list;

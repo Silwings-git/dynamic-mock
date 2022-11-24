@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -20,7 +21,7 @@ import top.silwings.core.utils.CheckUtils;
 @ApiModel(description = "保存用户参数")
 public class SaveUserParam {
 
-    @ApiModelProperty(value = "用户id", example = "username")
+    @ApiModelProperty(value = "用户id.有值为更新,无值为新增", example = "10")
     private String userId;
 
     @ApiModelProperty(value = "用户昵称", required = true, example = "username")
@@ -36,11 +37,11 @@ public class SaveUserParam {
     private Integer role;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.username, () -> DynamicMockAdminException.from("The user name cannot be empty."));
+        CheckUtils.isNotBlank(this.username, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "username"));
         if (StringUtils.isBlank(this.userId)) {
-            CheckUtils.isNotBlank(this.userAccount, () -> DynamicMockAdminException.from("The user account cannot be empty"));
-            CheckUtils.isNotBlank(this.password, () -> DynamicMockAdminException.from("The user password cannot be empty"));
-            CheckUtils.isNotNull(this.role, () -> DynamicMockAdminException.from("The user role cannot be empty"));
+            CheckUtils.minLength(this.userAccount, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "userAccount"));
+            CheckUtils.minLength(this.password, 4, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "password"));
+            CheckUtils.isNotNull(this.role, () -> DynamicMockAdminException.of(ErrorCode.VALID_ERROR, "role"));
         }
     }
 }

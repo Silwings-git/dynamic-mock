@@ -1,7 +1,7 @@
 package top.silwings.core.handler.tree.dynamic.expression.expressions;
 
 import org.apache.commons.collections4.CollectionUtils;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 
@@ -29,7 +29,7 @@ public class CommaExpressionDynamicValue implements DynamicValue {
     }
 
     @Override
-    public List<Object> interpret(final Context context, final List<Object> childNodeValueList) {
+    public List<Object> interpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
         return CollectionUtils.isEmpty(childNodeValueList) ? Collections.emptyList() : childNodeValueList;
     }
 

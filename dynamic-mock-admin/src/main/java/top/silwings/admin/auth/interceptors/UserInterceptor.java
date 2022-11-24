@@ -5,7 +5,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
-import top.silwings.admin.exceptions.UserAuthException;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.admin.exceptions.UserNotLoggedOnException;
 import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 
@@ -30,7 +32,7 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
 
-        UserHolder.removeUser();
+        UserHolder.remove();
 
         if (!(handler instanceof HandlerMethod)) {
             return true;    // proceed with the next interceptor
@@ -53,13 +55,13 @@ public class UserInterceptor implements HandlerInterceptor {
             final UserDto user = this.loginService.ifLogin(request, response);
 
             if (null == user) {
-                throw new UserAuthException("Please login first!");
+                throw new UserNotLoggedOnException();
             }
 
             final UserAuthInfo userAuthInfo = UserAuthInfo.from(user);
 
             if (needAdminUser && !userAuthInfo.isAdminUser()) {
-                throw new UserAuthException("Insufficient permissions!");
+                throw DynamicMockAdminException.from(ErrorCode.AUTH_INSUFFICIENT_PERMISSIONS);
             }
 
             UserHolder.setUser(UserAuthInfo.from(user));
@@ -69,7 +71,7 @@ public class UserInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) throws Exception {
-        UserHolder.removeUser();
+    public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) {
+        UserHolder.remove();
     }
 }

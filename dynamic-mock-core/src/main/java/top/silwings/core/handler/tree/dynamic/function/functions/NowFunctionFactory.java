@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
@@ -50,7 +50,7 @@ public class NowFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        protected Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+        protected Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             if (this.getNodeCount() != childNodeValueList.size()) {
                 throw new DynamicMockException("Parameter incorrectly of `now` function. expect: " + this.getNodeCount() + " , actual: " + childNodeValueList.size());

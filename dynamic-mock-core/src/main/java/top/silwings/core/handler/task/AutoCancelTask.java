@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.CronTrigger;
+import top.silwings.core.common.Identity;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,15 +26,26 @@ public class AutoCancelTask implements Runnable {
     /**
      * 唯一标识
      */
-    private final String taskId;
+    private final String taskCode;
+
+    private final Identity handlerId;
 
     private final String cron;
 
     private final AtomicInteger numberOfExecute;
+    private final Runnable task;
+
+    /**
+     * 任务原始信息
+     */
+    private final String taskJson;
+
+    /**
+     * 任务注册时间
+     */
+    private final long registrationTime;
 
     private ScheduledFuture<?> future;
-
-    private final Runnable task;
 
     @Override
     public void run() {

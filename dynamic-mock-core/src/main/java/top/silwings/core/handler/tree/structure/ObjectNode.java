@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.structure;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.Node;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ObjectNode implements Node {
     }
 
     @Override
-    public Object interpret(final Context context, final List<Object> childNodeValueList) {
+    public Object interpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
         final HashMap<Object, Object> hashMap = new HashMap<>();
 
@@ -85,7 +85,7 @@ public class ObjectNode implements Node {
         }
 
         @Override
-        public Object interpret(final Context context, final List<Object> childNodeValueList) {
+        public Object interpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             return childNodeValueList;
         }
 

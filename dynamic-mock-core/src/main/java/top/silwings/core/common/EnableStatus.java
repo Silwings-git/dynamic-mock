@@ -19,10 +19,6 @@ public enum EnableStatus {
         this.code = code;
     }
 
-    public int code() {
-        return this.code;
-    }
-
     public static EnableStatus valueOfCode(final Integer code) {
 
         if (null == code) {
@@ -36,6 +32,10 @@ public enum EnableStatus {
         }
 
         return null;
+    }
+
+    public int code() {
+        return this.code;
     }
 
 }

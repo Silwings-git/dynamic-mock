@@ -16,14 +16,14 @@ public abstract class AbstractSupportAble {
 
     protected abstract List<NodeInterpreter> getSupportInterpreterList();
 
-    public boolean support(final Context context) {
+    public boolean support(final MockHandlerContext mockHandlerContext) {
 
         if (CollectionUtils.isEmpty(this.getSupportInterpreterList())) {
             return true;
         }
 
         for (final NodeInterpreter interpreter : this.getSupportInterpreterList()) {
-            if (!Boolean.TRUE.equals(interpreter.interpret(context))) {
+            if (!Boolean.TRUE.equals(interpreter.interpret(mockHandlerContext))) {
                 return false;
             }
         }

@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
@@ -50,7 +50,7 @@ public class EqualsFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Boolean doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             if (childNodeValueList.isEmpty() || childNodeValueList.size() < this.getNodeCount() || childNodeValueList.size() < 2) {
                 throw new DynamicMockException("Parameter incorrectly of `equals` function. expect: " + (this.getNodeCount() > 2 ? this.getNodeCount() : 2) + ", actual: " + childNodeValueList.size());

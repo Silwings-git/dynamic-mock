@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -29,6 +30,6 @@ public class SaveProjectParam {
     private String baseUri;
 
     public void validate() {
-        CheckUtils.isNotBlank(this.projectName, () -> DynamicMockAdminException.from("The project name cannot be empty."));
+        CheckUtils.isNotBlank(this.projectName, () -> DynamicMockAdminException.of(ErrorCode.VALID_EMPTY, "projectName"));
     }
 }

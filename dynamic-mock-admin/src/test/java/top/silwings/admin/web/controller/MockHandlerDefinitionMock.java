@@ -27,7 +27,7 @@ public class MockHandlerDefinitionMock {
 
     public static MockHandlerDto build() {
         final Random random = new Random();
-        final MockHandlerDto definition = MockHandlerDto.builder()
+        return MockHandlerDto.builder()
                 .name("MockHandlerDefinitionMock#build")
                 .httpMethods(Arrays.asList(HttpMethod.GET, HttpMethod.POST))
                 .requestUri("/user/{name}")
@@ -38,7 +38,6 @@ public class MockHandlerDefinitionMock {
                 .tasks(buildTasksInfo())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
-        return definition;
     }
 
     private static Map<String, Object> buildCustomizeSpace() {
@@ -115,7 +114,6 @@ public class MockHandlerDefinitionMock {
     }
 
     private static MockResponseDto buildResponse() {
-        final HashMap<String, String> body = new HashMap<>();
 
         final MockResponseDto.MockResponseDtoBuilder definition = MockResponseDto.builder();
         definition.status(201);

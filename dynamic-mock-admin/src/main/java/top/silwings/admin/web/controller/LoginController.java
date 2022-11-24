@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.web.vo.param.LoginParam;
@@ -32,17 +33,19 @@ public class LoginController {
     }
 
     @PostMapping("/login")
+    @PermissionLimit(limit = false)
     @ApiOperation(value = "登录")
     public Result<String> login(@RequestBody LoginParam loginParam, final HttpServletResponse response) {
 
         loginParam.validate();
 
-        final String username = this.loginService.login(loginParam.getUserAccount(), loginParam.getPassword(), Boolean.TRUE.equals(loginParam.getIfRemember()), response);
+        final String username = this.loginService.login(loginParam.getUserAccount(), loginParam.getPassword(), Boolean.TRUE.equals(loginParam.getRemember()), response);
 
         return Result.ok(username);
     }
 
     @PostMapping("/logout")
+    @PermissionLimit(limit = false)
     @ApiOperation(value = "登出")
     public Result<Void> logout(final HttpServletRequest request, final HttpServletResponse response) {
 

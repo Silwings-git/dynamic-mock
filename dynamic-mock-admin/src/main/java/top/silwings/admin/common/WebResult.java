@@ -14,8 +14,10 @@ import lombok.Getter;
 @Getter
 @ApiModel(description = "WebResult")
 public abstract class WebResult {
-    protected static final String SUCCESS = "200";
-    protected static final String FAIL = "400";
+    public static final String SUCCESS = "200";
+    public static final String FAIL = "400";
+
+    public static final String UNAUTHORIZED = "401";
 
     @ApiModelProperty(value = "响应编码")
     protected final String code;

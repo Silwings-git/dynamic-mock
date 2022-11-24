@@ -9,18 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.web.controller.MockHandlerDefinitionMock;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.Context;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.handler.MockHandlerPoint;
 import top.silwings.core.handler.RequestContext;
-import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
@@ -49,6 +47,12 @@ public class ParserTest {
 
     @Autowired
     private JsonNodeParser jsonNodeParser;
+    @Autowired
+    private MockHandlerManager mockHandlerManager;
+    @Autowired
+    private MockHandlerFactory mockHandlerFactory;
+    @Autowired
+    private MockHandlerPoint mockHandlerPoint;
 
     @Test
     public void test001() {
@@ -113,11 +117,11 @@ public class ParserTest {
         requestContext.addCustomizeParam("10", "御坂美琴");
         requestContext.addCustomizeParam("10true", "御坂美琴");
 
-        final Context context = Context.builder()
+        final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(requestContext)
                 .build();
 
-        System.out.println(JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(context)));
+        System.out.println(JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(mockHandlerContext)));
     }
 
     @Test
@@ -127,11 +131,11 @@ public class ParserTest {
 
         final Node analyze1 = this.jsonNodeParser.parse(testData.getTest002());
 
-        final Context context = Context.builder()
+        final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(testData.getRequestContext())
                 .build();
 
-        final Object interpret = analyze1.interpret(context, Collections.emptyList());
+        final Object interpret = analyze1.interpret(mockHandlerContext, Collections.emptyList());
 
         log.info(JsonUtils.toJSONString(interpret));
     }
@@ -163,7 +167,7 @@ public class ParserTest {
             }
             Collections.reverse(arrayList);
 
-            final Object interpret = ele.interpret(testData.getContext(), arrayList);
+            final Object interpret = ele.interpret(testData.getMockHandlerContext(), arrayList);
 
             stack.push(interpret);
 
@@ -182,26 +186,14 @@ public class ParserTest {
 
         final NodeInterpreter nodeInterpreter = new NodeInterpreter(dynamicValue);
 
-        final Object interpret = nodeInterpreter.interpret(Context.builder().build());
+        final Object interpret = nodeInterpreter.interpret(MockHandlerContext.builder().build());
 
         System.out.println("interpret = " + interpret);
 
     }
 
-    @Autowired
-    private MockHandlerManager mockHandlerManager;
-
-    @Autowired
-    private MockHandlerFactory mockHandlerFactory;
-
-    @Autowired
-    private MockHandlerPoint mockHandlerPoint;
-
-    @Autowired
-    private MockTaskManager mockTaskManager;
-
     @Test
-    public void test007() throws InterruptedException, NoHandlerFoundException {
+    public void test007() throws InterruptedException {
 
         final MockHandlerDto definition = MockHandlerDefinitionMock.build();
         final MockHandler mockHandler = this.mockHandlerFactory.buildMockHandler(definition);
@@ -218,40 +210,6 @@ public class ParserTest {
         log.info(JsonUtils.toJSONString(responseEntity.getBody()));
 
         TimeUnit.SECONDS.sleep(5);
-    }
-
-    @Getter
-    public static class TestData {
-        private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
-        private final String test002 = "{\n" +
-                "\"id\":\"${#uuid(abc)}\"," +
-                "\"${#search(def)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
-                "\"${#search(<abcabc>)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
-                "\"age\": \"${#search(age)}\"," +
-                "\"zbd\": \"${#search(zbd)}\"," +
-                "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
-                "\"uuidKey\": \"${#uuid(1,2)}\"" +
-                "}";
-
-        private final String test004 = "{\n" +
-                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
-                "\"uuidKey\": \"${#uuid(1,2)}\"" +
-                "}";
-        private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
-
-        final Context context;
-
-        public TestData() {
-            this.requestContext.addCustomizeParam("param", 1);
-            this.requestContext.addCustomizeParam("a2", "name");
-            this.requestContext.addCustomizeParam("name", "御坂美琴");
-            this.requestContext.addCustomizeParam("age", 14);
-            this.requestContext.addCustomizeParam("abcabc", "A御坂美琴A");
-            this.requestContext.addCustomizeParam("def", "B御坂美琴B");
-            context = Context.builder()
-                    .requestContext(this.requestContext)
-                    .build();
-        }
     }
 
     @Test
@@ -273,6 +231,38 @@ public class ParserTest {
 
         System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
 
+    }
+
+    @Getter
+    public static class TestData {
+        final MockHandlerContext mockHandlerContext;
+        private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
+        private final String test002 = "{\n" +
+                "\"id\":\"${#uuid(abc)}\"," +
+                "\"${#search(def)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"${#search(<abcabc>)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"age\": \"${#search(age)}\"," +
+                "\"zbd\": \"${#search(zbd)}\"," +
+                "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
+                "\"uuidKey\": \"${#uuid(1,2)}\"" +
+                "}";
+        private final String test004 = "{\n" +
+                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"uuidKey\": \"${#uuid(1,2)}\"" +
+                "}";
+        private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
+
+        public TestData() {
+            this.requestContext.addCustomizeParam("param", 1);
+            this.requestContext.addCustomizeParam("a2", "name");
+            this.requestContext.addCustomizeParam("name", "御坂美琴");
+            this.requestContext.addCustomizeParam("age", 14);
+            this.requestContext.addCustomizeParam("abcabc", "A御坂美琴A");
+            this.requestContext.addCustomizeParam("def", "B御坂美琴B");
+            mockHandlerContext = MockHandlerContext.builder()
+                    .requestContext(this.requestContext)
+                    .build();
+        }
     }
 
 }

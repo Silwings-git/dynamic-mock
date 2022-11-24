@@ -11,11 +11,11 @@ import org.springframework.util.AntPathMatcher;
  **/
 public class PathMatcherUtils {
 
+    private static final AntPathMatcher matcher = new AntPathMatcher();
+
     private PathMatcherUtils() {
         throw new AssertionError();
     }
-
-    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     public static boolean match(final String pattern, final String path) {
         return matcher.match(pattern, path);

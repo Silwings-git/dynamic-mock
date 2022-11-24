@@ -29,6 +29,7 @@ public class MockHandlerSetUp {
 
     public static MockHandlerInfoParam buildTestMockHandlerInfoVo(final Identity handlerId) {
         return MockHandlerInfoParam.builder()
+                .projectId("1")
                 .handlerId(null == handlerId ? null : handlerId.toString())
                 .name("TEST_MOCK_HANDLER")
                 .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
@@ -98,7 +99,7 @@ public class MockHandlerSetUp {
         final HashMap<String, List<String>> headerMap = new HashMap<>();
 
         headerMap.put("content-type", Collections.singletonList("application/json"));
-        headerMap.put("host", Collections.singletonList("localhost:8080/ybmq"));
+        headerMap.put("aaaaa", Collections.singletonList("localhost:8080/ybmq"));
         headerMap.put("accept-encoding", Collections.singletonList("gzip, deflate, br"));
         headerMap.put("connection", Collections.singletonList("keep-alive"));
 

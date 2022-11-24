@@ -6,6 +6,7 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.repository.mapper.ProjectMapper;
 import top.silwings.admin.repository.po.ProjectPo;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class ProjectServiceImpl implements ProjectService {
-
 
     private final ProjectMapper projectMapper;
 
@@ -64,14 +64,13 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectMapper.updateByConditionSelective(project, example);
     }
 
-
     @Override
     @Transactional
     public void delete(final Identity projectId) {
 
         // 项目下包含Mock处理器时不允许删除
         final int handlerQuantity = this.mockHandlerService.findMockHandlerQuantityByProject(projectId);
-        CheckUtils.isTrue(handlerQuantity <= 0, () -> DynamicMockAdminException.from("Delete not allowed."));
+        CheckUtils.isTrue(handlerQuantity <= 0, () -> DynamicMockAdminException.from(ErrorCode.PROJECT_PROHIBIT_DELETION));
 
         final Example example = new Example(ProjectPo.class);
         example.createCriteria()

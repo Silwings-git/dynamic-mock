@@ -30,10 +30,6 @@ public class PageResult<T> extends WebResult {
         this.total = total;
     }
 
-    public static <T> PageResult<T> ok() {
-        return new PageResult<>(SUCCESS, null, Collections.emptyList(), 0L);
-    }
-
     public static <T> PageResult<T> ok(final List<T> pageData, final long total) {
         return new PageResult<>(SUCCESS, null, pageData, total);
     }

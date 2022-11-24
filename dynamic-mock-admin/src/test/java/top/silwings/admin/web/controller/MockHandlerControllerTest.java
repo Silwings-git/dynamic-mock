@@ -12,12 +12,16 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
+import top.silwings.admin.auth.UserAuthInfo;
+import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.common.Role;
 import top.silwings.admin.web.MockHandlerSetUp;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
+import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
@@ -48,23 +52,36 @@ public class MockHandlerControllerTest {
 
     @Test
     public void mockAdmin() {
-        final Identity handlerId = this.save();
+
+        this.login();
+
+        final MockHandlerInfoParam infoParam = this.save();
+
+        final Identity handlerId = Identity.from(infoParam.getHandlerId());
+
+        final Identity projectId = Identity.from(infoParam.getProjectId());
+
         this.update(handlerId);
         this.find(handlerId);
-        this.query();
+        this.query(projectId);
         this.enable(handlerId);
         this.request();
         this.disable(handlerId);
         this.delete(handlerId);
     }
 
-    private Identity save() {
+    private void login() {
+        UserHolder.setUser(UserAuthInfo.builder().role(Role.ADMIN_USER.getCode()).build());
+    }
 
-        final Result<Identity> result = this.mockHandlerController.save(MockHandlerSetUp.buildTestMockHandlerInfoVo());
+    private MockHandlerInfoParam save() {
 
+        final MockHandlerInfoParam infoParam = MockHandlerSetUp.buildTestMockHandlerInfoVo();
+        final Result<Identity> result = this.mockHandlerController.save(infoParam);
         Assert.assertNotNull(result.getData());
+        infoParam.setHandlerId(result.getData().stringValue());
 
-        return result.getData();
+        return infoParam;
     }
 
     private void update(final Identity handlerId) {
@@ -84,9 +101,10 @@ public class MockHandlerControllerTest {
         Assert.assertNotNull(voResult.getData());
     }
 
-    private void query() {
+    private void query(final Identity projectId) {
 
         final QueryMockHandlerParam param = new QueryMockHandlerParam();
+        param.setProjectId(projectId.stringValue());
 
         final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(param);
 

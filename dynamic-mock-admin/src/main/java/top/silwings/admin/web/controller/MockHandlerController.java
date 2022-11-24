@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @Since
  **/
 @RestController
-@RequestMapping("/dynamic-mock/handler")
+@RequestMapping("/dynamic-mock/mock/handler")
 @Api(value = "Mock 处理器管理")
 public class MockHandlerController {
 

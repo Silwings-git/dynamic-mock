@@ -3,7 +3,7 @@ package top.silwings.core.handler.tree.dynamic.operator.operators;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
@@ -35,6 +35,16 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
         return OrOperator.from(dynamicValueList);
     }
 
+    @Override
+    public int getPriority() {
+        return OperatorType.LOGICAL.getPriority();
+    }
+
+    @Override
+    public String getOperatorSymbol() {
+        return SYMBOL;
+    }
+
     /**
      * @ClassName OrDoubleExtOperation
      * @Description 双或
@@ -54,27 +64,17 @@ public class OrDoubleOperatorFactory implements OperatorFactory {
         }
 
         @Override
-        public Object doInterpret(final Context context, final List<Object> childNodeValueList) {
+        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             if (childNodeValueList.size() < this.getNodeCount() || this.getNodeCount() != 2) {
                 throw new DynamicMockException("Parameter incorrectly of `||` operator. expect: 2, actual: " + childNodeValueList.size());
             }
 
-            return TypeUtils.toBoolean(childNodeValueList.get(0)) || TypeUtils.toBoolean(childNodeValueList.get(1));
+            return TypeUtils.toBooleanValue(childNodeValueList.get(0)) || TypeUtils.toBooleanValue(childNodeValueList.get(1));
         }
 
         @Override
         protected String symbol() {
             return SYMBOL;
         }
-    }
-
-    @Override
-    public int getPriority() {
-        return OperatorType.LOGICAL.getPriority();
-    }
-
-    @Override
-    public String getOperatorSymbol() {
-        return SYMBOL;
     }
 }

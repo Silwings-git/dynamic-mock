@@ -46,7 +46,7 @@ public class JsonNodeParser {
 
         if (json instanceof Map) {
 
-            final Map<?, ?> parseObject = (Map<?,?>) json;
+            final Map<?, ?> parseObject = (Map<?, ?>) json;
             final ObjectNode objectNode = new ObjectNode();
             // 每遍历到一个JSONObject,添加一层ObjectNode
             for (final Map.Entry<?, ?> entry : parseObject.entrySet()) {

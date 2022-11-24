@@ -99,4 +99,16 @@ public class CheckUtils {
     public static void isNotEmpty(final Collection<?> list, final Supplier<RuntimeException> exceptionSupplier) {
         isTrue(CollectionUtils.isNotEmpty(list), exceptionSupplier);
     }
+
+    public static void minLength(final String str, final int length, final Supplier<RuntimeException> exceptionSupplier) {
+        isTrue(StringUtils.isNotBlank(str) && str.length() >= length, exceptionSupplier);
+    }
+
+    public static void isInteger(final String handlerId, final Supplier<RuntimeException> exceptionSupplier) {
+        try {
+            Integer.parseInt(handlerId);
+        } catch (NumberFormatException e) {
+            throw exceptionSupplier.get();
+        }
+    }
 }

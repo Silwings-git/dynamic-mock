@@ -2,7 +2,7 @@ package top.silwings.core.handler.tree;
 
 import lombok.Getter;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.Context;
+import top.silwings.core.handler.MockHandlerContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class NodeInterpreter {
         this.nodeList = NodeReader.postOrderTraversal(tree);
     }
 
-    public Object interpret(final Context context) {
+    public Object interpret(final MockHandlerContext mockHandlerContext) {
 
         final Stack<Object> stack = new Stack<>();
 
@@ -47,7 +47,7 @@ public class NodeInterpreter {
             }
             Collections.reverse(arrayList);
 
-            final Object interpret = node.interpret(context, arrayList);
+            final Object interpret = node.interpret(mockHandlerContext, arrayList);
 
             stack.push(interpret);
         }
