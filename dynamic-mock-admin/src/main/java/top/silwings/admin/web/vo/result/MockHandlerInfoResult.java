@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
+import top.silwings.core.common.Identity;
 
 import java.util.Date;
 import java.util.List;
@@ -28,10 +29,10 @@ import java.util.Map;
 public class MockHandlerInfoResult {
 
     @ApiModelProperty(value = "项目id", example = "P1")
-    private String projectId;
+    private Identity projectId;
 
     @ApiModelProperty(value = "处理器id", example = "H1")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "处理器名称", example = "获取用户信息")
     private String name;

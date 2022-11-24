@@ -104,9 +104,9 @@ public class CheckUtils {
         isTrue(StringUtils.isNotBlank(str) && str.length() >= length, exceptionSupplier);
     }
 
-    public static void isInteger(final String handlerId, final Supplier<RuntimeException> exceptionSupplier) {
+    public static void isInteger(final String arg, final Supplier<RuntimeException> exceptionSupplier) {
         try {
-            Integer.parseInt(handlerId);
+            Integer.parseInt(arg);
         } catch (NumberFormatException e) {
             throw exceptionSupplier.get();
         }

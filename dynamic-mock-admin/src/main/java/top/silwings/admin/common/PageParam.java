@@ -3,7 +3,6 @@ package top.silwings.admin.common;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.ibatis.session.RowBounds;
 
 /**
@@ -14,7 +13,6 @@ import org.apache.ibatis.session.RowBounds;
  * @Since
  **/
 @Getter
-@Setter
 @ApiModel(description = "分页参数")
 public class PageParam {
 
@@ -33,12 +31,20 @@ public class PageParam {
     }
 
     public PageParam(final int pageNum, final int pageSize) {
-        this.pageNum = Math.min(pageNum, MIN_PAGE_NUM);
-        this.pageSize = Math.max(pageSize, MAX_PAGE_SIZE);
+        this.setPageNum(pageNum);
+        this.setPageSize(pageSize);
     }
 
     public static PageParam of(final int pageNum, final int pageSize) {
         return new PageParam(pageNum, pageSize);
+    }
+
+    public void setPageNum(final int pageNum) {
+        this.pageNum = Math.max(pageNum, MIN_PAGE_NUM);
+    }
+
+    public void setPageSize(final int pageSize) {
+        this.pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
     }
 
     public RowBounds toRowBounds() {

@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -22,16 +22,13 @@ import top.silwings.core.utils.CheckUtils;
 public class DeleteTaskLogParam {
 
     @ApiModelProperty(value = "处理器id", required = true, example = "1")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "日志id.仅传递handlerId时表示删除该id下全部日志", example = "1")
-    private String logId;
+    private Identity logId;
 
     public void validate() {
-        CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
-        if (StringUtils.isNotBlank(this.logId)) {
-            CheckUtils.isInteger(this.logId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "logId"));
-        }
+        CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
     }
 
 }

@@ -2,7 +2,6 @@ package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,10 +47,10 @@ public class ProjectController {
 
         param.validate();
 
-        if (StringUtils.isBlank(param.getProjectId())) {
+        if (null == param.getProjectId()) {
             this.projectService.create(param.getProjectName(), param.getBaseUri());
         } else {
-            this.projectService.updateById(Identity.from(param.getProjectId()), param.getProjectName(), param.getBaseUri());
+            this.projectService.updateById(param.getProjectId(), param.getProjectName(), param.getBaseUri());
         }
 
         return Result.ok();
@@ -79,7 +78,7 @@ public class ProjectController {
 
         param.validate();
 
-        this.projectService.delete(Identity.from(param.getProjectId()));
+        this.projectService.delete(param.getProjectId());
 
         return Result.ok();
     }

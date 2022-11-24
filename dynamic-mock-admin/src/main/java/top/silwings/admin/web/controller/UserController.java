@@ -55,7 +55,7 @@ public class UserController {
 
         if (null != saveUserParam.getUserId()) {
 
-            this.userService.updateById(Identity.from(saveUserParam.getUserId()), saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
+            this.userService.updateById(saveUserParam.getUserId(), saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
         } else {
 
             this.userService.create(saveUserParam.getUsername(), saveUserParam.getUserAccount(), saveUserParam.getUserAccount(), saveUserParam.getRole());

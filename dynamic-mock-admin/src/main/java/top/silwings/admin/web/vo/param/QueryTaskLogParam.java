@@ -7,6 +7,7 @@ import lombok.Setter;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -22,13 +23,13 @@ import top.silwings.core.utils.CheckUtils;
 public class QueryTaskLogParam extends PageParam {
 
     @ApiModelProperty(value = "处理器id", required = true, example = "1")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "任务名称", required = true, example = "1")
     private String name;
 
     public void validate() {
-        CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+        CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
     }
 
 }

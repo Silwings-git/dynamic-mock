@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.model.ProjectDto;
+import top.silwings.core.common.Identity;
 
 /**
  * @ClassName ProjectResult
@@ -19,7 +20,7 @@ import top.silwings.admin.model.ProjectDto;
 public class ProjectResult {
 
     @ApiModelProperty(value = "项目id", example = "1")
-    private String projectId;
+    private Identity projectId;
 
     @ApiModelProperty(value = "项目名", example = "ERP")
     private String projectName;
@@ -30,7 +31,7 @@ public class ProjectResult {
     public static ProjectResult from(final ProjectDto project) {
 
         final ProjectResult projectResult = new ProjectResult();
-        projectResult.setProjectId(project.getProjectId().stringValue());
+        projectResult.setProjectId(project.getProjectId());
         projectResult.setProjectName(project.getProjectName());
         projectResult.setBaseUri(project.getBaseUri());
 

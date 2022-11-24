@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -98,11 +100,23 @@ public class Identity {
      * @Date 2022/11/20 18:49
      * @Since
      **/
+    @Slf4j
     public static class IdentityDeserializer extends JsonDeserializer<Identity> {
 
         @Override
         public Identity deserialize(final JsonParser jsonParser, final DeserializationContext context) throws IOException {
-            return from(jsonParser.getValueAsString());
+            final String valueAsString = jsonParser.getValueAsString();
+
+            if (StringUtils.isBlank(valueAsString)) {
+                return null;
+            }
+
+            try {
+                return Identity.from(valueAsString);
+            } catch (Exception e) {
+                log.error("Identity 反序列化失败.", e);
+                return null;
+            }
         }
 
     }

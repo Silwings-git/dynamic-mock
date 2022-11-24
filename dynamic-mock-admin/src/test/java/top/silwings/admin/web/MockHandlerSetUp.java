@@ -29,8 +29,8 @@ public class MockHandlerSetUp {
 
     public static MockHandlerInfoParam buildTestMockHandlerInfoVo(final Identity handlerId) {
         return MockHandlerInfoParam.builder()
-                .projectId("1")
-                .handlerId(null == handlerId ? null : handlerId.toString())
+                .projectId(Identity.from("1"))
+                .handlerId(handlerId)
                 .name("TEST_MOCK_HANDLER")
                 .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
                 .requestUri("/test")

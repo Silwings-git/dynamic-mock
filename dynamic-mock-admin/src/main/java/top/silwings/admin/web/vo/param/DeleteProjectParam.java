@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -21,9 +22,9 @@ import top.silwings.core.utils.CheckUtils;
 public class DeleteProjectParam {
 
     @ApiModelProperty(value = "项目id", required = true, example = "1")
-    private String projectId;
+    private Identity projectId;
 
     public void validate() {
-        CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
+        CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
     }
 }

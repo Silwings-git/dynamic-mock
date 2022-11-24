@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -21,7 +22,7 @@ import top.silwings.core.utils.CheckUtils;
 public class SaveProjectParam {
 
     @ApiModelProperty(value = "项目id", example = "12")
-    private String projectId;
+    private Identity projectId;
 
     @ApiModelProperty(value = "项目名称", required = true, example = "ERP")
     private String projectName;

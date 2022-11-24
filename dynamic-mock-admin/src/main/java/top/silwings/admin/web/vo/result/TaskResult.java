@@ -22,7 +22,7 @@ public class TaskResult {
     private String taskCode;
 
     @ApiModelProperty(value = "处理器id", example = "1")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "剩余执行次数", example = "1")
     private Integer remainingTimes;
@@ -33,7 +33,7 @@ public class TaskResult {
     public static TaskResult of(final String taskCode, final Identity handlerId, final Integer remainingTimes, final String taskJson) {
         final TaskResult taskResult = new TaskResult();
         taskResult.setTaskCode(taskCode);
-        taskResult.setHandlerId(handlerId.stringValue());
+        taskResult.setHandlerId(handlerId);
         taskResult.setRemainingTimes(remainingTimes);
         taskResult.setTaskJson(taskJson);
         return taskResult;

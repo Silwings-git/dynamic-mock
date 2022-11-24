@@ -1,6 +1,5 @@
 package top.silwings.admin.web.vo.converter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
@@ -10,7 +9,6 @@ import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskRequestInfoParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
-import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -34,8 +32,8 @@ public class MockHandlerVoConverter {
     public MockHandlerDto convert(final MockHandlerInfoParam vo) {
         final String requestUri = vo.getRequestUri();
         return MockHandlerDto.builder()
-                .projectId(Identity.from(vo.getProjectId()))
-                .handlerId(StringUtils.isBlank(vo.getHandlerId()) ? null : Identity.from(Integer.parseInt(vo.getHandlerId())))
+                .projectId(vo.getProjectId())
+                .handlerId(vo.getHandlerId())
                 .enableStatus(EnableStatus.DISABLE)
                 .name(vo.getName())
                 .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).filter(Objects::nonNull).collect(Collectors.toList()))
@@ -52,9 +50,9 @@ public class MockHandlerVoConverter {
 
         final MockHandlerInfoResult resultVo = new MockHandlerInfoResult();
 
-        resultVo.setProjectId(dto.getProjectId().stringValue());
+        resultVo.setProjectId(dto.getProjectId());
         resultVo.setEnableStatus(dto.getEnableStatus().code());
-        resultVo.setHandlerId(dto.getHandlerId().stringValue());
+        resultVo.setHandlerId(dto.getHandlerId());
         resultVo.setName(dto.getName());
         resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
         resultVo.setRequestUri(dto.getRequestUri());

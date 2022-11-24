@@ -7,6 +7,7 @@ import lombok.Setter;
 import top.silwings.admin.common.UnregisterType;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -25,10 +26,10 @@ public class UnregisterTaskParam {
     private String unregisterType;
 
     @ApiModelProperty(value = "项目id", example = "10")
-    private String projectId;
+    private Identity projectId;
 
     @ApiModelProperty(value = "处理器id", example = "10")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "任务编码", example = "10")
     private String taskCode;
@@ -41,12 +42,12 @@ public class UnregisterTaskParam {
         CheckUtils.isNotNull(type, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "unregisterType"));
 
         if (UnregisterType.TASK.equals(type)) {
-            CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+            CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
             CheckUtils.isNotBlank(this.taskCode, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "taskCode"));
         } else if (UnregisterType.MOCK_HANDLER.equals(type)) {
-            CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+            CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
         } else {
-            CheckUtils.isInteger(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "projectId"));
+            CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
         }
 
         CheckUtils.isNotNull(this.interrupt, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "interrupt"));

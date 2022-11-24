@@ -1,7 +1,6 @@
 package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,19 +59,18 @@ public class MockTaskController {
 
         param.validate();
 
-        final Identity projectId = Identity.from(param.getProjectId());
-
-        UserHolder.validPermission(projectId);
+        UserHolder.validPermission(param.getProjectId());
 
         final List<Identity> handlerIdList;
 
-        if (StringUtils.isNotBlank(param.getHandlerId())) {
-            final Identity handlerId = Identity.from(param.getHandlerId());
-            final MockHandlerDto mockHandler = this.mockHandlerService.find(handlerId);
+        if (null != param.getHandlerId()) {
+
+            final MockHandlerDto mockHandler = this.mockHandlerService.find(param.getHandlerId());
             UserHolder.validPermission(mockHandler.getProjectId());
-            handlerIdList = Collections.singletonList(handlerId);
+            handlerIdList = Collections.singletonList(param.getHandlerId());
+
         } else {
-            handlerIdList = this.mockHandlerService.findHandlerIds(projectId);
+            handlerIdList = this.mockHandlerService.findHandlerIds(param.getProjectId());
         }
 
         final List<AutoCancelTask> taskList = this.mockTaskManager.query(handlerIdList);
@@ -95,23 +93,21 @@ public class MockTaskController {
 
         if (UnregisterType.TASK.equals(unregisterType)) {
 
-            this.validPermission(Identity.from(param.getHandlerId()));
+            this.validPermission(param.getHandlerId());
 
-            this.mockTaskManager.unregisterByTaskCode(Identity.from(param.getHandlerId()), param.getTaskCode(), param.getInterrupt());
+            this.mockTaskManager.unregisterByTaskCode(param.getHandlerId(), param.getTaskCode(), param.getInterrupt());
 
         } else if (UnregisterType.MOCK_HANDLER.equals(unregisterType)) {
 
-            this.validPermission(Identity.from(param.getHandlerId()));
+            this.validPermission(param.getHandlerId());
 
-            this.mockTaskManager.unregisterByHandlerId(Identity.from(param.getHandlerId()), param.getInterrupt());
+            this.mockTaskManager.unregisterByHandlerId(param.getHandlerId(), param.getInterrupt());
 
         } else {
 
-            final Identity projectId = Identity.from(param.getProjectId());
+            UserHolder.validPermission(param.getProjectId());
 
-            UserHolder.validPermission(projectId);
-
-            this.mockTaskManager.unregisterByHandlerIds(this.mockHandlerService.findHandlerIds(projectId), param.getInterrupt());
+            this.mockTaskManager.unregisterByHandlerIds(this.mockHandlerService.findHandlerIds(param.getProjectId()), param.getInterrupt());
         }
 
         return Result.ok();
@@ -133,11 +129,9 @@ public class MockTaskController {
 
         param.validate();
 
-        final Identity handlerId = Identity.from(param.getHandlerId());
+        this.validPermission(param.getHandlerId());
 
-        this.validPermission(handlerId);
-
-        final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(handlerId, param.getName(), param);
+        final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(param.getHandlerId(), param.getName(), param);
 
         final List<MockTaskLogResult> MockTaskLogResultList = pageData.getList().stream()
                 .map(MockTaskLogResult::from)
@@ -153,11 +147,9 @@ public class MockTaskController {
 
         param.validate();
 
-        final Identity handlerId = Identity.from(param.getHandlerId());
+        this.validPermission(param.getHandlerId());
 
-        this.validPermission(handlerId);
-
-        this.mockTaskLogService.delete(handlerId, Identity.from(param.getLogId()));
+        this.mockTaskLogService.delete(param.getHandlerId(), param.getLogId());
 
         return Result.ok();
     }

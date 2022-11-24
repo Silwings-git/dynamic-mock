@@ -57,9 +57,9 @@ public class MockHandlerControllerTest {
 
         final MockHandlerInfoParam infoParam = this.save();
 
-        final Identity handlerId = Identity.from(infoParam.getHandlerId());
+        final Identity handlerId = infoParam.getHandlerId();
 
-        final Identity projectId = Identity.from(infoParam.getProjectId());
+        final Identity projectId = infoParam.getProjectId();
 
         this.update(handlerId);
         this.find(handlerId);
@@ -79,7 +79,7 @@ public class MockHandlerControllerTest {
         final MockHandlerInfoParam infoParam = MockHandlerSetUp.buildTestMockHandlerInfoVo();
         final Result<Identity> result = this.mockHandlerController.save(infoParam);
         Assert.assertNotNull(result.getData());
-        infoParam.setHandlerId(result.getData().stringValue());
+        infoParam.setHandlerId(result.getData());
 
         return infoParam;
     }
@@ -94,7 +94,7 @@ public class MockHandlerControllerTest {
     private void find(final Identity handlerId) {
 
         final FindMockHandlerParam param = new FindMockHandlerParam();
-        param.setHandlerId(handlerId.stringValue());
+        param.setHandlerId(handlerId);
 
         final Result<MockHandlerInfoResult> voResult = this.mockHandlerController.find(param);
 
@@ -104,7 +104,7 @@ public class MockHandlerControllerTest {
     private void query(final Identity projectId) {
 
         final QueryMockHandlerParam param = new QueryMockHandlerParam();
-        param.setProjectId(projectId.stringValue());
+        param.setProjectId(projectId);
 
         final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(param);
 
@@ -114,7 +114,7 @@ public class MockHandlerControllerTest {
     private void enable(final Identity handlerId) {
 
         final EnableStatusParam enableStatusParam = new EnableStatusParam();
-        enableStatusParam.setHandlerId(handlerId.stringValue());
+        enableStatusParam.setHandlerId(handlerId);
         enableStatusParam.setEnableStatus(EnableStatus.ENABLE.code());
         final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusParam);
 
@@ -123,7 +123,7 @@ public class MockHandlerControllerTest {
 
     private void disable(final Identity handlerId) {
         final EnableStatusParam enableStatusParam = new EnableStatusParam();
-        enableStatusParam.setHandlerId(handlerId.stringValue());
+        enableStatusParam.setHandlerId(handlerId);
         enableStatusParam.setEnableStatus(EnableStatus.DISABLE.code());
         final Result<Void> result = this.mockHandlerController.updateEnableStatus(enableStatusParam);
 
@@ -133,7 +133,7 @@ public class MockHandlerControllerTest {
     private void delete(final Identity handlerId) {
 
         final DeleteMockHandlerParam param = new DeleteMockHandlerParam();
-        param.setHandlerId(handlerId.stringValue());
+        param.setHandlerId(handlerId);
 
         final Result<Void> result = this.mockHandlerController.delete(param);
 

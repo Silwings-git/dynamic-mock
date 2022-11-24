@@ -59,7 +59,7 @@ public class MockHandlerController {
 
         param.validate();
 
-        UserHolder.validPermission(Identity.from(param.getProjectId()));
+        UserHolder.validPermission(param.getProjectId());
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(param);
 
@@ -83,7 +83,7 @@ public class MockHandlerController {
 
         param.validate();
 
-        final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(Identity.from(param.getHandlerId()));
+        final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(param.getHandlerId());
 
         UserHolder.validPermission(mockHandlerDto.getProjectId());
 
@@ -99,12 +99,10 @@ public class MockHandlerController {
 
         param.validate();
 
-        final String projectId = param.getProjectId();
-
-        UserHolder.validPermission(Identity.from(projectId));
+        UserHolder.validPermission(param.getProjectId());
 
         final QueryConditionDto queryCondition = QueryConditionDto.builder()
-                .projectId(Identity.from(projectId))
+                .projectId(param.getProjectId())
                 .name(param.getName())
                 .httpMethod(param.getHttpMethod())
                 .requestUri(param.getRequestUri())
@@ -127,11 +125,9 @@ public class MockHandlerController {
 
         param.validate();
 
-        final Identity handlerId = Identity.from(param.getHandlerId());
+        UserHolder.validPermission(this.mockHandlerService.findProjectId(param.getHandlerId()));
 
-        UserHolder.validPermission(this.mockHandlerService.findProjectId(handlerId));
-
-        this.mockHandlerService.delete(handlerId);
+        this.mockHandlerService.delete(param.getHandlerId());
 
         return Result.ok();
     }
@@ -143,11 +139,9 @@ public class MockHandlerController {
 
         param.validate();
 
-        final Identity handlerId = Identity.from(param.getHandlerId());
+        UserHolder.validPermission(this.mockHandlerService.findProjectId(param.getHandlerId()));
 
-        UserHolder.validPermission(this.mockHandlerService.findProjectId(handlerId));
-
-        this.mockHandlerService.updateEnableStatus(handlerId, EnableStatus.valueOfCode(param.getEnableStatus()));
+        this.mockHandlerService.updateEnableStatus(param.getHandlerId(), EnableStatus.valueOfCode(param.getEnableStatus()));
 
         return Result.ok();
     }

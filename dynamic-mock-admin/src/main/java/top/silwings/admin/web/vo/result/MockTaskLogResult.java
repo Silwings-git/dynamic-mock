@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
 
 import java.util.Date;
@@ -27,13 +28,13 @@ import java.util.Date;
 public class MockTaskLogResult {
 
     @ApiModelProperty(value = "日志id", example = "1")
-    private String logId;
+    private Identity logId;
 
     @ApiModelProperty(value = "任务编码", example = "111")
     private String taskCode;
 
     @ApiModelProperty(value = "Mock 处理器id", example = "222")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "任务名", example = "erp")
     private String name;
@@ -56,9 +57,9 @@ public class MockTaskLogResult {
     public static MockTaskLogResult from(final MockTaskLogDto mockTaskLog) {
 
         return MockTaskLogResult.builder()
-                .logId(mockTaskLog.getLogId().stringValue())
+                .logId(mockTaskLog.getLogId())
                 .taskCode(mockTaskLog.getTaskCode())
-                .handlerId(mockTaskLog.getHandlerId().stringValue())
+                .handlerId(mockTaskLog.getHandlerId())
                 .name(mockTaskLog.getName())
                 .registrationTime(mockTaskLog.getRegistrationTime())
                 .requestInfo(mockTaskLog.getRequestInfo())

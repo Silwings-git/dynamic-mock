@@ -7,6 +7,7 @@ import lombok.Setter;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.EnableStatus;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -22,13 +23,13 @@ import top.silwings.core.utils.CheckUtils;
 public class EnableStatusParam {
 
     @ApiModelProperty(value = "处理器ID", required = true, example = "10")
-    private String handlerId;
+    private Identity handlerId;
 
     @ApiModelProperty(value = "启用状态.enable-启用,disable-禁用", required = true, example = "enable")
     private Integer enableStatus;
 
     public void validate() {
-        CheckUtils.isInteger(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+        CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
         CheckUtils.isNotNull(EnableStatus.valueOfCode(this.enableStatus), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "enableStatus"));
     }
 }

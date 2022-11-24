@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
 /**
@@ -22,7 +22,7 @@ import top.silwings.core.utils.CheckUtils;
 public class SaveUserParam {
 
     @ApiModelProperty(value = "用户id.有值为更新,无值为新增", example = "10")
-    private String userId;
+    private Identity userId;
 
     @ApiModelProperty(value = "用户昵称", required = true, example = "username")
     private String username;
@@ -38,7 +38,7 @@ public class SaveUserParam {
 
     public void validate() {
         CheckUtils.isNotBlank(this.username, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "username"));
-        if (StringUtils.isBlank(this.userId)) {
+        if (null != this.userId) {
             CheckUtils.minLength(this.userAccount, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "userAccount"));
             CheckUtils.minLength(this.password, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "password"));
             CheckUtils.isNotNull(this.role, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "role"));
