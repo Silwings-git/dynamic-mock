@@ -19,7 +19,4 @@ public class MockTaskStartEvent extends MockTaskEvent {
         return new MockTaskStartEvent(source, mockTaskLog);
     }
 
-    public static MockTaskStartEvent from(final Object source, final MockTaskLogDto taskLog) {
-        return new MockTaskStartEvent(source, taskLog);
-    }
 }

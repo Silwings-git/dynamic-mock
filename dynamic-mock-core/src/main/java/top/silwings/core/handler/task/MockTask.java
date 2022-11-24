@@ -136,7 +136,7 @@ public class MockTask implements Runnable {
         final MockTaskLogProperties mockTaskLogProperties = DynamicMockContext.getInstance().getMockTaskLogProperties();
 
         if (!mockTaskLogProperties.isEnableLog()) {
-            return MockTaskStartEvent.from(mockTask, null);
+            return MockTaskStartEvent.of(mockTask, null);
         }
 
         final MockTaskLogDto taskLog = MockTaskLogDto.builder()
@@ -148,7 +148,7 @@ public class MockTask implements Runnable {
                 .requestTime(new Date())
                 .build();
 
-        final MockTaskStartEvent event = MockTaskStartEvent.from(mockTask, taskLog);
+        final MockTaskStartEvent event = MockTaskStartEvent.of(mockTask, taskLog);
 
         DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(event);
 
