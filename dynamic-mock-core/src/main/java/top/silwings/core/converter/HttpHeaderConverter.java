@@ -14,6 +14,10 @@ import java.util.Map;
  **/
 public class HttpHeaderConverter {
 
+    private HttpHeaderConverter() {
+        throw new AssertionError();
+    }
+
     public static HttpHeaders from(final Object obj) {
 
         final HttpHeaders httpHeaders = new HttpHeaders();

@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
  **/
 public class UriVariableConvertor {
 
+    private UriVariableConvertor() {
+        throw new AssertionError();
+    }
+
     public static Map<String, ?> from(final Object obj) {
 
         final MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<>();
