@@ -11,6 +11,7 @@ import top.silwings.core.common.Identity;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @ClassName MockHandlerDefinition
@@ -82,4 +83,24 @@ public class MockHandlerDto {
 
     private Date updateTime;
 
+    public static MockHandlerDto copyOf(final MockHandlerDto dto, final Consumer<MockHandlerDto.MockHandlerDtoBuilder> builderConsumer) {
+
+        final MockHandlerDtoBuilder handlerBuilder = MockHandlerDto.builder()
+                .projectId(dto.getProjectId())
+                .handlerId(dto.getHandlerId())
+                .enableStatus(dto.getEnableStatus())
+                .name(dto.getName())
+                .httpMethods(dto.getHttpMethods())
+                .requestUri(dto.getRequestUri())
+                .label(dto.getLabel())
+                .delayTime(dto.getDelayTime())
+                .customizeSpace(dto.getCustomizeSpace())
+                .responses(dto.getResponses())
+                .tasks(dto.getTasks())
+                .updateTime(dto.getUpdateTime());
+
+        builderConsumer.accept(handlerBuilder);
+
+        return handlerBuilder.build();
+    }
 }

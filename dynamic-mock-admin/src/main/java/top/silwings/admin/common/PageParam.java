@@ -44,7 +44,8 @@ public class PageParam {
     }
 
     public void setPageSize(final int pageSize) {
-        this.pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
+        // 限制大于等于0小于等于100
+        this.pageSize = Math.min(Math.max(0, pageSize), MAX_PAGE_SIZE);
     }
 
     public RowBounds toRowBounds() {

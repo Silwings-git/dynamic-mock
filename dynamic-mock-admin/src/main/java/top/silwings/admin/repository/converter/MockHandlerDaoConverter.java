@@ -13,6 +13,7 @@ import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -64,5 +65,26 @@ public class MockHandlerDaoConverter {
                 .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), "[]"), TaskInfoDto.class))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
+    }
+
+    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo, final Consumer<MockHandlerDto.MockHandlerDtoBuilder> builderConsumer) {
+
+        final MockHandlerDto.MockHandlerDtoBuilder builder = MockHandlerDto.builder()
+                .handlerId(Identity.from(mockHandlerPo.getHandlerId()))
+                .projectId(Identity.from(mockHandlerPo.getProjectId()))
+                .enableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerPo.getEnableStatus(), EnableStatus.DISABLE, EnableStatus::valueOfCode))
+                .name(mockHandlerPo.getName())
+                .httpMethods(Arrays.stream(mockHandlerPo.getHttpMethods().split(",")).map(HttpMethod::resolve).collect(Collectors.toList()))
+                .requestUri(mockHandlerPo.getRequestUri())
+                .label(mockHandlerPo.getLabel())
+                .delayTime(mockHandlerPo.getDelayTime())
+                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
+                .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), "[]"), MockResponseInfoDto.class))
+                .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), "[]"), TaskInfoDto.class))
+                .updateTime(mockHandlerPo.getUpdateTime());
+
+        builderConsumer.accept(builder);
+
+        return builder.build();
     }
 }

@@ -25,8 +25,11 @@ public enum ErrorCode {
     MOCK_HANDLER_DUPLICATE_REQUEST_PATH("mock_handler_duplicate_request_path"),
     MOCK_HANDLER_NOT_EXIST("mock_handler_not_exist"),
 
+    MOCK_HANDLER_PROJECT_MISMATCH("mock_handler_project_mismatch"),
+
     // Project
     PROJECT_PROHIBIT_DELETION("project_prohibit_deletion"),
+    PROJECT_NOT_EXIST("project_not_exist"),
 
     // User
     USER_DUPLICATE_ACCOUNT("user_duplicate_account"),

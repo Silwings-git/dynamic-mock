@@ -1,6 +1,7 @@
 package top.silwings.admin.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
@@ -184,7 +186,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
-    public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus) {
+    public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus, final ProjectDto project) {
 
         final MockHandlerPo mockHandler = new MockHandlerPo();
         mockHandler.setEnableStatus(enableStatus.code());
@@ -199,7 +201,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
             final MockHandlerDto mockHandlerDto = this.find(handlerId);
 
-            this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(mockHandlerDto));
+            this.registerHandler(mockHandlerDto, project);
 
         } else {
 
@@ -226,6 +228,19 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         return this.queryPageData(queryCondition, pageParam.toRowBounds());
     }
+
+    private List<MockHandlerDto> queryEnableHandlerList(final Identity projectId) {
+
+        final Example queryCondition = new Example(MockHandlerPo.class);
+        queryCondition.createCriteria()
+                .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.ENABLE.code())
+                .andEqualTo(MockHandlerPo.C_PROJECT_ID, projectId.intValue());
+
+        return this.mockHandlerMapper.selectByCondition(queryCondition).stream()
+                .map(this.mockHandlerDaoConverter::convert)
+                .collect(Collectors.toList());
+    }
+
 
     private PageData<MockHandlerDto> queryPageData(final Example queryCondition, final RowBounds rowBounds) {
 
@@ -271,4 +286,31 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void reRegisterHandler(final ProjectDto project) {
+
+        final List<MockHandlerDto> mockHandlerList = this.queryEnableHandlerList(project.getProjectId());
+
+        mockHandlerList.stream().map(MockHandlerDto::getHandlerId).forEach(this.mockHandlerManager::unregisterHandler);
+
+        mockHandlerList.forEach(handler -> this.registerHandler(handler, project));
+    }
+
+    @Override
+    public void registerHandler(final MockHandlerDto mockHandler, final ProjectDto project) {
+
+        CheckUtils.isEquals(mockHandler.getProjectId(), project.getProjectId(), DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_PROJECT_MISMATCH, mockHandler.getProjectId().stringValue(), project.getProjectId().stringValue()));
+
+        final MockHandlerDto actualMockHandler;
+
+        if (StringUtils.isNotBlank(project.getBaseUri())) {
+
+            // 在原始的处理地址上添加项目基础uri
+            actualMockHandler = MockHandlerDto.copyOf(mockHandler, builder -> builder.requestUri(project.getBaseUri() + mockHandler.getRequestUri()));
+        } else {
+            actualMockHandler = mockHandler;
+        }
+
+        this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
+    }
 }

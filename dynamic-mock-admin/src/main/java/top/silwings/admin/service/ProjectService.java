@@ -15,11 +15,13 @@ import java.util.List;
  * @Since
  **/
 public interface ProjectService {
-    void create(String projectName, String baseUri);
+    Identity create(String projectName, String baseUri);
 
     void delete(Identity projectId);
 
     PageData<ProjectDto> query(List<Identity> projectIdList, String projectName, PageParam pageParam);
 
-    void updateById(Identity projectId, String projectName, String baseUri);
+    Identity updateById(Identity projectId, String projectName, String baseUri);
+
+    ProjectDto find(Identity projectId);
 }

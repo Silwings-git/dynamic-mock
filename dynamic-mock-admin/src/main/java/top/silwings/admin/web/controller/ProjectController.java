@@ -43,17 +43,19 @@ public class ProjectController {
     @PostMapping("/save")
     @PermissionLimit(adminUser = true)
     @ApiOperation(value = "保存项目信息")
-    public Result<Void> save(@RequestBody SaveProjectParam param) {
+    public Result<Identity> save(@RequestBody SaveProjectParam param) {
 
         param.validate();
 
+        final Identity projectId;
+
         if (null == param.getProjectId()) {
-            this.projectService.create(param.getProjectName(), param.getBaseUri());
+            projectId = this.projectService.create(param.getProjectName(), param.getBaseUri());
         } else {
-            this.projectService.updateById(param.getProjectId(), param.getProjectName(), param.getBaseUri());
+            projectId = this.projectService.updateById(param.getProjectId(), param.getProjectName(), param.getBaseUri());
         }
 
-        return Result.ok();
+        return Result.ok(projectId);
     }
 
     @PostMapping("/query")

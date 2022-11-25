@@ -27,10 +27,9 @@ public class MockHandlerSetUp {
     private MockHandlerSetUp() {
     }
 
-    public static MockHandlerInfoParam buildTestMockHandlerInfoVo(final Identity handlerId) {
+    public static MockHandlerInfoParam buildHandler(final Identity project) {
         return MockHandlerInfoParam.builder()
-                .projectId(Identity.from("1"))
-                .handlerId(handlerId)
+                .projectId(project)
                 .name("TEST_MOCK_HANDLER")
                 .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
                 .requestUri("/test")
@@ -42,8 +41,18 @@ public class MockHandlerSetUp {
                 .build();
     }
 
-    public static MockHandlerInfoParam buildTestMockHandlerInfoVo() {
-        return buildTestMockHandlerInfoVo(null);
+    public static MockHandlerInfoParam update(final Identity handlerId) {
+        return MockHandlerInfoParam.builder()
+                .handlerId(handlerId)
+                .name("TEST_MOCK_HANDLER")
+                .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
+                .requestUri("/test")
+                .label("TEST_MOCK_HANDLER")
+                .delayTime(0)
+                .customizeSpace(buildCustomizeSpace())
+                .responses(buildMockResponseInfoVoList())
+                .tasks(buildTaskList())
+                .build();
     }
 
     private static List<SaveTaskInfoParam> buildTaskList() {

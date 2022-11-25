@@ -33,6 +33,10 @@ public class DynamicMockAdminException extends RuntimeException {
         return () -> DynamicMockAdminException.of(errorCode, arg);
     }
 
+    public static Supplier<RuntimeException> supplier(final ErrorCode errorCode, final String arg1, final String arg2) {
+        return () -> DynamicMockAdminException.of(errorCode, arg1, arg2);
+    }
+
     public static DynamicMockAdminException from(final ErrorCode errorCode) {
         return new DynamicMockAdminException(errorCode, new String[0]);
     }

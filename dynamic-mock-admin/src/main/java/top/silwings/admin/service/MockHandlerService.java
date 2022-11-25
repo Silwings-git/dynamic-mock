@@ -2,6 +2,7 @@ package top.silwings.admin.service;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
@@ -17,6 +18,7 @@ import java.util.List;
  * @Since
  **/
 public interface MockHandlerService {
+
     void delete(Identity handlerId);
 
     MockHandlerDto find(Identity handlerId);
@@ -25,7 +27,7 @@ public interface MockHandlerService {
 
     PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
 
-    void updateEnableStatus(Identity handlerId, EnableStatus enableStatus);
+    void updateEnableStatus(Identity handlerId, EnableStatus enableStatus, ProjectDto project);
 
     int findMockHandlerQuantityByProject(Identity projectId);
 
@@ -36,4 +38,9 @@ public interface MockHandlerService {
     PageData<MockHandlerDto> queryEnableHandlerList(PageParam pageParam);
 
     List<Identity> findHandlerIds(Identity projectId);
+
+    void reRegisterHandler(ProjectDto project);
+
+    void registerHandler(MockHandlerDto mockHandler, ProjectDto project);
+
 }

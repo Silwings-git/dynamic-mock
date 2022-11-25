@@ -12,6 +12,7 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.service.MockHandlerService;
+import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
@@ -46,10 +47,13 @@ public class MockHandlerController {
 
     private final MockHandlerValidator mockHandlerValidator;
 
-    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator) {
+    private final ProjectService projectService;
+
+    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
         this.mockHandlerService = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
+        this.projectService = projectService;
     }
 
     @PostMapping("/save")
@@ -139,9 +143,11 @@ public class MockHandlerController {
 
         param.validate();
 
-        UserHolder.validPermission(this.mockHandlerService.findProjectId(param.getHandlerId()));
+        final Identity projectId = this.mockHandlerService.findProjectId(param.getHandlerId());
 
-        this.mockHandlerService.updateEnableStatus(param.getHandlerId(), EnableStatus.valueOfCode(param.getEnableStatus()));
+        UserHolder.validPermission(projectId);
+
+        this.mockHandlerService.updateEnableStatus(param.getHandlerId(), EnableStatus.valueOfCode(param.getEnableStatus()), this.projectService.find(projectId));
 
         return Result.ok();
     }

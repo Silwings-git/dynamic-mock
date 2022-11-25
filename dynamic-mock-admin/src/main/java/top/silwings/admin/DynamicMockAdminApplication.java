@@ -9,10 +9,14 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.service.MockHandlerService;
-import top.silwings.core.handler.MockHandlerFactory;
-import top.silwings.core.handler.MockHandlerManager;
+import top.silwings.admin.service.ProjectService;
+import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @EnableSwagger2
@@ -22,14 +26,11 @@ public class DynamicMockAdminApplication implements ApplicationRunner {
 
     private final MockHandlerService mockHandlerService;
 
-    private final MockHandlerFactory mockHandlerFactory;
+    private final ProjectService projectService;
 
-    private final MockHandlerManager mockHandlerManager;
-
-    public DynamicMockAdminApplication(final MockHandlerService mockHandlerService, final MockHandlerFactory mockHandlerFactory, final MockHandlerManager mockHandlerManager) {
+    public DynamicMockAdminApplication(final MockHandlerService mockHandlerService, final ProjectService projectService) {
         this.mockHandlerService = mockHandlerService;
-        this.mockHandlerFactory = mockHandlerFactory;
-        this.mockHandlerManager = mockHandlerManager;
+        this.projectService = projectService;
     }
 
     public static void main(String[] args) {
@@ -45,12 +46,25 @@ public class DynamicMockAdminApplication implements ApplicationRunner {
 
         long total = -1;
 
+        final Map<Identity, ProjectDto> projectMap = new HashMap<>();
+
         do {
             final PageData<MockHandlerDto> pageData = this.mockHandlerService.queryEnableHandlerList(PageParam.of(1, 200));
+
+            pageData.getList().stream()
+                    .map(MockHandlerDto::getProjectId)
+                    .forEach(projectId -> {
+                        if (!projectMap.containsKey(projectId)) {
+                            projectMap.put(projectId, this.projectService.find(projectId));
+                        }
+                    });
+
             if (total < 0) {
                 total = pageData.getTotal();
             }
-            pageData.getList().stream().map(this.mockHandlerFactory::buildMockHandler).forEach(this.mockHandlerManager::registerHandler);
+
+            pageData.getList().forEach(handler -> this.mockHandlerService.registerHandler(handler, projectMap.get(handler.getProjectId())));
+
             total -= pageData.getList().size();
 
         } while (total > 0L);

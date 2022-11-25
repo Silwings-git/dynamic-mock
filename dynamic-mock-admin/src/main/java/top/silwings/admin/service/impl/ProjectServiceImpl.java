@@ -1,5 +1,6 @@
 package top.silwings.admin.service.impl;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -39,7 +40,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void create(final String projectName, final String baseUri) {
+    public Identity create(final String projectName, final String baseUri) {
 
         final ProjectPo project = ProjectPo.builder()
                 .projectName(projectName)
@@ -47,10 +48,14 @@ public class ProjectServiceImpl implements ProjectService {
                 .build();
 
         this.projectMapper.insertSelective(project);
+
+        return Identity.from(project.getProjectId());
     }
 
     @Override
-    public void updateById(final Identity projectId, final String projectName, final String baseUri) {
+    public Identity updateById(final Identity projectId, final String projectName, final String baseUri) {
+
+        final ProjectDto original = this.find(projectId);
 
         final ProjectPo project = ProjectPo.builder()
                 .projectName(projectName)
@@ -62,6 +67,27 @@ public class ProjectServiceImpl implements ProjectService {
                 .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.intValue());
 
         this.projectMapper.updateByConditionSelective(project, example);
+
+        // 如果basicUri发生了变化,需要重新注册任务
+        if (!original.getBaseUri().equals(ConvertUtils.getNoNullOrDefault(baseUri, ""))) {
+            this.mockHandlerService.reRegisterHandler(ProjectDto.from(project));
+        }
+
+        return projectId;
+    }
+
+    @Override
+    public ProjectDto find(final Identity projectId) {
+
+        final Example example = new Example(ProjectPo.class);
+        example.createCriteria()
+                .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.intValue());
+
+        final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
+
+        CheckUtils.hasMinimumSize(projectPoList, 1, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
+
+        return ProjectDto.from(projectPoList.get(0));
     }
 
     @Override

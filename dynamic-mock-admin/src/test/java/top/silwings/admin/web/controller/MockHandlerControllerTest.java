@@ -23,6 +23,7 @@ import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
+import top.silwings.admin.web.vo.param.SaveProjectParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -44,9 +45,11 @@ import java.nio.charset.StandardCharsets;
 @RunWith(SpringRunner.class)
 public class MockHandlerControllerTest {
 
+    final SaveProjectParam projectParam = new SaveProjectParam();
     @Autowired
     private MockHandlerController mockHandlerController;
-
+    @Autowired
+    private ProjectController projectController;
     @Autowired
     private MockHandlerPoint mockHandlerPoint;
 
@@ -65,7 +68,7 @@ public class MockHandlerControllerTest {
         this.find(handlerId);
         this.query(projectId);
         this.enable(handlerId);
-        this.request();
+        this.request(infoParam);
         this.disable(handlerId);
         this.delete(handlerId);
     }
@@ -76,7 +79,14 @@ public class MockHandlerControllerTest {
 
     private MockHandlerInfoParam save() {
 
-        final MockHandlerInfoParam infoParam = MockHandlerSetUp.buildTestMockHandlerInfoVo();
+        this.projectParam.setProjectName("JUNIT_TEST");
+
+        final Result<Identity> save = this.projectController.save(projectParam);
+
+        this.projectParam.setProjectId(save.getData());
+
+        final MockHandlerInfoParam infoParam = MockHandlerSetUp.buildHandler(save.getData());
+
         final Result<Identity> result = this.mockHandlerController.save(infoParam);
         Assert.assertNotNull(result.getData());
         infoParam.setHandlerId(result.getData());
@@ -86,7 +96,10 @@ public class MockHandlerControllerTest {
 
     private void update(final Identity handlerId) {
 
-        final Result<Identity> result = this.mockHandlerController.save(MockHandlerSetUp.buildTestMockHandlerInfoVo(handlerId));
+        final MockHandlerInfoParam update = MockHandlerSetUp.update(handlerId);
+        update.setProjectId(this.projectParam.getProjectId());
+
+        final Result<Identity> result = this.mockHandlerController.save(update);
 
         Assert.assertEquals(result.getData(), handlerId);
     }
@@ -140,11 +153,11 @@ public class MockHandlerControllerTest {
         Assert.assertNotNull(result);
     }
 
-    private void request() {
+    private void request(final MockHandlerInfoParam infoParam) {
         final MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod(HttpMethod.GET.name());
         request.addHeader("content-type", "application/json");
-        request.setRequestURI("/test");
+        request.setRequestURI(infoParam.getRequestUri());
         request.addParameter("execute", "1");
         request.setContent("{\"pageNum\": \"1\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
