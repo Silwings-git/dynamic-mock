@@ -7,6 +7,7 @@ import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
@@ -21,7 +22,18 @@ import java.util.List;
 @Component
 public class EqualsFunctionFactory implements FunctionFactory {
 
+    private static final FunctionInfo EQUALS_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("Equals")
+            .minArgsNumber(2)
+            .maxArgsNumber(2)
+            .build();
+
     private static final String SYMBOL = "#equals(...)";
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return EQUALS_FUNCTION_INFO;
+    }
 
     @Override
     public boolean support(final String methodName) {
@@ -45,7 +57,7 @@ public class EqualsFunctionFactory implements FunctionFactory {
         }
 
         public static EqualsFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasMinimumSize(dynamicValueList, 2, DynamicValueCompileException.supplier("The Equals function requires at least 2 arguments."));
+            CheckUtils.sizeBetween(dynamicValueList, EQUALS_FUNCTION_INFO.getMinArgsNumber(), EQUALS_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Equals function."));
             return new EqualsFunction(dynamicValueList);
         }
 

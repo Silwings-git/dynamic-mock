@@ -9,6 +9,7 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.TypeUtils;
@@ -28,7 +29,18 @@ import java.util.stream.Stream;
 @Component
 public class PageDataFunctionFactory implements FunctionFactory {
 
+    private static final FunctionInfo PAGE_DATA_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("PageData")
+            .minArgsNumber(4)
+            .maxArgsNumber(4)
+            .build();
+
     private static final String SYMBOL = "#pageData(...)";
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return PAGE_DATA_FUNCTION_INFO;
+    }
 
     @Override
     public boolean support(final String methodName) {
@@ -58,7 +70,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
         }
 
         public static PageDataFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasEqualsSize(dynamicValueList, 4, DynamicValueCompileException.supplier("The PageData function requires 4 arguments."));
+            CheckUtils.sizeBetween(dynamicValueList, PAGE_DATA_FUNCTION_INFO.getMinArgsNumber(), PAGE_DATA_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of PageData function."));
             return new PageDataFunction(dynamicValueList);
         }
 

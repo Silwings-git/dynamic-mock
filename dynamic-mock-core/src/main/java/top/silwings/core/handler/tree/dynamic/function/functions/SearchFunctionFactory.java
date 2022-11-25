@@ -9,6 +9,7 @@ import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.JsonUtils;
 
@@ -25,7 +26,17 @@ import java.util.List;
 @Component
 public class SearchFunctionFactory implements FunctionFactory {
 
+    private static final FunctionInfo SEARCH_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("Search")
+            .minArgsNumber(1)
+            .maxArgsNumber(2)
+            .build();
     private static final String SYMBOL = "#search(...)";
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return SEARCH_FUNCTION_INFO;
+    }
 
     @Override
     public boolean support(final String methodName) {
@@ -69,7 +80,7 @@ public class SearchFunctionFactory implements FunctionFactory {
         }
 
         public static SearchFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.hasMinimumSize(dynamicValueList, 1, DynamicValueCompileException.supplier("The Search function requires at least 1 arguments."));
+            CheckUtils.sizeBetween(dynamicValueList, SEARCH_FUNCTION_INFO.getMinArgsNumber(), SEARCH_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Search function."));
             return new SearchFunction(dynamicValueList);
         }
 

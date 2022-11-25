@@ -10,4 +10,7 @@ import top.silwings.core.handler.tree.dynamic.DynamicFactory;
  * @Since
  **/
 public interface FunctionFactory extends DynamicFactory {
+
+    FunctionInfo getFunctionInfo();
+
 }

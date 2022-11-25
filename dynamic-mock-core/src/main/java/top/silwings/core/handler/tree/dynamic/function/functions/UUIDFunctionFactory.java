@@ -4,10 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.List;
@@ -24,7 +27,17 @@ import java.util.UUID;
 @Component
 public class UUIDFunctionFactory implements FunctionFactory {
 
+    private static final FunctionInfo UUID_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("UUID")
+            .minArgsNumber(0)
+            .maxArgsNumber(3)
+            .build();
     private static final String SYMBOL = "#uuid(...)";
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return UUID_FUNCTION_INFO;
+    }
 
     @Override
     public boolean support(final String methodName) {
@@ -38,6 +51,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
 
     /**
      * uuid函数
+     * #uuid()
      * #uuid(prefix,length,replace)
      * 三个参数全部选填,但填后面的参数时,前面的参数必须全部填写,示例: #uuid(,18),#uuid(,,true)
      * prefix: 字符类型, 生成的id以什么作为前缀
@@ -52,6 +66,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
         }
 
         public static UUIDFunction from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.sizeBetween(dynamicValueList, UUID_FUNCTION_INFO.getMinArgsNumber(), UUID_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UUID function."));
             return new UUIDFunction(dynamicValueList);
         }
 

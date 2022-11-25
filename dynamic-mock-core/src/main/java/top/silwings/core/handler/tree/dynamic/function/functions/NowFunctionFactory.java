@@ -3,10 +3,13 @@ package top.silwings.core.handler.tree.dynamic.function.functions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.utils.CheckUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +25,18 @@ import java.util.List;
 @Component
 public class NowFunctionFactory implements FunctionFactory {
 
+    private static final FunctionInfo NOW_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("Now")
+            .minArgsNumber(0)
+            .maxArgsNumber(1)
+            .build();
+
     private static final String SYMBOL = "#now()";
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return NOW_FUNCTION_INFO;
+    }
 
     @Override
     public boolean support(final String methodName) {
@@ -46,6 +60,7 @@ public class NowFunctionFactory implements FunctionFactory {
         }
 
         public static NowFunction from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.sizeBetween(dynamicValueList, NOW_FUNCTION_INFO.getMinArgsNumber(), NOW_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Now function."));
             return new NowFunction(dynamicValueList);
         }
 
