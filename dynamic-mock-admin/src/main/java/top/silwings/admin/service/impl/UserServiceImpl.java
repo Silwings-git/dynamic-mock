@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(final String username, final String userAccount, final String password, final int role) {
+    public Identity create(final String username, final String userAccount, final String password, final int role) {
 
         final UserPo user = UserPo.builder()
                 .username(username)
@@ -52,10 +52,12 @@ public class UserServiceImpl implements UserService {
         } catch (DuplicateKeyException e) {
             throw DynamicMockAdminException.from(ErrorCode.USER_DUPLICATE_ACCOUNT);
         }
+
+        return Identity.from(user.getUserId());
     }
 
     @Override
-    public void updateById(final Identity userId, final String username, final String password, final int role) {
+    public Identity updateById(final Identity userId, final String username, final String password, final int role) {
 
         final UserPo user = UserPo.builder()
                 .username(username)
@@ -68,6 +70,8 @@ public class UserServiceImpl implements UserService {
                 .andEqualTo(UserPo.C_USER_ID, userId.intValue());
 
         this.userMapper.updateByConditionSelective(user, saveCondition);
+
+        return userId;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
         final Example example = new Example(UserPo.class);
         example.createCriteria()
-                .andEqualTo(UserPo.C_USER_ID, user.getUserId());
+                .andEqualTo(UserPo.C_USER_ID, user.getUserId().intValue());
 
         this.userMapper.updateByConditionSelective(pswUser, example);
     }

@@ -13,9 +13,9 @@ import top.silwings.core.common.Identity;
  * @Since
  **/
 public interface UserService {
-    void create(String username, String userAccount, String password, int role);
+    Identity create(String username, String userAccount, String password, int role);
 
-    void updateById(Identity userId, String username, String password, int role);
+    Identity updateById(Identity userId, String username, String password, int role);
 
     void changePassword(String oldPassword, String newPassword);
 

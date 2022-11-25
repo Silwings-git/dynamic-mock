@@ -34,7 +34,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @PermissionLimit(limit = false)
-    @ApiOperation(value = "登录")
+    @ApiOperation(value = "登录.登录成功后返回用户名")
     public Result<String> login(@RequestBody LoginParam loginParam, final HttpServletResponse response) {
 
         loginParam.validate();

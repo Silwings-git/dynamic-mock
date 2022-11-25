@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
@@ -38,10 +39,20 @@ public class SaveUserParam {
 
     public void validate() {
         CheckUtils.isNotBlank(this.username, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "username"));
-        if (null != this.userId) {
+        CheckUtils.maxLength(this.username, 32, DynamicMockAdminException.supplier(ErrorCode.VALID_TOO_LONG, "username"));
+        CheckUtils.isNotNull(this.role, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "role"));
+
+        if (StringUtils.isNotBlank(this.userAccount)) {
             CheckUtils.minLength(this.userAccount, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "userAccount"));
-            CheckUtils.minLength(this.password, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "password"));
-            CheckUtils.isNotNull(this.role, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "role"));
+            CheckUtils.maxLength(this.userAccount, 32, DynamicMockAdminException.supplier(ErrorCode.VALID_TOO_LONG, "username"));
         }
+
+        // 更新用户时密码允许为空
+        if (null != this.userId && StringUtils.isBlank(this.password)) {
+            return;
+        }
+
+        CheckUtils.minLength(this.password, 4, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "password"));
+        CheckUtils.maxLength(this.password, 16, DynamicMockAdminException.supplier(ErrorCode.VALID_TOO_LONG, "password"));
     }
 }

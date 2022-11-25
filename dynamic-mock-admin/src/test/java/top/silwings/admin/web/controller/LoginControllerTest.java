@@ -16,9 +16,8 @@ import top.silwings.admin.common.Role;
 import top.silwings.admin.web.vo.param.LoginParam;
 import top.silwings.admin.web.vo.param.SaveUserParam;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.JsonUtils;
 
-import java.util.Random;
+import java.util.UUID;
 
 /**
  * @ClassName LoginControllerTest
@@ -43,11 +42,10 @@ public class LoginControllerTest {
 
     @Before
     public void before() {
-        final Random random = new Random();
 
         this.user = new SaveUserParam();
-        this.user.setUsername(String.valueOf(random.nextInt(100)));
-        this.user.setUserAccount(String.valueOf(random.nextInt(100)));
+        this.user.setUsername(UUID.randomUUID().toString().substring(0, 16));
+        this.user.setUserAccount(UUID.randomUUID().toString().substring(0, 16));
         this.user.setPassword(this.user.getUserAccount());
         this.user.setRole(Role.ADMIN_USER.getCode());
 
@@ -57,18 +55,7 @@ public class LoginControllerTest {
     @Test
     public void loginAdmin() {
         login();
-    }
-
-    @Test
-    public void testIdentity() {
-        final User user = new User();
-        user.setUserId(Identity.from("20"));
-
-        log.info("jackson toJson: {}", JsonUtils.toJSONString(user));
-        log.info("jackson toBean: {}", JsonUtils.toBean(JsonUtils.toJSONString(user), User.class));
-
-        final Object o = JsonUtils.toBean(JsonUtils.toJSONString(MockHandlerDefinitionMock.build()), Object.class);
-        System.out.println("o = " + o);
+        // TODO_Silwings: 2022/11/25 logout
     }
 
     private void login() {

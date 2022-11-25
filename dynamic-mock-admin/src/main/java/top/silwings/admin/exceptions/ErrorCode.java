@@ -16,6 +16,7 @@ public enum ErrorCode {
     UNKNOWN_ERROR("unknown_error"),
     VALID_EMPTY("valid_empty"),
     VALID_ERROR("valid_error"),
+    VALID_TOO_LONG("valid_too_long"),
     EXPRESSION_INCORRECT("expression_incorrect"),
 
     // Login

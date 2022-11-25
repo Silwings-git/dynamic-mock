@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
@@ -15,6 +14,7 @@ import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.service.UserService;
 import top.silwings.admin.web.vo.param.ChangePasswordParam;
+import top.silwings.admin.web.vo.param.DeleteUserParam;
 import top.silwings.admin.web.vo.param.QueryUserParam;
 import top.silwings.admin.web.vo.param.SaveUserParam;
 import top.silwings.admin.web.vo.result.UserResult;
@@ -49,27 +49,32 @@ public class UserController {
     @PostMapping("/save")
     @PermissionLimit(adminUser = true)
     @ApiOperation(value = "保存用户")
-    public Result<Void> save(@RequestBody final SaveUserParam saveUserParam) {
+    public Result<Identity> save(@RequestBody final SaveUserParam saveUserParam) {
 
         saveUserParam.validate();
 
-        if (null != saveUserParam.getUserId()) {
+        final Identity userId;
 
-            this.userService.updateById(saveUserParam.getUserId(), saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
+        if (null == saveUserParam.getUserId()) {
+
+            userId = this.userService.create(saveUserParam.getUsername(), saveUserParam.getUserAccount(), saveUserParam.getUserAccount(), saveUserParam.getRole());
+
         } else {
 
-            this.userService.create(saveUserParam.getUsername(), saveUserParam.getUserAccount(), saveUserParam.getUserAccount(), saveUserParam.getRole());
+            userId = this.userService.updateById(saveUserParam.getUserId(), saveUserParam.getUsername(), saveUserParam.getPassword(), saveUserParam.getRole());
         }
 
-        return Result.ok();
+        return Result.ok(userId);
     }
 
     @PostMapping("/del")
     @PermissionLimit(adminUser = true)
     @ApiOperation(value = "删除用户")
-    public Result<Void> deleteUser(@RequestParam("userId") final String userId) {
+    public Result<Void> deleteUser(@RequestBody final DeleteUserParam param) {
 
-        this.userService.deleteUser(Identity.from(userId));
+        param.validate();
+
+        this.userService.deleteUser(param.getUserId());
 
         return Result.ok();
     }

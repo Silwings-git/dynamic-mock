@@ -17,7 +17,7 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.common.Role;
-import top.silwings.admin.web.MockHandlerSetUp;
+import top.silwings.admin.web.setup.SetUp;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
@@ -54,7 +54,7 @@ public class MockHandlerControllerTest {
     private MockHandlerPoint mockHandlerPoint;
 
     @Test
-    public void mockAdmin() {
+    public void mockHandler() {
 
         this.login();
 
@@ -64,11 +64,12 @@ public class MockHandlerControllerTest {
 
         final Identity projectId = infoParam.getProjectId();
 
-        this.update(handlerId);
         this.find(handlerId);
         this.query(projectId);
         this.enable(handlerId);
         this.request(infoParam);
+
+        this.update(handlerId);
         this.disable(handlerId);
         this.delete(handlerId);
     }
@@ -85,7 +86,7 @@ public class MockHandlerControllerTest {
 
         this.projectParam.setProjectId(save.getData());
 
-        final MockHandlerInfoParam infoParam = MockHandlerSetUp.buildHandler(save.getData());
+        final MockHandlerInfoParam infoParam = SetUp.buildHandler(save.getData());
 
         final Result<Identity> result = this.mockHandlerController.save(infoParam);
         Assert.assertNotNull(result.getData());
@@ -96,7 +97,7 @@ public class MockHandlerControllerTest {
 
     private void update(final Identity handlerId) {
 
-        final MockHandlerInfoParam update = MockHandlerSetUp.update(handlerId);
+        final MockHandlerInfoParam update = SetUp.update(handlerId);
         update.setProjectId(this.projectParam.getProjectId());
 
         final Result<Identity> result = this.mockHandlerController.save(update);

@@ -179,4 +179,8 @@ public class CheckUtils {
         isTrue(left <= right, DynamicMockException.supplier("Left must be less than or equal to right."));
         isTrue(list.size() >= left && list.size() <= right, supplier);
     }
+
+    public static void maxLength(final String arg, final int maxLength, final Supplier<RuntimeException> supplier) {
+        isTrue(arg.length() <= maxLength, supplier);
+    }
 }

@@ -1,9 +1,13 @@
-package top.silwings.admin.web;
+package top.silwings.admin.web.setup;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
+import top.silwings.admin.web.controller.ProjectController;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
+import top.silwings.admin.web.vo.param.SaveProjectParam;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskRequestInfoParam;
 import top.silwings.core.common.Identity;
@@ -12,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,17 +27,18 @@ import java.util.stream.Stream;
  * @Date 2022/11/16 22:51
  * @Since
  **/
-public class MockHandlerSetUp {
+@Component
+public class SetUp {
 
-    private MockHandlerSetUp() {
-    }
+    @Autowired
+    private ProjectController projectController;
 
     public static MockHandlerInfoParam buildHandler(final Identity project) {
         return MockHandlerInfoParam.builder()
                 .projectId(project)
                 .name("TEST_MOCK_HANDLER")
                 .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
-                .requestUri("/test")
+                .requestUri("/" + ThreadLocalRandom.current().nextInt(10000))
                 .label("TEST_MOCK_HANDLER")
                 .delayTime(0)
                 .customizeSpace(buildCustomizeSpace())
@@ -46,7 +52,7 @@ public class MockHandlerSetUp {
                 .handlerId(handlerId)
                 .name("TEST_MOCK_HANDLER")
                 .httpMethods(Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).map(HttpMethod::name).collect(Collectors.toList()))
-                .requestUri("/test")
+                .requestUri("/" + ThreadLocalRandom.current().nextInt(10000))
                 .label("TEST_MOCK_HANDLER")
                 .delayTime(0)
                 .customizeSpace(buildCustomizeSpace())
@@ -123,6 +129,13 @@ public class MockHandlerSetUp {
         customizeSpaceMap.put("level", 5);
 
         return customizeSpaceMap;
+    }
+
+    public Identity createProject() {
+        final SaveProjectParam saveProjectParam = new SaveProjectParam();
+        saveProjectParam.setProjectName("JUNIT_TEST");
+
+        return this.projectController.save(saveProjectParam).getData();
     }
 
 }
