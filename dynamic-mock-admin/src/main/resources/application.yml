@@ -20,7 +20,7 @@ dynamic-mock:
     cors:
       cors-configurations:
         '[/**]':
-          allowedOrigins: # 允许哪些网站的跨域请求
+          allowedOriginPatterns: # 允许哪些网站的跨域请求
             - "*"
           allowedMethods: # 允许的跨域ajax的请求方式
             - "GET"
@@ -30,4 +30,5 @@ dynamic-mock:
             - "OPTIONS"
           allowedHeaders: "*" # 允许在请求中携带的头信息
           allowCredentials: true # 是否允许携带cookie
+
           maxAge: 7200 # 这次跨域检测的有效期
