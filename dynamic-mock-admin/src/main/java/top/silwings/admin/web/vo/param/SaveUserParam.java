@@ -10,6 +10,8 @@ import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
+import java.util.List;
+
 /**
  * @ClassName UserParam
  * @Description 用户信息
@@ -36,6 +38,9 @@ public class SaveUserParam {
 
     @ApiModelProperty(value = "角色", required = true, example = "user")
     private Integer role;
+
+    @ApiModelProperty(value = "用户权限", required = true, example = "user")
+    private List<Identity> permissionList;
 
     public void validate() {
         CheckUtils.isNotBlank(this.username, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "username"));

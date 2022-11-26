@@ -19,6 +19,7 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,13 +40,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Identity create(final String username, final String userAccount, final String password, final int role) {
+    public Identity create(final String username, final String userAccount, final String password, final int role, final List<Identity> permissionList) {
 
         final UserPo user = UserPo.builder()
                 .username(username)
                 .userAccount(userAccount)
                 .password(EncryptUtils.encryptPassword(password))
                 .role(role)
+                .permission(String.join(",", ConvertUtils.getNoEmpty(permissionList, Collections.emptyList(), list -> list.stream().map(Identity::stringValue).collect(Collectors.toList()))))
                 .build();
         try {
             this.userMapper.insertSelective(user);
@@ -57,12 +59,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Identity updateById(final Identity userId, final String username, final String password, final int role) {
+    public Identity updateById(final Identity userId, final String username, final String password, final int role, final List<Identity> permissionList) {
 
         final UserPo user = UserPo.builder()
                 .username(username)
                 .password(ConvertUtils.getNoBlankOrDefault(password, null, EncryptUtils::encryptPassword))
                 .role(role)
+                .permission(String.join(",", ConvertUtils.getNoEmpty(permissionList, Collections.emptyList(), list -> list.stream().map(Identity::stringValue).collect(Collectors.toList()))))
                 .build();
 
         final Example saveCondition = new Example(UserPo.class);

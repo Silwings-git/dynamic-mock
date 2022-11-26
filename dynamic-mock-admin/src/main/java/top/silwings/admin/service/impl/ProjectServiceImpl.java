@@ -135,4 +135,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
+    @Override
+    public List<ProjectDto> queryAll() {
+        return this.projectMapper.selectByCondition(new Example(ProjectPo.class))
+                .stream()
+                .map(ProjectDto::from)
+                .collect(Collectors.toList());
+    }
 }

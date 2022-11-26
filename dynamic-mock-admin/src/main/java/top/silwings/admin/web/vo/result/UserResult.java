@@ -7,6 +7,8 @@ import lombok.Setter;
 import top.silwings.admin.model.UserDto;
 import top.silwings.core.common.Identity;
 
+import java.util.List;
+
 /**
  * @ClassName UserResult
  * @Description
@@ -31,7 +33,10 @@ public class UserResult {
     @ApiModelProperty(value = "角色code", example = "123456789")
     private int role;
 
-    public static UserResult from(final UserDto user) {
+    @ApiModelProperty(value = "用户权限映射")
+    private List<UserPermissionResult> permissionList;
+
+    public static UserResult of(final UserDto user, final List<UserPermissionResult> permissionList) {
 
         final UserResult userResult = new UserResult();
         userResult.setUserId(user.getUserId());

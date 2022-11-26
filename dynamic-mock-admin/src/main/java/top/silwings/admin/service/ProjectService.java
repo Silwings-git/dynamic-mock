@@ -24,4 +24,6 @@ public interface ProjectService {
     Identity updateById(Identity projectId, String projectName, String baseUri);
 
     ProjectDto find(Identity projectId);
+
+    List<ProjectDto> queryAll();
 }

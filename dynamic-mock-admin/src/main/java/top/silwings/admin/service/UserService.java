@@ -5,6 +5,8 @@ import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.UserDto;
 import top.silwings.core.common.Identity;
 
+import java.util.List;
+
 /**
  * @ClassName UserService
  * @Description 用户管理
@@ -13,9 +15,9 @@ import top.silwings.core.common.Identity;
  * @Since
  **/
 public interface UserService {
-    Identity create(String username, String userAccount, String password, int role);
+    Identity create(String username, String userAccount, String password, int role, List<Identity> permissionList);
 
-    Identity updateById(Identity userId, String username, String password, int role);
+    Identity updateById(Identity userId, String username, String password, int role, List<Identity> permissionList);
 
     void changePassword(String oldPassword, String newPassword);
 
