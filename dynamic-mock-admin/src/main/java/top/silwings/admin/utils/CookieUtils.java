@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Stream;
 
 /**
- * Cookie.Util
- *
- * @author xuxueli 2015-12-12 18:01:06
- */
+ * @ClassName CookieUtils
+ * @Description Cookie工具
+ * @Author Silwings
+ * @Date 2022/11/20 10:08
+ * @Since
+ **/
 public class CookieUtils {
 
     // 默认缓存时间,单位/秒, 2H
@@ -23,8 +25,12 @@ public class CookieUtils {
      * 保存 Cookie
      */
     public static void set(final HttpServletResponse response, final String key, final String value, final boolean ifRemember) {
+        set(response, key, value, ifRemember, true);
+    }
+
+    public static void set(final HttpServletResponse response, final String key, final String value, final boolean ifRemember,final boolean httpOnly) {
         final int age = ifRemember ? COOKIE_MAX_AGE : -1;
-        set(response, key, value, null, COOKIE_PATH, age, true);
+        set(response, key, value, null, COOKIE_PATH, age, httpOnly);
     }
 
     /**
