@@ -48,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
 
         final String userAuthToken = this.makeToken(user);
 
-        CookieUtils.set(response, LOGIN_IDENTITY_KEY, userAuthToken, ifRemember, false);
+        CookieUtils.set(response, LOGIN_IDENTITY_KEY, userAuthToken, ifRemember);
 
         return user.getUsername();
     }
