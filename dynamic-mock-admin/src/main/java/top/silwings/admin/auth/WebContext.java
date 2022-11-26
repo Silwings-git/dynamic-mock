@@ -20,6 +20,30 @@ public class WebContext {
     private final String language;
 
     public String getLanguage() {
-        return ConvertUtils.getNoBlankOrDefault(this.language, DEFAULT_LANGUAGE);
+        // 仅当language是Language枚举支持的才使用language返回
+        return ConvertUtils.getNoBlankOrDefault(Language.support(this.language) ? this.language : null, DEFAULT_LANGUAGE);
     }
+
+    enum Language{
+
+        ZH_CN("zh-CN"),
+        EN("en"),
+        ;
+
+        private final String code;
+
+        Language(final String code) {
+            this.code = code;
+        }
+
+        public static boolean support(final String code) {
+            for (final Language value : values()) {
+                if (value.code.equals(code)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
 }
