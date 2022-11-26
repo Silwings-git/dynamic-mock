@@ -119,6 +119,8 @@ public class ProjectServiceImpl implements ProjectService {
             criteria.andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
         }
 
+        example.orderBy(ProjectPo.C_PROJECT_NAME).asc();
+
         final int total = this.projectMapper.selectCountByCondition(example);
         if (total <= 0) {
             return Collections.emptyList();

@@ -142,6 +142,8 @@ public class UserServiceImpl implements UserService {
                 .andLike(UserPo.C_USERNAME, ConvertUtils.getNoBlankOrDefault(username, null, name -> name + "%"))
                 .andLike(UserPo.C_USER_ACCOUNT, ConvertUtils.getNoBlankOrDefault(userAccount, null, account -> account + "%"));
 
+        queryCondition.orderBy(UserPo.C_USER_ACCOUNT).asc();
+
         final int total = this.userMapper.selectCountByCondition(queryCondition);
         if (total < 0) {
             return PageData.empty();

@@ -165,6 +165,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .andLike(MockHandlerPo.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, label -> "%" + label + "%"))
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
+        condition.orderBy(MockHandlerPo.C_NAME).asc();
+
         return this.queryPageData(condition, pageParam.toRowBounds());
     }
 

@@ -26,6 +26,7 @@ import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockTaskLogDto;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,7 @@ public class MockTaskController {
 
         final List<TaskResult> taskResultList = taskList.stream()
                 .map(task -> TaskResult.of(task.getTaskCode(), task.getHandlerId(), task.getNumberOfExecute().get(), task.getTaskJson()))
+                .sorted(Comparator.comparing(TaskResult::getTaskCode))
                 .collect(Collectors.toList());
 
         return PageResult.ok(taskResultList, taskResultList.size());
