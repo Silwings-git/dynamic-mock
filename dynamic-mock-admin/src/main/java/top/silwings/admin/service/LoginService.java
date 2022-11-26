@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Since
  **/
 public interface LoginService {
-    String login(String userAccount, String password, final boolean ifRemember, HttpServletResponse response);
+    UserDto login(String userAccount, String password, final boolean ifRemember, HttpServletResponse response);
 
     UserDto ifLogin(HttpServletRequest request, HttpServletResponse response);
 

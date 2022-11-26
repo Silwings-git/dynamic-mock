@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.model.UserDto;
 import top.silwings.admin.service.LoginService;
 import top.silwings.admin.web.vo.param.LoginParam;
+import top.silwings.admin.web.vo.result.LoginResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,13 +37,13 @@ public class LoginController {
     @PostMapping("/login")
     @PermissionLimit(limit = false)
     @ApiOperation(value = "登录.登录成功后返回用户名")
-    public Result<String> login(@RequestBody LoginParam loginParam, final HttpServletResponse response) {
+    public Result<LoginResult> login(@RequestBody LoginParam loginParam, final HttpServletResponse response) {
 
         loginParam.validate();
 
-        final String username = this.loginService.login(loginParam.getUserAccount(), loginParam.getPassword(), Boolean.TRUE.equals(loginParam.getRemember()), response);
+        final UserDto user = this.loginService.login(loginParam.getUserAccount(), loginParam.getPassword(), Boolean.TRUE.equals(loginParam.getRemember()), response);
 
-        return Result.ok(username);
+        return Result.ok(LoginResult.from(user));
     }
 
     @PostMapping("/logout")

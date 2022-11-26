@@ -16,8 +16,8 @@ import top.silwings.core.common.Identity;
  **/
 @Getter
 @Setter
-@ApiModel(description = "用户信息")
-public class UserResult {
+@ApiModel(description = "登录返回信息")
+public class LoginResult {
 
     @ApiModelProperty(value = "用户id", example = "1")
     private Identity userId;
@@ -31,9 +31,9 @@ public class UserResult {
     @ApiModelProperty(value = "角色code", example = "123456789")
     private int role;
 
-    public static UserResult from(final UserDto user) {
+    public static LoginResult from(final UserDto user) {
 
-        final UserResult userResult = new UserResult();
+        final LoginResult userResult = new LoginResult();
         userResult.setUserId(user.getUserId());
         userResult.setUsername(user.getUsername());
         userResult.setUserAccount(user.getUserAccount());

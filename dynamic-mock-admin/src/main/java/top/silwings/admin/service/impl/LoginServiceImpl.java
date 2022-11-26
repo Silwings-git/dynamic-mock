@@ -35,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public String login(final String userAccount, final String password, final boolean ifRemember, final HttpServletResponse response) {
+    public UserDto login(final String userAccount, final String password, final boolean ifRemember, final HttpServletResponse response) {
 
         CheckUtils.isNotBlank(userAccount, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
         CheckUtils.isNotBlank(password, DynamicMockAdminException.supplier(ErrorCode.LOGIN_ACCOUNT_PASSWORD_INCORRECT));
@@ -50,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
 
         CookieUtils.set(response, LOGIN_IDENTITY_KEY, userAuthToken, ifRemember);
 
-        return user.getUsername();
+        return user;
     }
 
     private String makeToken(final UserDto user) {
@@ -71,9 +71,16 @@ public class LoginServiceImpl implements LoginService {
 
                 if (null == dbUser) {
                     this.logout(request, response);
+                    return null;
                 }
 
-                if (dbUser != null && cookieUser.getPassword().equals(dbUser.getPassword())) {
+                if (cookieUser.getRole() != dbUser.getRole()) {
+                    // 角色变更,需要重新登录
+                    this.logout(request, response);
+                    return null;
+                }
+
+                if (cookieUser.getPassword().equals(dbUser.getPassword())) {
                     return dbUser;
                 }
             }
