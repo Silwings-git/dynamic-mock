@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
-import top.silwings.admin.common.PageData;
-import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.param.DeleteProjectParam;
 import top.silwings.admin.web.vo.param.QueryProjectParam;
@@ -61,16 +58,16 @@ public class ProjectController {
     @PostMapping("/query")
     @PermissionLimit
     @ApiOperation(value = "分页查询项目信息")
-    public PageResult<ProjectResult> query(@RequestBody final QueryProjectParam param) {
+    public Result<List<ProjectResult>> query(@RequestBody final QueryProjectParam param) {
 
         final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
 
-        final PageData<ProjectDto> projectPageData = this.projectService.query(projectIdList, param.getProjectName(), param);
-        final List<ProjectResult> projectResultList = projectPageData.getList().stream()
+        final List<ProjectResult> resultList = this.projectService.query(projectIdList, param.getProjectName())
+                .stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());
 
-        return PageResult.ok(projectResultList, projectPageData.getTotal());
+        return Result.ok(resultList);
     }
 
     @PostMapping("/del")

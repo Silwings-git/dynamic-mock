@@ -1,7 +1,5 @@
 package top.silwings.admin.service;
 
-import top.silwings.admin.common.PageData;
-import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.core.common.Identity;
 
@@ -19,7 +17,7 @@ public interface ProjectService {
 
     void delete(Identity projectId);
 
-    PageData<ProjectDto> query(List<Identity> projectIdList, String projectName, PageParam pageParam);
+    List<ProjectDto> query(List<Identity> projectIdList, String projectName);
 
     Identity updateById(Identity projectId, String projectName, String baseUri);
 
