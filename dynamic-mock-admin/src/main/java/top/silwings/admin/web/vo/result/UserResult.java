@@ -33,16 +33,17 @@ public class UserResult {
     @ApiModelProperty(value = "角色code", example = "123456789")
     private int role;
 
-    @ApiModelProperty(value = "用户权限映射")
-    private List<UserPermissionResult> permissionList;
+    @ApiModelProperty(value = "用户权限集合")
+    private List<Identity> permissionList;
 
-    public static UserResult of(final UserDto user, final List<UserPermissionResult> permissionList) {
+    public static UserResult from(final UserDto user) {
 
         final UserResult userResult = new UserResult();
         userResult.setUserId(user.getUserId());
         userResult.setUsername(user.getUsername());
         userResult.setUserAccount(user.getUserAccount());
         userResult.setRole(user.getRole());
+        userResult.setPermissionList(user.getPermissionList());
         return userResult;
     }
 }
