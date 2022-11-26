@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(final Identity userId) {
 
-        CheckUtils.isEquals(UserHolder.getUserId(), userId, DynamicMockAdminException.supplier(ErrorCode.USER_UPDATE_LOGIN_USER_LIMIT));
+        CheckUtils.isNotEquals(UserHolder.getUserId(), userId, DynamicMockAdminException.supplier(ErrorCode.USER_UPDATE_LOGIN_USER_LIMIT));
 
         final Example deleteCondition = new Example(UserPo.class);
         deleteCondition.createCriteria()
