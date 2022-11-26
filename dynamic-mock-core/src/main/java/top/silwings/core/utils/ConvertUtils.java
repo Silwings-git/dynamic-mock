@@ -1,7 +1,9 @@
 package top.silwings.core.utils;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -31,6 +33,10 @@ public class ConvertUtils {
 
     public static <T> T getNoBlankOrDefault(final String value, final T defaultValue, final Function<String, T> noBlankFun) {
         return StringUtils.isBlank(value) ? defaultValue : noBlankFun.apply(value);
+    }
+
+    public static <T, R> R getNoEmpty(final List<T> list, final R defaultValue, final Function<List<T>, R> noEmptyFun) {
+        return CollectionUtils.isEmpty(list) ? defaultValue : noEmptyFun.apply(list);
     }
 
 }

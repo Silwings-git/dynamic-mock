@@ -1,6 +1,7 @@
 package top.silwings.admin.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.EncodedResource;
@@ -40,6 +41,7 @@ public class I18nUtils {
             propertiesMap.put(language, prop);
 
         } catch (IOException e) {
+            log.error("加载国际化文件失败. 参数信息: {}", language);
             log.error(e.getMessage(), e);
             propertiesMap.put(language, new Properties());
         }
@@ -52,6 +54,9 @@ public class I18nUtils {
      */
     public static String getValue(final String language, final String key, final Object[] argArray) {
         final String messagePattern = loadI18nProp(language).getProperty(key);
+        if (StringUtils.isBlank(messagePattern)) {
+            return messagePattern;
+        }
         return MessageFormat.format(messagePattern, argArray);
     }
 

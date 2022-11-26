@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
             CheckUtils.isNotEmpty(userPoList, DynamicMockAdminException.supplier(ErrorCode.USER_NOT_EXIST));
         }
 
-        return UserDto.from(userPoList.get(0));
+        return ConvertUtils.getNoEmpty(userPoList, null, list -> UserDto.from(list.get(0)));
     }
 
     @Override
