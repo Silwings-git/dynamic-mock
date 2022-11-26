@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -25,6 +28,7 @@ import top.silwings.admin.service.LoginService;
  * @Since
  **/
 @Configuration
+@Import(value = GlobalCorsProperties.class)
 public class DynamicMockAdminConfig implements WebMvcConfigurer {
 
     @Value("${project.version}")
@@ -37,6 +41,13 @@ public class DynamicMockAdminConfig implements WebMvcConfigurer {
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(new WebContextInterceptor());
         registry.addInterceptor(new UserInterceptor(this.loginService));
+    }
+
+    @Bean
+    public CorsFilter corsFilter(final GlobalCorsProperties globalCorsProperties) {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.setCorsConfigurations(globalCorsProperties.getCorsConfigurations());
+        return new CorsFilter(source);
     }
 
     @Bean

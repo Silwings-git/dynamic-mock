@@ -3,7 +3,6 @@ package top.silwings.core.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * @ClassName TaskSchedulerProperties
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Getter
 @ConfigurationProperties(prefix = "dynamic-mock.task.scheduler")
-@PropertySource({"classpath:application.yml"})
 public class TaskSchedulerProperties {
 
     /**
