@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
-import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @ClassName MockTaskLogResult
- * @Description 任务日志返回值
+ * @Description 分页查询任务日志返回值
  * @Author Silwings
  * @Date 2022/11/24 22:05
  * @Since
@@ -27,7 +25,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 @ApiModel(description = "任务日志返回值")
-public class MockTaskLogResult {
+public class QueryMockTaskLogResult {
 
     @ApiModelProperty(value = "日志id", example = "1")
     private Identity logId;
@@ -44,28 +42,20 @@ public class MockTaskLogResult {
     @ApiModelProperty(value = "注册时间")
     private Date registrationTime;
 
-    @ApiModelProperty(value = "请求信息", example = "{\"body\": {\"body\": {\"name\": \"Misaka Mikoto\", \"underAge\": true}, \"headers\": {\"connection\": [\"keep-alive\"], \"content-type\": [\"application/json\"], \"accept-encoding\": [\"gzip, deflate, br\"]}, \"httpMethod\": \"GET\", \"requestUrl\": \"localhost:8888/test\", \"uriVariables\": {}}, \"headers\": {\"connection\": [\"keep-alive\"], \"content-type\": [\"application/json\"], \"accept-encoding\": [\"gzip, deflate, br\"]}, \"httpMethod\": \"GET\", \"requestUrl\": \"localhost:8888/test\", \"uriVariables\": null}")
-    private Map<String, ?> requestInfo;
-
-    @ApiModelProperty(value = "响应信息", example = "{\"body\": \"{\\\"message\\\":\\\"御坂美琴\\\"}\"}")
-    private Map<String, ?> responseInfo;
-
     @ApiModelProperty(value = "请求发起时间")
     private Date requestTime;
 
     @ApiModelProperty(value = "耗时(ms)", example = "100")
     private Long timing;
 
-    public static MockTaskLogResult from(final MockTaskLogDto mockTaskLog) {
+    public static QueryMockTaskLogResult from(final MockTaskLogDto mockTaskLog) {
 
-        return MockTaskLogResult.builder()
+        return QueryMockTaskLogResult.builder()
                 .logId(mockTaskLog.getLogId())
                 .taskCode(mockTaskLog.getTaskCode())
                 .handlerId(mockTaskLog.getHandlerId())
                 .name(mockTaskLog.getName())
                 .registrationTime(mockTaskLog.getRegistrationTime())
-                .requestInfo(JsonUtils.toMap(mockTaskLog.getRequestInfo(), String.class, Object.class))
-                .responseInfo(JsonUtils.toMap(mockTaskLog.getResponseInfo(), String.class, Object.class))
                 .requestTime(mockTaskLog.getRequestTime())
                 .timing(mockTaskLog.getTiming())
                 .build();

@@ -22,6 +22,9 @@ import top.silwings.core.utils.CheckUtils;
 @ApiModel(description = "分页查询任务日志参数")
 public class QueryTaskLogParam extends PageParam {
 
+    @ApiModelProperty(value = "项目id", required = true, example = "1")
+    private Identity projectId;
+
     @ApiModelProperty(value = "处理器id", required = true, example = "1")
     private Identity handlerId;
 
@@ -32,7 +35,7 @@ public class QueryTaskLogParam extends PageParam {
     private String name;
 
     public void validate() {
-        CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
+        CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
     }
 
 }

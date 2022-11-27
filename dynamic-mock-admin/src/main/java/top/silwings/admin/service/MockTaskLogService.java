@@ -5,6 +5,8 @@ import top.silwings.admin.common.PageParam;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
 
+import java.util.List;
+
 /**
  * @ClassName MockTaskLogService
  * @Description Mock task 日志
@@ -17,7 +19,9 @@ public interface MockTaskLogService {
 
     Identity updateByLogId(MockTaskLogDto mockTaskLog);
 
-    PageData<MockTaskLogDto> query(Identity handlerId, String taskCode, String name, PageParam pageParam);
+    PageData<MockTaskLogDto> query(final List<Identity> handlerIdList, String taskCode, String name, PageParam pageParam);
 
     void delete(Identity handlerId, Identity logId);
+
+    MockTaskLogDto find(Identity logId);
 }

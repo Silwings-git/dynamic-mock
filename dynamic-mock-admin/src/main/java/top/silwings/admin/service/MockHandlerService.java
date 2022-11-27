@@ -38,7 +38,7 @@ public interface MockHandlerService {
 
     PageData<MockHandlerDto> queryEnableHandlerList(PageParam pageParam);
 
-    List<Identity> findHandlerIds(Identity projectId);
+    List<Identity> queryHandlerIds(Identity projectId);
 
     void reRegisterHandler(ProjectDto project);
 

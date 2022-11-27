@@ -28,6 +28,8 @@ public enum ErrorCode {
 
     MOCK_HANDLER_PROJECT_MISMATCH("mock_handler_project_mismatch"),
 
+    MOCK_TASK_LOG_NOT_EXIST("mock_task_log_not_exist"),
+
     // Project
     PROJECT_PROHIBIT_DELETION("project_prohibit_deletion"),
     PROJECT_NOT_EXIST("project_not_exist"),

@@ -80,6 +80,7 @@ public class MockTaskControllerTest {
 
         final QueryTaskLogParam queryTaskLogParam = new QueryTaskLogParam();
         queryTaskLogParam.setHandlerId(handlerInfoParam.getHandlerId());
+        queryTaskLogParam.setProjectId(handlerInfoParam.getProjectId());
 
         Assert.assertNotNull(this.mockTaskController.queryTaskLog(queryTaskLogParam));
     }

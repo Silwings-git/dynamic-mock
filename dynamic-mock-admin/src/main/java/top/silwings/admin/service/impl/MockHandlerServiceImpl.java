@@ -271,7 +271,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
      * @return 项目id下全部处理器id
      */
     @Override
-    public List<Identity> findHandlerIds(final Identity projectId) {
+    public List<Identity> queryHandlerIds(final Identity projectId) {
 
         if (null == projectId) {
             return Collections.emptyList();
