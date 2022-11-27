@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import top.silwings.admin.repository.po.ProjectPo;
 import top.silwings.core.common.Identity;
+import top.silwings.core.utils.ConvertUtils;
 
 /**
  * @ClassName Project
@@ -27,7 +28,7 @@ public class ProjectDto {
         return ProjectDto.builder()
                 .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
-                .baseUri(projectPo.getBaseUri())
+                .baseUri(ConvertUtils.getNoBlankOrDefault(projectPo.getBaseUri(),""))
                 .build();
     }
 
