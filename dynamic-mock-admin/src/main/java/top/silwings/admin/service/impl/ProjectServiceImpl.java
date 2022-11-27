@@ -1,6 +1,8 @@
 package top.silwings.admin.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
  * @Date 2022/11/20 13:54
  * @Since
  **/
+@Slf4j
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
@@ -48,7 +51,12 @@ public class ProjectServiceImpl implements ProjectService {
                 .baseUri(baseUri)
                 .build();
 
-        this.projectMapper.insertSelective(project);
+        try {
+            this.projectMapper.insertSelective(project);
+        } catch (DuplicateKeyException e) {
+            log.error("Project更新数据失败.", e);
+            throw DynamicMockAdminException.from(ErrorCode.PROJECT_DUPLICATE_BASE_URI);
+        }
 
         return Identity.from(project.getProjectId());
     }
@@ -67,7 +75,12 @@ public class ProjectServiceImpl implements ProjectService {
         example.createCriteria()
                 .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.intValue());
 
-        this.projectMapper.updateByConditionSelective(project, example);
+        try {
+            this.projectMapper.updateByConditionSelective(project, example);
+        } catch (DuplicateKeyException e) {
+            log.error("Project更新数据失败.", e);
+            throw DynamicMockAdminException.from(ErrorCode.PROJECT_DUPLICATE_BASE_URI);
+        }
 
         // 如果basicUri发生了变化,需要重新注册任务
         if (!original.getBaseUri().equals(ConvertUtils.getNoNullOrDefault(baseUri, ""))) {

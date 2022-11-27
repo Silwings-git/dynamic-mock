@@ -31,6 +31,7 @@ public enum ErrorCode {
     // Project
     PROJECT_PROHIBIT_DELETION("project_prohibit_deletion"),
     PROJECT_NOT_EXIST("project_not_exist"),
+    PROJECT_DUPLICATE_BASE_URI("project_duplicate_base_uri"),
 
     // User
     USER_DUPLICATE_ACCOUNT("user_duplicate_account"),
