@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.admin.common.PageParam;
 
 /**
  * @ClassName QueryProjectParam
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(description = "查询项目参数")
-public class QueryProjectParam {
+public class QueryProjectParam extends PageParam {
 
     @ApiModelProperty(value = "项目名称", required = true, example = "erp")
     private String projectName;

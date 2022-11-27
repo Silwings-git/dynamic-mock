@@ -42,6 +42,7 @@ public class ProjectControllerTest {
 
         final SaveProjectParam saveProjectParam = this.save();
         this.query(saveProjectParam);
+        this.queryAll();
         this.delete(saveProjectParam.getProjectId());
     }
 
@@ -70,6 +71,10 @@ public class ProjectControllerTest {
         queryProjectParam.setProjectName(projectParam.getProjectName());
 
         Assert.assertNotNull(this.projectController.query(queryProjectParam));
+    }
+
+    public void queryAll() {
+        Assert.assertNotNull(this.projectController.queryAll());
     }
 
     public void delete(final Identity projectId) {

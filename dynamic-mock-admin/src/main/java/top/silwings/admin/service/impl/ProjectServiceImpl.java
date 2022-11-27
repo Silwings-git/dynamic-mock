@@ -4,6 +4,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.common.PageData;
+import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.ProjectDto;
@@ -105,7 +107,29 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDto> query(final List<Identity> projectIdList, final String projectName) {
+    public List<ProjectDto> queryAll(final List<Identity> projectIdList) {
+
+        final Example example = new Example(ProjectPo.class);
+
+        if (null != projectIdList) {
+            if (projectIdList.isEmpty()) {
+                return Collections.emptyList();
+            }
+            example.createCriteria()
+                    .andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        }
+
+        example.orderBy(ProjectPo.C_PROJECT_NAME).asc();
+
+        final List<ProjectPo> projectPoList = this.projectMapper.selectByCondition(example);
+
+        return projectPoList.stream()
+                .map(ProjectDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageData<ProjectDto> query(final List<Identity> projectIdList, final String projectName, final PageParam pageParam) {
 
         final Example example = new Example(ProjectPo.class);
         final Example.Criteria criteria = example.createCriteria();
@@ -114,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (null != projectIdList) {
             if (projectIdList.isEmpty()) {
-                return Collections.emptyList();
+                return PageData.empty();
             }
             criteria.andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
         }
@@ -123,14 +147,16 @@ public class ProjectServiceImpl implements ProjectService {
 
         final int total = this.projectMapper.selectCountByCondition(example);
         if (total <= 0) {
-            return Collections.emptyList();
+            return PageData.empty();
         }
 
-        final List<ProjectPo> projectPoList = this.projectMapper.selectByCondition(example);
+        final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, pageParam.toRowBounds());
 
-        return projectPoList.stream()
+        final List<ProjectDto> projectList = projectPoList.stream()
                 .map(ProjectDto::from)
                 .collect(Collectors.toList());
+
+        return PageData.of(projectList, total);
     }
 
 }
