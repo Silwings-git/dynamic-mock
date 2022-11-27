@@ -19,14 +19,18 @@ import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
+import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
+import top.silwings.admin.web.vo.result.OwnHandlerInfoResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -150,6 +154,28 @@ public class MockHandlerController {
         this.mockHandlerService.updateEnableStatus(param.getHandlerId(), EnableStatus.valueOfCode(param.getEnableStatus()), this.projectService.find(projectId));
 
         return Result.ok();
+    }
+
+    @PostMapping("/queryOwn")
+    @PermissionLimit
+    @ApiOperation(value = "查询登录用户的全部Handler信息")
+    public Result<Map<Identity, List<OwnHandlerInfoResult>>> queryOwn(@RequestBody final QueryOwnMockHandlerParam param) {
+
+        // 这里不能将null修改为空集合,空集合表示没有任何项目权限
+        final List<Identity> projectIdList;
+
+        if (null == param.getProjectId()) {
+            projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
+        } else {
+            projectIdList = Collections.singletonList(param.getProjectId());
+        }
+
+        final Map<Identity, List<OwnHandlerInfoResult>> projectIdHandlerMap = this.mockHandlerService.queryOwn(projectIdList)
+                .stream()
+                .map(OwnHandlerInfoResult::from)
+                .collect(Collectors.groupingBy(OwnHandlerInfoResult::getProjectId));
+
+        return Result.ok(projectIdHandlerMap);
     }
 
 }

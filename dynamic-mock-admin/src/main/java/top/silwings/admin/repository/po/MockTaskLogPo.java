@@ -23,6 +23,7 @@ public class MockTaskLogPo {
 
     public static final String C_LOG_ID = "logId";
     public static final String C_HANDLER_ID = "handlerId";
+    public static final String C_TASK_CODE = "taskCode";
     public static final String C_NAME = "name";
 
     @Id

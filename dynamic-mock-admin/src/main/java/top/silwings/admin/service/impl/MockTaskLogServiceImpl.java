@@ -71,11 +71,12 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
     }
 
     @Override
-    public PageData<MockTaskLogDto> query(final Identity handlerId, final String name, final PageParam pageParam) {
+    public PageData<MockTaskLogDto> query(final Identity handlerId, final String name, final String taskCode, final PageParam pageParam) {
 
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
                 .andEqualTo(MockTaskLogPo.C_HANDLER_ID, ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue))
+                .andEqualTo(MockTaskLogPo.C_TASK_CODE, ConvertUtils.getNoBlankOrDefault(taskCode, null))
                 .andLike(MockTaskLogPo.C_NAME, ConvertUtils.getNoBlankOrDefault(name, null, arg -> "%" + arg + "%"));
 
         final int total = this.mockTaskLogMapper.selectCountByCondition(example);

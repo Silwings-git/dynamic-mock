@@ -25,6 +25,8 @@ public class MockTaskInfo extends AbstractSupportAble {
 
     private final String name;
 
+    private final List<String> support;
+
     private final List<NodeInterpreter> supportInterpreterList;
 
     private final boolean async;
@@ -62,6 +64,7 @@ public class MockTaskInfo extends AbstractSupportAble {
 
         return MockTask.builder()
                 .handlerId(this.handlerId)
+                .support(this.support)
                 .name(this.name)
                 .requestUrl(String.valueOf(map.get("requestUrl")))
                 .httpMethod(HttpMethod.valueOf(String.valueOf(map.get("httpMethod")).toUpperCase()))

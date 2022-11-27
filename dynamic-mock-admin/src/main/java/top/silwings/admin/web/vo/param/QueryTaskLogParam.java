@@ -25,7 +25,10 @@ public class QueryTaskLogParam extends PageParam {
     @ApiModelProperty(value = "处理器id", required = true, example = "1")
     private Identity handlerId;
 
-    @ApiModelProperty(value = "任务名称", required = true, example = "1")
+    @ApiModelProperty(value = "任务编码", example = "1")
+    private String taskCode;
+
+    @ApiModelProperty(value = "任务名称", example = "1")
     private String name;
 
     public void validate() {

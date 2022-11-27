@@ -19,6 +19,7 @@ import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -44,6 +45,11 @@ public class MockTask implements Runnable {
      * 任务名称
      */
     private final String name;
+
+    /**
+     * 执行条件表述
+     */
+    private final List<String> support;
 
     /**
      * 请求地址

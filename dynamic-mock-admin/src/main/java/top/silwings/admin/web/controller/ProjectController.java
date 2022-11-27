@@ -76,14 +76,15 @@ public class ProjectController {
         return PageResult.ok(resultList, projectPageData.getTotal());
     }
 
-    @PostMapping("/queryAll")
+    @PostMapping("/queryOwnAll")
     @PermissionLimit
-    @ApiOperation(value = "查询全部项目信息")
+    @ApiOperation(value = "查询登录用户的全部项目信息")
     public Result<List<ProjectResult>> queryAll() {
 
+        // 这里不能将null修改为空集合,空集合表示没有任何项目权限
         final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
 
-        final List<ProjectResult> resultList = this.projectService.queryAll(projectIdList)
+        final List<ProjectResult> resultList = this.projectService.queryOwnAll(projectIdList)
                 .stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());

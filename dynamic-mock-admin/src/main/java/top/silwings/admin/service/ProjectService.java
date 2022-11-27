@@ -19,7 +19,7 @@ public interface ProjectService {
 
     void delete(Identity projectId);
 
-    List<ProjectDto> queryAll(List<Identity> projectIdList);
+    List<ProjectDto> queryOwnAll(List<Identity> projectIdList);
 
     PageData<ProjectDto> query(List<Identity> projectIdList, String projectName, PageParam pageParam);
 

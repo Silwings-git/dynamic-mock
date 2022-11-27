@@ -35,6 +35,7 @@ public class MockTaskInfoFactory {
         return MockTaskInfo.builder()
                 .handlerId(handlerId)
                 .name(definition.getName())
+                .support(definition.getSupport())
                 .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
                 .async(definition.isAsync())
                 .cron(ConvertUtils.getNoBlankOrDefault(definition.getCron(), DEFAULT_CRON))

@@ -25,15 +25,11 @@ public class ProjectResult {
     @ApiModelProperty(value = "项目名", example = "ERP")
     private String projectName;
 
-    @ApiModelProperty(value = "基础uri", example = "/misaka")
-    private String baseUri;
-
     public static ProjectResult from(final ProjectDto project) {
 
         final ProjectResult projectResult = new ProjectResult();
         projectResult.setProjectId(project.getProjectId());
         projectResult.setProjectName(project.getProjectName());
-        projectResult.setBaseUri(project.getBaseUri());
 
         return projectResult;
     }

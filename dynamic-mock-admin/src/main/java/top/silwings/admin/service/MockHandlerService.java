@@ -2,6 +2,7 @@ package top.silwings.admin.service;
 
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.model.HandlerInfoDto;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -43,4 +44,5 @@ public interface MockHandlerService {
 
     void registerHandler(MockHandlerDto mockHandler, ProjectDto project);
 
+    List<HandlerInfoDto> queryOwn(List<Identity> projectIdList);
 }

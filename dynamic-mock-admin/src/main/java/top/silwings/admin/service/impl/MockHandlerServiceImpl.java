@@ -10,12 +10,14 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.admin.model.HandlerInfoDto;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.MockHandlerUniquePo;
+import top.silwings.admin.repository.po.ProjectPo;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -314,5 +316,29 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         }
 
         this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
+    }
+
+    @Override
+    public List<HandlerInfoDto> queryOwn(final List<Identity> projectIdList) {
+
+        final Example example = new Example(MockHandlerPo.class);
+
+        if (null != projectIdList) {
+            if (projectIdList.isEmpty()) {
+                return Collections.emptyList();
+            }
+            example.createCriteria()
+                    .andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        }
+
+        example.orderBy(MockHandlerPo.C_NAME).asc();
+
+        example.selectProperties(MockHandlerPo.C_PROJECT_ID, MockHandlerPo.C_HANDLER_ID, MockHandlerPo.C_NAME);
+
+        final List<MockHandlerPo> projectPoList = this.mockHandlerMapper.selectByCondition(example);
+
+        return projectPoList.stream()
+                .map(HandlerInfoDto::from)
+                .collect(Collectors.toList());
     }
 }

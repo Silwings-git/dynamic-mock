@@ -133,7 +133,7 @@ public class JsonUtils {
      */
     public static Object jsonPathRead(final Object obj, final String jsonPath) {
 
-        final Object json = DEFAULT_PATH_TO_NULL.jsonProvider().parse(toJSONString(obj));
+        final Object json = DEFAULT_PATH_TO_NULL.jsonProvider().parse(obj instanceof String ? (String) obj : toJSONString(obj));
 
         return JsonPath.read(json, jsonPath);
     }

@@ -67,6 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
         final ProjectDto original = this.find(projectId);
 
         final ProjectPo project = ProjectPo.builder()
+                .projectId(projectId.intValue())
                 .projectName(projectName)
                 .baseUri(baseUri)
                 .build();
@@ -120,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDto> queryAll(final List<Identity> projectIdList) {
+    public List<ProjectDto> queryOwnAll(final List<Identity> projectIdList) {
 
         final Example example = new Example(ProjectPo.class);
 

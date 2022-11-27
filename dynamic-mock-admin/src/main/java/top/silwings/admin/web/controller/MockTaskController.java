@@ -18,7 +18,7 @@ import top.silwings.admin.web.vo.param.QueryTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskParam;
 import top.silwings.admin.web.vo.param.UnregisterTaskParam;
 import top.silwings.admin.web.vo.result.MockTaskLogResult;
-import top.silwings.admin.web.vo.result.TaskResult;
+import top.silwings.admin.web.vo.result.RunningTaskResult;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.task.AutoCancelTask;
 import top.silwings.core.handler.task.MockTaskManager;
@@ -53,10 +53,10 @@ public class MockTaskController {
         this.mockTaskLogService = mockTaskLogService;
     }
 
-    @PostMapping("/query")
+    @PostMapping("/running/query")
     @PermissionLimit
     @ApiOperation(value = "查询任务列表")
-    public PageResult<TaskResult> query(@RequestBody final QueryTaskParam param) {
+    public Result<List<RunningTaskResult>> query(@RequestBody final QueryTaskParam param) {
 
         param.validate();
 
@@ -76,17 +76,17 @@ public class MockTaskController {
 
         final List<AutoCancelTask> taskList = this.mockTaskManager.query(handlerIdList);
 
-        final List<TaskResult> taskResultList = taskList.stream()
-                .map(task -> TaskResult.of(task.getTaskCode(), task.getHandlerId(), task.getNumberOfExecute().get(), task.getTaskJson()))
-                .sorted(Comparator.comparing(TaskResult::getTaskCode))
+        final List<RunningTaskResult> runningTaskResultList = taskList.stream()
+                .map(RunningTaskResult::from)
+                .sorted(Comparator.comparing(RunningTaskResult::getTaskCode))
                 .collect(Collectors.toList());
 
-        return PageResult.ok(taskResultList, taskResultList.size());
+        return Result.ok(runningTaskResultList);
     }
 
-    @PostMapping("/unregister")
+    @PostMapping("/running/unregister")
     @PermissionLimit
-    @ApiOperation(value = "取消任务任务列表")
+    @ApiOperation(value = "取消任务")
     public Result<Void> unregister(@RequestBody final UnregisterTaskParam param) {
 
         param.validate();
@@ -133,13 +133,13 @@ public class MockTaskController {
 
         this.validPermission(param.getHandlerId());
 
-        final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(param.getHandlerId(), param.getName(), param);
+        final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(param.getHandlerId(), param.getTaskCode(), param.getName(), param);
 
-        final List<MockTaskLogResult> MockTaskLogResultList = pageData.getList().stream()
+        final List<MockTaskLogResult> mockTaskLogResultList = pageData.getList().stream()
                 .map(MockTaskLogResult::from)
                 .collect(Collectors.toList());
 
-        return PageResult.ok(MockTaskLogResultList, pageData.getTotal());
+        return PageResult.ok(mockTaskLogResultList, pageData.getTotal());
     }
 
     @PostMapping("/log/del")

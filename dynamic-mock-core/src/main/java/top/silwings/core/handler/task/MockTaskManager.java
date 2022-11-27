@@ -70,7 +70,17 @@ public class MockTaskManager implements DisposableBean {
      * 如果超过设置的值,将取消最先注册的任务
      */
     private void limitCapacity() {
-        final int beyond = this.taskPool.size() - this.taskSchedulerProperties.getMaxTaskPoolSize();
+        int beyond = this.taskPool.size() - this.taskSchedulerProperties.getMaxTaskPoolSize();
+
+        if (beyond > 0) {
+            // 优先将剩余执行次数为0的清除
+            this.taskPool.values().stream().map(WeakReference::get)
+                    .filter(Objects::nonNull)
+                    .filter(task -> task.getNumberOfExecute().get() == 0)
+                    .forEach(task -> this.cancelTask(task, false));
+            beyond = this.taskPool.size() - this.taskSchedulerProperties.getMaxTaskPoolSize();
+        }
+
         if (beyond > 0) {
             this.taskPool.values().stream().map(WeakReference::get)
                     .filter(Objects::nonNull)
@@ -141,6 +151,7 @@ public class MockTaskManager implements DisposableBean {
 
         return autoCancelTaskList.stream()
                 .filter(Objects::nonNull)
+                .filter(task -> task.getNumberOfExecute().get() > 0)
                 .collect(Collectors.toList());
     }
 
