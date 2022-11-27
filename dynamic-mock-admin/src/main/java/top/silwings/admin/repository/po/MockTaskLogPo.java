@@ -25,6 +25,7 @@ public class MockTaskLogPo {
     public static final String C_HANDLER_ID = "handlerId";
     public static final String C_TASK_CODE = "taskCode";
     public static final String C_NAME = "name";
+    public static final String C_CREATE_TIME = "createTime";
 
     @Id
     @GeneratedValue(generator = "JDBC")

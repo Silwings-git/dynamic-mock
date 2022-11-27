@@ -6,6 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
@@ -100,15 +101,38 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
     }
 
     @Override
-    public void delete(final List<Identity> handlerIdList, final Identity logId) {
+    public void delete(final List<Identity> handlerIdList, final Identity logId, final DeleteTaskLogType type) {
 
         if (CollectionUtils.isEmpty(handlerIdList)) {
             return;
         }
 
+        final DeleteTaskLogType.TypeCondition typeCondition = type.typeCondition();
+
+        final int minId;
+
+        if (typeCondition.getBeforeNum() > 0) {
+            final Example findIdCondition = new Example(MockTaskLogPo.class);
+            findIdCondition.createCriteria()
+                    .andEqualTo(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList));
+
+            findIdCondition.selectProperties(MockTaskLogPo.C_LOG_ID);
+
+            final List<MockTaskLogPo> mockTaskLogList = this.mockTaskLogMapper.selectByConditionAndRowBounds(findIdCondition, new RowBounds(typeCondition.getBeforeNum() - 1, 1));
+            if (CollectionUtils.isEmpty(mockTaskLogList)) {
+                minId = Integer.MAX_VALUE;
+            } else {
+                minId = mockTaskLogList.get(0).getLogId();
+            }
+        } else {
+            minId = 0;
+        }
+
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
                 .andEqualTo(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
+                .andLessThanOrEqualTo(MockTaskLogPo.C_CREATE_TIME, typeCondition.getBeforeTime())
+                .andGreaterThan(MockTaskLogPo.C_LOG_ID, minId)
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, ConvertUtils.getNoNullOrDefault(logId, null, Identity::intValue));
 
         this.mockTaskLogMapper.deleteByCondition(example);

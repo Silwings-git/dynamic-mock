@@ -1,6 +1,7 @@
 package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +12,11 @@ import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
-import top.silwings.admin.common.UnregisterType;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.MockTaskLogService;
+import top.silwings.admin.web.vo.param.BatchUnregisterParam;
 import top.silwings.admin.web.vo.param.DeleteTaskLogParam;
 import top.silwings.admin.web.vo.param.FindTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskLogParam;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
  * @Date 2022/11/23 20:34
  * @Since
  **/
+@Slf4j
 @RestController
 @RequestMapping("/dynamic-mock/mock/task")
 public class MockTaskController {
@@ -115,26 +117,43 @@ public class MockTaskController {
 
         param.validate();
 
-        final UnregisterType unregisterType = UnregisterType.valueOfCode(param.getUnregisterType());
+        UserHolder.validHandlerId(param.getHandlerId());
 
-        if (UnregisterType.TASK.equals(unregisterType)) {
+        this.mockTaskManager.unregisterByTaskCode(param.getHandlerId(), param.getTaskCode(), param.getInterrupt());
 
-            UserHolder.validHandlerId(param.getHandlerId());
+        return Result.ok();
+    }
 
-            this.mockTaskManager.unregisterByTaskCode(param.getHandlerId(), param.getTaskCode(), param.getInterrupt());
+    @PostMapping("/running/unregister/batch")
+    @PermissionLimit
+    @ApiOperation(value = "批量取消任务")
+    public Result<Void> batchUnregister(@RequestBody final BatchUnregisterParam param) {
 
-        } else if (UnregisterType.MOCK_HANDLER.equals(unregisterType)) {
+        final List<Identity> unregisterHandlerId;
 
-            UserHolder.validHandlerId(param.getHandlerId());
+        if (null == param.getProjectId() && null == param.getHandlerId()) {
 
-            this.mockTaskManager.unregisterByHandlerId(param.getHandlerId(), param.getInterrupt());
+            // 取消注册所有已授权handler
+            unregisterHandlerId = UserHolder.getUser().getHandlerIdList();
 
-        } else {
+        } else if (null != param.getProjectId() && null == param.getHandlerId()) {
+
+            // 取消指定项目下所有
+            UserHolder.validProjectId(param.getProjectId());
+            unregisterHandlerId = this.mockHandlerService.queryHandlerIds(param.getProjectId());
+
+        } else if (null != param.getProjectId() && null != param.getHandlerId()) {
 
             UserHolder.validProjectId(param.getProjectId());
+            CheckUtils.isIn(param.getHandlerId(), this.mockHandlerService.queryHandlerIds(param.getProjectId()), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+            unregisterHandlerId = Collections.singletonList(param.getHandlerId());
 
-            this.mockTaskManager.unregisterByHandlerIds(this.mockHandlerService.queryHandlerIds(param.getProjectId()), param.getInterrupt());
+        } else {
+            log.error("批量取消注册任务时参数不合规.");
+            return Result.ok();
         }
+
+        this.mockTaskManager.unregisterByHandlerIds(unregisterHandlerId, param.getInterrupt());
 
         return Result.ok();
     }
@@ -176,34 +195,32 @@ public class MockTaskController {
 
         param.validate();
 
-        final DeleteTaskLogType type = DeleteTaskLogType.valueOfCode(param.getDeleteType());
 
         final List<Identity> deleteHandlerIdList;
-        final Identity logId;
 
-        if (DeleteTaskLogType.LOG.equals(type)) {
+        if (null == param.getProjectId() && null == param.getHandlerId()) {
 
-            // 单条删除
-            UserHolder.validHandlerId(param.getHandlerId());
-            deleteHandlerIdList = Collections.singletonList(param.getHandlerId());
-            logId = param.getLogId();
+            // 清理所有已授权handler
+            deleteHandlerIdList = UserHolder.getUser().getHandlerIdList();
 
-        } else if (DeleteTaskLogType.MOCK_HANDLER.equals(type)) {
+        } else if (null != param.getProjectId() && null == param.getHandlerId()) {
 
-            // 按handler删除
-            UserHolder.validHandlerId(param.getHandlerId());
-            deleteHandlerIdList = Collections.singletonList(param.getHandlerId());
-            logId = null;
-
-        } else {
-
-            // 按项目删除
+            // 取消指定项目下所有
             UserHolder.validProjectId(param.getProjectId());
             deleteHandlerIdList = this.mockHandlerService.queryHandlerIds(param.getProjectId());
-            logId = null;
+
+        } else if (null != param.getProjectId() && null != param.getHandlerId()) {
+
+            UserHolder.validProjectId(param.getProjectId());
+            CheckUtils.isIn(param.getHandlerId(), this.mockHandlerService.queryHandlerIds(param.getProjectId()), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
+            deleteHandlerIdList = Collections.singletonList(param.getHandlerId());
+
+        } else {
+            log.error("删除任务日志时参数不合规.");
+            return Result.ok();
         }
 
-        this.mockTaskLogService.delete(deleteHandlerIdList, logId);
+        this.mockTaskLogService.delete(deleteHandlerIdList, param.getLogId(), DeleteTaskLogType.valueOfCode(param.getDeleteType()));
 
         return Result.ok();
     }

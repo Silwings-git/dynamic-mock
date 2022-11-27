@@ -100,10 +100,6 @@ public class MockTaskManager implements DisposableBean {
         }
     }
 
-    public void unregisterByHandlerId(final Identity handlerId, final Boolean mayInterruptIfRunning) {
-        this.unregisterByHandlerIds(Collections.singletonList(handlerId), Boolean.TRUE.equals(mayInterruptIfRunning));
-    }
-
     public void unregisterByHandlerIds(final List<Identity> handlerIdList, final Boolean mayInterruptIfRunning) {
         final List<AutoCancelTask> autoCancelTasks = this.query(handlerIdList);
         autoCancelTasks.forEach(task -> this.cancelTask(task, Boolean.TRUE.equals(mayInterruptIfRunning)));

@@ -22,41 +22,29 @@ import top.silwings.core.utils.CheckUtils;
 @ApiModel(description = "删除任务日志参数")
 public class DeleteTaskLogParam {
 
-    @ApiModelProperty(value = "删除的类型.1-删除单条日志,2按handler删除日志,3按项目删除日志", example = "1")
-    private String deleteType;
-
-    @ApiModelProperty(value = "处理器id", required = true, example = "1")
+    @ApiModelProperty(value = "处理器id", example = "1")
     private Identity projectId;
 
-    @ApiModelProperty(value = "处理器id", required = true, example = "1")
+    @ApiModelProperty(value = "处理器id", example = "1")
     private Identity handlerId;
 
-    @ApiModelProperty(value = "日志id.仅传递handlerId时表示删除该id下全部日志", example = "1")
+    @ApiModelProperty(value = "日志id", example = "1")
     private Identity logId;
 
+    @ApiModelProperty(value = "删除方式." +
+            "1-清理一个月之前的数据," +
+            "2-清理三个月之前的数据," +
+            "3-清理六个月之前的数据," +
+            "4-清理一年之前的数据," +
+            "5-清理一千条之前的数据," +
+            "6-清理一万条之前的数据," +
+            "7-清理三万条之前的数据," +
+            "8-清理十万条之前的数据," +
+            "100-清理所有日志", required = true, example = "1")
+    private String deleteType;
+
     public void validate() {
-
-        final DeleteTaskLogType type = DeleteTaskLogType.valueOfCode(this.deleteType);
-
-        CheckUtils.isNotNull(type, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "deleteType"));
-
-        if (DeleteTaskLogType.LOG.equals(type)) {
-
-            // 单条删除
-            CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
-            CheckUtils.isNotNull(this.logId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "logId"));
-
-        } else if (DeleteTaskLogType.MOCK_HANDLER.equals(type)) {
-
-            // 按handler删除
-            CheckUtils.isNotNull(this.handlerId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "handlerId"));
-
-        } else {
-
-            // 按项目删除
-            CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
-        }
-
+        CheckUtils.isNotNull(DeleteTaskLogType.valueOfCode(this.deleteType), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "deleteType"));
     }
 
 }

@@ -1,5 +1,6 @@
 package top.silwings.admin.service;
 
+import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.core.common.Identity;
@@ -18,7 +19,7 @@ public interface MockTaskLogService {
 
     PageData<MockTaskLogDto> query(List<Identity> handlerIdList, String taskCode, String name, PageParam pageParam);
 
-    void delete(List<Identity> handlerIdList, Identity logId);
+    void delete(List<Identity> handlerIdList, Identity logId, final DeleteTaskLogType type);
 
     MockTaskLogDto find(Identity handlerId, Identity logId);
 }

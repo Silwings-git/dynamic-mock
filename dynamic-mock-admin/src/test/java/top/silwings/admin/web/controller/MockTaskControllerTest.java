@@ -14,13 +14,12 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.common.Role;
-import top.silwings.admin.common.UnregisterType;
 import top.silwings.admin.web.setup.SetUp;
+import top.silwings.admin.web.vo.param.BatchUnregisterParam;
 import top.silwings.admin.web.vo.param.DeleteTaskLogParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskParam;
-import top.silwings.admin.web.vo.param.UnregisterTaskParam;
 import top.silwings.core.common.Identity;
 
 /**
@@ -67,12 +66,11 @@ public class MockTaskControllerTest {
 
     private void unregister(final Identity projectId) {
 
-        final UnregisterTaskParam unregisterTaskParam = new UnregisterTaskParam();
-        unregisterTaskParam.setUnregisterType(UnregisterType.PROJECT.getCode());
+        final BatchUnregisterParam unregisterTaskParam = new BatchUnregisterParam();
         unregisterTaskParam.setProjectId(projectId);
         unregisterTaskParam.setInterrupt(false);
 
-        Assert.assertNotNull(this.mockTaskController.unregister(unregisterTaskParam));
+        Assert.assertNotNull(this.mockTaskController.batchUnregister(unregisterTaskParam));
     }
 
     private void queryTaskLog(final Identity projectId) {
@@ -91,7 +89,7 @@ public class MockTaskControllerTest {
 
         final DeleteTaskLogParam deleteTaskLogParam = new DeleteTaskLogParam();
         deleteTaskLogParam.setHandlerId(handlerInfoParam.getHandlerId());
-        deleteTaskLogParam.setDeleteType(DeleteTaskLogType.MOCK_HANDLER.getCode());
+        deleteTaskLogParam.setDeleteType(DeleteTaskLogType.ALL.code());
 
         Assert.assertNotNull(this.mockTaskController.delTaskLog(deleteTaskLogParam));
     }
