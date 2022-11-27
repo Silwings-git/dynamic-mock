@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.auth.UserAuthInfo;
 import top.silwings.admin.auth.UserHolder;
+import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.common.Role;
 import top.silwings.admin.common.UnregisterType;
@@ -90,6 +91,7 @@ public class MockTaskControllerTest {
 
         final DeleteTaskLogParam deleteTaskLogParam = new DeleteTaskLogParam();
         deleteTaskLogParam.setHandlerId(handlerInfoParam.getHandlerId());
+        deleteTaskLogParam.setDeleteType(DeleteTaskLogType.MOCK_HANDLER.getCode());
 
         Assert.assertNotNull(this.mockTaskController.delTaskLog(deleteTaskLogParam));
     }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.auth.annotation.PermissionLimit;
+import top.silwings.admin.common.DeleteTaskLogType;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
@@ -175,9 +176,34 @@ public class MockTaskController {
 
         param.validate();
 
-        UserHolder.validHandlerId(param.getHandlerId());
+        final DeleteTaskLogType type = DeleteTaskLogType.valueOfCode(param.getDeleteType());
 
-        this.mockTaskLogService.delete(param.getHandlerId(), param.getLogId());
+        final List<Identity> deleteHandlerIdList;
+        final Identity logId;
+
+        if (DeleteTaskLogType.LOG.equals(type)) {
+
+            // 单条删除
+            UserHolder.validHandlerId(param.getHandlerId());
+            deleteHandlerIdList = Collections.singletonList(param.getHandlerId());
+            logId = param.getLogId();
+
+        } else if (DeleteTaskLogType.MOCK_HANDLER.equals(type)) {
+
+            // 按handler删除
+            UserHolder.validHandlerId(param.getHandlerId());
+            deleteHandlerIdList = Collections.singletonList(param.getHandlerId());
+            logId = null;
+
+        } else {
+
+            // 按项目删除
+            UserHolder.validProjectId(param.getProjectId());
+            deleteHandlerIdList = this.mockHandlerService.queryHandlerIds(param.getProjectId());
+            logId = null;
+        }
+
+        this.mockTaskLogService.delete(deleteHandlerIdList, logId);
 
         return Result.ok();
     }

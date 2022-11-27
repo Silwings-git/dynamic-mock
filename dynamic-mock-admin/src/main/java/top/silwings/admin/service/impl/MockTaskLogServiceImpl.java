@@ -100,11 +100,15 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
     }
 
     @Override
-    public void delete(final Identity handlerId, final Identity logId) {
+    public void delete(final List<Identity> handlerIdList, final Identity logId) {
+
+        if (CollectionUtils.isEmpty(handlerIdList)) {
+            return;
+        }
 
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
-                .andEqualTo(MockTaskLogPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, ConvertUtils.getNoNullOrDefault(logId, null, Identity::intValue));
 
         this.mockTaskLogMapper.deleteByCondition(example);

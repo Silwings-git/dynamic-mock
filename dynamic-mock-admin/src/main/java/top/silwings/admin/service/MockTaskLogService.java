@@ -18,7 +18,7 @@ public interface MockTaskLogService {
 
     PageData<MockTaskLogDto> query(List<Identity> handlerIdList, String taskCode, String name, PageParam pageParam);
 
-    void delete(Identity handlerId, Identity logId);
+    void delete(List<Identity> handlerIdList, Identity logId);
 
     MockTaskLogDto find(Identity handlerId, Identity logId);
 }
