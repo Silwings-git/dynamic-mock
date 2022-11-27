@@ -8,6 +8,8 @@ import lombok.Setter;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 
+import java.util.List;
+
 /**
  * @ClassName QueryConditionDto
  * @Description 查询条件
@@ -21,6 +23,11 @@ import top.silwings.core.common.Identity;
 @NoArgsConstructor
 @Builder
 public class QueryConditionDto {
+
+    /**
+     * 项目id集.如果为null表示允许查询所有
+     */
+    private List<Identity> projectIdList;
 
     /**
      * 项目id

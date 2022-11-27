@@ -74,7 +74,7 @@ public class ProjectControllerTest {
     }
 
     public void queryAll() {
-        Assert.assertNotNull(this.projectController.queryAll());
+        Assert.assertNotNull(this.projectController.queryOwnAll());
     }
 
     public void delete(final Identity projectId) {

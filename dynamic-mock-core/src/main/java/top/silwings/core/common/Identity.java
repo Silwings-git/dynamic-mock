@@ -9,10 +9,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName Identity
@@ -42,6 +47,12 @@ public class Identity {
         return Identity.from(Integer.parseInt(id));
     }
 
+    public static List<Integer> toInt(final Collection<Identity> identities) {
+        if (CollectionUtils.isEmpty(identities)) {
+            return Collections.emptyList();
+        }
+        return identities.stream().map(Identity::intValue).collect(Collectors.toList());
+    }
 
     @Override
     public boolean equals(final Object o) {

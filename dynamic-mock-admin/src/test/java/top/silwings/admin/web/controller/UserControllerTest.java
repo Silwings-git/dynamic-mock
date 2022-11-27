@@ -51,7 +51,7 @@ public class UserControllerTest {
         final SaveUserParam userParam = this.save();
         this.changePassword(userParam);
         this.query();
-        this.deleteUser(userParam.getUserId());
+        this.deleteUser(this.save().getUserId());
     }
 
     private SaveUserParam save() {

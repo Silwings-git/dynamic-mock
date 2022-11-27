@@ -28,7 +28,7 @@ public class ProjectDto {
         return ProjectDto.builder()
                 .projectId(Identity.from(projectPo.getProjectId()))
                 .projectName(projectPo.getProjectName())
-                .baseUri(ConvertUtils.getNoBlankOrDefault(projectPo.getBaseUri(),""))
+                .baseUri(ConvertUtils.getNoBlankOrDefault(projectPo.getBaseUri(), ""))
                 .build();
     }
 

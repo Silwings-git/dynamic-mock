@@ -45,8 +45,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
         this.mockTaskLogDaoConverter = mockTaskLogDaoConverter;
     }
 
-    @Override
-    public Identity create(final MockTaskLogDto mockTaskLog) {
+    private Identity create(final MockTaskLogDto mockTaskLog) {
 
         final MockTaskLogPo mockTaskLogPo = this.mockTaskLogDaoConverter.convert(mockTaskLog);
         mockTaskLogPo.setLogId(null);
@@ -56,8 +55,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
         return Identity.from(mockTaskLogPo.getLogId());
     }
 
-    @Override
-    public Identity updateByLogId(final MockTaskLogDto mockTaskLog) {
+    private Identity updateByLogId(final MockTaskLogDto mockTaskLog) {
 
         if (null == mockTaskLog.getLogId()) {
             return null;
@@ -82,11 +80,9 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
             return PageData.empty();
         }
 
-        final List<Integer> handlerIds = handlerIdList.stream().map(Identity::intValue).collect(Collectors.toList());
-
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
-                .andIn(MockTaskLogPo.C_HANDLER_ID, handlerIds)
+                .andIn(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
                 .andEqualTo(MockTaskLogPo.C_TASK_CODE, ConvertUtils.getNoBlankOrDefault(taskCode, null))
                 .andLike(MockTaskLogPo.C_NAME, ConvertUtils.getNoBlankOrDefault(name, null, arg -> "%" + arg + "%"));
 
@@ -115,10 +111,11 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
     }
 
     @Override
-    public MockTaskLogDto find(final Identity logId) {
+    public MockTaskLogDto find(final Identity handlerId, final Identity logId) {
 
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
+                .andEqualTo(MockTaskLogPo.C_HANDLER_ID, handlerId.intValue())
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, logId.intValue());
 
         final List<MockTaskLogPo> mockTaskLogPoList = this.mockTaskLogMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));

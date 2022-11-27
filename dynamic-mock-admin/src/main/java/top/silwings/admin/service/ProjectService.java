@@ -27,4 +27,5 @@ public interface ProjectService {
 
     ProjectDto find(Identity projectId);
 
+    List<Identity> queryAllProjectId();
 }

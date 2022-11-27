@@ -1,6 +1,7 @@
 package top.silwings.admin.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -123,15 +124,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDto> queryOwnAll(final List<Identity> projectIdList) {
 
-        final Example example = new Example(ProjectPo.class);
-
-        if (null != projectIdList) {
-            if (projectIdList.isEmpty()) {
-                return Collections.emptyList();
-            }
-            example.createCriteria()
-                    .andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        if (CollectionUtils.isEmpty(projectIdList)) {
+            return Collections.emptyList();
         }
+
+        final Example example = new Example(ProjectPo.class);
+        example.createCriteria()
+                .andIn(ProjectPo.C_PROJECT_ID, Identity.toInt(projectIdList));
 
         example.orderBy(ProjectPo.C_PROJECT_NAME).asc();
 
@@ -142,20 +141,25 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 分页查询项目信息
+     *
+     * @param projectIdList 项目id集,如果为null表示查询所有
+     * @param projectName   项目名称
+     * @param pageParam     分页参数
+     * @return 项目信息集
+     */
     @Override
     public PageData<ProjectDto> query(final List<Identity> projectIdList, final String projectName, final PageParam pageParam) {
 
-        final Example example = new Example(ProjectPo.class);
-        final Example.Criteria criteria = example.createCriteria();
-        criteria
-                .andLike(ProjectPo.C_PROJECT_NAME, ConvertUtils.getNoBlankOrDefault(projectName, null, name -> name + "%"));
-
-        if (null != projectIdList) {
-            if (projectIdList.isEmpty()) {
-                return PageData.empty();
-            }
-            criteria.andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        if (CollectionUtils.isEmpty(projectIdList)) {
+            return PageData.empty();
         }
+
+        final Example example = new Example(ProjectPo.class);
+        example.createCriteria()
+                .andLike(ProjectPo.C_PROJECT_NAME, ConvertUtils.getNoBlankOrDefault(projectName, null, name -> name + "%"))
+                .andIn(ProjectPo.C_PROJECT_ID, Identity.toInt(projectIdList));
 
         example.orderBy(ProjectPo.C_PROJECT_NAME).asc();
 
@@ -171,6 +175,19 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
 
         return PageData.of(projectList, total);
+    }
+
+    @Override
+    public List<Identity> queryAllProjectId() {
+
+        final Example example = new Example(ProjectPo.class);
+        example.selectProperties(ProjectPo.C_PROJECT_ID);
+
+        return this.projectMapper.selectByCondition(example)
+                .stream()
+                .map(ProjectPo::getProjectId)
+                .map(Identity::from)
+                .collect(Collectors.toList());
     }
 
 }

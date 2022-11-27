@@ -59,13 +59,11 @@ public class ProjectController {
     }
 
     @PostMapping("/query")
-    @PermissionLimit
+    @PermissionLimit(adminUser = true)
     @ApiOperation(value = "分页查询项目信息")
     public PageResult<ProjectResult> query(@RequestBody final QueryProjectParam param) {
 
-        final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
-
-        final PageData<ProjectDto> projectPageData = this.projectService.query(projectIdList, param.getProjectName(), param);
+        final PageData<ProjectDto> projectPageData = this.projectService.query(UserHolder.getUser().getProjectIdList(), param.getProjectName(), param);
 
         final List<ProjectResult> resultList = projectPageData
                 .getList()
@@ -79,12 +77,10 @@ public class ProjectController {
     @PostMapping("/queryOwnAll")
     @PermissionLimit
     @ApiOperation(value = "查询登录用户的全部项目信息")
-    public Result<List<ProjectResult>> queryAll() {
+    public Result<List<ProjectResult>> queryOwnAll() {
 
         // 这里不能将null修改为空集合,空集合表示没有任何项目权限
-        final List<Identity> projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
-
-        final List<ProjectResult> resultList = this.projectService.queryOwnAll(projectIdList)
+        final List<ProjectResult> resultList = this.projectService.queryOwnAll(UserHolder.getUser().getProjectIdList())
                 .stream()
                 .map(ProjectResult::from)
                 .collect(Collectors.toList());

@@ -54,4 +54,12 @@ public class UserHolder {
         getUser().validPermission(projectId);
     }
 
+    public static void validProjectId(final Identity projectId) {
+        getUser().validProjectId(projectId);
+    }
+
+    public static void validHandlerId(final Identity handlerId) {
+        getUser().validHandlerId(handlerId);
+    }
+
 }

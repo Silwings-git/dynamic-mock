@@ -24,7 +24,7 @@ public class WebContext {
         return ConvertUtils.getNoBlankOrDefault(Language.support(this.language) ? this.language : null, DEFAULT_LANGUAGE);
     }
 
-    enum Language{
+    enum Language {
 
         ZH_CN("zh-CN"),
         EN("en"),

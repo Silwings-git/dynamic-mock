@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
 
@@ -42,6 +43,9 @@ public class QueryMockTaskLogResult {
     @ApiModelProperty(value = "注册时间")
     private Date registrationTime;
 
+    @ApiModelProperty(value = "响应状态码", example = "100")
+    private String responseStatus;
+
     @ApiModelProperty(value = "请求发起时间")
     private Date requestTime;
 
@@ -56,6 +60,7 @@ public class QueryMockTaskLogResult {
                 .handlerId(mockTaskLog.getHandlerId())
                 .name(mockTaskLog.getName())
                 .registrationTime(mockTaskLog.getRegistrationTime())
+                .responseStatus(String.valueOf(JsonUtils.jsonPathRead(mockTaskLog.getResponseInfo(), "$.httpStatus")))
                 .requestTime(mockTaskLog.getRequestTime())
                 .timing(mockTaskLog.getTiming())
                 .build();

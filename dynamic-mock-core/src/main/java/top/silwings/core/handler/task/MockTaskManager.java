@@ -90,23 +90,23 @@ public class MockTaskManager implements DisposableBean {
         }
     }
 
-    public void unregisterByTaskCode(final Identity handlerId, final String taskCode, final boolean mayInterruptIfRunning) {
+    public void unregisterByTaskCode(final Identity handlerId, final String taskCode, final Boolean mayInterruptIfRunning) {
         final WeakReference<AutoCancelTask> weakReference = this.taskPool.get(taskCode);
         if (null != weakReference) {
             final AutoCancelTask mockTask = weakReference.get();
             if (null != mockTask && mockTask.getHandlerId().equals(handlerId)) {
-                this.cancelTask(mockTask, mayInterruptIfRunning);
+                this.cancelTask(mockTask, Boolean.TRUE.equals(mayInterruptIfRunning));
             }
         }
     }
 
-    public void unregisterByHandlerId(final Identity handlerId, final boolean mayInterruptIfRunning) {
-        this.unregisterByHandlerIds(Collections.singletonList(handlerId), mayInterruptIfRunning);
+    public void unregisterByHandlerId(final Identity handlerId, final Boolean mayInterruptIfRunning) {
+        this.unregisterByHandlerIds(Collections.singletonList(handlerId), Boolean.TRUE.equals(mayInterruptIfRunning));
     }
 
-    public void unregisterByHandlerIds(final List<Identity> handlerIdList, final boolean mayInterruptIfRunning) {
+    public void unregisterByHandlerIds(final List<Identity> handlerIdList, final Boolean mayInterruptIfRunning) {
         final List<AutoCancelTask> autoCancelTasks = this.query(handlerIdList);
-        autoCancelTasks.forEach(task -> this.cancelTask(task, mayInterruptIfRunning));
+        autoCancelTasks.forEach(task -> this.cancelTask(task, Boolean.TRUE.equals(mayInterruptIfRunning)));
     }
 
     private void cancelTask(final AutoCancelTask mockTask, final boolean mayInterruptIfRunning) {

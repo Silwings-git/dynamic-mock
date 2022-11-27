@@ -40,6 +40,8 @@ public interface MockHandlerService {
 
     List<Identity> queryHandlerIds(Identity projectId);
 
+    List<Identity> queryHandlerIds(List<Identity> projectIdList);
+
     void reRegisterHandler(ProjectDto project);
 
     void registerHandler(MockHandlerDto mockHandler, ProjectDto project);

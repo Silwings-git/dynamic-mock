@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName QueryMockHandlerParam
@@ -36,9 +33,5 @@ public class QueryMockHandlerParam extends PageParam {
 
     @ApiModelProperty(value = "处理器标签", example = "erp")
     private String label;
-
-    public void validate() {
-        CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
-    }
 
 }

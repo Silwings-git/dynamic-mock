@@ -4,10 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.CheckUtils;
 
 /**
  * @ClassName QueryTaskParam
@@ -26,9 +23,5 @@ public class QueryTaskParam {
 
     @ApiModelProperty(value = "Mock 处理器Id", required = true, example = "1")
     private Identity handlerId;
-
-    public void validate() {
-        CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
-    }
 
 }

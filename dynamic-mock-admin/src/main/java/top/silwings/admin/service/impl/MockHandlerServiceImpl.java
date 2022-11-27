@@ -1,6 +1,7 @@
 package top.silwings.admin.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -155,12 +156,16 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
-
     public PageData<MockHandlerDto> query(final QueryConditionDto queryCondition, final PageParam pageParam) {
+
+        if (CollectionUtils.isEmpty(queryCondition.getProjectIdList())) {
+            return PageData.empty();
+        }
 
         final Example condition = new Example(MockHandlerPo.class);
         final Example.Criteria criteria = condition.createCriteria();
         criteria
+                .andIn(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectIdList())
                 .andEqualTo(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectId().intValue())
                 .andLike(MockHandlerPo.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, name -> "%" + name + "%"))
                 .andLike(MockHandlerPo.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, uri -> "%" + uri + "%"))
@@ -291,6 +296,26 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
+    public List<Identity> queryHandlerIds(final List<Identity> projectIdList) {
+
+        if (CollectionUtils.isEmpty(projectIdList)) {
+            return Collections.emptyList();
+        }
+
+        final Example example = new Example(MockHandlerPo.class);
+        example.createCriteria()
+                .andIn(MockHandlerPo.C_PROJECT_ID, Identity.toInt(projectIdList));
+
+        example.selectProperties(MockHandlerPo.C_HANDLER_ID);
+
+        return this.mockHandlerMapper.selectByCondition(example)
+                .stream()
+                .map(MockHandlerPo::getHandlerId)
+                .map(Identity::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void reRegisterHandler(final ProjectDto project) {
 
         final List<MockHandlerDto> mockHandlerList = this.queryEnableHandlerList(project.getProjectId());
@@ -318,18 +343,21 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
     }
 
+    /**
+     * 根据项目id查询handler信息.如果 projectIdList 为 null 表示查询所有
+     *
+     * @param projectIdList 项目id集
+     */
     @Override
     public List<HandlerInfoDto> queryOwn(final List<Identity> projectIdList) {
 
-        final Example example = new Example(MockHandlerPo.class);
-
-        if (null != projectIdList) {
-            if (projectIdList.isEmpty()) {
-                return Collections.emptyList();
-            }
-            example.createCriteria()
-                    .andIn(ProjectPo.C_PROJECT_ID, projectIdList.stream().map(Identity::intValue).collect(Collectors.toList()));
+        if (CollectionUtils.isEmpty(projectIdList)) {
+            return Collections.emptyList();
         }
+
+        final Example example = new Example(MockHandlerPo.class);
+        example.createCriteria()
+                .andIn(ProjectPo.C_PROJECT_ID, Identity.toInt(projectIdList));
 
         example.orderBy(MockHandlerPo.C_NAME).asc();
 

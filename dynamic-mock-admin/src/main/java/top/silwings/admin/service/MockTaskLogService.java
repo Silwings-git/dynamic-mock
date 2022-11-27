@@ -15,13 +15,10 @@ import java.util.List;
  * @Since
  **/
 public interface MockTaskLogService {
-    Identity create(MockTaskLogDto mockTaskLog);
 
-    Identity updateByLogId(MockTaskLogDto mockTaskLog);
-
-    PageData<MockTaskLogDto> query(final List<Identity> handlerIdList, String taskCode, String name, PageParam pageParam);
+    PageData<MockTaskLogDto> query(List<Identity> handlerIdList, String taskCode, String name, PageParam pageParam);
 
     void delete(Identity handlerId, Identity logId);
 
-    MockTaskLogDto find(Identity logId);
+    MockTaskLogDto find(Identity handlerId, Identity logId);
 }

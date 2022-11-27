@@ -67,7 +67,7 @@ public class MockHandlerController {
 
         param.validate();
 
-        UserHolder.validPermission(param.getProjectId());
+        UserHolder.validProjectId(param.getProjectId());
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(param);
 
@@ -93,7 +93,7 @@ public class MockHandlerController {
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerService.find(param.getHandlerId());
 
-        UserHolder.validPermission(mockHandlerDto.getProjectId());
+        UserHolder.validProjectId(mockHandlerDto.getProjectId());
 
         final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
 
@@ -105,11 +105,12 @@ public class MockHandlerController {
     @ApiOperation(value = "分页查询Mock处理器信息")
     public PageResult<MockHandlerInfoResult> query(@RequestBody QueryMockHandlerParam param) {
 
-        param.validate();
-
-        UserHolder.validPermission(param.getProjectId());
+        if (null != param.getProjectId()) {
+            UserHolder.validProjectId(param.getProjectId());
+        }
 
         final QueryConditionDto queryCondition = QueryConditionDto.builder()
+                .projectIdList(UserHolder.getUser().getProjectIdList())
                 .projectId(param.getProjectId())
                 .name(param.getName())
                 .httpMethod(param.getHttpMethod())
@@ -133,7 +134,7 @@ public class MockHandlerController {
 
         param.validate();
 
-        UserHolder.validPermission(this.mockHandlerService.findProjectId(param.getHandlerId()));
+        UserHolder.validHandlerId(param.getHandlerId());
 
         this.mockHandlerService.delete(param.getHandlerId());
 
@@ -149,7 +150,7 @@ public class MockHandlerController {
 
         final Identity projectId = this.mockHandlerService.findProjectId(param.getHandlerId());
 
-        UserHolder.validPermission(projectId);
+        UserHolder.validProjectId(projectId);
 
         this.mockHandlerService.updateEnableStatus(param.getHandlerId(), EnableStatus.valueOfCode(param.getEnableStatus()), this.projectService.find(projectId));
 
@@ -165,7 +166,7 @@ public class MockHandlerController {
         final List<Identity> projectIdList;
 
         if (null == param.getProjectId()) {
-            projectIdList = UserHolder.isAdminUser() ? null : UserHolder.getUser().getPermissionList();
+            projectIdList = UserHolder.getUser().getProjectIdList();
         } else {
             projectIdList = Collections.singletonList(param.getProjectId());
         }
