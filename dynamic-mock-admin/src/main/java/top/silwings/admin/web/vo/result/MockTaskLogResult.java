@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
+import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
@@ -35,11 +36,23 @@ public class MockTaskLogResult {
     @ApiModelProperty(value = "任务编码", example = "111")
     private String taskCode;
 
+    @ApiModelProperty(value = "Mock 项目id", example = "222")
+    private Identity projectId;
+
+    @ApiModelProperty(value = "Mock 项目名称", example = "222")
+    private String projectName;
+
     @ApiModelProperty(value = "Mock 处理器id", example = "222")
     private Identity handlerId;
 
+    @ApiModelProperty(value = "Mock 处理器名称", example = "222")
+    private String handlerName;
+
     @ApiModelProperty(value = "任务名", example = "erp")
     private String name;
+
+    @ApiModelProperty(value = "请求响应状态码", example = "200")
+    private String responseStatus;
 
     @ApiModelProperty(value = "注册时间")
     private Date registrationTime;
@@ -54,7 +67,7 @@ public class MockTaskLogResult {
     private Date requestTime;
 
     @ApiModelProperty(value = "耗时(ms)", example = "100")
-    private Long timing;
+    private String timing;
 
     public static MockTaskLogResult from(final MockTaskLogDto mockTaskLog) {
 
@@ -67,7 +80,8 @@ public class MockTaskLogResult {
                 .requestInfo(JsonUtils.toMap(mockTaskLog.getRequestInfo(), String.class, Object.class))
                 .responseInfo(JsonUtils.toMap(mockTaskLog.getResponseInfo(), String.class, Object.class))
                 .requestTime(mockTaskLog.getRequestTime())
-                .timing(mockTaskLog.getTiming())
+                .timing(String.valueOf(ConvertUtils.getNoNullOrDefault(mockTaskLog.getTiming(), "-")))
+                .responseStatus(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getResponseInfo(), "-", res -> String.valueOf(ConvertUtils.getNoNullOrDefault(JsonUtils.jsonPathRead(res, "$.httpStatus"), "Not recorded"))))
                 .build();
     }
 }

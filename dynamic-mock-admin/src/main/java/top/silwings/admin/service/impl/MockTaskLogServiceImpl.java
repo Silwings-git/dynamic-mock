@@ -75,7 +75,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
     }
 
     @Override
-    public PageData<MockTaskLogDto> query(final List<Identity> handlerIdList, final String name, final String taskCode, final PageParam pageParam) {
+    public PageData<MockTaskLogDto> query(final List<Identity> handlerIdList, final String taskCode, final String name, final PageParam pageParam) {
 
         if (CollectionUtils.isEmpty(handlerIdList)) {
             return PageData.empty();
@@ -84,7 +84,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
                 .andIn(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
-                .andEqualTo(MockTaskLogPo.C_TASK_CODE, ConvertUtils.getNoBlankOrDefault(taskCode, null))
+                .andLike(MockTaskLogPo.C_TASK_CODE, ConvertUtils.getNoBlankOrDefault(taskCode, null, arg -> "%" + arg + "%"))
                 .andLike(MockTaskLogPo.C_NAME, ConvertUtils.getNoBlankOrDefault(name, null, arg -> "%" + arg + "%"));
 
         final int total = this.mockTaskLogMapper.selectCountByCondition(example);
@@ -146,7 +146,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
                 .andEqualTo(MockTaskLogPo.C_HANDLER_ID, handlerId.intValue())
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, logId.intValue());
 
-        final List<MockTaskLogPo> mockTaskLogPoList = this.mockTaskLogMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
+        final List<MockTaskLogPo> mockTaskLogPoList = this.mockTaskLogMapper.selectByConditionAndRowBounds(example, PageParam.oneRow());
 
         CheckUtils.isNotEmpty(mockTaskLogPoList, DynamicMockAdminException.supplier(ErrorCode.MOCK_TASK_LOG_NOT_EXIST));
 

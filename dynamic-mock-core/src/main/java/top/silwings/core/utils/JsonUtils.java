@@ -9,6 +9,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import top.silwings.core.exceptions.DynamicMockException;
 
 import java.io.IOException;
@@ -98,6 +99,9 @@ public class JsonUtils {
 
 
     public static <T, E> Map<T, E> toMap(final String jsonStr, final Class<T> keyClass, final Class<E> valueClass) {
+        if (StringUtils.isBlank(jsonStr)) {
+            return null;
+        }
         try {
             return MAPPER.readValue(jsonStr, MAPPER.getTypeFactory().constructMapType(Map.class, keyClass, valueClass));
         } catch (IOException e) {
@@ -135,7 +139,12 @@ public class JsonUtils {
 
         final Object json = DEFAULT_PATH_TO_NULL.jsonProvider().parse(obj instanceof String ? (String) obj : toJSONString(obj));
 
-        return JsonPath.read(json, jsonPath);
+        try {
+            return JsonPath.read(json, jsonPath);
+        } catch (Exception e) {
+            // 匹配不到时返回 null
+            return null;
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package top.silwings.admin.service.impl;
 
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -113,7 +112,7 @@ public class UserServiceImpl implements UserService {
         findCondition.createCriteria()
                 .andEqualTo(UserPo.C_USER_ACCOUNT, userAccount);
 
-        final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, new RowBounds(0, 1));
+        final List<UserPo> userPoList = this.userMapper.selectByConditionAndRowBounds(findCondition, PageParam.oneRow());
         if (required) {
             CheckUtils.isNotEmpty(userPoList, DynamicMockAdminException.supplier(ErrorCode.USER_NOT_EXIST));
         }

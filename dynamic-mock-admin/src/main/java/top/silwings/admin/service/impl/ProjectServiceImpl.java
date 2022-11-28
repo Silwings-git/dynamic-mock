@@ -2,7 +2,6 @@ package top.silwings.admin.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
         example.createCriteria()
                 .andEqualTo(ProjectPo.C_PROJECT_ID, projectId.intValue());
 
-        final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
+        final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, PageParam.oneRow());
 
         CheckUtils.hasMinimumSize(projectPoList, 1, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
 

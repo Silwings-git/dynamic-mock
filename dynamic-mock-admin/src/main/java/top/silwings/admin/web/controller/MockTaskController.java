@@ -14,16 +14,17 @@ import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.admin.model.HandlerInfoDto;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.MockTaskLogService;
+import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.param.BatchUnregisterParam;
 import top.silwings.admin.web.vo.param.DeleteTaskLogParam;
-import top.silwings.admin.web.vo.param.FindTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskLogParam;
 import top.silwings.admin.web.vo.param.QueryTaskParam;
 import top.silwings.admin.web.vo.param.UnregisterTaskParam;
 import top.silwings.admin.web.vo.result.MockTaskLogResult;
-import top.silwings.admin.web.vo.result.QueryMockTaskLogResult;
 import top.silwings.admin.web.vo.result.RunningTaskResult;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.task.AutoCancelTask;
@@ -33,7 +34,9 @@ import top.silwings.core.utils.CheckUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,10 +57,13 @@ public class MockTaskController {
 
     private final MockTaskLogService mockTaskLogService;
 
-    public MockTaskController(final MockHandlerService mockHandlerService, final MockTaskManager mockTaskManager, final MockTaskLogService mockTaskLogService) {
+    private final ProjectService projectService;
+
+    public MockTaskController(final MockHandlerService mockHandlerService, final MockTaskManager mockTaskManager, final MockTaskLogService mockTaskLogService, final ProjectService projectService) {
         this.mockHandlerService = mockHandlerService;
         this.mockTaskManager = mockTaskManager;
         this.mockTaskLogService = mockTaskLogService;
+        this.projectService = projectService;
     }
 
     @PostMapping("/running/query")
@@ -161,31 +167,36 @@ public class MockTaskController {
     @PostMapping("/log/query")
     @PermissionLimit
     @ApiOperation(value = "查询任务日志列表")
-    public PageResult<QueryMockTaskLogResult> queryTaskLog(@RequestBody final QueryTaskLogParam param) {
+    public PageResult<MockTaskLogResult> queryTaskLog(@RequestBody final QueryTaskLogParam param) {
 
         final List<Identity> handlerIdList = this.getAuthorizedHandlerIds(param.getProjectId(), param.getHandlerId());
 
         final PageData<MockTaskLogDto> pageData = this.mockTaskLogService.query(handlerIdList, param.getTaskCode(), param.getName(), param);
 
-        final List<QueryMockTaskLogResult> mockTaskLogResultList = pageData.getList().stream()
-                .map(QueryMockTaskLogResult::from)
+        final List<MockTaskLogResult> mockTaskLogResultList = pageData.getList().stream()
+                .map(MockTaskLogResult::from)
                 .collect(Collectors.toList());
 
+        // 补充projectId,projectName,handlerName
+        final Map<Identity, HandlerInfoDto> handlerIdNameMap = new HashMap<>();
+        final Map<Identity, ProjectDto> projectIdNameMap = new HashMap<>();
+
+        for (final MockTaskLogResult log : mockTaskLogResultList) {
+
+            final HandlerInfoDto handlerInfo = handlerIdNameMap.computeIfAbsent(log.getHandlerId(), this.mockHandlerService::findHandlerInfo);
+            if (null == handlerInfo) {
+                continue;
+            }
+            log.setHandlerName(handlerInfo.getName());
+
+            final ProjectDto project = projectIdNameMap.computeIfAbsent(handlerInfo.getProjectId(), this.projectService::find);
+            if (null != project) {
+                log.setProjectId(project.getProjectId());
+                log.setProjectName(project.getProjectName());
+            }
+        }
+
         return PageResult.ok(mockTaskLogResultList, pageData.getTotal());
-    }
-
-    @PostMapping("/log/find")
-    @PermissionLimit
-    @ApiOperation(value = "查询任务日志")
-    public Result<MockTaskLogResult> find(@RequestBody final FindTaskLogParam param) {
-
-        param.validate();
-
-        UserHolder.validHandlerId(param.getHandlerId());
-
-        final MockTaskLogDto mockTaskLog = this.mockTaskLogService.find(param.getHandlerId(), param.getLogId());
-
-        return Result.ok(MockTaskLogResult.from(mockTaskLog));
     }
 
     @PostMapping("/log/del")

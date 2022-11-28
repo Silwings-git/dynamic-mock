@@ -41,7 +41,7 @@ public class MockTaskLogDaoConverter {
                 .handlerId(Identity.from(mockTaskLog.getHandlerId()))
                 .name(mockTaskLog.getName())
                 .registrationTime(mockTaskLog.getRegistrationTime())
-                .responseInfo(mockTaskLog.getRequestInfo())
+                .requestInfo(mockTaskLog.getRequestInfo())
                 .responseInfo(mockTaskLog.getResponseInfo())
                 .requestTime(mockTaskLog.getRequestTime())
                 .timing(mockTaskLog.getTiming())

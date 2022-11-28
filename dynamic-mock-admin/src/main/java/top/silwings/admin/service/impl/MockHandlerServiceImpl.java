@@ -18,7 +18,6 @@ import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.MockHandlerUniquePo;
-import top.silwings.admin.repository.po.ProjectPo;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -148,7 +147,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         example.selectProperties(MockHandlerPo.C_PROJECT_ID);
 
-        final List<MockHandlerPo> mockHandlerPoList = this.mockHandlerMapper.selectByConditionAndRowBounds(example, new RowBounds(0, 1));
+        final List<MockHandlerPo> mockHandlerPoList = this.mockHandlerMapper.selectByConditionAndRowBounds(example, PageParam.oneRow());
 
         CheckUtils.isNotEmpty(mockHandlerPoList, DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_NOT_EXIST));
 
@@ -357,7 +356,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final Example example = new Example(MockHandlerPo.class);
         example.createCriteria()
-                .andIn(ProjectPo.C_PROJECT_ID, Identity.toInt(projectIdList));
+                .andIn(MockHandlerPo.C_PROJECT_ID, Identity.toInt(projectIdList));
 
         example.orderBy(MockHandlerPo.C_NAME).asc();
 
@@ -369,4 +368,22 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .map(HandlerInfoDto::from)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public HandlerInfoDto findHandlerInfo(final Identity handlerId) {
+
+        final Example example = new Example(MockHandlerPo.class);
+        example.createCriteria()
+                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.intValue());
+
+        example.selectProperties(MockHandlerPo.C_PROJECT_ID, MockHandlerPo.C_HANDLER_ID, MockHandlerPo.C_NAME);
+
+        return this.mockHandlerMapper.selectByConditionAndRowBounds(example, PageParam.oneRow())
+                .stream()
+                .map(HandlerInfoDto::from)
+                .findFirst()
+                .orElse(null);
+    }
+
+
 }

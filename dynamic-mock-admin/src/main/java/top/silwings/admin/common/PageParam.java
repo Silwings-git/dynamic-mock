@@ -20,6 +20,8 @@ public class PageParam {
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 5;
 
+    private static final RowBounds ONE_ROW = new RowBounds(0, 1);
+
     @ApiModelProperty(value = "页数")
     private int pageNum;
 
@@ -39,6 +41,10 @@ public class PageParam {
         return new PageParam(pageNum, pageSize);
     }
 
+    public static RowBounds oneRow() {
+        return ONE_ROW;
+    }
+
     public void setPageNum(final int pageNum) {
         this.pageNum = Math.max(pageNum, MIN_PAGE_NUM);
     }
@@ -51,4 +57,5 @@ public class PageParam {
     public RowBounds toRowBounds() {
         return new RowBounds((this.pageNum - 1) * this.pageSize, this.pageSize);
     }
+
 }

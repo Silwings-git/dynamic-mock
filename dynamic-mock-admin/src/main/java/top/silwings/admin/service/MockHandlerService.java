@@ -47,4 +47,6 @@ public interface MockHandlerService {
     void registerHandler(MockHandlerDto mockHandler, ProjectDto project);
 
     List<HandlerInfoDto> queryOwn(List<Identity> projectIdList);
+
+    HandlerInfoDto findHandlerInfo(Identity handlerId);
 }

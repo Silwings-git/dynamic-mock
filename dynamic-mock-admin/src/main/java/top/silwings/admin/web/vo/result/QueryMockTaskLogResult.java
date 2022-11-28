@@ -34,8 +34,17 @@ public class QueryMockTaskLogResult {
     @ApiModelProperty(value = "任务编码", example = "111")
     private String taskCode;
 
+    @ApiModelProperty(value = "Mock 项目id", example = "222")
+    private Identity projectId;
+
+    @ApiModelProperty(value = "Mock 项目名称", example = "222")
+    private Identity projectName;
+
     @ApiModelProperty(value = "Mock 处理器id", example = "222")
     private Identity handlerId;
+
+    @ApiModelProperty(value = "Mock 处理器名称", example = "222")
+    private String handlerName;
 
     @ApiModelProperty(value = "任务名", example = "erp")
     private String name;
