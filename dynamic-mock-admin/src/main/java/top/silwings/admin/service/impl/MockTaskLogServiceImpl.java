@@ -87,6 +87,8 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
                 .andLike(MockTaskLogPo.C_TASK_CODE, ConvertUtils.getNoBlankOrDefault(taskCode, null, arg -> "%" + arg + "%"))
                 .andLike(MockTaskLogPo.C_NAME, ConvertUtils.getNoBlankOrDefault(name, null, arg -> "%" + arg + "%"));
 
+        example.orderBy(MockTaskLogPo.C_LOG_ID).desc();
+
         final int total = this.mockTaskLogMapper.selectCountByCondition(example);
         if (total <= 0) {
             return PageData.empty();
@@ -118,6 +120,8 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
 
             findIdCondition.selectProperties(MockTaskLogPo.C_LOG_ID);
 
+            findIdCondition.orderBy(MockTaskLogPo.C_LOG_ID).desc();
+
             final List<MockTaskLogPo> mockTaskLogList = this.mockTaskLogMapper.selectByConditionAndRowBounds(findIdCondition, new RowBounds(typeCondition.getBeforeNum() - 1, 1));
             if (CollectionUtils.isEmpty(mockTaskLogList)) {
                 minId = Integer.MAX_VALUE;
@@ -132,7 +136,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
         example.createCriteria()
                 .andEqualTo(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
                 .andLessThanOrEqualTo(MockTaskLogPo.C_CREATE_TIME, typeCondition.getBeforeTime())
-                .andGreaterThan(MockTaskLogPo.C_LOG_ID, minId)
+                .andLessThan(MockTaskLogPo.C_LOG_ID, minId)
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, ConvertUtils.getNoNullOrDefault(logId, null, Identity::intValue));
 
         this.mockTaskLogMapper.deleteByCondition(example);

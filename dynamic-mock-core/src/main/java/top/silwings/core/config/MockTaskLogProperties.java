@@ -34,7 +34,7 @@ public class MockTaskLogProperties {
     /**
      * 是否记录响应状态码
      */
-    private boolean logHttpStatus = false;
+    private boolean logHttpStatus = true;
 
     /**
      * 是否记录响应头
