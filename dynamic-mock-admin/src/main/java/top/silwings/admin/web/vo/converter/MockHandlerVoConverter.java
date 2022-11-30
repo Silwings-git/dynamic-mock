@@ -2,12 +2,14 @@ package top.silwings.admin.web.vo.converter;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskRequestInfoParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
+import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
@@ -46,11 +48,12 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    public MockHandlerInfoResult convert(final MockHandlerDto dto) {
+    public MockHandlerInfoResult convert(final MockHandlerDto dto, final ProjectDto project) {
 
         final MockHandlerInfoResult resultVo = new MockHandlerInfoResult();
 
         resultVo.setProjectId(dto.getProjectId());
+        resultVo.setProjectName(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getProjectName));
         resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(dto.getHandlerId());
         resultVo.setName(dto.getName());
@@ -142,4 +145,20 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
+    public MockHandlerSummaryResult convertSummary(final MockHandlerDto dto, final ProjectDto project) {
+
+        final MockHandlerSummaryResult resultVo = new MockHandlerSummaryResult();
+
+        resultVo.setProjectId(dto.getProjectId());
+        resultVo.setProjectName(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getProjectName));
+        resultVo.setEnableStatus(dto.getEnableStatus().code());
+        resultVo.setHandlerId(dto.getHandlerId());
+        resultVo.setName(dto.getName());
+        resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
+        resultVo.setRequestUri(dto.getRequestUri());
+        resultVo.setLabel(dto.getLabel());
+        resultVo.setUpdateTime(dto.getUpdateTime());
+
+        return resultVo;
+    }
 }

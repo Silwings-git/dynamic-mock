@@ -100,7 +100,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         final List<ProjectPo> projectPoList = this.projectMapper.selectByConditionAndRowBounds(example, PageParam.oneRow());
 
-        CheckUtils.hasMinimumSize(projectPoList, 1, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
+        CheckUtils.isNotEmpty(projectPoList, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
 
         return ProjectDto.from(projectPoList.get(0));
     }

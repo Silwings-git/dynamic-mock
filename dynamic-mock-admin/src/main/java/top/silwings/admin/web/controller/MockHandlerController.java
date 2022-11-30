@@ -11,6 +11,7 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
@@ -21,6 +22,7 @@ import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
+import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.admin.web.vo.result.OwnHandlerInfoResult;
 import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
@@ -32,6 +34,7 @@ import top.silwings.core.model.validator.MockHandlerValidator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +99,9 @@ public class MockHandlerController {
 
         UserHolder.validProjectId(mockHandlerDto.getProjectId());
 
-        final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto);
+        final ProjectDto projectDto = this.projectService.find(mockHandlerDto.getProjectId());
+
+        final MockHandlerInfoResult mockHandlerInfoVo = this.mockHandlerVoConverter.convert(mockHandlerDto, projectDto);
 
         return Result.ok(mockHandlerInfoVo);
     }
@@ -104,7 +109,7 @@ public class MockHandlerController {
     @PostMapping("/query")
     @PermissionLimit
     @ApiOperation(value = "分页查询Mock处理器信息")
-    public PageResult<MockHandlerInfoResult> query(@RequestBody QueryMockHandlerParam param) {
+    public PageResult<MockHandlerSummaryResult> query(@RequestBody QueryMockHandlerParam param) {
 
         if (null != param.getProjectId()) {
             UserHolder.validProjectId(param.getProjectId());
@@ -121,8 +126,14 @@ public class MockHandlerController {
 
         final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, param);
 
-        final List<MockHandlerInfoResult> mockHandlerInfoVoList = pageData.getList().stream()
-                .map(this.mockHandlerVoConverter::convert)
+        final Map<Identity, ProjectDto> projectIdProjectNameMap = pageData.getList().stream()
+                .map(MockHandlerDto::getProjectId)
+                .distinct()
+                .map(this.projectService::find)
+                .collect(Collectors.toMap(ProjectDto::getProjectId, Function.identity(), (v1, v2) -> v2));
+
+        final List<MockHandlerSummaryResult> mockHandlerInfoVoList = pageData.getList().stream()
+                .map(handler -> this.mockHandlerVoConverter.convertSummary(handler, projectIdProjectNameMap.get(handler.getProjectId())))
                 .collect(Collectors.toList());
 
         return PageResult.ok(mockHandlerInfoVoList, pageData.getTotal());

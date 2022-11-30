@@ -164,11 +164,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         final Example condition = new Example(MockHandlerPo.class);
         final Example.Criteria criteria = condition.createCriteria();
         criteria
-                .andIn(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectIdList())
-                .andEqualTo(MockHandlerPo.C_PROJECT_ID, queryCondition.getProjectId().intValue())
-                .andLike(MockHandlerPo.C_NAME, ConvertUtils.getNoNullOrDefault(queryCondition.getName(), null, name -> "%" + name + "%"))
-                .andLike(MockHandlerPo.C_REQUEST_URI, ConvertUtils.getNoNullOrDefault(queryCondition.getRequestUri(), null, uri -> "%" + uri + "%"))
-                .andLike(MockHandlerPo.C_LABEL, ConvertUtils.getNoNullOrDefault(queryCondition.getLabel(), null, label -> "%" + label + "%"))
+                .andIn(MockHandlerPo.C_PROJECT_ID, Identity.toInt(queryCondition.getProjectIdList()))
+                .andEqualTo(MockHandlerPo.C_PROJECT_ID, ConvertUtils.getNoNullOrDefault(queryCondition.getProjectId(), null, Identity::intValue))
+                .andLike(MockHandlerPo.C_NAME, ConvertUtils.getNoBlankOrDefault(queryCondition.getName(), null, name -> "%" + name + "%"))
+                .andLike(MockHandlerPo.C_REQUEST_URI, ConvertUtils.getNoBlankOrDefault(queryCondition.getRequestUri(), null, uri -> "%" + uri + "%"))
+                .andLike(MockHandlerPo.C_LABEL, ConvertUtils.getNoBlankOrDefault(queryCondition.getLabel(), null, label -> "%" + label + "%"))
+                .andLike(MockHandlerPo.C_HTTP_METHODS, ConvertUtils.getNoBlankOrDefault(queryCondition.getHttpMethod(), null, label -> "%" + label + "%"))
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
         condition.orderBy(MockHandlerPo.C_NAME).asc();
