@@ -129,7 +129,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
                 minId = mockTaskLogList.get(0).getLogId();
             }
         } else {
-            minId = 0;
+            minId = Integer.MAX_VALUE;
         }
 
         final Example example = new Example(MockTaskLogPo.class);

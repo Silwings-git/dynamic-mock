@@ -22,6 +22,7 @@ import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.OwnHandlerInfoResult;
+import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
@@ -160,7 +161,7 @@ public class MockHandlerController {
     @PostMapping("/queryOwn")
     @PermissionLimit
     @ApiOperation(value = "查询登录用户的全部Handler信息")
-    public Result<Map<Identity, List<OwnHandlerInfoResult>>> queryOwn(@RequestBody final QueryOwnMockHandlerParam param) {
+    public Result<QueryOwnHandlerMappingResult> queryOwn(@RequestBody final QueryOwnMockHandlerParam param) {
 
         // 这里不能将null修改为空集合,空集合表示没有任何项目权限
         final List<Identity> projectIdList;
@@ -176,7 +177,7 @@ public class MockHandlerController {
                 .map(OwnHandlerInfoResult::from)
                 .collect(Collectors.groupingBy(OwnHandlerInfoResult::getProjectId));
 
-        return Result.ok(projectIdHandlerMap);
+        return Result.ok(QueryOwnHandlerMappingResult.builder().projectHandlerMap(projectIdHandlerMap).build());
     }
 
 }
