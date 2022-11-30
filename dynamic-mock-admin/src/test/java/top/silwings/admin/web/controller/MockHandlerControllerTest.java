@@ -25,6 +25,7 @@ import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.SaveProjectParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
+import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.MockHandlerPoint;
@@ -120,7 +121,7 @@ public class MockHandlerControllerTest {
         final QueryMockHandlerParam param = new QueryMockHandlerParam();
         param.setProjectId(projectId);
 
-        final PageResult<MockHandlerInfoResult> pageResult = this.mockHandlerController.query(param);
+        final PageResult<MockHandlerSummaryResult> pageResult = this.mockHandlerController.query(param);
 
         Assert.assertNotNull(pageResult.getPageData());
     }
