@@ -124,6 +124,10 @@ public class ParserTest {
         expressionList.add("#random(boolean,1,2)");
         expressionList.add("(1+2)-(2*4)");
         expressionList.add("((1+2)-(2*4)+5)+(4+6)");
+        expressionList.add("#join(,1,2,3,4,,5)");
+        expressionList.add("#join(-,1,2,3,4,,5)");
+        expressionList.add("#concat(,1,2,3,4,,5)");
+        expressionList.add("#concat(-,1,2,3,4,,5)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
