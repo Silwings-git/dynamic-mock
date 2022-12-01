@@ -39,7 +39,7 @@ public class DynamicValueFactory {
         }
     }
 
-    private boolean isDynamic(final String str) {
+    public boolean isDynamic(final String str) {
         // 仅以${开头,}结尾的视为动态表达式
         return str.startsWith("${") && str.endsWith("}");
     }

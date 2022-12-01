@@ -28,6 +28,7 @@ public class JsonNodeParser {
     }
 
     public Node parse(final Object bean) {
+
         if (bean instanceof String) {
             return this.doParse(JsonUtils.toBean((String) bean));
         }
@@ -55,7 +56,7 @@ public class JsonNodeParser {
             }
             node = objectNode;
 
-        } else {
+        } else if (json instanceof Collection) {
 
             final Collection<?> parseList = (Collection<?>) json;
             // 每遍历到一个JSONObject,添加一层ArrayNode
@@ -64,6 +65,10 @@ public class JsonNodeParser {
                 arrayNode.add(this.buildNode(value));
             }
             node = arrayNode;
+
+        } else {
+
+            node = this.buildNode(json);
         }
 
         return node;
@@ -80,18 +85,13 @@ public class JsonNodeParser {
 
             return this.doParse(obj);
 
-        } else if (this.isString(obj) && this.isDynamic((String) obj)) {
+        } else if (this.isString(obj) && this.dynamicValueFactory.isDynamic((String) obj)) {
 
             return this.dynamicValueFactory.buildDynamicValue((String) obj);
 
         } else {
             return StaticValueNode.from(obj);
         }
-    }
-
-    private boolean isDynamic(final String str) {
-        // 仅以${开头,}结尾的视为动态表达式
-        return str.startsWith("${") && str.endsWith("}");
     }
 
     private boolean isString(final Object obj) {

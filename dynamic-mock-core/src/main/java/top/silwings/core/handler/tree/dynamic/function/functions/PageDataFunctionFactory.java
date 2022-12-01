@@ -8,10 +8,13 @@ import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
+import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.structure.StaticValueNode;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.JsonUtils;
 import top.silwings.core.utils.TypeUtils;
 
 import java.util.Collections;
@@ -58,10 +61,13 @@ public class PageDataFunctionFactory implements FunctionFactory {
      * 注意声明表达式
      * 示例:
      * {
-     * "body": "${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),100,{\"code\": \"${#search(name)}\",\"status\": \"${#uuid()}\"})}"
+     * "body": "${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),100,<{\"code\": \"${#search(name)}\",\"status\": \"${#uuid()}\"}>)}"
      * }
      * 结果:
      * {"body":[{"code":"Misaka Mikoto","status":"36bef3d9-7732-4750-89bd-7ce3a1ad60d2"}]}
+     * 注意事项：
+     * 1.数据可以为表达式，也可以为json字符串，其中允许存表达式。
+     * 2.数据最好使用“<>”包裹，防止因为其中出现操作符被提前解析导致错误。数据最终会被PageData函数二次解析，所以不用担心函数不生效
      */
     public static class PageDataFunction extends AbstractDynamicValue {
 
@@ -100,7 +106,24 @@ public class PageDataFunctionFactory implements FunctionFactory {
             }
 
             // 分页数据解释器
-            final NodeInterpreter pageDataInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(childNodeValueList.get(3)));
+            final NodeInterpreter pageDataInterpreter;
+
+            final Object resultData = childNodeValueList.get(3);
+
+            if (resultData instanceof String && !JsonUtils.isValidJson((String) resultData)) {
+                final DynamicValueFactory dynamicValueFactory = DynamicMockContext.getInstance().getDynamicValueFactory();
+
+                final String resultStr = (String) resultData;
+
+                if (dynamicValueFactory.isDynamic(resultStr)) {
+
+                    pageDataInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
+                } else {
+                    pageDataInterpreter = new NodeInterpreter(StaticValueNode.from(resultData));
+                }
+            } else {
+                pageDataInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(resultData));
+            }
 
             return Stream.iterate(0, t -> t + 1)
                     .limit(returnSize)
