@@ -9,6 +9,7 @@ import top.silwings.core.utils.JsonUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,8 +53,14 @@ public class OperationDynamicValueFactory {
         for (final String symbol : symbolList) {
             if (this.isOperatorSymbol(symbol)) {
 
-                final DynamicValue secondValue = cache.removeLast();
-                final DynamicValue firstValue = cache.removeLast();
+                DynamicValue secondValue = null;
+                DynamicValue firstValue = null;
+                if (!cache.isEmpty()) {
+                    secondValue = cache.removeLast();
+                }
+                if (!cache.isEmpty()) {
+                    firstValue = cache.removeLast();
+                }
 
                 cache.add(this.buildOperator(symbol, firstValue, secondValue));
 
@@ -75,7 +82,7 @@ public class OperationDynamicValueFactory {
         final OperatorFactory factory = this.filter(symbol);
 
         if (null != factory) {
-            return factory.buildFunction(Stream.of(firstValue, secondValue).collect(Collectors.toList()));
+            return factory.buildFunction(Stream.of(firstValue, secondValue).filter(Objects::nonNull).collect(Collectors.toList()));
         }
 
         throw new DynamicMockException("Operator does not exist: " + symbol);

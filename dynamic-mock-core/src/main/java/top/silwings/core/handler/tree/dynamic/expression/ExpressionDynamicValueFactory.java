@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Component
 public class ExpressionDynamicValueFactory {
 
-    private final PrecedenceExpressionParser precedenceExpressionParser;
+    private final RemoveBracketParser removeBracketParser;
 
     private final OperatorExpressionParser operatorExpressionParser;
 
@@ -41,7 +41,7 @@ public class ExpressionDynamicValueFactory {
 
     public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
         this.operationDynamicValueFactory = operationDynamicValueFactory;
-        this.precedenceExpressionParser = new PrecedenceExpressionParser();
+        this.removeBracketParser = new RemoveBracketParser();
         this.operatorExpressionParser = new OperatorExpressionParser(operationDynamicValueFactory);
         this.keepOriginalExpressionParser = new KeepOriginalExpressionParser();
     }
@@ -59,25 +59,20 @@ public class ExpressionDynamicValueFactory {
             final List<DynamicValue> dynamicValueList = commaPriorityResult.getList().stream().map(dynamicValueFactory::buildDynamicValue).collect(Collectors.toList());
             return CommaExpressionDynamicValue.from(dynamicValueList);
         } else {
-            // 判断是否以括号开头结尾
-            // 没有逗号的情况下直接判断 expression
-            if (this.precedenceExpressionParser.support(expression)) {
 
-                // 有括号优先级的表达式
-                final String content = this.precedenceExpressionParser.parse(expression);
-                return dynamicValueFactory.buildDynamicValue(content);
+            // 如果表达式起始字符为括号,需要先去除再解析
+            if (this.removeBracketParser.support(expression)) {
+                final String parse = this.removeBracketParser.parse(expression);
+                return dynamicValueFactory.buildDynamicValue(parse);
+            }
 
+            // 拆分表达式
+            final List<String> parseList = this.operatorExpressionParser.parse(expression);
+            if (parseList.size() == 1) {
+                // 不包含操作符的常量字符
+                return StaticValueExpressionDynamicValue.from(parseList.get(0));
             } else {
-
-                // 没有括号优先级的情况下进行拆操作符
-                // 拆分表达式
-                final List<String> parseList = this.operatorExpressionParser.parse(expression);
-                if (parseList.size() == 1) {
-                    // 不包含操作符的常量字符
-                    return StaticValueExpressionDynamicValue.from(parseList.get(0));
-                } else {
-                    return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
-                }
+                return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
             }
         }
     }
@@ -164,23 +159,45 @@ public class ExpressionDynamicValueFactory {
     }
 
 
-    public static class PrecedenceExpressionParser implements Parser<String, String> {
+    public static class RemoveBracketParser implements Parser<String, String> {
 
-        private static final String REGEX = "^(\\()(?<content>.*)(\\))$";
-        private static final Pattern PATTERN = Pattern.compile(REGEX);
-
+        /**
+         * 仅当字符串表达式以'('开头,')'结尾,且入度为1的括号数量为1且左右括号数量对等时返回true
+         *
+         * @param expression 字符串表达式
+         * @return ture-可用于解析expression,false-不适用expression
+         */
         public boolean support(final String expression) {
-            return PATTERN.matcher(expression).find();
+
+            int num = 0;
+            int reentrancy = 0;
+
+            final char[] charArray = expression.toCharArray();
+
+            for (final char c : charArray) {
+                if ('(' == c) {
+                    reentrancy++;
+                    if (reentrancy == 1) {
+                        num++;
+                    }
+                } else if (')' == c) {
+                    reentrancy--;
+                }
+            }
+
+            return expression.startsWith("(") && expression.endsWith(")") && num == 1 && reentrancy == 0;
         }
 
+        /**
+         * 去除最外层的括号
+         *
+         * @param expression 字符串表达式
+         * @return 新字符串表达式
+         */
         public String parse(final String expression) {
-            final Matcher matcher = PATTERN.matcher(expression);
-            if (matcher.find()) {
-                return matcher.group("content");
-            } else {
-                throw new DynamicMockException("Priority expression parsing failed: " + expression);
-            }
+            return expression.substring(1, expression.length() - 1);
         }
+
     }
 
     public static class KeepOriginalExpressionParser implements Parser<String, String> {

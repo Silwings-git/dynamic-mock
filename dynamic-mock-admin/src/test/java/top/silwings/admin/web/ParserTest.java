@@ -122,6 +122,8 @@ public class ParserTest {
         expressionList.add("#random(boolean)");
         expressionList.add("#random(boolean,1)");
         expressionList.add("#random(boolean,1,2)");
+        expressionList.add("(1+2)-(2*4)");
+        expressionList.add("((1+2)-(2*4)+5)+(4+6)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
