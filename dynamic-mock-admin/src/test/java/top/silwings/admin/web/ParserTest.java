@@ -65,75 +65,78 @@ public class ParserTest {
 
         final List<String> expressionList = new ArrayList<>();
 
-//        expressionList.add("1+2");
-//        expressionList.add("1+2*3");
-//        expressionList.add("2+#search(age)");
-//        expressionList.add("2+#search(age)*2");
-//        expressionList.add("(2+#search(age))*2+2*4");
-//        expressionList.add("#uuid(#search(1+1),#search(true))");
-//        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
-//        expressionList.add("1/2");
-//        expressionList.add("2/1");
-//        expressionList.add("2-1");
-//        expressionList.add("1-2");
-//        expressionList.add("-1");
-//        expressionList.add("1--1");
-//        expressionList.add("1--1-1");
-//        expressionList.add("123,456");
-//        expressionList.add("#search(#search(#search(#search(param)+#search(param))))");
-//        expressionList.add("#search(#search(#search(#search(param)+(19-#search(paramA)))))");
-//        expressionList.add("#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))");
-//        expressionList.add("#search(abc.abc)");
-//        expressionList.add("#isBlank(abc.abc)");
-//        expressionList.add("#isBlank(abc.abc)");
-//        expressionList.add("#isBlank()");
-//        expressionList.add("#isBlank(\"\")");
-//        expressionList.add("#isBlank() && true");
-//        expressionList.add("#isBlank() && false");
-//        expressionList.add("#search(#isBlank())");
-//        expressionList.add("#search(10+#isBlank())");
-//        expressionList.add("<2+2>");
-//        expressionList.add("2+2");
-//        expressionList.add("<2+2");
-//        expressionList.add("#eq(#uuid(),1)");
-//        expressionList.add("#eq(#search(abcMap.list[0],customizeSpace),-1)");
-//        expressionList.add("#uuid(,,)");
-//        expressionList.add("#uuid(,,false)");
-//        expressionList.add("#uuid(,,true)");
-//        expressionList.add("#uuid(,10)");
-//        expressionList.add("#uuid(,10,true)");
-//        // 触发表达式解析异常
-////        expressionList.add("#uuid(UserCode-,10,true)");
-////        expressionList.add("#uuid(<UserCode->,10,true)");
-//
-//        expressionList.add("             10  + 1-1        == 11-1 ");
-//        expressionList.add("#eq(#eq(1,2),false)");
-//        expressionList.add("#eq(#eq(1,2),true)");
-//        expressionList.add("#random()");
-//        expressionList.add("#random(int)");
-//        expressionList.add("#random(int,1)");
-//        expressionList.add("#random(int,1,10)");
-//        expressionList.add("#random(long)");
-//        expressionList.add("#random(long,1)");
-//        expressionList.add("#random(long,1,10)");
-//        expressionList.add("#random(double)");
-//        expressionList.add("#random(double,1)");
-//        expressionList.add("#random(double,1.9999999999999999,2.000000000000001)");
-//        expressionList.add("#random(boolean)");
-//        expressionList.add("#random(boolean,1)");
-//        expressionList.add("#random(boolean,1,2)");
-//        expressionList.add("(1+2)-(2*4)");
-//        expressionList.add("((1+2)-(2*4)+5)+(4+6)");
-//        expressionList.add("#join(,1,2,3,4,,5)");
-//        expressionList.add("#join(-,1,2,3,4,,5)");
-//        expressionList.add("#concat(,1,2,3,4,,5)");
-//        expressionList.add("#concat(-,1,2,3,4,,5)");
-//        expressionList.add("#pageData(1,2,101,{\"name\":\"88\"})");
+        expressionList.add("1+2");
+        expressionList.add("1+2*3");
+        expressionList.add("2+#search(age)");
+        expressionList.add("2+#search(age)*2");
+        expressionList.add("(2+#search(age))*2+2*4");
+        expressionList.add("#uuid(#search(1+1),#search(true))");
+        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
+        expressionList.add("1/2");
+        expressionList.add("2/1");
+        expressionList.add("2-1");
+        expressionList.add("1-2");
+        expressionList.add("-1");
+        expressionList.add("1--1");
+        expressionList.add("1--1-1");
+        expressionList.add("123,456");
+        expressionList.add("#search(#search(#search(#search(param)+#search(param))))");
+        expressionList.add("#search(#search(#search(#search(param)+(19-#search(paramA)))))");
+        expressionList.add("#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))");
+        expressionList.add("#search(abc.abc)");
+        expressionList.add("#isBlank(abc.abc)");
+        expressionList.add("#isBlank(abc.abc)");
+        expressionList.add("#isBlank()");
+        expressionList.add("#isBlank(\"\")");
+        expressionList.add("#isBlank() && true");
+        expressionList.add("#isBlank() && false");
+        expressionList.add("#search(#isBlank())");
+        expressionList.add("#search(10+#isBlank())");
+        expressionList.add("<2+2>");
+        expressionList.add("2+2");
+        expressionList.add("<2+2");
+        expressionList.add("#eq(#uuid(),1)");
+        expressionList.add("#eq(#search(abcMap.list[0],customizeSpace),-1)");
+        expressionList.add("#uuid(,,)");
+        expressionList.add("#uuid(,,false)");
+        expressionList.add("#uuid(,,true)");
+        expressionList.add("#uuid(,10)");
+        expressionList.add("#uuid(,10,true)");
+        // 触发表达式解析异常
+//        expressionList.add("#uuid(UserCode-,10,true)");
+//        expressionList.add("#uuid(<UserCode->,10,true)");
+
+        expressionList.add("             10  + 1-1        == 11-1 ");
+        expressionList.add("10+1-1==11-1");
+        expressionList.add("#eq(#eq(1,2),false)");
+        expressionList.add("#eq(#eq(1,2),true)");
+        expressionList.add("#random()");
+        expressionList.add("#random(int)");
+        expressionList.add("#random(int,1)");
+        expressionList.add("#random(int,1,10)");
+        expressionList.add("#random(long)");
+        expressionList.add("#random(long,1)");
+        expressionList.add("#random(long,1,10)");
+        expressionList.add("#random(double)");
+        expressionList.add("#random(double,1)");
+        expressionList.add("#random(double,1.9999999999999999,2.000000000000001)");
+        expressionList.add("#random(boolean)");
+        expressionList.add("#random(boolean,1)");
+        expressionList.add("#random(boolean,1,2)");
+        expressionList.add("(1+2)-(2*4)");
+        expressionList.add("((1+2)-(2*4)+5)+(4+6)");
+        expressionList.add("#join(,1,2,3,4,,5)");
+        expressionList.add("#join(-,1,2,3,4,,5)");
+        expressionList.add("#concat(,1,2,3,4,,5)");
+        expressionList.add("#concat(-,1,2,3,4,,5)");
+        expressionList.add("#pageData(1,2,101,{\"name\":\"88\"})");
+        // 抛出异常
 //        expressionList.add("#pageData(1,2,101,{\"name\":\"${#search(age)}>0\"})");
         expressionList.add("#pageData(1,2,101,<{\"name\":\"${#search(age)>0}\"}>)");
-        expressionList.add("#pageData(1,2,101,<{\"name\":\"<${#search(age)>0}>\"}>)");
-//        expressionList.add("#pageData(1,2,101,{\"name\":\"<#search(age)>\"})");
-//        expressionList.add("#pageData(1,2,101,<1+1>)");
+        expressionList.add("#pageData(1,'2',101,<{\"name\":\"${<#search(age)>0>}\"}>)");
+        expressionList.add("#pageData(1,2,101,<{\"name\":\"${<#search(age)>}\"}>)");
+        expressionList.add("#pageData(1,2,101,<1+1>)");
+        expressionList.add("#equals(#search(baseUser.name,customizeSpace), \"Misaka Mikoto\" )");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -148,6 +151,11 @@ public class ParserTest {
         requestContext.addCustomizeParam("true", 10);
         requestContext.addCustomizeParam("10", "御坂美琴");
         requestContext.addCustomizeParam("10true", "御坂美琴");
+
+        final Map<String, Object> baseUser = new HashMap<>();
+        baseUser.put("name", "Misaka Mikoto");
+
+        requestContext.addCustomizeParam("baseUser", baseUser);
 
         expressionList.forEach(exp -> this.extracted(exp, requestContext));
     }

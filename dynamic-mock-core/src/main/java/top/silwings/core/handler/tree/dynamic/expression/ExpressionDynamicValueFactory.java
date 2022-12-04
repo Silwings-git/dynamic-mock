@@ -13,7 +13,6 @@ import top.silwings.core.handler.tree.dynamic.expression.expressions.StaticValue
 import top.silwings.core.handler.tree.dynamic.operator.OperationDynamicValueFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +51,7 @@ public class ExpressionDynamicValueFactory {
         if (this.keepOriginalExpressionParser.support(expression)) {
             return StaticValueExpressionDynamicValue.from(this.keepOriginalExpressionParser.parse(expression));
         }
+
 
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
 
@@ -96,11 +96,33 @@ public class ExpressionDynamicValueFactory {
             }
         }
 
-        final StringBuilder builder = new StringBuilder(expression);
-        // 逗号和空格长度均为1,所以在替换时可以不考虑角标偏移
-        indexList.forEach(index -> builder.replace(index, index + 1, " "));
+        final List<String> result = new ArrayList<>();
 
-        return GroupByCommaPriorityResult.of(Arrays.stream(builder.toString().split(" ")).collect(Collectors.toList()), CollectionUtils.isNotEmpty(indexList));
+        int lastIndex = 0;
+        for (final Integer index : indexList) {
+            result.add(this.getStr(expression.substring(lastIndex, index)));
+            lastIndex = index + 1;
+        }
+        result.add(this.getStr(expression.substring(lastIndex)));
+
+        return GroupByCommaPriorityResult.of(result, CollectionUtils.isNotEmpty(indexList));
+    }
+
+    public String getStr(final String exp) {
+
+        final String str;
+
+        final String trim = exp.trim();
+
+        if (trim.startsWith("\"") && trim.endsWith("\"")) {
+            str = trim.substring(1, trim.length() - 1);
+        } else if (trim.startsWith("'") && trim.endsWith("'")) {
+            str = trim.substring(1, trim.length() - 1);
+        } else {
+            str = exp;
+        }
+
+        return str;
     }
 
     @Getter
@@ -294,7 +316,7 @@ public class ExpressionDynamicValueFactory {
                     reentrancy--;
                 }
                 if (i == nextOperatorSymbol.getIndex()) {
-                    if (reentrancy == 0 && i > 0 && StringUtils.isNotBlank(previousSymbol) && !this.operationDynamicValueFactory.isOperatorSymbol(previousSymbol)) {
+                    if (reentrancy == 0 && i > 0 && StringUtils.isNotEmpty(previousSymbol) && !this.operationDynamicValueFactory.isOperatorSymbol(previousSymbol)) {
                         if (cache.length() > 0) {
                             result.add(cache.toString());
                             cache = new StringBuilder();

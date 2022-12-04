@@ -67,7 +67,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
      * {"body":[{"code":"Misaka Mikoto","status":"36bef3d9-7732-4750-89bd-7ce3a1ad60d2"}]}
      * 注意事项：
      * 1.数据可以为表达式，也可以为json字符串，其中允许存表达式。
-     * 2.数据最好使用“<>”包裹，防止因为其中出现操作符被提前解析导致错误。数据最终会被PageData函数二次解析，所以不用担心函数不生效
+     * 2.数据必须使用“<>”包裹。
      */
     public static class PageDataFunction extends AbstractDynamicValue {
 

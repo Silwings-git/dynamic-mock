@@ -1,5 +1,6 @@
 package top.silwings.core.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import top.silwings.core.exceptions.TypeCastException;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.Map;
  * @Date 2022/11/20 20:54
  * @Since
  **/
+@Slf4j
 public class TypeUtils {
 
     private TypeUtils() {
@@ -32,7 +34,11 @@ public class TypeUtils {
             if (str.isEmpty() || "null".equals(str)) {
                 return null;
             }
-            return Integer.parseInt(str);
+            try {
+                return Integer.parseInt(str.trim());
+            } catch (Exception e) {
+                throw TypeCastException.of("Can not cast to integer from" + value.getClass(), e);
+            }
         }
 
         if (value instanceof Map && ((Map<?, ?>) value).isEmpty()) {
@@ -65,7 +71,11 @@ public class TypeUtils {
             if (str.isEmpty() || "null".equals(str)) {
                 return 0;
             }
-            return Long.parseLong(str);
+            try {
+                return Long.parseLong(str.trim());
+            } catch (Exception e) {
+                throw TypeCastException.of("Can not cast to long from " + value.getClass(), e);
+            }
         }
 
         throw TypeCastException.from("Can not cast to long from " + value.getClass());
@@ -91,7 +101,11 @@ public class TypeUtils {
             if (str.isEmpty() || "null".equals(str)) {
                 return 0D;
             }
-            return Double.parseDouble(str);
+            try {
+                return Double.parseDouble(str.trim());
+            } catch (Exception e) {
+                throw TypeCastException.of("can not cast to decimal from" + value.getClass(), e);
+            }
         }
 
         throw TypeCastException.from("can not cast to decimal from" + value.getClass());
@@ -111,7 +125,11 @@ public class TypeUtils {
             if (str.isEmpty() || "null".equals(str)) {
                 return null;
             }
-            return new BigDecimal(str);
+            try {
+                return new BigDecimal(str.trim());
+            } catch (Exception e) {
+                throw TypeCastException.of("Can not cast to decimal from " + value.getClass(), e);
+            }
         }
 
         throw TypeCastException.from("Can not cast to decimal from " + value.getClass());
