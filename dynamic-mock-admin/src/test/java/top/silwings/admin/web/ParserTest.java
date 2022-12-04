@@ -137,6 +137,18 @@ public class ParserTest {
         expressionList.add("#pageData(1,2,101,<{\"name\":\"${<#search(age)>}\"}>)");
         expressionList.add("#pageData(1,2,101,<1+1>)");
         expressionList.add("#equals(#search(baseUser.name,customizeSpace), \"Misaka Mikoto\" )");
+        expressionList.add("#equals(#search(baseUser.name,customizeSpace), Misaka Mikoto )");
+        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),Misaka Mikoto)");
+//        expressionList.add("#equals(#search(baseUser.name,customizeSpace), <Misaka Mikoto> )");
+        expressionList.add("#equals(#search(baseUser.name,customizeSpace),<Misaka Mikoto>)");
+        expressionList.add("#equals(1,1 -  1+1)");
+        expressionList.add("#join('-','1','2')");
+        expressionList.add("#join(<'-'>,)");
+        expressionList.add("#join('#',1,,2,,3)");
+        expressionList.add("#now()");
+        expressionList.add("#now(<'yyyy-MM-dd'>)");
+        expressionList.add("#now(<'yyyy-MM-dd HH:mm:ss'>)");
+        expressionList.add("#now('yyyy')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();

@@ -25,7 +25,7 @@ public class JoinFunctionFactory implements FunctionFactory {
 
     private static final FunctionInfo JOIN_FUNCTION_INFO = FunctionInfo.builder()
             .functionName("Join")
-            .minArgsNumber(1)
+            .minArgsNumber(2)
             .maxArgsNumber(Integer.MAX_VALUE)
             .build();
 

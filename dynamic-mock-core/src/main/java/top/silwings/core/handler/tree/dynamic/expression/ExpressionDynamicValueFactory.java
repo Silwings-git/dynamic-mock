@@ -45,6 +45,23 @@ public class ExpressionDynamicValueFactory {
         this.keepOriginalExpressionParser = new KeepOriginalExpressionParser();
     }
 
+    private static String getStr(final String exp) {
+
+        final String str;
+
+        final String trim = exp.trim();
+
+        if (trim.startsWith("\"") && trim.endsWith("\"")) {
+            str = trim.substring(1, trim.length() - 1);
+        } else if (trim.startsWith("'") && trim.endsWith("'")) {
+            str = trim.substring(1, trim.length() - 1);
+        } else {
+            str = exp;
+        }
+
+        return str;
+    }
+
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 
         // 是否保持原样
@@ -100,29 +117,12 @@ public class ExpressionDynamicValueFactory {
 
         int lastIndex = 0;
         for (final Integer index : indexList) {
-            result.add(this.getStr(expression.substring(lastIndex, index)));
+            result.add(getStr(expression.substring(lastIndex, index)));
             lastIndex = index + 1;
         }
-        result.add(this.getStr(expression.substring(lastIndex)));
+        result.add(getStr(expression.substring(lastIndex)));
 
         return GroupByCommaPriorityResult.of(result, CollectionUtils.isNotEmpty(indexList));
-    }
-
-    public String getStr(final String exp) {
-
-        final String str;
-
-        final String trim = exp.trim();
-
-        if (trim.startsWith("\"") && trim.endsWith("\"")) {
-            str = trim.substring(1, trim.length() - 1);
-        } else if (trim.startsWith("'") && trim.endsWith("'")) {
-            str = trim.substring(1, trim.length() - 1);
-        } else {
-            str = exp;
-        }
-
-        return str;
     }
 
     @Getter
@@ -234,7 +234,7 @@ public class ExpressionDynamicValueFactory {
         public String parse(final String expression) {
             final Matcher matcher = PATTERN.matcher(expression);
             if (matcher.find()) {
-                return matcher.group("content");
+                return getStr(matcher.group("content"));
             } else {
                 throw new DynamicMockException("Failed to parse the original expression: " + expression);
             }
@@ -285,7 +285,7 @@ public class ExpressionDynamicValueFactory {
             }
 
             if (CollectionUtils.isEmpty(indexList)) {
-                return Collections.singletonList(str);
+                return Collections.singletonList(getStr(str));
             }
 
             indexList.sort(OperatorIndex::compareTo);
@@ -318,7 +318,7 @@ public class ExpressionDynamicValueFactory {
                 if (i == nextOperatorSymbol.getIndex()) {
                     if (reentrancy == 0 && i > 0 && StringUtils.isNotEmpty(previousSymbol) && !this.operationDynamicValueFactory.isOperatorSymbol(previousSymbol)) {
                         if (cache.length() > 0) {
-                            result.add(cache.toString());
+                            result.add(getStr(cache.toString()));
                             cache = new StringBuilder();
                         }
                         result.add(nextOperatorSymbol.getSymbol());
@@ -339,7 +339,7 @@ public class ExpressionDynamicValueFactory {
             }
 
             if (cache.length() > 0) {
-                result.add(cache.toString());
+                result.add(getStr(cache.toString()));
             }
 
             return result;
