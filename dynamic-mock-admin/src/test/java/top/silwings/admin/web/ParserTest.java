@@ -25,6 +25,7 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.tree.dynamic.expression.SingleApostropheText;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -68,8 +69,8 @@ public class ParserTest {
         expressionList.add("1+2");
         expressionList.add("1+2*3");
         expressionList.add("2+#search(age)");
-        expressionList.add("2+#search(age)*2");
-        expressionList.add("(2+#search(age))*2+2*4");
+        expressionList.add("2+#search('age')*2");
+        expressionList.add("(2+#search('age'))*2+2*4");
         expressionList.add("#uuid(#search(1+1),#search(true))");
         expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
         expressionList.add("1/2");
@@ -80,23 +81,23 @@ public class ParserTest {
         expressionList.add("1--1");
         expressionList.add("1--1-1");
         expressionList.add("123,456");
-        expressionList.add("#search(#search(#search(#search(param)+#search(param))))");
-        expressionList.add("#search(#search(#search(#search(param)+(19-#search(paramA)))))");
-        expressionList.add("#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))");
-        expressionList.add("#search(abc.abc)");
-        expressionList.add("#isBlank(abc.abc)");
-        expressionList.add("#isBlank(abc.abc)");
+        expressionList.add("#search(#search(#search(#search('param')+#search('param'))))");
+        expressionList.add("#search(#search(#search(#search('param')+(19-#search('paramA')))))");
+        expressionList.add("#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))");
+        expressionList.add("#search('abc.abc')");
+        expressionList.add("#isBlank('abc.abc')");
+        expressionList.add("#isBlank('abc.abc')");
         expressionList.add("#isBlank()");
-        expressionList.add("#isBlank(\"\")");
+        expressionList.add("#isBlank('')");
         expressionList.add("#isBlank() && true");
         expressionList.add("#isBlank() && false");
         expressionList.add("#search(#isBlank())");
         expressionList.add("#search(10+#isBlank())");
-        expressionList.add("<2+2>");
+        expressionList.add("'2+2'");
         expressionList.add("2+2");
-        expressionList.add("<2+2");
+        expressionList.add("'2+2'");
         expressionList.add("#eq(#uuid(),1)");
-        expressionList.add("#eq(#search(abcMap.list[0],customizeSpace),-1)");
+        expressionList.add("#eq(#search('abcMap.list[0],customizeSpace'),-1)");
         expressionList.add("#uuid(,,)");
         expressionList.add("#uuid(,,false)");
         expressionList.add("#uuid(,,true)");
@@ -111,44 +112,44 @@ public class ParserTest {
         expressionList.add("#eq(#eq(1,2),false)");
         expressionList.add("#eq(#eq(1,2),true)");
         expressionList.add("#random()");
-        expressionList.add("#random(int)");
-        expressionList.add("#random(int,1)");
-        expressionList.add("#random(int,1,10)");
-        expressionList.add("#random(long)");
-        expressionList.add("#random(long,1)");
-        expressionList.add("#random(long,1,10)");
-        expressionList.add("#random(double)");
-        expressionList.add("#random(double,1)");
-        expressionList.add("#random(double,1.9999999999999999,2.000000000000001)");
-        expressionList.add("#random(boolean)");
-        expressionList.add("#random(boolean,1)");
-        expressionList.add("#random(boolean,1,2)");
+        expressionList.add("#random('int')");
+        expressionList.add("#random('int',1)");
+        expressionList.add("#random('int',1,10)");
+        expressionList.add("#random('long')");
+        expressionList.add("#random('long',1)");
+        expressionList.add("#random('long',1,10)");
+        expressionList.add("#random('double')");
+        expressionList.add("#random('double',1)");
+        expressionList.add("#random('double',1.9999999999999999,2.000000000000001)");
+        expressionList.add("#random('boolean')");
+        expressionList.add("#random('boolean',1)");
+        expressionList.add("#random('boolean',1,2)");
         expressionList.add("(1+2)-(2*4)");
         expressionList.add("((1+2)-(2*4)+5)+(4+6)");
         expressionList.add("#join(,1,2,3,4,,5)");
         expressionList.add("#join(-,1,2,3,4,,5)");
         expressionList.add("#concat(,1,2,3,4,,5)");
         expressionList.add("#concat(-,1,2,3,4,,5)");
-        expressionList.add("#pageData(1,2,101,{\"name\":\"88\"})");
-        // 抛出异常
-//        expressionList.add("#pageData(1,2,101,{\"name\":\"${#search(age)}>0\"})");
-        expressionList.add("#pageData(1,2,101,<{\"name\":\"${#search(age)>0}\"}>)");
-        expressionList.add("#pageData(1,'2',101,<{\"name\":\"${<#search(age)>0>}\"}>)");
-        expressionList.add("#pageData(1,2,101,<{\"name\":\"${<#search(age)>}\"}>)");
-        expressionList.add("#pageData(1,2,101,<1+1>)");
-        expressionList.add("#equals(#search(baseUser.name,customizeSpace), \"Misaka Mikoto\" )");
-        expressionList.add("#equals(#search(baseUser.name,customizeSpace), Misaka Mikoto )");
-        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),Misaka Mikoto)");
-//        expressionList.add("#equals(#search(baseUser.name,customizeSpace), <Misaka Mikoto> )");
-        expressionList.add("#equals(#search(baseUser.name,customizeSpace),<Misaka Mikoto>)");
-        expressionList.add("#equals(1,1 -  1+1)");
-        expressionList.add("#join('-','1','2')");
-        expressionList.add("#join(<'-'>,)");
+        expressionList.add("#join('-',1,2)");
+        expressionList.add("#join('-',)");
         expressionList.add("#join('#',1,,2,,3)");
         expressionList.add("#now()");
-        expressionList.add("#now(<'yyyy-MM-dd'>)");
-        expressionList.add("#now(<'yyyy-MM-dd HH:mm:ss'>)");
+        expressionList.add("#now('yyyy-MM-dd')");
+        expressionList.add("#now('yyyy-MM-dd HH:mm:ss')");
         expressionList.add("#now('yyyy')");
+
+        expressionList.add("#pageData(1,2,101,'{\"name\":88}')");
+        expressionList.add("#pageData(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
+        expressionList.add("#pageData(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
+        expressionList.add("#pageData(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
+        expressionList.add("#pageData(1,2,101,'1+1')");
+        expressionList.add("#pageData(1,2,101,1+1)");
+
+        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
+        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
+        expressionList.add("#equals(1,1 -  1+1)");
+        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
+        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -289,6 +290,24 @@ public class ParserTest {
                 "}", TaskRequestDto.class);
 
         System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
+
+    }
+
+    @Test
+    public void test008() {
+
+        final String s1 = "#search('name')";
+        final String s2 = "#search('name',)";
+        final String s3 = "#search(,'name',)";
+        final String s4 = "#search('name','customSpace')";
+        final String s5 = "#search('name',\"customSpace\")";
+        final String s6 = "#search(\"name\",\"custom\\\"Space\")";
+        final String s7 = "${#equals(#search(\"baseUser.name\",\"customizeSpace\"), \"Misaka Mikoto\" )}";
+
+        System.out.println("s = " + s5);
+
+        final String str = SingleApostropheText.tryGetEscapeText("'234'");
+        System.out.println("str = " + str);
 
     }
 

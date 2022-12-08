@@ -3,6 +3,7 @@ package top.silwings.core.handler;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.tree.dynamic.expression.SingleApostropheText;
 import top.silwings.core.handler.tree.structure.ArrayNode;
 import top.silwings.core.handler.tree.structure.ObjectNode;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
@@ -90,7 +91,7 @@ public class JsonNodeParser {
             return this.dynamicValueFactory.buildDynamicValue((String) obj);
 
         } else {
-            return StaticValueNode.from(obj);
+            return StaticValueNode.from(this.isString(obj) ? SingleApostropheText.tryGetEscapeText((String) obj) : obj);
         }
     }
 

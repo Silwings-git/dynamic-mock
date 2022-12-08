@@ -33,10 +33,6 @@ public class NowFunctionFactory implements FunctionFactory {
 
     private static final String SYMBOL = "#now()";
 
-    public static void main(String[] args) {
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-    }
-
     @Override
     public FunctionInfo getFunctionInfo() {
         return NOW_FUNCTION_INFO;

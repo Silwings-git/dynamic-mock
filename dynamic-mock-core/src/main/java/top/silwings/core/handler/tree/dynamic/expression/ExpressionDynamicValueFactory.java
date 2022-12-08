@@ -36,39 +36,17 @@ public class ExpressionDynamicValueFactory {
 
     private final OperationDynamicValueFactory operationDynamicValueFactory;
 
-    private final KeepOriginalExpressionParser keepOriginalExpressionParser;
-
     public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
         this.operationDynamicValueFactory = operationDynamicValueFactory;
         this.removeBracketParser = new RemoveBracketParser();
         this.operatorExpressionParser = new OperatorExpressionParser(operationDynamicValueFactory);
-        this.keepOriginalExpressionParser = new KeepOriginalExpressionParser();
-    }
-
-    private static String getStr(final String exp) {
-
-        final String str;
-
-        final String trim = exp.trim();
-
-        if (trim.startsWith("\"") && trim.endsWith("\"")) {
-            str = trim.substring(1, trim.length() - 1);
-        } else if (trim.startsWith("'") && trim.endsWith("'")) {
-            str = trim.substring(1, trim.length() - 1);
-        } else {
-            str = exp;
-        }
-
-        return str;
     }
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 
-        // 是否保持原样
-        if (this.keepOriginalExpressionParser.support(expression)) {
-            return StaticValueExpressionDynamicValue.from(this.keepOriginalExpressionParser.parse(expression));
+        if (SingleApostropheText.isDoubleQuoteString(expression)) {
+            return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeText(expression));
         }
-
 
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
 
@@ -87,7 +65,7 @@ public class ExpressionDynamicValueFactory {
             final List<String> parseList = this.operatorExpressionParser.parse(expression);
             if (parseList.size() == 1) {
                 // 不包含操作符的常量字符
-                return StaticValueExpressionDynamicValue.from(parseList.get(0));
+                return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeText(parseList.get(0)));
             } else {
                 return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
             }
@@ -101,6 +79,8 @@ public class ExpressionDynamicValueFactory {
 
         int num = 0;
 
+        // 在获取i之前,要比较i是否在""之外,只取""之外的逗号
+        // 拿到括号外的逗号的角标
         final char[] charArray = expression.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             final char c = charArray[i];
@@ -117,10 +97,10 @@ public class ExpressionDynamicValueFactory {
 
         int lastIndex = 0;
         for (final Integer index : indexList) {
-            result.add(getStr(expression.substring(lastIndex, index)));
+            result.add(expression.substring(lastIndex, index));
             lastIndex = index + 1;
         }
-        result.add(getStr(expression.substring(lastIndex)));
+        result.add(expression.substring(lastIndex));
 
         return GroupByCommaPriorityResult.of(result, CollectionUtils.isNotEmpty(indexList));
     }
@@ -222,25 +202,6 @@ public class ExpressionDynamicValueFactory {
 
     }
 
-    public static class KeepOriginalExpressionParser implements Parser<String, String> {
-
-        private static final String REGEX = "^<(?<content>.*)>$";
-        private static final Pattern PATTERN = Pattern.compile(REGEX);
-
-        public boolean support(final String expression) {
-            return PATTERN.matcher(expression).find();
-        }
-
-        public String parse(final String expression) {
-            final Matcher matcher = PATTERN.matcher(expression);
-            if (matcher.find()) {
-                return getStr(matcher.group("content"));
-            } else {
-                throw new DynamicMockException("Failed to parse the original expression: " + expression);
-            }
-        }
-    }
-
     public static class OperatorExpressionParser implements Parser<String, List<String>> {
 
         private final OperationDynamicValueFactory operationDynamicValueFactory;
@@ -285,7 +246,7 @@ public class ExpressionDynamicValueFactory {
             }
 
             if (CollectionUtils.isEmpty(indexList)) {
-                return Collections.singletonList(getStr(str));
+                return Collections.singletonList(str);
             }
 
             indexList.sort(OperatorIndex::compareTo);
@@ -318,7 +279,7 @@ public class ExpressionDynamicValueFactory {
                 if (i == nextOperatorSymbol.getIndex()) {
                     if (reentrancy == 0 && i > 0 && StringUtils.isNotEmpty(previousSymbol) && !this.operationDynamicValueFactory.isOperatorSymbol(previousSymbol)) {
                         if (cache.length() > 0) {
-                            result.add(getStr(cache.toString()));
+                            result.add(cache.toString());
                             cache = new StringBuilder();
                         }
                         result.add(nextOperatorSymbol.getSymbol());
@@ -339,7 +300,7 @@ public class ExpressionDynamicValueFactory {
             }
 
             if (cache.length() > 0) {
-                result.add(getStr(cache.toString()));
+                result.add(cache.toString());
             }
 
             return result;

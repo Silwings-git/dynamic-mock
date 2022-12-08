@@ -24,11 +24,10 @@ public class DynamicValueFactory {
 
     public DynamicValue buildDynamicValue(final String expression) {
 
-        String actualExpression = expression;
+        String actualExpression = expression.trim();
 
         if (this.isDynamic(actualExpression)) {
 
-            // 去除表达式的多余空格
             actualExpression = actualExpression.substring(2, actualExpression.length() - 1);
         }
 
