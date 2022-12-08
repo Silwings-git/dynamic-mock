@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
+import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.exceptions.DynamicMockException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,10 @@ public class DynamicMockHandlerMapping extends AbstractHandlerMethodMapping<Obje
 
         final String requestUri = this.getUrlPathHelper().getLookupPathForRequest(request);
 
-        if (this.mockHandlerManager.match(requestUri, httpMethod)) {
+        final MockHandler mockHandler = this.mockHandlerManager.filter(RequestInfo.of(requestUri, httpMethod));
+        if (null != mockHandler) {
+            MockHandlerHolder.remove();
+            MockHandlerHolder.set(mockHandler);
             return new HandlerMethod(this.mockHandlerPoint, this.mockMethod);
         }
 

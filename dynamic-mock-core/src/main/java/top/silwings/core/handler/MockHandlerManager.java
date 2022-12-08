@@ -5,7 +5,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.Identity;
+import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +42,7 @@ public class MockHandlerManager {
         return null != this.filter(RequestInfo.of(requestUri, httpMethod));
     }
 
-    private MockHandler filter(final RequestInfo requestInfo) {
+    public MockHandler filter(final RequestInfo requestInfo) {
 
         for (final MockHandler mockHandler : this.handlerMap.values()) {
             if (mockHandler.support(requestInfo)) {
@@ -55,7 +57,7 @@ public class MockHandlerManager {
 
         final RequestInfo requestInfo = RequestInfo.from(mockHandlerContext);
 
-        final MockHandler mockHandler = this.filter(requestInfo);
+        final MockHandler mockHandler = ConvertUtils.getNoNullOrDefault(MockHandlerHolder.get(), () -> this.filter(requestInfo));
 
         if (null == mockHandler) {
             throw new NoMockHandlerFoundException(requestInfo);

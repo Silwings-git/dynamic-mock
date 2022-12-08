@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.AntPathMatcher;
+import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.utils.JsonUtils;
+import top.silwings.core.utils.PathMatcherUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -142,11 +145,28 @@ public class RequestContext {
          */
         private final Map<String, List<String>> parameterMap;
 
+        /**
+         * 路径参数
+         */
+        private final Map<String, String> pathParameterMap;
+
         public static RequestInfo from(final HttpServletRequest request) {
 
             final RequestInfoBuilder builder = RequestInfo.builder();
 
             buildBodyAndParameter(request, builder);
+
+            final AntPathMatcher antPathMatcher = PathMatcherUtils.matcher();
+
+            // MockHandler支持的uri
+            final String mockHandlerRequestUri = MockHandlerHolder.get().getRequestUri();
+            final String requestURI = request.getRequestURI();
+
+            Map<String, String> pathParameterMap = Collections.emptyMap();
+            if (antPathMatcher.match(mockHandlerRequestUri, requestURI)) {
+                // 需要使用经过?分割后的url数据,否者可能将?后的参数错误解析到path参数中
+                pathParameterMap = antPathMatcher.extractUriTemplateVariables(mockHandlerRequestUri, requestURI);
+            }
 
             final Cookie[] cookieArray = request.getCookies();
 
@@ -160,9 +180,10 @@ public class RequestContext {
                     .pathTranslated(request.getPathTranslated())
                     .queryString(request.getQueryString())
                     .remoteUser(request.getRemoteUser())
-                    .requestURI(request.getRequestURI())
+                    .requestURI(requestURI)
                     .requestURL(request.getRequestURL().toString())
                     .servletPath(request.getServletPath())
+                    .pathParameterMap(pathParameterMap)
                     .build();
         }
 

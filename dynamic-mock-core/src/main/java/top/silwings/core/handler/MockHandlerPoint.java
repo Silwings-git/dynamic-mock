@@ -3,6 +3,7 @@ package top.silwings.core.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import top.silwings.core.config.MockHandlerHolder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +25,11 @@ public class MockHandlerPoint {
     }
 
     public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
-        return this.mockHandlerManager.mock(MockHandlerContext.from(request));
+        try {
+            return this.mockHandlerManager.mock(MockHandlerContext.from(request));
+        } finally {
+            MockHandlerHolder.remove();
+        }
     }
 
 }

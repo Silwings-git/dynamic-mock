@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @ClassName ConvertUtils
@@ -21,6 +22,10 @@ public class ConvertUtils {
 
     public static <T> T getNoNullOrDefault(final T t, final T defaultValue) {
         return null == t ? defaultValue : t;
+    }
+
+    public static <T> T getNoNullOrDefault(final T t, final Supplier<T> defaultValueFunction) {
+        return null == t ? defaultValueFunction.get() : t;
     }
 
     public static <T, R> R getNoNullOrDefault(final T t, final R defaultValue, final Function<T, R> noNullFun) {
