@@ -92,7 +92,7 @@ public class PageFunctionFactory implements FunctionFactory {
 
                 final int total = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(arg3), -1);
                 final Object pageItem = childNodeValueList.get(3);
-                final boolean dynamic = childNodeValueList.size() >= 5 && TypeUtils.toBooleanValue(childNodeValueList.get(4));
+                final boolean dynamic = childNodeValueList.size() < 5 || TypeUtils.toBooleanValue(childNodeValueList.get(4));
                 return this.pageFormData(pageNum, pageSize, total, pageItem, dynamic, mockHandlerContext);
 
             } else {
