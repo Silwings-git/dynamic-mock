@@ -53,7 +53,7 @@ public class MockHandlerInfoParam {
     private Integer delayTime;
 
     @ApiModelProperty(value = "自定义参数空间")
-    private Map<String, ?> customizeSpace;
+    private Map<String, Object> customizeSpace;
 
     @ApiModelProperty(value = "响应信息集")
     private List<MockResponseInfoParam> responses;

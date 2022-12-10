@@ -1,14 +1,16 @@
 package top.silwings.admin.service.impl;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.TextFile;
 import top.silwings.admin.repository.mapper.TextFileMapper;
 import top.silwings.admin.repository.po.TextFilePo;
 import top.silwings.admin.service.FileService;
+import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
@@ -55,9 +57,7 @@ public class FileServiceImpl implements FileService {
 
         final List<TextFilePo> textFileList = this.textFileMapper.selectByConditionAndRowBounds(example, PageParam.oneRow());
 
-        if (CollectionUtils.isEmpty(textFileList)) {
-            return null;
-        }
+        CheckUtils.isNotEmpty(textFileList, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, fileName));
 
         return TextFile.from(textFileList.get(0));
     }

@@ -13,11 +13,13 @@ import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.HandlerInfoDto;
 import top.silwings.admin.model.ProjectDto;
+import top.silwings.admin.model.TextFile;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.MockHandlerUniquePo;
+import top.silwings.admin.service.FileService;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
@@ -31,6 +33,7 @@ import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,13 +57,15 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerDaoConverter mockHandlerDaoConverter;
 
+    private final FileService fileService;
 
-    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter) {
+    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final FileService fileService) {
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerFactory = mockHandlerFactory;
         this.mockHandlerMapper = mockHandlerMapper;
         this.mockHandlerUniqueMapper = mockHandlerUniqueMapper;
         this.mockHandlerDaoConverter = mockHandlerDaoConverter;
+        this.fileService = fileService;
     }
 
     @Override
@@ -330,17 +335,34 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         CheckUtils.isEquals(mockHandler.getProjectId(), project.getProjectId(), DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_PROJECT_MISMATCH, mockHandler.getProjectId().stringValue(), project.getProjectId().stringValue()));
 
-        final MockHandlerDto actualMockHandler;
+        MockHandlerDto actualMockHandler;
 
         if (StringUtils.isNotBlank(project.getBaseUri())) {
-
             // 在原始的处理地址上添加项目基础uri
-            actualMockHandler = MockHandlerDto.copyOf(mockHandler, builder -> builder.requestUri(project.getBaseUri() + mockHandler.getRequestUri()));
+            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> {
+                builder.requestUri(project.getBaseUri() + mockHandler.getRequestUri());
+                customizeSpaceFileProcessing(mockHandler);
+            });
         } else {
-            actualMockHandler = mockHandler;
+            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> customizeSpaceFileProcessing(mockHandler));
         }
 
         this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
+    }
+
+    private void customizeSpaceFileProcessing(final MockHandlerDto mockHandler) {
+        final Map<String, Object> customizeSpace = mockHandler.getCustomizeSpace();
+
+        for (final String key : customizeSpace.keySet()) {
+            final Object value = customizeSpace.get(key);
+            if (value instanceof String) {
+                final String valueStr = (String) value;
+                if (valueStr.startsWith("mockfile:") && (valueStr.endsWith(".json") || valueStr.endsWith(".txt"))) {
+                    final TextFile textFile = this.fileService.find(valueStr.replace("mockfile:", "").trim());
+                    customizeSpace.put(key, textFile.getContent());
+                }
+            }
+        }
     }
 
     /**

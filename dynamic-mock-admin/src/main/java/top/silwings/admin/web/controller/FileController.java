@@ -77,8 +77,6 @@ public class FileController {
 
         final TextFile textFile = this.fileService.find(param.getFileName());
 
-        CheckUtils.isNotNull(textFile, DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, param.getFileName()));
-
         response.setContentType("text/" + textFile.getSuffixName() + ";charset=UTF-8");
 
         try {

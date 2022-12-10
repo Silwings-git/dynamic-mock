@@ -11,7 +11,7 @@ import top.silwings.core.common.Identity;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * @ClassName MockHandlerDefinition
@@ -69,7 +69,7 @@ public class MockHandlerDto {
     /**
      * 自定义空间
      */
-    private Map<String, ?> customizeSpace;
+    private Map<String, Object> customizeSpace;
 
     /**
      * 响应信息集
@@ -83,7 +83,7 @@ public class MockHandlerDto {
 
     private Date updateTime;
 
-    public static MockHandlerDto copyOf(final MockHandlerDto dto, final Consumer<MockHandlerDto.MockHandlerDtoBuilder> builderConsumer) {
+    public static MockHandlerDto copyOf(final MockHandlerDto dto, final BiConsumer<MockHandlerDto, MockHandlerDtoBuilder> builderConsumer) {
 
         final MockHandlerDtoBuilder handlerBuilder = MockHandlerDto.builder()
                 .projectId(dto.getProjectId())
@@ -99,7 +99,7 @@ public class MockHandlerDto {
                 .tasks(dto.getTasks())
                 .updateTime(dto.getUpdateTime());
 
-        builderConsumer.accept(handlerBuilder);
+        builderConsumer.accept(dto, handlerBuilder);
 
         return handlerBuilder.build();
     }
