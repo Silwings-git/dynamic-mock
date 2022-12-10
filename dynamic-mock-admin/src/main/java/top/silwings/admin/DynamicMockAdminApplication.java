@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
@@ -21,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @EnableSwagger2
 @EnableAsync
+@EnableScheduling
 @SpringBootApplication(scanBasePackages = {"top.silwings.core", "top.silwings.admin"})
 public class DynamicMockAdminApplication implements ApplicationRunner {
 

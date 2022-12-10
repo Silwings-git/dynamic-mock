@@ -20,6 +20,8 @@ import java.util.List;
  **/
 public interface MockHandlerService {
 
+    String FILE_FLAG = "mockfile:";
+
     void delete(Identity handlerId);
 
     MockHandlerDto find(Identity handlerId);

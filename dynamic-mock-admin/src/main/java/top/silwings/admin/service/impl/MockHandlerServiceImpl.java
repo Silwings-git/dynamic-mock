@@ -30,6 +30,7 @@ import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -353,13 +354,14 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     private void customizeSpaceFileProcessing(final MockHandlerDto mockHandler) {
         final Map<String, Object> customizeSpace = mockHandler.getCustomizeSpace();
 
-        for (final String key : customizeSpace.keySet()) {
-            final Object value = customizeSpace.get(key);
+        for (final Map.Entry<String, Object> entry : customizeSpace.entrySet()) {
+            final Object value = entry.getValue();
             if (value instanceof String) {
                 final String valueStr = (String) value;
-                if (valueStr.startsWith("mockfile:") && (valueStr.endsWith(".json") || valueStr.endsWith(".txt"))) {
-                    final TextFile textFile = this.fileService.find(valueStr.replace("mockfile:", "").trim());
-                    customizeSpace.put(key, textFile.getContent());
+                if (valueStr.startsWith(FILE_FLAG) && (valueStr.endsWith(".json") || valueStr.endsWith(".txt"))) {
+                    final TextFile textFile = this.fileService.find(valueStr.replace(FILE_FLAG, "").trim());
+                    CheckUtils.isTrue(JsonUtils.isValidJson(textFile.getContent()), DynamicMockAdminException.supplier(ErrorCode.CONTENT_FORMAT_ERROR));
+                    customizeSpace.put(entry.getKey(), textFile.getContent());
                 }
             }
         }

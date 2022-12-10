@@ -26,6 +26,7 @@ public class MockHandlerPo {
     public static final String C_PROJECT_ID = "projectId";
     public static final String C_NAME = "name";
     public static final String C_HTTP_METHODS = "httpMethods";
+    public static final String C_CUSTOMIZE_SPACE = "customizeSpace";
     public static final String C_REQUEST_URI = "requestUri";
     public static final String C_LABEL = "label";
 
