@@ -17,6 +17,7 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.common.Role;
+import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.web.setup.SetUp;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
@@ -28,7 +29,10 @@ import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
+import top.silwings.core.config.MockHandlerHolder;
+import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerPoint;
+import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.utils.JsonUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -53,6 +57,12 @@ public class MockHandlerControllerTest {
     private ProjectController projectController;
     @Autowired
     private MockHandlerPoint mockHandlerPoint;
+
+    @Autowired
+    private MockHandlerService mockHandlerService;
+
+    @Autowired
+    private MockHandlerFactory mockHandlerFactory;
 
     @Test
     public void mockHandler() {
@@ -156,6 +166,10 @@ public class MockHandlerControllerTest {
     }
 
     private void request(final MockHandlerInfoParam infoParam) {
+
+        final MockHandlerDto mockHandler = this.mockHandlerService.find(infoParam.getHandlerId());
+        MockHandlerHolder.set(this.mockHandlerFactory.buildMockHandler(mockHandler));
+
         final MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod(HttpMethod.GET.name());
         request.addHeader("content-type", "application/json");

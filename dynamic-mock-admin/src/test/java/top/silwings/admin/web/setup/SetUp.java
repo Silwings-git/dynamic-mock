@@ -64,8 +64,8 @@ public class SetUp {
     private static List<SaveTaskInfoParam> buildTaskList() {
 
         final Map<String, String> body = new HashMap<>();
-        body.put("name", "${#search(name,customizeSpace)}");
-        body.put("underAge", "${#search(age,customizeSpace)<18}");
+        body.put("name", "${#search('name','customizeSpace')}");
+        body.put("underAge", "${#search('age','customizeSpace')<18}");
 
         final SaveTaskRequestInfoParam requestInfoVo = SaveTaskRequestInfoParam.builder()
                 .requestUrl("localhost:8888/test")
@@ -77,7 +77,7 @@ public class SetUp {
 
         final SaveTaskInfoParam mockTask = SaveTaskInfoParam.builder()
                 .name("TEST_MOCK_TASK")
-                .support(Collections.singletonList("${#search(age)==14&&#eq(#search(parameterMap.execute[0],requestInfo),1)}"))
+                .support(Collections.singletonList("${#search('age')==14&&#eq(#search('parameterMap.execute[0]','requestInfo'),1)}"))
                 .async(true)
                 .cron("* * * * * ?")
                 .numberOfExecute(3)
@@ -90,9 +90,9 @@ public class SetUp {
     private static List<MockResponseInfoParam> buildMockResponseInfoVoList() {
 
         final Map<String, Object> body = new HashMap<>();
-        body.put("name", "${#search(name)}");
-        body.put("age", "${#search(age)}");
-        body.put("level", "${#search(level)}");
+        body.put("name", "${#search('name')}");
+        body.put("age", "${#search('age')}");
+        body.put("level", "${#search('level')}");
 
         final MockResponseParam responseVo = MockResponseParam.builder()
                 .status(200)
@@ -121,7 +121,7 @@ public class SetUp {
         return headerMap;
     }
 
-    private static Map<String, ?> buildCustomizeSpace() {
+    private static Map<String, Object> buildCustomizeSpace() {
 
         final Map<String, Object> customizeSpaceMap = new HashMap<>();
         customizeSpaceMap.put("name", "Misaka Mikoto");

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.AntPathMatcher;
 import top.silwings.core.config.MockHandlerHolder;
+import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 import top.silwings.core.utils.PathMatcherUtils;
 
@@ -159,7 +160,7 @@ public class RequestContext {
             final AntPathMatcher antPathMatcher = PathMatcherUtils.matcher();
 
             // MockHandler支持的uri
-            final String mockHandlerRequestUri = MockHandlerHolder.get().getRequestUri();
+            final String mockHandlerRequestUri = ConvertUtils.getNoNullOrDefault(MockHandlerHolder.get(), "", MockHandler::getRequestUri);
             final String requestURI = request.getRequestURI();
 
             Map<String, String> pathParameterMap = Collections.emptyMap();
