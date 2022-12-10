@@ -45,6 +45,11 @@ public enum ErrorCode {
     AUTH_INSUFFICIENT_PERMISSIONS("auth_insufficient_permissions"),
     AUTH_NOT_LOGGED_ON("auth_not_logged_on"),
 
+    // File
+    UNSUPPORTED_FILE_TYPE("unsupported_file_type"),
+    CONTENT_FORMAT_ERROR("content_format_error"),
+    FILE_READ_ERROR("file_read_error"),
+    FILE_NOT_FOUND("file_not_found"),
 
     ;
 
