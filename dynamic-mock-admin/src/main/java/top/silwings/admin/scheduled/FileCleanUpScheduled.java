@@ -79,7 +79,7 @@ public class FileCleanUpScheduled {
                 .filter(String.class::isInstance)
                 .map(String.class::cast)
                 .filter(e -> e.contains(MockHandlerService.FILE_FLAG))
-                .map(e -> e.replace(MockHandlerPo.C_CUSTOMIZE_SPACE, "").trim())
+                .map(e -> e.replace(MockHandlerService.FILE_FLAG, "").trim())
                 .distinct()
                 .collect(Collectors.toList());
     }
