@@ -82,17 +82,21 @@ public class JsonNodeParser {
      * @return Node实例
      */
     private Node buildNode(final Object obj) {
-        if (this.isMap(obj)) {
+        if (this.isMap(obj) || this.isCollection(obj)) {
 
             return this.doParse(obj);
 
-        } else if (this.isString(obj) && this.dynamicValueFactory.isDynamic((String) obj)) {
+        } else if (this.isString(obj) && DynamicValueFactory.isDynamic((String) obj)) {
 
             return this.dynamicValueFactory.buildDynamicValue((String) obj);
 
         } else {
             return StaticValueNode.from(this.isString(obj) ? SingleApostropheText.tryGetEscapeText((String) obj) : obj);
         }
+    }
+
+    private boolean isCollection(final Object obj) {
+        return obj instanceof Collection;
     }
 
     private boolean isString(final Object obj) {

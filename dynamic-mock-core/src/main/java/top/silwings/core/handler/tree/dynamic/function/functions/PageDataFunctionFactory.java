@@ -84,9 +84,9 @@ public class PageDataFunctionFactory implements FunctionFactory {
             final int pageNum = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(0)), -1);
             final int pageSize = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), -1);
             final Object arg3 = childNodeValueList.get(2);
-            if (arg3 instanceof List) {
+            if (arg3 instanceof List || this.isListStr(arg3)) {
 
-                return this.pageFromList(pageNum, pageSize, (List) arg3);
+                return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList((String) arg3, Object.class));
 
             } else if (childNodeValueList.size() > 3) {
 
@@ -99,6 +99,18 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
                 throw DynamicMockException.from("Parameter incorrectly of `pageData` : " + JsonUtils.toJSONString(childNodeValueList));
             }
+        }
+
+        private boolean isListStr(final Object arg) {
+
+            if (arg instanceof String) {
+                final String argStr = (String) arg;
+                if (argStr.startsWith("[") && argStr.endsWith("]") && JsonUtils.isValidJson(argStr)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private List<Object> pageFormData(final int pageNum, final int pageSize, final int total, final Object pageItem, final boolean dynamic, final MockHandlerContext mockHandlerContext) {
@@ -118,7 +130,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
                     final String resultStr = (String) pageItem;
 
-                    if (dynamicValueFactory.isDynamic(resultStr)) {
+                    if (DynamicValueFactory.isDynamic(resultStr)) {
 
                         pageDataInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
                     } else {

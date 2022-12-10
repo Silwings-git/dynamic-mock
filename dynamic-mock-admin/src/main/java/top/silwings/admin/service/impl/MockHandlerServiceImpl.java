@@ -342,10 +342,10 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             // 在原始的处理地址上添加项目基础uri
             actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> {
                 builder.requestUri(project.getBaseUri() + mockHandler.getRequestUri());
-                customizeSpaceFileProcessing(mockHandler);
+                this.customizeSpaceFileProcessing(mockHandler);
             });
         } else {
-            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> customizeSpaceFileProcessing(mockHandler));
+            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> this.customizeSpaceFileProcessing(mockHandler));
         }
 
         this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
@@ -361,7 +361,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 if (valueStr.startsWith(FILE_FLAG) && (valueStr.endsWith(".json") || valueStr.endsWith(".txt"))) {
                     final TextFile textFile = this.fileService.find(valueStr.replace(FILE_FLAG, "").trim());
                     CheckUtils.isTrue(JsonUtils.isValidJson(textFile.getContent()), DynamicMockAdminException.supplier(ErrorCode.CONTENT_FORMAT_ERROR));
-                    customizeSpace.put(entry.getKey(), textFile.getContent());
+                    customizeSpace.put(entry.getKey(), JsonUtils.toBean(textFile.getContent()));
                 }
             }
         }

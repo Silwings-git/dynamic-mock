@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
-import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.handler.tree.CustomizeSpaceNodeInterpreter;
 import top.silwings.core.model.MockHandlerDto;
 
 import java.util.List;
@@ -42,8 +42,8 @@ public class MockHandlerFactory {
                 .requestUri(definition.getRequestUri())
                 .delayTime(definition.getDelayTime());
 
-        // 自定义空间
-        builder.customizeSpaceInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getCustomizeSpace())));
+        // 自定义空间.
+        builder.customizeSpaceInterpreter(new CustomizeSpaceNodeInterpreter(definition.getCustomizeSpace(), this.jsonNodeParser.parse(definition.getCustomizeSpace())));
 
         // 响应信息
         builder.responseInfoList(

@@ -150,6 +150,8 @@ public class ParserTest {
         expressionList.add("#equals(1,1 -  1+1)");
         expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
         expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
+        expressionList.add("#pageData(1,10,#search('list'))");
+        expressionList.add("#pageData(1,10,#search('list2'))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -164,6 +166,8 @@ public class ParserTest {
         requestContext.addCustomizeParam("true", 10);
         requestContext.addCustomizeParam("10", "御坂美琴");
         requestContext.addCustomizeParam("10true", "御坂美琴");
+        requestContext.addCustomizeParam("list", "[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
+        requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
 
         final Map<String, Object> baseUser = new HashMap<>();
         baseUser.put("name", "Misaka Mikoto");

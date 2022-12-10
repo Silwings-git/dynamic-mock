@@ -22,11 +22,16 @@ public class DynamicValueFactory {
         this.functionFactory = functionFactory;
     }
 
+    public static boolean isDynamic(final String str) {
+        // 仅以${开头,}结尾的视为动态表达式
+        return str.startsWith("${") && str.endsWith("}");
+    }
+
     public DynamicValue buildDynamicValue(final String expression) {
 
         String actualExpression = expression.trim();
 
-        if (this.isDynamic(actualExpression)) {
+        if (isDynamic(actualExpression)) {
 
             actualExpression = actualExpression.substring(2, actualExpression.length() - 1);
         }
@@ -38,11 +43,6 @@ public class DynamicValueFactory {
         } else {
             return this.expressionFactory.buildDynamicValue(actualExpression, this);
         }
-    }
-
-    public boolean isDynamic(final String str) {
-        // 仅以${开头,}结尾的视为动态表达式
-        return str.startsWith("${") && str.endsWith("}");
     }
 
 }
