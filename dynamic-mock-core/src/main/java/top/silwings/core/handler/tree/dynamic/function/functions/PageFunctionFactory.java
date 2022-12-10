@@ -23,62 +23,62 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @ClassName PageDataFunctionFactory
+ * @ClassName PageFunctionFactory
  * @Description 分页数据
  * @Author Silwings
  * @Date 2022/11/13 17:56
  * @Since
  **/
 @Component
-public class PageDataFunctionFactory implements FunctionFactory {
+public class PageFunctionFactory implements FunctionFactory {
 
-    private static final FunctionInfo PAGE_DATA_FUNCTION_INFO = FunctionInfo.builder()
-            .functionName("PageData")
+    private static final FunctionInfo PAGE_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("Page")
             .minArgsNumber(3)
             .maxArgsNumber(5)
             .build();
 
-    private static final String SYMBOL = "#pageData(...)";
+    private static final String SYMBOL = "#page(...)";
 
     @Override
     public FunctionInfo getFunctionInfo() {
-        return PAGE_DATA_FUNCTION_INFO;
+        return PAGE_FUNCTION_INFO;
     }
 
     @Override
     public boolean support(final String methodName) {
-        return "pageData".equalsIgnoreCase(methodName);
+        return "page".equalsIgnoreCase(methodName);
     }
 
     @Override
     public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
-        return PageDataFunction.from(dynamicValueList);
+        return PageFunction.from(dynamicValueList);
     }
 
     /**
      * 分页数据函数
-     * 1.#pageData(#search(当前页),#search(每页数量),总数据量,数据)
-     * 2.#pageData(#search(当前页),#search(每页数量),总数据量,数据,数据是否动态)
-     * 3.#pageData(#search(当前页),#search(每页数量),数据集)
+     * 1.#page(#search(当前页),#search(每页数量),总数据量,数据)
+     * 2.#page(#search(当前页),#search(每页数量),总数据量,数据,数据是否动态)
+     * 3.#page(#search(当前页),#search(每页数量),数据集)
      * 其中,1,2函数的数据支持json格式和文本格式
      * 3函数的数据集仅支持集合对象
      */
-    public static class PageDataFunction extends AbstractDynamicValue {
+    public static class PageFunction extends AbstractDynamicValue {
 
-        private PageDataFunction(final List<DynamicValue> dynamicValueList) {
+        private PageFunction(final List<DynamicValue> dynamicValueList) {
             super(dynamicValueList);
         }
 
-        public static PageDataFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, PAGE_DATA_FUNCTION_INFO.getMinArgsNumber(), PAGE_DATA_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of PageData function."));
-            return new PageDataFunction(dynamicValueList);
+        public static PageFunction from(final List<DynamicValue> dynamicValueList) {
+            CheckUtils.sizeBetween(dynamicValueList, PAGE_FUNCTION_INFO.getMinArgsNumber(), PAGE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Page function."));
+            return new PageFunction(dynamicValueList);
         }
 
         @Override
         public List<Object> doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             if (this.getNodeCount() != childNodeValueList.size()) {
-                throw DynamicMockException.from("Parameter incorrectly of `pageData` function. expect: " + this.getNodeCount() + " , actual: " + childNodeValueList.size());
+                throw DynamicMockException.from("Parameter incorrectly of `page` function. expect: " + this.getNodeCount() + " , actual: " + childNodeValueList.size());
             }
 
             final int pageNum = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(0)), -1);
@@ -97,7 +97,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
             } else {
 
-                throw DynamicMockException.from("Parameter incorrectly of `pageData` : " + JsonUtils.toJSONString(childNodeValueList));
+                throw DynamicMockException.from("Parameter incorrectly of `page` : " + JsonUtils.toJSONString(childNodeValueList));
             }
         }
 
@@ -123,7 +123,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
             if (dynamic) {
                 // 分页数据解释器
-                final NodeInterpreter pageDataInterpreter;
+                final NodeInterpreter pageInterpreter;
 
                 if (pageItem instanceof String && !JsonUtils.isValidJson((String) pageItem)) {
                     final DynamicValueFactory dynamicValueFactory = DynamicMockContext.getInstance().getDynamicValueFactory();
@@ -132,17 +132,17 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
                     if (DynamicValueFactory.isDynamic(resultStr)) {
 
-                        pageDataInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
+                        pageInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
                     } else {
-                        pageDataInterpreter = new NodeInterpreter(StaticValueNode.from(pageItem));
+                        pageInterpreter = new NodeInterpreter(StaticValueNode.from(pageItem));
                     }
                 } else {
-                    pageDataInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(pageItem));
+                    pageInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(pageItem));
                 }
 
                 return Stream.iterate(0, t -> t + 1)
                         .limit(returnSize)
-                        .map(i -> pageDataInterpreter.interpret(mockHandlerContext))
+                        .map(i -> pageInterpreter.interpret(mockHandlerContext))
                         .collect(Collectors.toList());
             } else {
                 return Stream.iterate(0, t -> t + 1)
@@ -154,7 +154,7 @@ public class PageDataFunctionFactory implements FunctionFactory {
 
         private int getReturnSize(final int pageNum, final int pageSize, final int total) {
             if (pageNum <= 0 || pageSize < 0 || total < 0) {
-                throw new DynamicMockException("Parameter specification error of `pageData` function." +
+                throw new DynamicMockException("Parameter specification error of `page` function." +
                         " PageNum should be greater than or equal to 0, actual: " + pageNum +
                         " . PageSize should be greater than 0, actual: " + pageSize +
                         " . Total should be greater than 0, actual: " + total);
@@ -163,15 +163,15 @@ public class PageDataFunctionFactory implements FunctionFactory {
             return Math.min(total - (pageNum - 1) * pageSize, pageSize);
         }
 
-        private List<Object> pageFromList(final int pageNum, final int pageSize, final List<Object> pageDataSourceList) {
+        private List<Object> pageFromList(final int pageNum, final int pageSize, final List<Object> pageDataList) {
 
-            final int returnSize = this.getReturnSize(pageNum, pageSize, pageDataSourceList.size());
+            final int returnSize = this.getReturnSize(pageNum, pageSize, pageDataList.size());
 
             final int start = (pageNum - 1) * pageSize;
 
             return Stream.iterate(start, t -> t + 1)
                     .limit(returnSize)
-                    .map(pageDataSourceList::get)
+                    .map(pageDataList::get)
                     .collect(Collectors.toList());
         }
 
