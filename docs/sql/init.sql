@@ -72,3 +72,13 @@ CREATE TABLE `dm_user`
     PRIMARY KEY (`user_id`) USING BTREE,
     UNIQUE KEY `uidx_user_useraccount` (`user_account`) USING BTREE
 ) ENGINE=InnoDB COMMENT='用户表';
+
+CREATE TABLE `dm_text_file` (
+`id` int NOT NULL AUTO_INCREMENT,
+`file_name` varchar(64) NOT NULL COMMENT '文件名',
+`original_file_name` varchar(128) NOT NULL COMMENT '原始文件名',
+`content` longtext COMMENT '文本内容',
+`create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+PRIMARY KEY (`id`),
+UNIQUE KEY `dm_text_file_file_name_uindex` (`file_name`)
+) ENGINE=InnoDB COLLATE=utf8mb4_0900_ai_ci COMMENT='文本文件内容表';
