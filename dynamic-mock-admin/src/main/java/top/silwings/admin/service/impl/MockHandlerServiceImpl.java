@@ -201,6 +201,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
+    @Transactional
     public void updateEnableStatus(final Identity handlerId, final EnableStatus enableStatus, final ProjectDto project) {
 
         final MockHandlerPo mockHandler = new MockHandlerPo();

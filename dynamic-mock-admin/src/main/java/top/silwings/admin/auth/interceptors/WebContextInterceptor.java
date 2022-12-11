@@ -24,7 +24,7 @@ public class WebContextInterceptor implements HandlerInterceptor {
 
         final WebContext.WebContextBuilder builder = WebContext.builder();
 
-        final Enumeration<String> headers = request.getHeaders("Accept-Language");
+        final Enumeration<String> headers = request.getHeaders("Language");
         if (headers.hasMoreElements()) {
             final String language = headers.nextElement();
             builder.language(language);
