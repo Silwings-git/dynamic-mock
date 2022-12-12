@@ -138,23 +138,25 @@ public class ParserTest {
         expressionList.add("#now('yyyy-MM-dd HH:mm:ss')");
         expressionList.add("#now('yyyy')");
 
-//        expressionList.add("#page(1,2,101,'{\"name\":88}')");
-//        expressionList.add("#page(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
-//        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
-//        expressionList.add("#page(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
-//        expressionList.add("#page(1,2,101,'1+1')");
-//        expressionList.add("#page(1,2,101,1+1)");
-//
-//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
-//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
-//        expressionList.add("#equals(1,1 -  1+1)");
-//        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
-//        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
-//        expressionList.add("#page(1,10,#search('list'))");
-//        expressionList.add("#page(1,10,#search('list2'))");
+        expressionList.add("#page(1,2,101,'{\"name\":88}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
+        expressionList.add("#page(1,2,101,'1+1')");
+        expressionList.add("#page(1,2,101,1+1)");
+
+        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
+        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
+        expressionList.add("#equals(1,1 -  1+1)");
+        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
+        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
+        expressionList.add("#page(1,10,#search('list'))");
+        expressionList.add("#page(1,10,#search('list2'))");
         expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
-        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(\\'param\\')}\"}]')");
         expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+        expressionList.add("#page(1,2,101,'${1+1}')");
+        expressionList.add("#page(1,2,101,'${1+1}',false)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();

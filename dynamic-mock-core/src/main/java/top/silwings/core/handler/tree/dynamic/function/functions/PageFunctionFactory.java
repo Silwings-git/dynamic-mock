@@ -86,20 +86,17 @@ public class PageFunctionFactory implements FunctionFactory {
             final int pageNum = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(0)), -1);
             final int pageSize = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), -1);
             final Object arg3 = childNodeValueList.get(2);
-            if (childNodeValueList.size() == 3) {
 
-                if (arg3 instanceof List || this.isListStr(arg3)) {
+            if ((arg3 instanceof List || this.isListStr(arg3))
+                    || (arg3 instanceof String
+                    && SingleApostropheText.isDoubleQuoteString((String) arg3)
+                    && this.isListStr(SingleApostropheText.tryGetEscapeText((String) arg3)))) {
 
-                    return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList((String) arg3, Object.class));
+                final boolean dynamic = childNodeValueList.size() < 4 || TypeUtils.toBooleanValue(childNodeValueList.get(3));
 
-                } else if (arg3 instanceof String
-                        && SingleApostropheText.isDoubleQuoteString((String) arg3)
-                        && this.isListStr(SingleApostropheText.tryGetEscapeText((String) arg3))) {
+                return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList(SingleApostropheText.tryGetEscapeText((String) arg3), Object.class), dynamic, mockHandlerContext);
 
-                    return this.pageFromList(pageNum, pageSize, JsonUtils.toList((String) arg3, Object.class));
-                }
-
-            } else {
+            } else if (childNodeValueList.size() > 3) {
 
                 final int total = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(arg3), -1);
                 final Object pageItem = childNodeValueList.get(3);
@@ -130,35 +127,10 @@ public class PageFunctionFactory implements FunctionFactory {
                 return Collections.emptyList();
             }
 
-            if (dynamic) {
-                // 分页数据解释器
-                final NodeInterpreter pageInterpreter;
-
-                if (pageItem instanceof String && !JsonUtils.isValidJson((String) pageItem)) {
-                    final DynamicValueFactory dynamicValueFactory = DynamicMockContext.getInstance().getDynamicValueFactory();
-
-                    final String resultStr = (String) pageItem;
-
-                    if (DynamicValueFactory.isDynamic(resultStr)) {
-
-                        pageInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
-                    } else {
-                        pageInterpreter = new NodeInterpreter(StaticValueNode.from(pageItem));
-                    }
-                } else {
-                    pageInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(pageItem));
-                }
-
-                return Stream.iterate(0, t -> t + 1)
-                        .limit(returnSize)
-                        .map(i -> pageInterpreter.interpret(mockHandlerContext))
-                        .collect(Collectors.toList());
-            } else {
-                return Stream.iterate(0, t -> t + 1)
-                        .limit(returnSize)
-                        .map(i -> pageItem)
-                        .collect(Collectors.toList());
-            }
+            return Stream.iterate(0, t -> t + 1)
+                    .limit(returnSize)
+                    .map(i -> dynamic ? this.dynamicData(pageItem, mockHandlerContext) : pageItem)
+                    .collect(Collectors.toList());
         }
 
         private int getReturnSize(final int pageNum, final int pageSize, final int total) {
@@ -172,7 +144,7 @@ public class PageFunctionFactory implements FunctionFactory {
             return Math.min(total - (pageNum - 1) * pageSize, pageSize);
         }
 
-        private List<Object> pageFromList(final int pageNum, final int pageSize, final List<Object> pageDataList) {
+        private List<Object> pageFromList(final int pageNum, final int pageSize, final List<Object> pageDataList, final boolean dynamic, final MockHandlerContext mockHandlerContext) {
 
             final int returnSize = this.getReturnSize(pageNum, pageSize, pageDataList.size());
 
@@ -185,7 +157,30 @@ public class PageFunctionFactory implements FunctionFactory {
             return Stream.iterate(start, t -> t + 1)
                     .limit(returnSize)
                     .map(pageDataList::get)
+                    .map(pageData -> dynamic ? this.dynamicData(pageData, mockHandlerContext) : pageData)
                     .collect(Collectors.toList());
+        }
+
+        private Object dynamicData(final Object obj, final MockHandlerContext mockHandlerContext) {
+
+            final NodeInterpreter pageInterpreter;
+
+            if (obj instanceof String && !JsonUtils.isValidJson((String) obj)) {
+                final DynamicValueFactory dynamicValueFactory = DynamicMockContext.getInstance().getDynamicValueFactory();
+
+                final String resultStr = (String) obj;
+
+                if (DynamicValueFactory.isDynamic(resultStr)) {
+
+                    pageInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
+                } else {
+                    pageInterpreter = new NodeInterpreter(StaticValueNode.from(obj));
+                }
+            } else {
+                pageInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(obj));
+            }
+
+            return pageInterpreter.interpret(mockHandlerContext);
         }
 
         @Override
