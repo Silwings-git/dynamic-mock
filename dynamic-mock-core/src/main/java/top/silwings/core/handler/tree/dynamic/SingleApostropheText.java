@@ -1,6 +1,5 @@
-package top.silwings.core.handler.tree.dynamic.expression;
+package top.silwings.core.handler.tree.dynamic;
 
-import org.apache.commons.lang3.StringUtils;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.utils.CheckUtils;
 
@@ -20,8 +19,12 @@ public class SingleApostropheText {
     }
 
     public static boolean isDoubleQuoteString(final String text) {
-        final String trim = text.trim();
-        return StringUtils.isNotBlank(trim) && trim.startsWith("'") && trim.endsWith("'") && !trim.contains(",");
+        try {
+            SingleApostropheText.build(text.trim());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static SingleApostropheText build(final String expression) {
@@ -62,8 +65,11 @@ public class SingleApostropheText {
     }
 
     public static String tryGetEscapeText(final String text) {
-        return isDoubleQuoteString(text) ? SingleApostropheText.build(text).getEscapeText() : text;
-
+        try {
+            return SingleApostropheText.build(text).getEscapeText();
+        } catch (Exception e) {
+            return text;
+        }
     }
 
     public String getOriginalText() {

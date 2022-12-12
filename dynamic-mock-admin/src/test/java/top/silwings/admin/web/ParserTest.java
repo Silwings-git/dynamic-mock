@@ -25,7 +25,7 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.expression.SingleApostropheText;
+import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -138,20 +138,23 @@ public class ParserTest {
         expressionList.add("#now('yyyy-MM-dd HH:mm:ss')");
         expressionList.add("#now('yyyy')");
 
-        expressionList.add("#pageData(1,2,101,'{\"name\":88}')");
-        expressionList.add("#pageData(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
-        expressionList.add("#pageData(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
-        expressionList.add("#pageData(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
-        expressionList.add("#pageData(1,2,101,'1+1')");
-        expressionList.add("#pageData(1,2,101,1+1)");
-
-        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
-        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
-        expressionList.add("#equals(1,1 -  1+1)");
-        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
-        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
-        expressionList.add("#pageData(1,10,#search('list'))");
-        expressionList.add("#pageData(1,10,#search('list2'))");
+//        expressionList.add("#page(1,2,101,'{\"name\":88}')");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
+//        expressionList.add("#page(1,2,101,'1+1')");
+//        expressionList.add("#page(1,2,101,1+1)");
+//
+//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
+//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
+//        expressionList.add("#equals(1,1 -  1+1)");
+//        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
+//        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
+//        expressionList.add("#page(1,10,#search('list'))");
+//        expressionList.add("#page(1,10,#search('list2'))");
+        expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+        expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -454,11 +457,11 @@ public class ParserTest {
                     "\"${#uuid()}\": \"${#uuid()}\"," +
                     "\"uuidKeyA\": \"${#uuid()}\"," +
                     "\"uuidKeyB\": \"${#uuid()}\"," +
-                    "\"name\": \"${#search(name)}\"," +
-                    "\"phoneNumber\": \"${#search(<$.phoneNumbers[0]>)}\"," +
-                    "\"uri\": \"${#search(<$.requestURI>,requestInfo)}\"," +
+                    "\"name\": \"${#search('name')}\"," +
+                    "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
+                    "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
                     "\"random\": \"${#search($.+(1+2*5))}\"," +
-                    " \"body\": \"${#pageData(#search(<$.body.pageNum>,requestInfo),#search(<$.body.pageSize>,requestInfo),101,{\\\"code\\\": \\\"${#search(name)}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
+                    " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,{\\\"code\\\": \\\"${#search('name')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
                     "}";
             definition.body(JsonUtils.toBean(s));
 

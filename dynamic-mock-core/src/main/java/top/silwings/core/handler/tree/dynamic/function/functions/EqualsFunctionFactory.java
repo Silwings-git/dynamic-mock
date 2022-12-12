@@ -47,8 +47,8 @@ public class EqualsFunctionFactory implements FunctionFactory {
 
     /**
      * 相等函数
-     * #equal(待检查字符(大于等于2个))
-     * #eq(待检查字符(大于等于2个))
+     * #equal(待检查字符A,待检查字符B)
+     * #eq(待检查字符A,待检查字符B)
      */
     public static class EqualsFunction extends AbstractDynamicValue {
 

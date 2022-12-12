@@ -1,5 +1,6 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.exceptions.DynamicMockException;
@@ -9,6 +10,7 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
@@ -57,9 +59,9 @@ public class PageFunctionFactory implements FunctionFactory {
 
     /**
      * 分页数据函数
-     * 1.#page(#search(当前页),#search(每页数量),总数据量,数据)
-     * 2.#page(#search(当前页),#search(每页数量),总数据量,数据,数据是否动态)
-     * 3.#page(#search(当前页),#search(每页数量),数据集)
+     * 1.#page(当前页,每页数量,总数据量,数据模板)
+     * 2.#page(当前页,每页数量,总数据量,数据模板,数据是否动态)
+     * 3.#page(当前页,每页数量,数据集)
      * 其中,1,2函数的数据支持json格式和文本格式
      * 3函数的数据集仅支持集合对象
      */
@@ -84,21 +86,28 @@ public class PageFunctionFactory implements FunctionFactory {
             final int pageNum = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(0)), -1);
             final int pageSize = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), -1);
             final Object arg3 = childNodeValueList.get(2);
-            if (arg3 instanceof List || this.isListStr(arg3)) {
+            if (childNodeValueList.size() == 3) {
 
-                return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList((String) arg3, Object.class));
+                if (arg3 instanceof List || this.isListStr(arg3)) {
 
-            } else if (childNodeValueList.size() > 3) {
+                    return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList((String) arg3, Object.class));
+
+                } else if (arg3 instanceof String
+                        && SingleApostropheText.isDoubleQuoteString((String) arg3)
+                        && this.isListStr(SingleApostropheText.tryGetEscapeText((String) arg3))) {
+
+                    return this.pageFromList(pageNum, pageSize, JsonUtils.toList((String) arg3, Object.class));
+                }
+
+            } else {
 
                 final int total = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(arg3), -1);
                 final Object pageItem = childNodeValueList.get(3);
                 final boolean dynamic = childNodeValueList.size() < 5 || TypeUtils.toBooleanValue(childNodeValueList.get(4));
                 return this.pageFormData(pageNum, pageSize, total, pageItem, dynamic, mockHandlerContext);
-
-            } else {
-
-                throw DynamicMockException.from("Parameter incorrectly of `page` : " + JsonUtils.toJSONString(childNodeValueList));
             }
+
+            throw DynamicMockException.from("Parameter incorrectly of `page` : " + JsonUtils.toJSONString(childNodeValueList));
         }
 
         private boolean isListStr(final Object arg) {
@@ -166,6 +175,10 @@ public class PageFunctionFactory implements FunctionFactory {
         private List<Object> pageFromList(final int pageNum, final int pageSize, final List<Object> pageDataList) {
 
             final int returnSize = this.getReturnSize(pageNum, pageSize, pageDataList.size());
+
+            if (returnSize <= 0 || CollectionUtils.isEmpty(pageDataList)) {
+                return Collections.emptyList();
+            }
 
             final int start = (pageNum - 1) * pageSize;
 

@@ -4,10 +4,10 @@ import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Parser;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.handler.tree.dynamic.expression.expressions.CommaExpressionDynamicValue;
 import top.silwings.core.handler.tree.dynamic.expression.expressions.StaticValueExpressionDynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperationDynamicValueFactory;
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
