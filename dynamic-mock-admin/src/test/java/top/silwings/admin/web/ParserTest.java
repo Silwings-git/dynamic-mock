@@ -157,6 +157,15 @@ public class ParserTest {
         expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
         expressionList.add("#page(1,2,101,'${1+1}')");
         expressionList.add("#page(1,2,101,'${1+1}',false)");
+        expressionList.add("#uuid(,,true)");
+        expressionList.add("#uuid(,10,true)");
+        expressionList.add("#uuid(,40,true)");
+        expressionList.add("#uuid('UserCode',,false)");
+        expressionList.add("#uuid('UserCode',10,true)");
+        expressionList.add("#isNotNull()");
+        expressionList.add("#isNotNull('')");
+        expressionList.add("#isNull()");
+        expressionList.add("#isNull('')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();

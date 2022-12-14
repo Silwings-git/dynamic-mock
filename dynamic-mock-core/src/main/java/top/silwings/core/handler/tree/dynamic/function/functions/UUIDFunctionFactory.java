@@ -72,6 +72,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
 
         @Override
         public String doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+
             if (this.getNodeCount() > 0 && childNodeValueList.size() != this.getNodeCount()) {
                 throw new DynamicMockException("Parameter incorrectly of `uuid` function");
             }
@@ -85,19 +86,6 @@ public class UUIDFunctionFactory implements FunctionFactory {
                 prefix = String.valueOf(childNodeValueList.get(0));
             }
 
-            // 长度
-            int length = 36;
-            if (childNodeValueList.size() >= 2
-                    && null != childNodeValueList.get(1)
-                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(1)))) {
-
-                try {
-                    length = TypeUtils.toBigDecimal(childNodeValueList.get(1)).intValue();
-                } catch (Exception e) {
-                    log.error("The parameter of `uuid` function cannot be converted to a numeric value.");
-                }
-            }
-
             // 是否替换
             boolean replace = false;
             if (childNodeValueList.size() >= 3 && null != childNodeValueList.get(2)) {
@@ -109,6 +97,24 @@ public class UUIDFunctionFactory implements FunctionFactory {
                 }
             }
 
+            // 长度
+            int length = replace ? 32 : 36;
+            if (childNodeValueList.size() >= 2
+                    && null != childNodeValueList.get(1)
+                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(1)))) {
+
+                try {
+                    length = TypeUtils.toBigDecimal(childNodeValueList.get(1)).intValue();
+                } catch (Exception e) {
+                    log.error("The parameter of `uuid` function cannot be converted to a numeric value.");
+                }
+            }
+
+            return this.generateUUID(prefix, replace, length);
+        }
+
+        private String generateUUID(final String prefix, final boolean replace, final int length) {
+
             final StringBuilder builder = new StringBuilder(prefix);
 
             String uuid = UUID.randomUUID().toString();
@@ -116,11 +122,23 @@ public class UUIDFunctionFactory implements FunctionFactory {
                 uuid = uuid.replace("-", "");
             }
 
-            if (length != 36 && uuid.length() > length) {
-                uuid = uuid.substring(0, length);
+            if (uuid.length() > length) {
+
+                builder.append(uuid, 0, length);
+
+            } else {
+
+                final int diff = length - uuid.length();
+                final int m = diff % uuid.length();
+
+                for (int i = 0; i < length / uuid.length(); i++) {
+                    builder.append(uuid);
+                }
+
+                builder.append(uuid, 0, m);
             }
 
-            return builder.append(uuid).toString();
+            return builder.toString();
         }
 
         @Override
