@@ -330,14 +330,38 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
    5. 示例：
 
       1. `#isBlank(1)` => false
-
-      2. `#isBlank('1 ')` => false
-
+2. `#isBlank('1 ')` => false
       3. `#isBlank('  ')` => true
 
-         
+4. IsNotNull
 
-4. Join(delimiter，String...)
+   判空函数，判断参数是否不为null，如果不为null返回true，否则返回false
+
+   `#isNotNull(arg)`
+
+   1. 最新参数数量：0（为0时默认为null）
+   2. 最大参数限制：1
+   3. 参数类型：不限
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#isNotNull()` => false
+      2. `#isNotNull('')` => ture
+
+5. IsNull
+
+   判空函数，判断参数是否为null，如果为null返回true，否则返回false
+
+   `#isNull(arg)`
+
+   1. 最新参数数量：0（为0时默认为null）
+   2. 最大参数限制：1
+   3. 参数类型：不限
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#isNull()` => true
+      2. `#isNull('')` => false
+
+6. Join(delimiter，String...)
 
    使用分隔符连接多个参数的字符串形式，可类比 Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends java.lang.CharSequence>)`
 
@@ -365,7 +389,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
          
 
-5. Now
+7. Now
 
    生成时间戳，有两个重载函数
 
@@ -386,7 +410,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
          2. `#now('yyyy-MM-dd HH:mm:ss')` => 2022-12-04 20:05:25
          3. `#now('yyyy')` => 2022
 
-6. Page
+8. Page
 
    分页函数。用于动态计算页内数据条数，并自动生成对应条数的数据内容，或从指定数据集中按顺序筛选对应条数数据返回。
 
@@ -442,13 +466,52 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
    
 
-7. Random
+9. Random
 
-8. Search
+   随机数函数，支持生成int/long/double/boolean类型的随机数。可通过参数控制生成的随机数的范围。
 
-9. UUID
+   提供4个重载函数：
 
-10. 陆续更新中。。。
+   1. `#random()`
+      1. 生成一个int类型的随机数
+   2. `#random(type)`
+      1. type：字符串类型，用于指定要生成的随机数的类型。可选内容：int，long，double，boolean。不区分大小写。
+   3. `#random(type,arg1)`
+      1. type：字符类型，用于指定要生成的随机数的类型。可选内容：int，long，double。不区分大小写。
+      2. arg1：数值类型，生成的随机数的最大值，不包含arg1本身
+   4. `#random(type,arg1,arg2)`
+      1. type：字符串类型，用于指定要生成的随机数的类型。可选内容：int，long，double。不区分大小写。
+      2. arg1：数值类型，生成的随机数的最小值，包含arg1本身
+      3. arg2：数值类型，生成的随机数的最大值，不包含arg2本身
+
+10. Search
+
+    搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是Dynamic Mock项目所有函数中最常用的函数。
+
+    
+
+11. UUID
+
+    生成uuid。可通过参数简单控制生成结果的长度和格式。
+
+    提供2个重载函数：
+
+    1. `#uuid()`
+       1. 生成一个uuid
+    2. `#uuid(prefix,length,replace)`
+       1. prefix：字符类型，生成的uuid的前缀，将在生产的uuid之前拼接prefix。允许不填该参数。
+       2. length：数值类型，生成的uuid的长度，如果长度小于uuid的长度，将进行截取，如果超过uuid的长度，将用当前生成的uuid进行拼接。注意，这里指定的长度限制不包含prefix。允许不填该参数。
+       3. replace：布尔类型，指定是否将uuid中的`-`替换为空白符。允许不填该参数。
+       4. 示例：
+          1. `#uuid(,,true)` => 6c62c8fe7e8f438689c168dbcd794b8a
+          2. `#uuid(,10,true)` => c40c550acf
+          3. `#uuid(,40,true)` => 98f71914860745c4ae07bc55130e0a8898f71914
+          4. `#uuid('UserCode',,false)` => UserCodef6d73ae7-5c16-4152-9c04-3e9d4ef77448
+          5. `#uuid('UserCode',10,true)` => UserCode676d529aaa
+
+    
+
+12. 陆续更新中。。。
 
 
 
