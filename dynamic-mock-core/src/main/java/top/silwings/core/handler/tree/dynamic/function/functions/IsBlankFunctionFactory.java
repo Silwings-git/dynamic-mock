@@ -42,7 +42,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public IsBlankFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return IsBlankFunction.from(dynamicValueList);
     }
 
@@ -62,11 +62,19 @@ public class IsBlankFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
-            return CollectionUtils.isEmpty(childNodeValueList)
-                    || null == childNodeValueList.get(0)
-                    || (childNodeValueList.get(0) instanceof String
-                    && StringUtils.isBlank((CharSequence) childNodeValueList.get(0)));
+        public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+
+            if (CollectionUtils.isEmpty(childNodeValueList)) {
+                return true;
+            }
+
+            final Object ele = childNodeValueList.get(0);
+
+            if (null == ele) {
+                return true;
+            }
+
+            return StringUtils.isBlank(String.valueOf(ele));
         }
 
         @Override
