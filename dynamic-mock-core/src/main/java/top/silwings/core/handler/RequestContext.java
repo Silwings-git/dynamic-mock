@@ -77,9 +77,19 @@ public class RequestContext {
         private final List<Cookie> cookies;
 
         /**
+         * cookie key value映射集
+         */
+        private final Map<String, String> cookieMap;
+
+        /**
          * 请求头
          */
         private final List<Map<String, String>> headers;
+
+        /**
+         * 请求头key value映射
+         */
+        private final Map<String, String> headerMap;
 
         /**
          * 请求方法
@@ -175,7 +185,9 @@ public class RequestContext {
                     .authType(request.getAuthType())
                     .contextPath(request.getContextPath())
                     .cookies(null == cookieArray ? Collections.emptyList() : Arrays.stream(cookieArray).collect(Collectors.toList()))
+                    .cookieMap(getCookieMap(cookieArray))
                     .headers(getHeaders(request))
+                    .headerMap(getHeaderMap(request))
                     .method(request.getMethod())
                     .pathInfo(request.getPathInfo())
                     .pathTranslated(request.getPathTranslated())
@@ -186,6 +198,10 @@ public class RequestContext {
                     .servletPath(request.getServletPath())
                     .pathParameterMap(pathParameterMap)
                     .build();
+        }
+
+        private static Map<String, String> getCookieMap(final Cookie[] cookieArray) {
+            return null == cookieArray ? Collections.emptyMap() : Arrays.stream(cookieArray).collect(Collectors.toMap(Cookie::getName, Cookie::getValue, (v1, v2) -> v2));
         }
 
         private static void buildBodyAndParameter(final HttpServletRequest request, final RequestInfoBuilder builder) {
@@ -276,12 +292,25 @@ public class RequestContext {
                 final String nextElement = headerNames.nextElement();
                 final Enumeration<String> headers = request.getHeaders(nextElement);
                 while (headers.hasMoreElements()) {
-                    final Map<String, String> map = new HashMap<>(2);
+                    final Map<String, String> map = new HashMap<>(1);
                     map.put(nextElement, headers.nextElement());
                     list.add(map);
                 }
             }
             return list;
+        }
+
+        private static Map<String, String> getHeaderMap(final HttpServletRequest request) {
+            final Map<String, String> headerMap = new HashMap<>();
+            final Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                final String nextElement = headerNames.nextElement();
+                final Enumeration<String> headers = request.getHeaders(nextElement);
+                while (headers.hasMoreElements()) {
+                    headerMap.put(nextElement, headers.nextElement());
+                }
+            }
+            return headerMap;
         }
 
     }
