@@ -54,6 +54,7 @@ public class PageFunctionFactory implements FunctionFactory {
 
     @Override
     public PageFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, PAGE_FUNCTION_INFO.getMinArgsNumber(), PAGE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Page function."));
         return PageFunction.from(dynamicValueList);
     }
 
@@ -71,8 +72,7 @@ public class PageFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static PageFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, PAGE_FUNCTION_INFO.getMinArgsNumber(), PAGE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Page function."));
+        private static PageFunction from(final List<DynamicValue> dynamicValueList) {
             return new PageFunction(dynamicValueList);
         }
 

@@ -41,6 +41,7 @@ public class ConcatFunctionFactory implements FunctionFactory {
 
     @Override
     public ConcatFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, CONCAT_FUNCTION_INFO.getMinArgsNumber(), CONCAT_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Concat function."));
         return ConcatFunctionFactory.ConcatFunction.from(dynamicValueList);
     }
 
@@ -54,8 +55,7 @@ public class ConcatFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static ConcatFunctionFactory.ConcatFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, CONCAT_FUNCTION_INFO.getMinArgsNumber(), CONCAT_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Concat function."));
+        private static ConcatFunctionFactory.ConcatFunction from(final List<DynamicValue> dynamicValueList) {
             return new ConcatFunctionFactory.ConcatFunction(dynamicValueList);
         }
 

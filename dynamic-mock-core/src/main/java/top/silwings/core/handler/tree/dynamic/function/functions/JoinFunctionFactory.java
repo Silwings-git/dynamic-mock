@@ -43,6 +43,7 @@ public class JoinFunctionFactory implements FunctionFactory {
 
     @Override
     public JoinFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, JOIN_FUNCTION_INFO.getMinArgsNumber(), JOIN_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Join function."));
         return JoinFunction.from(dynamicValueList);
     }
 
@@ -56,8 +57,7 @@ public class JoinFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static JoinFunctionFactory.JoinFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, JOIN_FUNCTION_INFO.getMinArgsNumber(), JOIN_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Join function."));
+        private static JoinFunctionFactory.JoinFunction from(final List<DynamicValue> dynamicValueList) {
             return new JoinFunctionFactory.JoinFunction(dynamicValueList);
         }
 

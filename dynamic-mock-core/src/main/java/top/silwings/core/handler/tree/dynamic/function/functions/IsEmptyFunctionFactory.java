@@ -43,11 +43,12 @@ public class IsEmptyFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "isEmpty".equalsIgnoreCase(methodName);
+        return "isempty".equalsIgnoreCase(methodName);
     }
 
     @Override
     public IsEmptyFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, IS_EMPTY_FUNCTION_INFO.getMinArgsNumber(), IS_EMPTY_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsEmpty function."));
         return IsEmptyFunction.from(dynamicValueList);
     }
 
@@ -62,8 +63,7 @@ public class IsEmptyFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static IsEmptyFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, IS_EMPTY_FUNCTION_INFO.getMinArgsNumber(), IS_EMPTY_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsEmpty function."));
+        private static IsEmptyFunction from(final List<DynamicValue> dynamicValueList) {
             return new IsEmptyFunction(dynamicValueList);
         }
 

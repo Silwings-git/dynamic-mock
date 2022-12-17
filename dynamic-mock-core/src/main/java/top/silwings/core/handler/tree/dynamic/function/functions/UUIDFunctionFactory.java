@@ -46,6 +46,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
 
     @Override
     public UUIDFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, UUID_FUNCTION_INFO.getMinArgsNumber(), UUID_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UUID function."));
         return UUIDFunction.from(dynamicValueList);
     }
 
@@ -65,8 +66,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static UUIDFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, UUID_FUNCTION_INFO.getMinArgsNumber(), UUID_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UUID function."));
+        private static UUIDFunction from(final List<DynamicValue> dynamicValueList) {
             return new UUIDFunction(dynamicValueList);
         }
 

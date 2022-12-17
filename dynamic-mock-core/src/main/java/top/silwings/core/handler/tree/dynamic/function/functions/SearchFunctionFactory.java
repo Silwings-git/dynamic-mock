@@ -45,6 +45,7 @@ public class SearchFunctionFactory implements FunctionFactory {
 
     @Override
     public SearchFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, SEARCH_FUNCTION_INFO.getMinArgsNumber(), SEARCH_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Search function."));
         return SearchFunction.from(dynamicValueList);
     }
 
@@ -79,8 +80,7 @@ public class SearchFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static SearchFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, SEARCH_FUNCTION_INFO.getMinArgsNumber(), SEARCH_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Search function."));
+        private static SearchFunction from(final List<DynamicValue> dynamicValueList) {
             return new SearchFunction(dynamicValueList);
         }
 

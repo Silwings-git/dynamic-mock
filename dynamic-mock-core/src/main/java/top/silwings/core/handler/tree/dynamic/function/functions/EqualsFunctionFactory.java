@@ -11,6 +11,7 @@ import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @ClassName EqualsFunctionFactory
@@ -56,7 +57,7 @@ public class EqualsFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static EqualsFunction from(final List<DynamicValue> dynamicValueList) {
+        private static EqualsFunction from(final List<DynamicValue> dynamicValueList) {
             CheckUtils.sizeBetween(dynamicValueList, EQUALS_FUNCTION_INFO.getMinArgsNumber(), EQUALS_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Equals function."));
             return new EqualsFunction(dynamicValueList);
         }
@@ -64,22 +65,14 @@ public class EqualsFunctionFactory implements FunctionFactory {
         @Override
         public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
-            if (childNodeValueList.isEmpty() || childNodeValueList.size() < this.getNodeCount() || childNodeValueList.size() < 2) {
-                throw new DynamicMockException("Parameter incorrectly of `equals` function. expect: " + (this.getNodeCount() > 2 ? this.getNodeCount() : 2) + ", actual: " + childNodeValueList.size());
+            if (childNodeValueList.size() != this.getNodeCount()) {
+                throw new DynamicMockException("Parameter incorrectly of `equals` function. expect: " + EQUALS_FUNCTION_INFO.getMinArgsNumber() + ", actual: " + childNodeValueList.size());
             }
 
             final String first = String.valueOf(childNodeValueList.get(0));
-            if (null == first) {
-                return false;
-            }
+            final String second = String.valueOf(childNodeValueList.get(1));
 
-            for (final Object obj : childNodeValueList) {
-                if (null == obj || !String.valueOf(obj).equals(first)) {
-                    return false;
-                }
-            }
-
-            return true;
+            return Objects.equals(first, second);
         }
 
         @Override

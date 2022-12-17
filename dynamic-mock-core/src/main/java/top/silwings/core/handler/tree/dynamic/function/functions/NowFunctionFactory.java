@@ -45,6 +45,7 @@ public class NowFunctionFactory implements FunctionFactory {
 
     @Override
     public NowFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, NOW_FUNCTION_INFO.getMinArgsNumber(), NOW_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Now function."));
         return NowFunction.from(dynamicValueList);
     }
 
@@ -59,8 +60,7 @@ public class NowFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static NowFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, NOW_FUNCTION_INFO.getMinArgsNumber(), NOW_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Now function."));
+        private static NowFunction from(final List<DynamicValue> dynamicValueList) {
             return new NowFunction(dynamicValueList);
         }
 

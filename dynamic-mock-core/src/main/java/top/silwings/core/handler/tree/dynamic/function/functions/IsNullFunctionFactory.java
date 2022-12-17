@@ -37,11 +37,12 @@ public class IsNullFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "IsNull".equalsIgnoreCase(methodName);
+        return "isnull".equalsIgnoreCase(methodName);
     }
 
     @Override
     public IsNullFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, IS_NULL_FUNCTION_INFO.getMinArgsNumber(), IS_NULL_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsNull function."));
         return IsNullFunction.from(dynamicValueList);
     }
 
@@ -55,8 +56,7 @@ public class IsNullFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static IsNullFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, IS_NULL_FUNCTION_INFO.getMinArgsNumber(), IS_NULL_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsNull function."));
+        private static IsNullFunction from(final List<DynamicValue> dynamicValueList) {
             return new IsNullFunction(dynamicValueList);
         }
 

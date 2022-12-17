@@ -46,6 +46,7 @@ public class RandomFunctionFactory implements FunctionFactory {
 
     @Override
     public RandomFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, RANDOM_FUNCTION_INFO.getMinArgsNumber(), RANDOM_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Random function."));
         return RandomFunction.from(dynamicValueList);
     }
 
@@ -100,8 +101,7 @@ public class RandomFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static RandomFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, RANDOM_FUNCTION_INFO.getMinArgsNumber(), RANDOM_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Random function."));
+        private static RandomFunction from(final List<DynamicValue> dynamicValueList) {
             return new RandomFunction(dynamicValueList);
         }
 

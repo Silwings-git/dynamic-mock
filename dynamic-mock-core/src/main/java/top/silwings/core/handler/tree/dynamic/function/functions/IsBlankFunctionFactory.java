@@ -38,11 +38,12 @@ public class IsBlankFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "isBlank".equalsIgnoreCase(methodName);
+        return "isblank".equalsIgnoreCase(methodName);
     }
 
     @Override
     public IsBlankFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        CheckUtils.sizeBetween(dynamicValueList, IS_BLANK_FUNCTION_INFO.getMinArgsNumber(), IS_BLANK_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsBlank function."));
         return IsBlankFunction.from(dynamicValueList);
     }
 
@@ -56,8 +57,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
             super(dynamicValueList);
         }
 
-        public static IsBlankFunction from(final List<DynamicValue> dynamicValueList) {
-            CheckUtils.sizeBetween(dynamicValueList, IS_BLANK_FUNCTION_INFO.getMinArgsNumber(), IS_BLANK_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsBlank function."));
+        private static IsBlankFunction from(final List<DynamicValue> dynamicValueList) {
             return new IsBlankFunction(dynamicValueList);
         }
 
