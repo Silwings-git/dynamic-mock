@@ -152,18 +152,7 @@ public class TypeUtils {
             return Boolean.parseBoolean(str);
         }
 
-        if (value instanceof Number) {
-            int intValue = ((Number) value).intValue();
-            if (intValue == 1) {
-                return true;
-            }
-            if (intValue == 0) {
-                return false;
-            }
-        }
-
         throw TypeCastException.from("Can not cast to boolean from " + value.getClass());
     }
-
 
 }
