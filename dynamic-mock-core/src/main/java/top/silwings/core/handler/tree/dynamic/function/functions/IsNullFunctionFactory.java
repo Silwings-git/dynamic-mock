@@ -41,7 +41,7 @@ public class IsNullFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public IsNullFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return IsNullFunction.from(dynamicValueList);
     }
 
@@ -61,7 +61,7 @@ public class IsNullFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+        public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
             return CollectionUtils.isEmpty(childNodeValueList) || null == childNodeValueList.get(0);
         }
 

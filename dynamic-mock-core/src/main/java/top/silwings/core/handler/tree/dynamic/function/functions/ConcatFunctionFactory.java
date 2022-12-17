@@ -40,7 +40,7 @@ public class ConcatFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public ConcatFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return ConcatFunctionFactory.ConcatFunction.from(dynamicValueList);
     }
 
@@ -60,7 +60,7 @@ public class ConcatFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+        public String doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             final StringBuilder builder = new StringBuilder();
 

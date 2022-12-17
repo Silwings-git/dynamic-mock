@@ -45,7 +45,7 @@ public class UUIDFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public UUIDFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return UUIDFunction.from(dynamicValueList);
     }
 

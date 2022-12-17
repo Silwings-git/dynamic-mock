@@ -41,7 +41,7 @@ public class EqualsFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public EqualsFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return EqualsFunction.from(dynamicValueList);
     }
 

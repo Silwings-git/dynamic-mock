@@ -46,7 +46,7 @@ public class IsNotEmptyFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public IsNotEmptyFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return IsNotEmptyFunction.from(dynamicValueList, this.isEmptyFunctionFactory);
     }
 
@@ -71,7 +71,7 @@ public class IsNotEmptyFunctionFactory implements FunctionFactory {
 
         @Override
         public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
-            return this.isEmptyFunction.doInterpret(mockHandlerContext, childNodeValueList);
+            return !this.isEmptyFunction.doInterpret(mockHandlerContext, childNodeValueList);
         }
 
         @Override

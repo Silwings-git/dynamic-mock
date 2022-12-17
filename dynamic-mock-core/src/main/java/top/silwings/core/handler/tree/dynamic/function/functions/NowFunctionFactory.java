@@ -44,7 +44,7 @@ public class NowFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public NowFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return NowFunction.from(dynamicValueList);
     }
 

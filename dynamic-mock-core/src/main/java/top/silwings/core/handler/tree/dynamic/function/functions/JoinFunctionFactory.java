@@ -42,8 +42,8 @@ public class JoinFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
-        return JoinFunctionFactory.JoinFunction.from(dynamicValueList);
+    public JoinFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        return JoinFunction.from(dynamicValueList);
     }
 
     /**
@@ -62,7 +62,7 @@ public class JoinFunctionFactory implements FunctionFactory {
         }
 
         @Override
-        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+        public String doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
             final Object first = childNodeValueList.get(0);
 

@@ -53,7 +53,7 @@ public class PageFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public PageFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return PageFunction.from(dynamicValueList);
     }
 

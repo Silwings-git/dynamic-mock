@@ -1,6 +1,5 @@
 package top.silwings.core.handler.tree.dynamic.function.functions;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.MockHandlerContext;
@@ -30,6 +29,12 @@ public class IsNotNullFunctionFactory implements FunctionFactory {
 
     private static final String SYMBOL = "#isNotNull(...)";
 
+    private final IsNullFunctionFactory isNullFunctionFactory;
+
+    public IsNotNullFunctionFactory(final IsNullFunctionFactory isNullFunctionFactory) {
+        this.isNullFunctionFactory = isNullFunctionFactory;
+    }
+
     @Override
     public FunctionInfo getFunctionInfo() {
         return IS_NOT_NULL_FUNCTION_INFO;
@@ -41,8 +46,8 @@ public class IsNotNullFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
-        return IsNotNullFunction.from(dynamicValueList);
+    public IsNotNullFunction buildFunction(final List<DynamicValue> dynamicValueList) {
+        return IsNotNullFunction.from(dynamicValueList, this.isNullFunctionFactory.buildFunction(dynamicValueList));
     }
 
     /**
@@ -51,18 +56,21 @@ public class IsNotNullFunctionFactory implements FunctionFactory {
      */
     public static class IsNotNullFunction extends AbstractDynamicValue {
 
-        private IsNotNullFunction(final List<DynamicValue> dynamicValueList) {
+        private final IsNullFunctionFactory.IsNullFunction isNullFunction;
+
+        private IsNotNullFunction(final List<DynamicValue> dynamicValueList, final IsNullFunctionFactory.IsNullFunction isNullFunction) {
             super(dynamicValueList);
+            this.isNullFunction = isNullFunction;
         }
 
-        public static IsNotNullFunction from(final List<DynamicValue> dynamicValueList) {
+        public static IsNotNullFunction from(final List<DynamicValue> dynamicValueList, final IsNullFunctionFactory.IsNullFunction isNullFunction) {
             CheckUtils.sizeBetween(dynamicValueList, IS_NOT_NULL_FUNCTION_INFO.getMinArgsNumber(), IS_NOT_NULL_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of IsNotNull function."));
-            return new IsNotNullFunction(dynamicValueList);
+            return new IsNotNullFunction(dynamicValueList, isNullFunction);
         }
 
         @Override
-        public Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
-            return CollectionUtils.isNotEmpty(childNodeValueList) && null != childNodeValueList.get(0);
+        public Boolean doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+            return !this.isNullFunction.doInterpret(mockHandlerContext, childNodeValueList);
         }
 
         @Override

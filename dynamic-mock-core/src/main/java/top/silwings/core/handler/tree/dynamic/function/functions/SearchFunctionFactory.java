@@ -44,7 +44,7 @@ public class SearchFunctionFactory implements FunctionFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public SearchFunction buildFunction(final List<DynamicValue> dynamicValueList) {
         return SearchFunction.from(dynamicValueList);
     }
 
