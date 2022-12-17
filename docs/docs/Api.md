@@ -339,9 +339,40 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 5. IsNotBlank
 
+   IsBlank的取反。
+
+   1. 最小参数数量：0（为0时表示默认为空串。）
+   2. 最大参数数量：1
+   3. 参数类型限制：不限
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#IsNotBlank(1)` => true
+      2. `#IsNotBlank('1 ')` => true
+      3. `#IsNotBlank('  ')` => false
+
 6. IsEmpty
 
+   判断List或者Map是否没有元素，如果没有元素返回true。（参考java`org.apache.commons.collections4.CollectionUtils.isEmpty`和`org.apache.commons.collections4.MapUtils.isEmpty`）。如果参数实际类型不是List/Map，或可以转换为这两种类型的字符串，将产生异常。
+
+   1. 最小参数数量：0（为0时表示默认为空集）
+   2. 最大参数数量：1
+   3. 参数类型限制：List/Map/可转换为List或Map的json字符串
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#IsEmpty()` => true
+      2. `#IsEmpty('[1,2,3]')` => false
+
 7. IsNotEmpty
+
+   IsEmpty的取反。
+
+   1. 最小参数数量：0（为0时表示默认为空集）
+   2. 最大参数数量：1
+   3. 参数类型限制：List/Map/可转换为List或Map的json字符串
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#IsNotEmpty()` => false
+      2. `#IsNotEmpty('[1,2,3]')` => true
 
 8. IsNull
 
@@ -359,7 +390,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 9. IsNotNull
 
-   判空函数，判断参数是否不为null，如果不为null返回true，否则返回false
+   IsNull的取反
 
    `#isNotNull(arg)`
 
