@@ -273,7 +273,77 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 1. Search
 
-   搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是Dynamic Mock项目所有函数中最常用的函数。
+   搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
+
+   该函数提供两个重载形式。
+
+   1. `#search(jsonPath)`
+
+   2. `#search(jsonPath,searchScope)`
+
+      1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
+
+      2. searchScope，字符类型。用于指定查询的范围。支持`CUSTOMIZESPACE`和`REQUESTINFO`，不区分大小写，不传或值不合法时默认为`CUSTOMIZESPACE`。
+
+         1. `CUSTOMIZESPACE`：自定义参数空间。自定义信息中的内容在创建Mock Handler是指定。
+
+         2. `REQUESTINFO`：请求信息。当有http请求到达Dynamic Mock服务，会将请求信息解析为requestInfo实例，该实例中包含这次http请求的大部分信息。requestInfo结构如下(requestInfo数据来源为HttpServletRequest)：
+
+            ```json
+            {
+                "authType": "", // 授权类型
+                "contextPath": "", // 上下文路径
+                "cookies": [ // cookie集合，元素为Cookie实例。
+                    {
+                        "name":"",
+                        "value":"",
+                        "comment":"",
+                        "path":"",
+                        "domain":"",
+                        "maxAge":1,
+                        "secure":true,
+                        "version":1
+                    }
+                ],
+                "cookieMap":{ // cookie key-value映射
+                    "key":"value"
+                }
+                "headers": [ // 请求头集合，请求头允许重复的key存在，如果确定不存在重复key，可以使用headerMap
+                    {
+                		"key":"value"
+            		}
+                ],
+            	"headerMap":{ // 请求头key-value映射
+                    "key":"value"
+                }
+                "method": "", // 请求方式
+                "pathInfo": "", // 路径信息
+                "pathTranslated": "",
+                "queryString": "", // 请求字符
+                "remoteUser": "",
+                "requestURI": "", // 请求URI
+                "requestURL": "", // 请求URL
+                "servletPath": "", // servlet 路径
+                "body": {}, // 请求体，根据实际请求信息可能为字符类型
+                "jsonBody": {}, // Map形式类型的请求体信息
+                "textBody": "",	// 文本（字符）类型的请求体信息
+                "formBody": { // x-www-form-urlencoded的请求信息。注意，value的类型为集合
+                    "key": [
+                        "value"
+                    ]
+                },
+                "parameterMap": { // form-data的请求信息。注意，value的类型为集合
+                    "key": [
+                        "value"
+                    ]
+                },
+                "pathParameterMap": { // 路径参数的信息
+                    "key":"value"
+                }
+            }
+            ```
+
+         
 
 2. Concat
 
