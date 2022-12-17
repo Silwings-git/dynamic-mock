@@ -231,8 +231,6 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 
 
-
-
 ## 动态表达式
 
 动态表达式是一段以`${`开头,`}`结尾进行声明的文本内容，`${}`内的内容为表达式的内容。它是Mock Handler实现动态逻辑的核心，表达式在运行时基于上下文信息进行计算，不同的上下文能得到不同的结果。
@@ -294,11 +292,11 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 *以下函数说明中，参数类型限制，表示运行时的实际类型限制，并非在声明时只能使用json表示的类型。例如参数类型为Boolean，声明时可使用isBlank函数，因为isBlank函数的实际返回值类型为Boolean，符合要求。另外，对于参数类型限制为数值类型或Boolean类型的，如果运行时得到的参数不是所需类型，也会优先尝试进行类型转换。
 
-1. Search
+##### 1.Search
 
-   搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
+​	搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
 
-   该函数提供两个重载形式。
+​	该函数提供两个重载形式。
 
    1. `#search(jsonPath)`
 
@@ -366,11 +364,11 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
             }
             ```
 
-         
 
-2. Concat
 
-   用于将参数拼接的函数
+##### 2.Concat
+
+​	用于将参数拼接的函数
 
    1. 最小参数数量：0（为0时默认为空串。）
 
@@ -390,9 +388,9 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
          
 
-3. Equals
+##### 3.Equals
 
-   比较两个参数内容转换为String后是否完全一致，可简写为`eq`。
+​	比较两个参数内容转换为String后是否完全一致，可简写为`eq`。
 
    1. 最小参数数量：2
 
@@ -412,7 +410,22 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
          
 
-4. IsBlank
+##### 4.NoEquals
+
+​	Equals函数的取反。可简写为`neq`
+
+   1. 最小参数数量：2
+   2. 最大参数数量：2
+   3. 参数类型限制：不限
+   4. 返回值类型：Boolean
+   5. 示例：
+      1. `#noEquals(1,1)` => false
+      2. `#noEquals(1,2)` => true
+      3. `#neq(1,1-1)` => true
+
+   
+
+##### 5.IsBlank
 
    判断参数转换为String后是否为空或去除空白符号后长度为0（参考Java `org.apache.commons.lang3.StringUtils#isBlank`）。如果参数实际类型不是字符串，会先转换为字符串再判断
 
@@ -432,7 +445,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
       
       
 
-5. IsNotBlank
+##### 6.IsNotBlank
 
    IsBlank的取反。
 
@@ -452,7 +465,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
       
 
-6. IsEmpty
+##### 7.IsEmpty
 
    判断List或者Map是否没有元素，如果没有元素返回true。（参考java`org.apache.commons.collections4.CollectionUtils.isEmpty`和`org.apache.commons.collections4.MapUtils.isEmpty`）。如果参数实际类型不是List/Map，或可以转换为这两种类型的字符串，将产生异常。
 
@@ -471,7 +484,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
       
 
-7. IsNotEmpty
+##### 8.IsNotEmpty
 
    IsEmpty的取反。
 
@@ -490,7 +503,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
       
 
-8. IsNull
+##### 9.IsNull
 
    判空函数，判断参数是否为null，如果为null返回true，否则返回false
 
@@ -506,84 +519,92 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
       
       
 
-9. IsNotNull
+##### 10.IsNotNull
 
    IsNull的取反
 
    `#isNotNull(arg)`
 
    1. 最新参数数量：0（为0时默认为null）
+
    2. 最大参数限制：1
+
    3. 参数类型：不限
+
    4. 返回值类型：Boolean
+
    5. 示例：
       1. `#isNotNull()` => false
       2. `#isNotNull('')` => ture
       
       
+##### 11.Join
 
-10. Join
+   使用分隔符连接多个参数的字符串形式，可类比 Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends java.lang.CharSequence>)`
 
-    使用分隔符连接多个参数的字符串形式，可类比 Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends java.lang.CharSequence>)`
+   `#join(delimiter，String...)`
 
-    `#join(delimiter，String...)`
+   1. 最小参数数量：2
+   2. 最大参数数量：不限
+   3. 参数说明：
+      1. delimiter：分隔符
+      2. String...：不限数量个可转换为String的内容。
+      3. Join方法的参数在运行时有点特殊，其第二个参数在声明时必须为字符类型，但如果将第二个参数声明为函数，则在运行时有可能得到的集合类型，当第二个参数是集合类型时，将遍历集合进行join。但手动声明时不支持使用`[]`声明一个集合，这样的数据会被直接视为字符串，如有需要，应当作为多个参数传递。
+   4. 返回值类型：String
+   5. 示例：
+      1. `#join('-',1,2,3)` => 1-2-3
+      2. `#join('#',1,,2,,3)` => 1##2##3
+      3. `#join('',1,2,3)` => 123
+      4. `#join('#',)` => 
+      
+      
 
-    1. 最小参数数量：2
-    2. 最大参数数量：不限
-    3. 参数说明：
-       1. delimiter：分隔符
-       2. String...：不限数量个可转换为String的内容。
-       3. Join方法的参数在运行时有点特殊，其第二个参数在声明时必须为字符类型，但如果将第二个参数声明为函数，则在运行时有可能得到的集合类型，当第二个参数是集合类型时，将遍历集合进行join。但手动声明时不支持使用`[]`声明一个集合，这样的数据会被直接视为字符串，如有需要，应当作为多个参数传递。
-    4. 返回值类型：String
-    5. 示例：
-       1. `#join('-',1,2,3)` => 1-2-3
-       2. `#join('#',1,,2,,3)` => 1##2##3
-       3. `#join('',1,2,3)` => 123
-       4. `#join('#',)` => 
+##### 12.Now
 
-11. Now
+   生成时间戳，有两个重载函数
 
-    生成时间戳，有两个重载函数
+   1. Now()
+      1. 最小参数数量：0
+      2. 最大参数数量：0
+      3. 返回值类型：Long
+      4. 示例：
+         1. `#now()` => 1670154841950
+   2. Now(format)
+      1. 最小参数数量：1
+      2. 最大参数数量：1
+      3. 参数类型限制：
+         
+         1. 必须是有效的时间格式
+      4. 返回值类型：String
+      5. 示例：
+         1. `#now('yyyy-MM-dd')` => 2022-12-04
+         2. `#now('yyyy-MM-dd HH:mm:ss')` => 2022-12-04 20:05:25
+         3. `#now('yyyy')` => 2022
+         
+         
 
-    1. Now()
-       1. 最小参数数量：0
-       2. 最大参数数量：0
-       3. 返回值类型：Long
-       4. 示例：
-          1. `#now()` => 1670154841950
-    2. Now(format)
-       1. 最小参数数量：1
-       2. 最大参数数量：1
-       3. 参数类型限制：
-          1. 必须是有效的时间格式
-       4. 返回值类型：String
-       5. 示例：
-          1. `#now('yyyy-MM-dd')` => 2022-12-04
-          2. `#now('yyyy-MM-dd HH:mm:ss')` => 2022-12-04 20:05:25
-          3. `#now('yyyy')` => 2022
+##### 13.Page
 
-12. Page
+   分页函数。用于动态计算页内数据条数，并自动生成对应条数的数据内容，或从指定数据集中按顺序筛选对应条数数据返回。
 
-    分页函数。用于动态计算页内数据条数，并自动生成对应条数的数据内容，或从指定数据集中按顺序筛选对应条数数据返回。
+   该函数具有四个重载形式：
 
-    该函数具有四个重载形式：
+   1. 数据模板动态：#page(当前页,每页数量,总数据量,数据模板)
+      1. `#page(1,2,101,'{"name":88}')`
+      2. `#page(1,2,101,'Misaka Mikoto')`
+      3. `#page(1,2,101,'${1+1}')`
+   2. 数据模板指定是否动态：#page(当前页,每页数量,总数据量,数据模板,数据是否动态)
+      1. `#page(1,2,101,'{"name":88}',true)`
+      2. `#page(1,2,101,'Misaka Mikoto',false)`
+      3. `#page(1,2,101,'${1+1}',true)`
+   3. 数据集动态：#page(当前页,每页数量,数据集)
+      1. `#page(1,10,#search('list'))`
+      2. `#page(1,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":16}]')`
+      3. `#page(2,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":"${#search(\'param\')}"}]')`
+   4. 数据集指定是否动态：#page(当前页,每页数量,数据集,数据是否动态)
+      1. `#page(1,2,101,'${1+1}',false)`
 
-    1. 数据模板动态：#page(当前页,每页数量,总数据量,数据模板)
-       1. `#page(1,2,101,'{"name":88}')`
-       2. `#page(1,2,101,'Misaka Mikoto')`
-       3. `#page(1,2,101,'${1+1}')`
-    2. 数据模板指定是否动态：#page(当前页,每页数量,总数据量,数据模板,数据是否动态)
-       1. `#page(1,2,101,'{"name":88}',true)`
-       2. `#page(1,2,101,'Misaka Mikoto',false)`
-       3. `#page(1,2,101,'${1+1}',true)`
-    3. 数据集动态：#page(当前页,每页数量,数据集)
-       1. `#page(1,10,#search('list'))`
-       2. `#page(1,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":16}]')`
-       3. `#page(2,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":"${#search(\'param\')}"}]')`
-    4. 数据集指定是否动态：#page(当前页,每页数量,数据集,数据是否动态)
-       1. `#page(1,2,101,'${1+1}',false)`
-
-    其中，1和2是使用数据模板生成Mock数据的方式，3，4使用指定数据集筛选数据。1 是 2 的简写形式，如果使用1的函数，数据是否动态将默认为true。3是4的简写形式，如果使用3的函数，数据是否动态将默认为true。
+   其中，1和2是使用数据模板生成Mock数据的方式，3，4使用指定数据集筛选数据。1 是 2 的简写形式，如果使用1的函数，数据是否动态将默认为true。3是4的简写形式，如果使用3的函数，数据是否动态将默认为true。
 
 
 
@@ -618,28 +639,30 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 
 
-12. UUID
+##### 14.UUID
 
-    生成uuid。可通过参数简单控制生成结果的长度和格式。
+​	生成uuid。可通过参数简单控制生成结果的长度和格式。
 
-    提供2个重载函数：
+​	提供2个重载函数：
 
-      1. `#uuid()`
-         1. 生成一个uuid
-      2. `#uuid(prefix,length,replace)`
-         1. prefix：字符类型，生成的uuid的前缀，将在生产的uuid之前拼接prefix。允许不填该参数。
-         2. length：数值类型，生成的uuid的长度，如果长度小于uuid的长度，将进行截取，如果超过uuid的长度，将用当前生成的uuid进行拼接。注意，这里指定的长度限制不包含prefix。允许不填该参数。
-         3. replace：布尔类型，指定是否将uuid中的`-`替换为空白符。允许不填该参数。
-         4. 示例：
-            1. `#uuid(,,true)` => 6c62c8fe7e8f438689c168dbcd794b8a
-            2. `#uuid(,10,true)` => c40c550acf
-            3. `#uuid(,40,true)` => 98f71914860745c4ae07bc55130e0a8898f71914
-            4. `#uuid('UserCode',,false)` => UserCodef6d73ae7-5c16-4152-9c04-3e9d4ef77448
-            5. `#uuid('UserCode',10,true)` => UserCode676d529aaa
+1. `#uuid()`
+        1. 生成一个uuid
+2. `#uuid(prefix,length,replace)`
+           1. prefix：字符类型，生成的uuid的前缀，将在生产的uuid之前拼接prefix。允许不填该参数。
+           2. length：数值类型，生成的uuid的长度，如果长度小于uuid的长度，将进行截取，如果超过uuid的长度，将用当前生成的uuid进行拼接。注意，这里指定的长度限制不包含prefix。允许不填该参数。
+           3. replace：布尔类型，指定是否将uuid中的`-`替换为空白符。允许不填该参数。
+3. 示例：
+              1. `#uuid(,,true)` => 6c62c8fe7e8f438689c168dbcd794b8a
+              2. `#uuid(,10,true)` => c40c550acf
+              3. `#uuid(,40,true)` => 98f71914860745c4ae07bc55130e0a8898f71914
+              4. `#uuid('UserCode',,false)` => UserCodef6d73ae7-5c16-4152-9c04-3e9d4ef77448
+              5. `#uuid('UserCode',10,true)` => UserCode676d529aaa
 
-13.Random
 
-   	随机数函数，支持生成int/long/double/boolean类型的随机数。可通过参数控制生成的随机数的范围。
+
+##### 15.Random
+
+​	随机数函数，支持生成int/long/double/boolean类型的随机数。可通过参数控制生成的随机数的范围。
 
    提供4个重载函数：
 
