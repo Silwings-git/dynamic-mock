@@ -166,6 +166,9 @@ public class ParserTest {
         expressionList.add("#isNotNull('')");
         expressionList.add("#isNull()");
         expressionList.add("#isNull('')");
+        expressionList.add("#search('$[0]',#search('list2'))");
+        expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
+        expressionList.add("#search('$.page',#search('page_param'))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -182,6 +185,7 @@ public class ParserTest {
         requestContext.addCustomizeParam("10true", "御坂美琴");
         requestContext.addCustomizeParam("list", "[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
         requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
+        requestContext.addCustomizeParam("page_param", "{\"page\": \"10\"}");
 
         final Map<String, Object> baseUser = new HashMap<>();
         baseUser.put("name", "Misaka Mikoto");

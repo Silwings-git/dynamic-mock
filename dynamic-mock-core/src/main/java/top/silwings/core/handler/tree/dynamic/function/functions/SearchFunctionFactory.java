@@ -90,25 +90,23 @@ public class SearchFunctionFactory implements FunctionFactory {
                 throw new DynamicMockException("Parameter incorrectly of `search` function. expect: 1 or 2, actual: " + childNodeValueList.size());
             }
 
-            SearchScope searchScope = null;
+            final Object jsonObject;
 
             if (childNodeValueList.size() > 1) {
-                searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
-                if (null == searchScope) {
-                    return null;
+                final SearchScope searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
+                if (SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
+                    jsonObject = mockHandlerContext.getRequestContext().getCustomizeSpace();
+                } else if (SearchScope.REQUESTINFO.equals(searchScope)) {
+                    jsonObject = mockHandlerContext.getRequestContext().getRequestInfo();
+                } else {
+                    jsonObject = childNodeValueList.get(1);
                 }
+            } else {
+                jsonObject = mockHandlerContext.getRequestContext().getCustomizeSpace();
             }
 
             try {
-                if (this.getNodeCount() < 2 || SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
-
-                    // 自定义空间内查询
-                    return JsonUtils.jsonPathRead(mockHandlerContext.getRequestContext().getCustomizeSpace(), String.valueOf(childNodeValueList.get(0)));
-                } else {
-
-                    // 请求信息内查询
-                    return JsonUtils.jsonPathRead(mockHandlerContext.getRequestContext().getRequestInfo(), String.valueOf(childNodeValueList.get(0)));
-                }
+                return JsonUtils.jsonPathRead(jsonObject, String.valueOf(childNodeValueList.get(0)));
             } catch (Exception e) {
                 log.error("Json path error.", e);
                 return null;
