@@ -284,7 +284,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 2. 函数名不区分大小写
 3. 参数列表使用英文逗号分隔
 4. 单个参数可以使用动态表达式
-5. 参数中的字符类型必须添加英文单引号
+5. 参数中的字符类型必须添加英文单引号（即需要使用单引号声明字符串）
 
 
 
@@ -296,11 +296,16 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ​	搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
 
-​	该函数提供两个重载形式。
+​	该函数提供三个重载形式。
 
-   1. `#search(jsonPath)`
+   1. `#search(jsonPath,jsonObject)`
 
-   2. `#search(jsonPath,searchScope)`
+            1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
+            2. jsonObject，json类型或可转换为json的字符串。
+
+   2. `#search(jsonPath)`
+
+   3. `#search(jsonPath,searchScope)`
 
       1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
 
