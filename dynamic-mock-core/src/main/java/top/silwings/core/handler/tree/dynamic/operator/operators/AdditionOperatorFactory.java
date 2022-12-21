@@ -31,7 +31,7 @@ public class AdditionOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> param) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> param) {
         return AdditionOperator.from(param);
     }
 

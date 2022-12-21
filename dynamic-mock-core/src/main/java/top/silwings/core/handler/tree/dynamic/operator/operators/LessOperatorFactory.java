@@ -31,7 +31,7 @@ public class LessOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return LessOperator.from(dynamicValueList);
     }
 

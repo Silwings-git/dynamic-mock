@@ -31,7 +31,7 @@ public class GreaterEqualOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return GreaterEqualOperator.from(dynamicValueList);
     }
 

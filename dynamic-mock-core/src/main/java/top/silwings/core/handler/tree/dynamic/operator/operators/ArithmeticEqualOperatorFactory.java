@@ -31,7 +31,7 @@ public class ArithmeticEqualOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return ArithmeticEqualOperator.from(dynamicValueList);
     }
 

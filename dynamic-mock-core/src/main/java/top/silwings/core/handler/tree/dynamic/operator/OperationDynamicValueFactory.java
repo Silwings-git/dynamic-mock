@@ -82,7 +82,7 @@ public class OperationDynamicValueFactory {
         final OperatorFactory factory = this.filter(symbol);
 
         if (null != factory) {
-            return factory.buildFunction(Stream.of(firstValue, secondValue).filter(Objects::nonNull).collect(Collectors.toList()));
+            return factory.buildDynamicValue(Stream.of(firstValue, secondValue).filter(Objects::nonNull).collect(Collectors.toList()));
         }
 
         throw new DynamicMockException("Operator does not exist: " + symbol);

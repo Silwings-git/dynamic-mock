@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.Parser;
-import top.silwings.core.handler.tree.dynamic.DynamicFactory;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.dynamic.expression.expressions.CommaExpressionDynamicValue;
@@ -43,7 +42,7 @@ public class FunctionDynamicValueFactory {
         final MethodInfo methodInfo = this.methodExpressionParser.parse(expression);
 
         // 使用名称找到对应函数的工厂,创建方法
-        for (final DynamicFactory factory : this.functionFactoryList) {
+        for (final FunctionFactory factory : this.functionFactoryList) {
             if (factory.support(methodInfo.getName())) {
 
                 if (StringUtils.isBlank(methodInfo.getParamsExpression())) {

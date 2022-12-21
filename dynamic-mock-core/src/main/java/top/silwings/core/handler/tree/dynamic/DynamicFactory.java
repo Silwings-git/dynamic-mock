@@ -13,6 +13,6 @@ public interface DynamicFactory {
 
     boolean support(String methodName);
 
-    DynamicValue buildFunction(List<DynamicValue> dynamicValueList);
+    DynamicValue buildDynamicValue(List<DynamicValue> dynamicValueList);
 
 }

@@ -31,7 +31,7 @@ public class MultiplicationOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return MultiplicationOperator.from(dynamicValueList);
     }
 

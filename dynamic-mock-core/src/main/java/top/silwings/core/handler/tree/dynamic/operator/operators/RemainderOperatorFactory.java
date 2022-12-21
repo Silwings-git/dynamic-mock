@@ -31,7 +31,7 @@ public class RemainderOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return RemainderOperator.from(dynamicValueList);
     }
 

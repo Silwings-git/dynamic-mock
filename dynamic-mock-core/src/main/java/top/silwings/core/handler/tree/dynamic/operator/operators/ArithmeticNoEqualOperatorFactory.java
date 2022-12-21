@@ -35,7 +35,7 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
     }
 
     @Override
-    public DynamicValue buildFunction(final List<DynamicValue> dynamicValueList) {
+    public DynamicValue buildDynamicValue(final List<DynamicValue> dynamicValueList) {
         return ArithmeticNoEqualOperator.of(dynamicValueList, this.arithmeticEqualOperatorFactory);
     }
 
@@ -62,7 +62,7 @@ public class ArithmeticNoEqualOperatorFactory implements OperatorFactory {
 
         private ArithmeticNoEqualOperator(final List<DynamicValue> dynamicValueList, final ArithmeticEqualOperatorFactory arithmeticEqualOperatorFactory) {
             super(dynamicValueList);
-            this.arithmeticEqualOperator = (ArithmeticEqualOperatorFactory.ArithmeticEqualOperator) arithmeticEqualOperatorFactory.buildFunction(dynamicValueList);
+            this.arithmeticEqualOperator = (ArithmeticEqualOperatorFactory.ArithmeticEqualOperator) arithmeticEqualOperatorFactory.buildDynamicValue(dynamicValueList);
         }
 
         public static ArithmeticNoEqualOperator of(final List<DynamicValue> dynamicValueList, final ArithmeticEqualOperatorFactory arithmeticEqualOperatorFactory) {
