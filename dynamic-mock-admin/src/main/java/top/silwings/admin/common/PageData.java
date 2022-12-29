@@ -15,8 +15,7 @@ import java.util.List;
 @Getter
 public class PageData<T> {
 
-    @SuppressWarnings("unchecked")
-    private static final PageData EMPTY = new PageData<>(Collections.emptyList(), 0L);
+    private static final PageData<Void> EMPTY = new PageData<>(Collections.emptyList(), 0L);
 
     private final List<T> list;
 

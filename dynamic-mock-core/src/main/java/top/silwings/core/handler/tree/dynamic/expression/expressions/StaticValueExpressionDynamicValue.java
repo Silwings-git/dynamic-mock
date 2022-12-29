@@ -12,11 +12,11 @@ import top.silwings.core.handler.tree.structure.StaticValueNode;
  **/
 public class StaticValueExpressionDynamicValue extends StaticValueNode implements DynamicValue {
 
-    public StaticValueExpressionDynamicValue(final String content) {
+    public StaticValueExpressionDynamicValue(final Object content) {
         super(content);
     }
 
-    public static DynamicValue from(final String param) {
+    public static DynamicValue from(final Object param) {
         return new StaticValueExpressionDynamicValue(param);
     }
 

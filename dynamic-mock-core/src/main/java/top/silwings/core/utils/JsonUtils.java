@@ -89,12 +89,21 @@ public class JsonUtils {
     }
 
     public static boolean isValidJson(final String jsonStr) {
+
+        if (StringUtils.isBlank(jsonStr)) {
+            return false;
+        }
+
         try {
             MAPPER.readTree(jsonStr);
             return true;
         } catch (JsonProcessingException e) {
             return false;
         }
+    }
+
+    public static boolean isValidListJson(final String jsonStr) {
+        return isValidJson(jsonStr) && jsonStr.startsWith("[");
     }
 
 

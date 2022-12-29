@@ -8,7 +8,6 @@ import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
-import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
@@ -80,14 +79,8 @@ public class IsEmptyFunctionFactory implements FunctionFactory {
                 return true;
             }
 
-            if (ele instanceof String) {
-
-                final String str = SingleApostropheText.tryGetEscapeText((String) ele);
-
-                if (JsonUtils.isValidJson(str)) {
-
-                    ele = JsonUtils.toBean(str);
-                }
+            if (ele instanceof String && JsonUtils.isValidJson((String) ele)) {
+                ele = JsonUtils.toBean((String) ele);
             }
 
             if (ele instanceof List) {

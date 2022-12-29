@@ -10,7 +10,6 @@ import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
@@ -87,14 +86,12 @@ public class PageFunctionFactory implements FunctionFactory {
             final int pageSize = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), -1);
             final Object arg3 = childNodeValueList.get(2);
 
-            if ((arg3 instanceof List || this.isListStr(arg3))
-                    || (arg3 instanceof String
-                    && SingleApostropheText.isDoubleQuoteString((String) arg3)
-                    && this.isListStr(SingleApostropheText.tryGetEscapeText((String) arg3)))) {
+            if (arg3 instanceof List
+                    || (arg3 instanceof String && JsonUtils.isValidListJson((String) arg3))) {
 
                 final boolean dynamic = childNodeValueList.size() < 4 || TypeUtils.toBooleanValue(childNodeValueList.get(3));
 
-                return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList(SingleApostropheText.tryGetEscapeText((String) arg3), Object.class), dynamic, mockHandlerContext);
+                return this.pageFromList(pageNum, pageSize, arg3 instanceof List ? (List) arg3 : JsonUtils.toList((String) arg3, Object.class), dynamic, mockHandlerContext);
 
             } else if (childNodeValueList.size() > 3) {
 

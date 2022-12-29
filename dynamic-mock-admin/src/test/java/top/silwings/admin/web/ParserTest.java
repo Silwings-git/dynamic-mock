@@ -43,6 +43,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @SpringBootTest(classes = DynamicMockAdminApplication.class)
@@ -68,7 +70,7 @@ public class ParserTest {
 
         expressionList.add("1+2");
         expressionList.add("1+2*3");
-        expressionList.add("2+#search(age)");
+        expressionList.add("2+#search('age')");
         expressionList.add("2+#search('age')*2");
         expressionList.add("(2+#search('age'))*2+2*4");
         expressionList.add("#uuid(#search(1+1),#search(true))");
@@ -127,9 +129,9 @@ public class ParserTest {
         expressionList.add("(1+2)-(2*4)");
         expressionList.add("((1+2)-(2*4)+5)+(4+6)");
         expressionList.add("#join(,1,2,3,4,,5)");
-        expressionList.add("#join(-,1,2,3,4,,5)");
+        expressionList.add("#join('-',1,2,3,4,,5)");
         expressionList.add("#concat(,1,2,3,4,,5)");
-        expressionList.add("#concat(-,1,2,3,4,,5)");
+        expressionList.add("#concat('-',1,2,3,4,,5)");
         expressionList.add("#join('-',1,2)");
         expressionList.add("#join('-',)");
         expressionList.add("#join('#',1,,2,,3)");
@@ -169,6 +171,19 @@ public class ParserTest {
         expressionList.add("#search('$[0]',#search('list2'))");
         expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
         expressionList.add("#search('$.page',#search('page_param'))");
+        expressionList.add("#Contains('a','abc')");
+        expressionList.add("#Contains('abc','a')");
+        expressionList.add("#Contains(#search('list3'),'a')");
+        expressionList.add("#Contains(#search('list3'),'2')");
+        expressionList.add("#Contains(#search('list3'),2)");
+        expressionList.add("#Contains(#search('list4'),'2')");
+        expressionList.add("#Contains(#search('list4'),2)");
+        expressionList.add("#isNull(2)");
+        expressionList.add("#isNull('3')");
+        expressionList.add("#isNull(3.4)");
+        expressionList.add("#isNull(3.4+1.6)");
+        expressionList.add("#isEmpty('[]')");
+        expressionList.add("#isEmpty('[1]')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -185,6 +200,8 @@ public class ParserTest {
         requestContext.addCustomizeParam("10true", "御坂美琴");
         requestContext.addCustomizeParam("list", "[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
         requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
+        requestContext.addCustomizeParam("list3", Stream.of(1, 2, 3).collect(Collectors.toList()));
+        requestContext.addCustomizeParam("list4", Stream.of("1", "2", "3").collect(Collectors.toList()));
         requestContext.addCustomizeParam("page_param", "{\"page\": \"10\"}");
 
         final Map<String, Object> baseUser = new HashMap<>();
@@ -203,7 +220,7 @@ public class ParserTest {
                 .requestContext(requestContext)
                 .build();
 
-        System.out.println(JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(mockHandlerContext)));
+        System.out.println(str + " : " + JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(mockHandlerContext)));
     }
 
     @Test
@@ -328,7 +345,7 @@ public class ParserTest {
 
         System.out.println("s = " + s5);
 
-        final String str = SingleApostropheText.tryGetEscapeText("'234'");
+        final Object str = SingleApostropheText.tryGetEscapeObject("'234'");
         System.out.println("str = " + str);
 
     }
@@ -338,16 +355,16 @@ public class ParserTest {
         final MockHandlerContext mockHandlerContext;
         private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
         private final String test002 = "{\n" +
-                "\"id\":\"${#uuid(abc)}\"," +
-                "\"${#search(def)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
-                "\"${#search(<abcabc>)}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
-                "\"age\": \"${#search(age)}\"," +
-                "\"zbd\": \"${#search(zbd)}\"," +
+                "\"id\":\"${#uuid('abc')}\"," +
+                "\"${#search('def')}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"${#search('abcabc\\'>')}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"age\": \"${#search('age')}\"," +
+                "\"zbd\": \"${#search('zbd')}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
                 "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
         private final String test004 = "{\n" +
-                "\"${#search(def)}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                "\"${#search('def')}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
                 "\"uuidKey\": \"${#uuid(1,2)}\"" +
                 "}";
         private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();

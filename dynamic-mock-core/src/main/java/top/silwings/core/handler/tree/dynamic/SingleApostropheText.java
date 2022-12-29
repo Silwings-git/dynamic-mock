@@ -1,5 +1,6 @@
 package top.silwings.core.handler.tree.dynamic;
 
+import org.apache.commons.lang3.StringUtils;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.utils.CheckUtils;
 
@@ -18,7 +19,7 @@ public class SingleApostropheText {
         this.text = text;
     }
 
-    public static boolean isDoubleQuoteString(final String text) {
+    public static boolean isSingleApostropheString(final String text) {
         try {
             SingleApostropheText.build(text.trim());
             return true;
@@ -64,11 +65,35 @@ public class SingleApostropheText {
         return backwardSlashNum;
     }
 
-    public static String tryGetEscapeText(final String text) {
-        try {
-            return SingleApostropheText.build(text).getEscapeText();
-        } catch (Exception e) {
+    public static Object tryGetEscapeObject(final String text) {
+
+        if (StringUtils.isBlank(text)) {
             return text;
+        }
+
+        try {
+
+            return SingleApostropheText.build(text).getEscapeText();
+
+        } catch (DynamicMockException e) {
+
+            // 不是单引号标识的字符串时尝试转换为布尔或数值
+            if (Boolean.TRUE.toString().equals(text)) {
+                return true;
+            } else if (Boolean.FALSE.toString().equals(text)) {
+                return false;
+            } else {
+                // 数值类型默认使用int,长度不满足使用long,浮点类型使用double
+                if (text.indexOf(".") > 0) {
+                    return Double.parseDouble(text);
+                } else {
+                    try {
+                        return Integer.parseInt(text);
+                    } catch (NumberFormatException ex) {
+                        return Long.parseLong(text);
+                    }
+                }
+            }
         }
     }
 

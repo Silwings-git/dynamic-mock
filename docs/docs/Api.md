@@ -333,7 +333,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
                 ],
                 "cookieMap":{ // cookie key-value映射
                     "key":"value"
-                }
+                },
                 "headers": [ // 请求头集合，请求头允许重复的key存在，如果确定不存在重复key，可以使用headerMap
                     {
                 		"key":"value"

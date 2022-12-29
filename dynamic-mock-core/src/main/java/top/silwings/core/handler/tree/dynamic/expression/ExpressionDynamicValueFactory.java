@@ -42,8 +42,8 @@ public class ExpressionDynamicValueFactory {
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 
-        if (SingleApostropheText.isDoubleQuoteString(expression)) {
-            return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeText(expression));
+        if (SingleApostropheText.isSingleApostropheString(expression)) {
+            return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeObject(expression));
         }
 
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
@@ -63,7 +63,7 @@ public class ExpressionDynamicValueFactory {
             final List<String> parseList = this.operatorExpressionParser.parse(expression);
             if (parseList.size() == 1) {
                 // 不包含操作符的常量字符
-                return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeText(parseList.get(0)));
+                return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeObject(parseList.get(0)));
             } else {
                 return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
             }

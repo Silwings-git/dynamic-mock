@@ -116,7 +116,7 @@ public class TypeUtils {
             return (BigDecimal) value;
         }
 
-        if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
+        if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Double) {
             return BigDecimal.valueOf(((Number) value).longValue());
         }
 
