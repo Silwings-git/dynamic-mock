@@ -653,15 +653,17 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 1. `#uuid()`
         1. 生成一个uuid
 2. `#uuid(prefix,length,replace)`
-           1. prefix：字符类型，生成的uuid的前缀，将在生产的uuid之前拼接prefix。允许不填该参数。
-           2. length：数值类型，生成的uuid的长度，如果长度小于uuid的长度，将进行截取，如果超过uuid的长度，将用当前生成的uuid进行拼接。注意，这里指定的长度限制不包含prefix。允许不填该参数。
-           3. replace：布尔类型，指定是否将uuid中的`-`替换为空白符。允许不填该参数。
-3. 示例：
-              1. `#uuid(,,true)` => 6c62c8fe7e8f438689c168dbcd794b8a
-              2. `#uuid(,10,true)` => c40c550acf
-              3. `#uuid(,40,true)` => 98f71914860745c4ae07bc55130e0a8898f71914
-              4. `#uuid('UserCode',,false)` => UserCodef6d73ae7-5c16-4152-9c04-3e9d4ef77448
-              5. `#uuid('UserCode',10,true)` => UserCode676d529aaa
+       1. prefix：字符类型，生成的uuid的前缀，将在生产的uuid之前拼接prefix。允许不填该参数。
+       2. length：数值类型，生成的uuid的长度，如果长度小于uuid的长度，将进行截取，如果超过uuid的长度，将用当前生成的uuid进行拼接。注意，这里指定的长度限制不包含prefix。允许不填该参数。
+       3. replace：布尔类型，指定是否将uuid中的`-`替换为空白符。允许不填该参数。
+
+示例:
+
+1. `#uuid(,,true)` => 6c62c8fe7e8f438689c168dbcd794b8a
+2. `#uuid(,10,true)` => c40c550acf
+3. `#uuid(,40,true)` => 98f71914860745c4ae07bc55130e0a8898f71914
+4. `#uuid('UserCode',,false)` => UserCodef6d73ae7-5c16-4152-9c04-3e9d4ef77448
+5. `#uuid('UserCode',10,true)` => UserCode676d529aaa
 
 
 
@@ -682,4 +684,11 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
       1. type：字符串类型，用于指定要生成的随机数的类型。可选内容：int，long，double。不区分大小写。
       2. arg1：数值类型，生成的随机数的最小值，包含arg1本身
       3. arg2：数值类型，生成的随机数的最大值，不包含arg2本身
+
+示例:
+
+1. `#random()`=>-962406019
+2. `#random('boolean')`=>true
+3. `#random('int',100)`=>62
+4. `#random('int',10,20)`=>10
 

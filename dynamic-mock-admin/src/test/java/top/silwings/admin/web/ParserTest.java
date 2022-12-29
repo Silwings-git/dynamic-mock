@@ -184,6 +184,10 @@ public class ParserTest {
         expressionList.add("#isNull(3.4+1.6)");
         expressionList.add("#isEmpty('[]')");
         expressionList.add("#isEmpty('[1]')");
+        expressionList.add("#random()");
+        expressionList.add("#random('boolean')");
+        expressionList.add("#random('int',100)");
+        expressionList.add("#random('int',10,20)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
