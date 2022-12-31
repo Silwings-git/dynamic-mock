@@ -774,5 +774,5 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ​	示例：
 
-1. `#print(#toBean('{"name":"御坂美琴"}'))`=>打印：{name=御坂美琴}
-2. `#print(#tjs(#toBean('{"name":"御坂美琴"}')))`=>打印：{"name":"御坂美琴"}
+1. `#print(#toBean('{"name":"Misaka Mikoto"}'))`=>打印：{name=Misaka Mikoto}
+2. `#print(#tjs(#toBean('{"name":"Misaka Mikoto"}')))`=>打印：{"name":"Misaka Mikoto"}
