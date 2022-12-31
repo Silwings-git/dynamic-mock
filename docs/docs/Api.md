@@ -735,7 +735,8 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ​	`#toBean(json格式字符串)`
 
-1. ​	json格式字符串：其中的字符串类型使用双引号`""`,而不是单引号。
+1. json格式字符串：其中的字符串类型使用双引号`""`,而不是单引号。
+2. 返回值类型：json对象
 
 ​	示例：
 
@@ -752,7 +753,8 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ​	`#ToJsonString(待转换对象)`
 
-1. ​	待转换对象：可通过Search函数或ToBean函数获得
+1. 待转换对象：可通过Search函数或ToBean函数获得
+2. 返回值类型：String
 
 ​	示例：
 
