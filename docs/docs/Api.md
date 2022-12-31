@@ -604,8 +604,8 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
       3. `#page(1,2,101,'${1+1}',true)`
    3. 数据集动态：#page(当前页,每页数量,数据集)
       1. `#page(1,10,#search('list'))`
-      2. `#page(1,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":16}]')`
-      3. `#page(2,2,'[{"name":"御坂美琴","age":14},{"name":"御坂美琴","age":15},{"name":"御坂美琴","age":"${#search(\'param\')}"}]')`
+      2. `#page(1,2,'[{"name":"Misaka Mikoto","age":14},{"name":"Misaka Mikoto","age":15},{"name":"Misaka Mikoto","age":16}]')`
+      3. `#page(2,2,'[{"name":"Misaka Mikoto","age":14},{"name":"Misaka Mikoto","age":15},{"name":"Misaka Mikoto","age":"${#search(\'param\')}"}]')`
    4. 数据集指定是否动态：#page(当前页,每页数量,数据集,数据是否动态)
       1. `#page(1,2,101,'${1+1}',false)`
 
@@ -729,4 +729,50 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ##### 17.ToBean
 
-​	
+​	用于将json字符串转换为json对象的函数。当参数无法转换为json对象时将抛出异常。
+
+​	函数声明：
+
+​	`#toBean(json格式字符串)`
+
+1. ​	json格式字符串：其中的字符串类型使用双引号`""`,而不是单引号。
+
+​	示例：
+
+1. `#toBean('{"name":"Misaka Mikoto"}')`
+2. `#toBean('["1","2"]')`
+
+
+
+##### 18.ToJsonString
+
+​	尝试将对象转换为json字符串。如果本身就是字符串类型将原样返回。可简写为`tjs`。通常用于调试。
+
+​	函数声明：
+
+​	`#ToJsonString(待转换对象)`
+
+1. ​	待转换对象：可通过Search函数或ToBean函数获得
+
+​	示例：
+
+1. `#toJsonString(#toBean('{"name":"Misaka Mikoto"}'))`=> {"name":"Misaka Mikoto"}
+2. `#tjs(#toBean('{"name":"Misaka Mikoto"}'))`=> {"name":"Misaka Mikoto"}
+
+
+
+##### 19.Print
+
+​	打印函数。可在日志中打印输入参数，并将入参重新返回。通常用于调试。
+
+​	函数声明：
+
+​	`#print(待打印内容)`
+
+1. 待打印内容：类型不限。
+2. 返回值：返回入参。
+
+​	示例：
+
+1. `#print(#toBean('{"name":"御坂美琴"}'))`=>打印：{name=御坂美琴}
+2. `#print(#tjs(#toBean('{"name":"御坂美琴"}')))`=>打印：{"name":"御坂美琴"}

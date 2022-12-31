@@ -194,6 +194,11 @@ public class ParserTest {
         expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,3]'))");
         expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,\"3\"]'))");
         expressionList.add("#Contains(#toBean('[1,2,\"3\"]'),#toBean('[1,\"3\"]'))");
+        expressionList.add("#toBean('{\"name\":\"御坂美琴\"}')");
+        expressionList.add("#toBean('[\"1\",\"2\"]')");
+        expressionList.add("#tjs(#toBean('{\"name\":\"御坂美琴\"}'))");
+        expressionList.add("#print(#toBean('{\"name\":\"御坂美琴\"}'))");
+        expressionList.add("#print(#tjs(#toBean('{\"name\":\"御坂美琴\"}')))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
