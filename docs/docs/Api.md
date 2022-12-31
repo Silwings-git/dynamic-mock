@@ -4,7 +4,7 @@
 
 ## Mock Handler
 
-Mock Handler是Dynamic-Mock中最核心的部分（以下部分地方简称处理器），每一个Dynamic-Mock代表了一个URI可响应的数据，可执行的任务的集。Mock Handler使用json格式来定义，Dynamic-Mock最终会解析定义Mock handler的json，生成一棵解析树，当符合Mock Handler基础信息中指定的uri的请求到达时，便会将请求信息封装并交给解析数解析执行，最终得到一个预期的结果。
+Mock Handler是Dynamic-Mock中最核心的部分（以下部分地方简称处理器），每一个Dynamic-Mock代表了一个URI可响应的数据，可执行的任务的集。Mock Handler使用json格式来定义，Dynamic-Mock最终会解析定义Mock handler的json，生成一棵解析树，当符合Mock Handler基础信息中指定的uri的请求到达时，便会将请求信息封装并交给解析树解析执行，最终得到一个预期的结果。
 
 在Web页面中，可以方便的在图形化界面上完成对Mock Handler的创建，如果熟悉结构，也可以切换编辑模式，直接编辑json数据。
 
