@@ -171,13 +171,6 @@ public class ParserTest {
         expressionList.add("#search('$[0]',#search('list2'))");
         expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
         expressionList.add("#search('$.page',#search('page_param'))");
-        expressionList.add("#Contains('a','abc')");
-        expressionList.add("#Contains('abc','a')");
-        expressionList.add("#Contains(#search('list3'),'a')");
-        expressionList.add("#Contains(#search('list3'),'2')");
-        expressionList.add("#Contains(#search('list3'),2)");
-        expressionList.add("#Contains(#search('list4'),'2')");
-        expressionList.add("#Contains(#search('list4'),2)");
         expressionList.add("#isNull(2)");
         expressionList.add("#isNull('3')");
         expressionList.add("#isNull(3.4)");
@@ -188,6 +181,19 @@ public class ParserTest {
         expressionList.add("#random('boolean')");
         expressionList.add("#random('int',100)");
         expressionList.add("#random('int',10,20)");
+        expressionList.add("#Contains('a','abc')");
+        expressionList.add("#Contains('abc','a')");
+        expressionList.add("#Contains(#search('list3'),'a')");
+        expressionList.add("#Contains(#search('list3'),'2')");
+        expressionList.add("#Contains(#search('list3'),2)");
+        expressionList.add("#Contains(#search('list4'),'2')");
+        expressionList.add("#Contains(#search('list4'),2)");
+        expressionList.add("#Contains(#search('list4'),#search('list5'))");
+        expressionList.add("#Contains(#toBean('[1,2,3]'),1)");
+        expressionList.add("#Contains(#toBean('[1,2,3]'),'1')");
+        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,3]'))");
+        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,\"3\"]'))");
+        expressionList.add("#Contains(#toBean('[1,2,\"3\"]'),#toBean('[1,\"3\"]'))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -206,6 +212,7 @@ public class ParserTest {
         requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
         requestContext.addCustomizeParam("list3", Stream.of(1, 2, 3).collect(Collectors.toList()));
         requestContext.addCustomizeParam("list4", Stream.of("1", "2", "3").collect(Collectors.toList()));
+        requestContext.addCustomizeParam("list5", Stream.of("1", "3").collect(Collectors.toList()));
         requestContext.addCustomizeParam("page_param", "{\"page\": \"10\"}");
 
         final Map<String, Object> baseUser = new HashMap<>();
