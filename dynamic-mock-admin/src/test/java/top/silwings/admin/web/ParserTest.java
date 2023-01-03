@@ -23,9 +23,9 @@ import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.NodeReader;
+import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -62,6 +62,9 @@ public class ParserTest {
     private MockHandlerFactory mockHandlerFactory;
     @Autowired
     private MockHandlerPoint mockHandlerPoint;
+
+    @Autowired
+    private DynamicExpressionStringParser dynamicExpressionStringParser;
 
     @Test
     public void test001() {
@@ -141,9 +144,8 @@ public class ParserTest {
         expressionList.add("#now('yyyy')");
 
         expressionList.add("#page(1,2,101,'{\"name\":88}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"\\'${#search(age)>0}\\'\"}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(\\'age\\')>0}\"}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"#search(\\'age\\')\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'age^')>0}\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"#search(^'age^')\"}')");
         expressionList.add("#page(1,2,101,'1+1')");
         expressionList.add("#page(1,2,101,1+1)");
 
@@ -155,7 +157,7 @@ public class ParserTest {
         expressionList.add("#page(1,10,#search('list'))");
         expressionList.add("#page(1,10,#search('list2'))");
         expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
-        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(\\'param\\')}\"}]')");
+        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(^'param^')}\"}]')");
         expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
         expressionList.add("#page(1,2,101,'${1+1}')");
         expressionList.add("#page(1,2,101,'${1+1}',false)");
@@ -199,6 +201,11 @@ public class ParserTest {
         expressionList.add("#tjs(#toBean('{\"name\":\"御坂美琴\"}'))");
         expressionList.add("#print(#toBean('{\"name\":\"御坂美琴\"}'))");
         expressionList.add("#print(#tjs(#toBean('{\"name\":\"御坂美琴\"}')))");
+        expressionList.add("3*(1+1)");
+        expressionList.add("3*(1+1)--2-6");
+        expressionList.add("#search(#print(3*(1+1)--2-6))");
+        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\"}',true)");
+        expressionList.add("#search('param','customizeSpace')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -355,13 +362,12 @@ public class ParserTest {
         final String s2 = "#search('name',)";
         final String s3 = "#search(,'name',)";
         final String s4 = "#search('name','customSpace')";
-        final String s5 = "#search('name',\"customSpace\")";
-        final String s6 = "#search(\"name\",\"custom\\\"Space\")";
-        final String s7 = "${#equals(#search(\"baseUser.name\",\"customizeSpace\"), \"Misaka Mikoto\" )}";
+        final String s5 = "#search('name','customSpace')";
+        final String s7 = "${#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )}";
 
         System.out.println("s = " + s5);
 
-        final Object str = SingleApostropheText.tryGetEscapeObject("'234'");
+        final Object str = this.dynamicExpressionStringParser.parse("'234'");
         System.out.println("str = " + str);
 
     }
@@ -369,11 +375,11 @@ public class ParserTest {
     @Getter
     public static class TestData {
         final MockHandlerContext mockHandlerContext;
-        private final String test001 = "#search(#search(#search(#search(param)+(20-#search(paramA)--1-2))))";
+        private final String test001 = "#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))";
         private final String test002 = "{\n" +
                 "\"id\":\"${#uuid('abc')}\"," +
-                "\"${#search('def')}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
-                "\"${#search('abcabc\\'>')}\": \"${#search(#search(a+(3*(1+1)--2-6)))}\"," +
+                "\"${#search('def')}\": \"${#search(#search(#concat('a',(3*(1+1)--2-6))))}\"," +
+                "\"${#search('abcabc')}\": \"${#search(#search('a'+(3*(1+1)--2-6)))}\"," +
                 "\"age\": \"${#search('age')}\"," +
                 "\"zbd\": \"${#search('zbd')}\"," +
                 "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
@@ -451,7 +457,7 @@ public class ParserTest {
             def2.numberOfExecute(1);
             def2.request(buildMockTask2());
 
-            return Arrays.asList(def1, def2.build());
+            return Arrays.asList(def1);
         }
 
         private static TaskRequestDto buildMockTask2() {
@@ -508,8 +514,8 @@ public class ParserTest {
                     "\"name\": \"${#search('name')}\"," +
                     "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
                     "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
-                    "\"random\": \"${#search($.+(1+2*5))}\"," +
-                    " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,{\\\"code\\\": \\\"${#search('name')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"})}\"" +
+                    "\"random\": \"${#search('$.'+(1+2*5))}\"," +
+                    " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
                     "}";
             definition.body(JsonUtils.toBean(s));
 

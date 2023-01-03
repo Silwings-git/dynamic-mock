@@ -9,7 +9,9 @@ import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +71,7 @@ public class MockTaskInfo extends AbstractSupportAble {
                 .requestUrl(String.valueOf(map.get("requestUrl")))
                 .httpMethod(HttpMethod.valueOf(String.valueOf(map.get("httpMethod")).toUpperCase()))
                 .headers(HttpHeaderConverter.from(map.get("headers")))
-                .body(map.get("body"))
+                .body(ConvertUtils.getNoNullOrDefault(map.get("body"), Collections.emptyMap()))
                 .uriVariables(UriVariableConvertor.from(map.get("uriVariables")))
                 .cron(this.cron)
                 .numberOfExecute(this.numberOfExecute)

@@ -145,6 +145,8 @@ public class MockTask implements Runnable {
             return MockTaskStartEvent.of(mockTask, null);
         }
 
+        // TODO_Silwings: 2023/1/3 同步任务执行时，autoCancelTask必定为null。另外MockTask和AutoCancelTask存在循环依赖,要重构
+
         final MockTaskLogDto taskLog = MockTaskLogDto.builder()
                 .taskCode(ConvertUtils.getNoNullOrDefault(mockTask.getAutoCancelTask(), null, AutoCancelTask::getTaskCode))
                 .handlerId(mockTask.getHandlerId())

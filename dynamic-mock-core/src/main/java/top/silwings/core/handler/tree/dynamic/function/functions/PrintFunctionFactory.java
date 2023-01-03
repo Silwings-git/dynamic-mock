@@ -60,7 +60,7 @@ public class PrintFunctionFactory implements FunctionFactory {
         @Override
         protected Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
-            log.info("{}", childNodeValueList.get(0));
+            log.info("Print Function :{}", childNodeValueList.get(0));
 
             return childNodeValueList.get(0);
         }

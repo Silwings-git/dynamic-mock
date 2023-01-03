@@ -5,9 +5,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.Parser;
+import top.silwings.core.handler.tree.dynamic.AutoTypeParser;
+import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.SingleApostropheText;
 import top.silwings.core.handler.tree.dynamic.expression.expressions.CommaExpressionDynamicValue;
 import top.silwings.core.handler.tree.dynamic.expression.expressions.StaticValueExpressionDynamicValue;
 import top.silwings.core.handler.tree.dynamic.operator.OperationDynamicValueFactory;
@@ -32,9 +33,15 @@ public class ExpressionDynamicValueFactory {
 
     private final OperatorExpressionParser operatorExpressionParser;
 
+    private final DynamicExpressionStringParser dynamicExpressionStringParser;
+
+    private final AutoTypeParser autoTypeParser;
+
     private final OperationDynamicValueFactory operationDynamicValueFactory;
 
-    public ExpressionDynamicValueFactory(final OperationDynamicValueFactory operationDynamicValueFactory) {
+    public ExpressionDynamicValueFactory(final DynamicExpressionStringParser dynamicExpressionStringParser, final AutoTypeParser autoTypeParser, final OperationDynamicValueFactory operationDynamicValueFactory) {
+        this.dynamicExpressionStringParser = dynamicExpressionStringParser;
+        this.autoTypeParser = autoTypeParser;
         this.operationDynamicValueFactory = operationDynamicValueFactory;
         this.removeBracketParser = new RemoveBracketParser();
         this.operatorExpressionParser = new OperatorExpressionParser(operationDynamicValueFactory);
@@ -42,8 +49,8 @@ public class ExpressionDynamicValueFactory {
 
     public DynamicValue buildDynamicValue(final String expression, final DynamicValueFactory dynamicValueFactory) {
 
-        if (SingleApostropheText.isSingleApostropheString(expression)) {
-            return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeObject(expression));
+        if (this.dynamicExpressionStringParser.support(expression)) {
+            return StaticValueExpressionDynamicValue.from(this.dynamicExpressionStringParser.parse(expression));
         }
 
         final GroupByCommaPriorityResult commaPriorityResult = this.groupByCommaPriority(expression);
@@ -63,7 +70,7 @@ public class ExpressionDynamicValueFactory {
             final List<String> parseList = this.operatorExpressionParser.parse(expression);
             if (parseList.size() == 1) {
                 // 不包含操作符的常量字符
-                return StaticValueExpressionDynamicValue.from(SingleApostropheText.tryGetEscapeObject(parseList.get(0)));
+                return StaticValueExpressionDynamicValue.from(this.autoTypeParser.parse(parseList.get(0)));
             } else {
                 return this.operationDynamicValueFactory.buildDynamicValue(parseList, dynamicValueFactory);
             }
