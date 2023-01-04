@@ -139,7 +139,6 @@ public class MockTask implements HttpMockTask<MockTaskStartEvent, Consumer<MockT
         }
 
         final MockTaskLogDto taskLog = MockTaskLogDto.builder()
-                // TODO_Silwings: 2023/1/4 regInfo 可能为null
                 .taskCode(this.registrationInfo.getTaskCode())
                 .handlerId(this.getHandlerId())
                 .name(this.getName())
