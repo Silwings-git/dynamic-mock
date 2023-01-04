@@ -27,7 +27,7 @@ import top.silwings.admin.web.vo.param.UnregisterTaskParam;
 import top.silwings.admin.web.vo.result.MockTaskLogResult;
 import top.silwings.admin.web.vo.result.RunningTaskResult;
 import top.silwings.core.common.Identity;
-import top.silwings.core.handler.task.AutoCancelTask;
+import top.silwings.core.handler.task.AutoCancelCronTask;
 import top.silwings.core.handler.task.MockTaskManager;
 import top.silwings.core.model.MockTaskLogDto;
 import top.silwings.core.utils.CheckUtils;
@@ -73,7 +73,7 @@ public class MockTaskController {
 
         final List<Identity> handlerIdList = this.getAuthorizedHandlerIds(param.getProjectId(), param.getHandlerId());
 
-        final List<AutoCancelTask> taskList = this.mockTaskManager.query(handlerIdList);
+        final List<AutoCancelCronTask> taskList = this.mockTaskManager.query(handlerIdList);
 
         final List<RunningTaskResult> runningTaskResultList = taskList.stream()
                 .map(RunningTaskResult::from)

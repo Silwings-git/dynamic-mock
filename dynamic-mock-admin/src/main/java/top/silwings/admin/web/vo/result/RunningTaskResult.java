@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import top.silwings.core.common.Identity;
-import top.silwings.core.handler.task.AutoCancelTask;
+import top.silwings.core.handler.task.AutoCancelCronTask;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
@@ -41,14 +41,14 @@ public class RunningTaskResult {
     @ApiModelProperty(value = "任务原始信息", example = "{}")
     private Map<String, ?> taskInfo;
 
-    public static RunningTaskResult from(final AutoCancelTask autoCancelTask) {
+    public static RunningTaskResult from(final AutoCancelCronTask autoCancelCronTask) {
         final RunningTaskResult runningTaskResult = new RunningTaskResult();
-        runningTaskResult.setTaskCode(autoCancelTask.getTaskCode());
-        runningTaskResult.setTaskName(String.valueOf(JsonUtils.jsonPathRead(autoCancelTask.getTaskJson(), "$.name")));
-        runningTaskResult.setHandlerId(autoCancelTask.getHandlerId());
-        runningTaskResult.setRemainingTimes(autoCancelTask.getNumberOfExecute().get());
-        runningTaskResult.setTaskInfo(JsonUtils.toMap(autoCancelTask.getTaskJson(), String.class, Object.class));
-        runningTaskResult.setRegistrationTime(new Date(autoCancelTask.getRegistrationTime()));
+        runningTaskResult.setTaskCode(autoCancelCronTask.getRegistrationInfo().getTaskCode());
+        runningTaskResult.setTaskName(String.valueOf(JsonUtils.jsonPathRead(autoCancelCronTask.getTaskJson(), "$.name")));
+        runningTaskResult.setHandlerId(autoCancelCronTask.getHandlerId());
+        runningTaskResult.setRemainingTimes(autoCancelCronTask.getNumberOfExecute().get());
+        runningTaskResult.setTaskInfo(JsonUtils.toMap(autoCancelCronTask.getTaskJson(), String.class, Object.class));
+        runningTaskResult.setRegistrationTime(new Date(autoCancelCronTask.getRegistrationInfo().getRegistrationTime()));
         return runningTaskResult;
     }
 

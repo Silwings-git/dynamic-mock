@@ -1,12 +1,12 @@
 package top.silwings.core.handler.task;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.TaskSchedulerProperties;
-import top.silwings.core.utils.JsonUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,10 +28,11 @@ import java.util.stream.Collectors;
  * @Date 2022/11/13 10:00
  * @Since
  **/
+@Slf4j
 @Component
 public class MockTaskManager implements DisposableBean {
 
-    private final Map<String, WeakReference<AutoCancelTask>> taskPool;
+    private final Map<String, WeakReference<AutoCancelCronTask>> taskPool;
 
     private final ThreadPoolTaskScheduler taskScheduler;
 
@@ -44,24 +45,28 @@ public class MockTaskManager implements DisposableBean {
     }
 
     public void registerAsyncTask(final MockTask mockTask) {
+
         synchronized (this) {
 
             // 限制taskPool容量
             this.limitCapacity();
 
-            final AutoCancelTask autoCancelTask = AutoCancelTask.builder()
+            final AutoCancelCronTask autoCancelCronTask = AutoCancelCronTask.builder()
                     .handlerId(mockTask.getHandlerId())
-                    .taskCode(this.buildTaskCode(mockTask.getHandlerId()))
                     .cron(mockTask.getCron())
                     .numberOfExecute(new AtomicInteger(mockTask.getNumberOfExecute()))
                     .task(mockTask)
-                    .taskJson(JsonUtils.toJSONString(mockTask))
-                    .registrationTime(System.currentTimeMillis())
                     .build()
                     // 执行注册
                     .schedule(this.taskScheduler);
-            mockTask.setAutoCancelTask(autoCancelTask);
-            this.taskPool.put(autoCancelTask.getTaskCode(), new WeakReference<>(autoCancelTask));
+
+            final RegistrationInfo registrationInfo = RegistrationInfo.builder()
+                    .taskCode(this.buildTaskCode(mockTask.getHandlerId()))
+                    .registrationTime(System.currentTimeMillis())
+                    .build();
+
+            autoCancelCronTask.setRegistrationInfo(registrationInfo);
+            this.taskPool.put(registrationInfo.getTaskCode(), new WeakReference<>(autoCancelCronTask));
         }
     }
 
@@ -70,30 +75,30 @@ public class MockTaskManager implements DisposableBean {
      * 如果超过设置的值,将取消最先注册的任务
      */
     private void limitCapacity() {
+
         int beyond = this.taskPool.size() - this.taskSchedulerProperties.getMaxTaskPoolSize();
 
         if (beyond > 0) {
             // 优先将剩余执行次数为0的清除
-            this.taskPool.values().stream().map(WeakReference::get)
-                    .filter(Objects::nonNull)
-                    .filter(task -> task.getNumberOfExecute().get() == 0)
-                    .forEach(task -> this.cancelTask(task, false));
+            this.taskPool.values().stream().map(WeakReference::get).filter(Objects::nonNull)
+                    .filter(task -> task.getNumberOfExecute().get() == 0).forEach(task -> this.cancelTask(task, false));
             beyond = this.taskPool.size() - this.taskSchedulerProperties.getMaxTaskPoolSize();
         }
 
         if (beyond > 0) {
             this.taskPool.values().stream().map(WeakReference::get)
-                    .filter(Objects::nonNull)
-                    .sorted(Comparator.comparingLong(AutoCancelTask::getRegistrationTime))
-                    .limit(beyond + 1)
-                    .forEach(task -> this.cancelTask(task, true));
+                    .filter(Objects::nonNull).sorted(Comparator.comparingLong(task -> task.getRegistrationInfo().getRegistrationTime()))
+                    .limit(beyond + 1).forEach(task -> {
+                        this.cancelTask(task, true);
+                        log.error("存活任务数量超过任务池最大数量,任务:{}被自动关闭.", task.getRegistrationInfo().getTaskCode());
+                    });
         }
     }
 
     public void unregisterByTaskCode(final Identity handlerId, final String taskCode, final Boolean mayInterruptIfRunning) {
-        final WeakReference<AutoCancelTask> weakReference = this.taskPool.get(taskCode);
+        final WeakReference<AutoCancelCronTask> weakReference = this.taskPool.get(taskCode);
         if (null != weakReference) {
-            final AutoCancelTask mockTask = weakReference.get();
+            final AutoCancelCronTask mockTask = weakReference.get();
             if (null != mockTask && mockTask.getHandlerId().equals(handlerId)) {
                 this.cancelTask(mockTask, Boolean.TRUE.equals(mayInterruptIfRunning));
             }
@@ -101,15 +106,15 @@ public class MockTaskManager implements DisposableBean {
     }
 
     public void unregisterByHandlerIds(final List<Identity> handlerIdList, final Boolean mayInterruptIfRunning) {
-        final List<AutoCancelTask> autoCancelTasks = this.query(handlerIdList);
-        autoCancelTasks.forEach(task -> this.cancelTask(task, Boolean.TRUE.equals(mayInterruptIfRunning)));
+        final List<AutoCancelCronTask> autoCancelCronTasks = this.query(handlerIdList);
+        autoCancelCronTasks.forEach(task -> this.cancelTask(task, Boolean.TRUE.equals(mayInterruptIfRunning)));
     }
 
-    private void cancelTask(final AutoCancelTask mockTask, final boolean mayInterruptIfRunning) {
+    private void cancelTask(final AutoCancelCronTask mockTask, final boolean mayInterruptIfRunning) {
         synchronized (this) {
             if (null != mockTask) {
                 mockTask.cancel(mayInterruptIfRunning);
-                this.taskPool.remove(mockTask.getTaskCode());
+                this.taskPool.remove(mockTask.getRegistrationInfo().getTaskCode());
             }
         }
     }
@@ -125,27 +130,27 @@ public class MockTaskManager implements DisposableBean {
         return handlerId.stringValue() + "-" + System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
     }
 
-    public List<AutoCancelTask> query(final List<Identity> handlerIdList) {
+    public List<AutoCancelCronTask> query(final List<Identity> handlerIdList) {
 
         if (CollectionUtils.isEmpty(handlerIdList)) {
             return Collections.emptyList();
         }
 
-        final Set<Map.Entry<String, WeakReference<AutoCancelTask>>> taskEntrySet = this.taskPool.entrySet();
+        final Set<Map.Entry<String, WeakReference<AutoCancelCronTask>>> taskEntrySet = this.taskPool.entrySet();
 
-        final List<AutoCancelTask> autoCancelTaskList = new ArrayList<>();
+        final List<AutoCancelCronTask> autoCancelCronTaskList = new ArrayList<>();
 
         for (final Identity handlerId : handlerIdList) {
-            for (final Map.Entry<String, WeakReference<AutoCancelTask>> entry : taskEntrySet) {
+            for (final Map.Entry<String, WeakReference<AutoCancelCronTask>> entry : taskEntrySet) {
                 final String taskCode = entry.getKey();
-                final WeakReference<AutoCancelTask> taskReference = entry.getValue();
+                final WeakReference<AutoCancelCronTask> taskReference = entry.getValue();
                 if (taskCode.startsWith(handlerId.stringValue() + "-") && null != taskReference) {
-                    autoCancelTaskList.add(taskReference.get());
+                    autoCancelCronTaskList.add(taskReference.get());
                 }
             }
         }
 
-        return autoCancelTaskList.stream()
+        return autoCancelCronTaskList.stream()
                 .filter(Objects::nonNull)
                 .filter(task -> task.getNumberOfExecute().get() > 0)
                 .collect(Collectors.toList());

@@ -3,7 +3,6 @@ package top.silwings.core.handler.task;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,7 +14,6 @@ import top.silwings.core.config.MockTaskLogProperties;
 import top.silwings.core.event.MockTaskEndEvent;
 import top.silwings.core.event.MockTaskStartEvent;
 import top.silwings.core.model.MockTaskLogDto;
-import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Date;
@@ -34,7 +32,7 @@ import java.util.function.Function;
 @Slf4j
 @Getter
 @Builder
-public class MockTask implements Runnable {
+public class MockTask implements HttpMockTask<MockTaskStartEvent, Consumer<MockTask.ResponseInfo>>, RegisterAware {
 
     /**
      * 处理器id
@@ -86,11 +84,7 @@ public class MockTask implements Runnable {
      */
     private final int numberOfExecute;
 
-    /**
-     * 承载该任务的定时任务
-     */
-    @Setter
-    private AutoCancelTask autoCancelTask;
+    private RegistrationInfo registrationInfo;
 
     private static Function<ClientResponse, Mono<ResponseInfo>> getResponseInfo() {
         return res -> {
@@ -121,46 +115,9 @@ public class MockTask implements Runnable {
         };
     }
 
-    private static Consumer<ResponseInfo> publishEndEvent(final MockTaskStartEvent startEvent) {
-
-        if (!DynamicMockContext.getInstance().getMockTaskLogProperties().isEnableLog()) {
-            return responseInfo -> {
-            };
-        }
-
-        return responseInfo -> {
-            final MockTaskLogDto mockTaskLog = startEvent.getMockTaskLog();
-            mockTaskLog.setResponseInfo(JsonUtils.toJSONString(responseInfo, JsonInclude.Include.NON_NULL));
-            mockTaskLog.setTiming(System.currentTimeMillis() - mockTaskLog.getRequestTime().getTime());
-            final MockTaskEndEvent endEvent = MockTaskEndEvent.of(startEvent.getSource(), mockTaskLog);
-            DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(endEvent);
-        };
-    }
-
-    private static MockTaskStartEvent publishStartEvent(final MockTask mockTask) {
-
-        final MockTaskLogProperties mockTaskLogProperties = DynamicMockContext.getInstance().getMockTaskLogProperties();
-
-        if (!mockTaskLogProperties.isEnableLog()) {
-            return MockTaskStartEvent.of(mockTask, null);
-        }
-
-        // TODO_Silwings: 2023/1/3 同步任务执行时，autoCancelTask必定为null。另外MockTask和AutoCancelTask存在循环依赖,要重构
-
-        final MockTaskLogDto taskLog = MockTaskLogDto.builder()
-                .taskCode(ConvertUtils.getNoNullOrDefault(mockTask.getAutoCancelTask(), null, AutoCancelTask::getTaskCode))
-                .handlerId(mockTask.getHandlerId())
-                .name(mockTask.getName())
-                .registrationTime(ConvertUtils.getNoNullOrDefault(mockTask.getAutoCancelTask(), null, at -> new Date(at.getRegistrationTime())))
-                .requestInfo(mockTaskLogProperties.isLogRequestInfo() ? JsonUtils.toJSONString(RequestInfo.from(mockTask), JsonInclude.Include.NON_NULL) : "{}")
-                .requestTime(new Date())
-                .build();
-
-        final MockTaskStartEvent event = MockTaskStartEvent.of(mockTask, taskLog);
-
-        DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(event);
-
-        return event;
+    @Override
+    public void setRegistrationInfo(final RegistrationInfo registrationInfo) {
+        this.registrationInfo = registrationInfo;
     }
 
     @Override
@@ -172,9 +129,53 @@ public class MockTask implements Runnable {
         }
     }
 
-    protected void sendRequest() {
+    @Override
+    public MockTaskStartEvent publishStartEvent() {
 
-        final MockTaskStartEvent startEvent = publishStartEvent(this);
+        final MockTaskLogProperties mockTaskLogProperties = DynamicMockContext.getInstance().getMockTaskLogProperties();
+
+        if (!mockTaskLogProperties.isEnableLog()) {
+            return MockTaskStartEvent.of(this, null);
+        }
+
+        final MockTaskLogDto taskLog = MockTaskLogDto.builder()
+                // TODO_Silwings: 2023/1/4 regInfo 可能为null
+                .taskCode(this.registrationInfo.getTaskCode())
+                .handlerId(this.getHandlerId())
+                .name(this.getName())
+                .registrationTime(new Date(this.registrationInfo.getRegistrationTime()))
+                .requestInfo(mockTaskLogProperties.isLogRequestInfo() ? JsonUtils.toJSONString(RequestInfo.from(this), JsonInclude.Include.NON_NULL) : "{}")
+                .requestTime(new Date())
+                .build();
+
+        final MockTaskStartEvent event = MockTaskStartEvent.of(this, taskLog);
+
+        DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(event);
+
+        return event;
+    }
+
+    @Override
+    public Consumer<ResponseInfo> publishEndEvent(final MockTaskStartEvent mockTaskEvent) {
+
+        if (!DynamicMockContext.getInstance().getMockTaskLogProperties().isEnableLog()) {
+            return responseInfo -> {
+            };
+        }
+
+        return responseInfo -> {
+            final MockTaskLogDto mockTaskLog = mockTaskEvent.getMockTaskLog();
+            mockTaskLog.setResponseInfo(JsonUtils.toJSONString(responseInfo, JsonInclude.Include.NON_NULL));
+            mockTaskLog.setTiming(System.currentTimeMillis() - mockTaskLog.getRequestTime().getTime());
+            final MockTaskEndEvent endEvent = MockTaskEndEvent.of(mockTaskEvent.getSource(), mockTaskLog);
+            DynamicMockContext.getInstance().getApplicationEventPublisher().publishEvent(endEvent);
+        };
+    }
+
+    @Override
+    public void sendRequest() {
+
+        final MockTaskStartEvent startEvent = this.publishStartEvent();
 
         DynamicMockContext.getInstance()
                 .getWebClient()
@@ -183,7 +184,7 @@ public class MockTask implements Runnable {
                 .headers(h -> h.addAll(this.headers))
                 .bodyValue(this.body)
                 .exchangeToMono(getResponseInfo())
-                .subscribe(publishEndEvent(startEvent));
+                .subscribe(this.publishEndEvent(startEvent));
     }
 
     private String getActualRequestUrl(final String requestUrl) {

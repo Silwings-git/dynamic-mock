@@ -7,6 +7,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.CronTrigger;
 import top.silwings.core.common.Identity;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,33 +22,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Getter
 @Builder
-public class AutoCancelTask implements Runnable {
-
-    /**
-     * 唯一标识
-     */
-    private final String taskCode;
+public class AutoCancelCronTask implements Runnable, RegisterAware {
 
     private final Identity handlerId;
 
     private final String cron;
 
     private final AtomicInteger numberOfExecute;
-    private final Runnable task;
 
-    /**
-     * 任务原始信息
-     */
-    private final String taskJson;
-
-    /**
-     * 任务注册时间
-     */
-    private final long registrationTime;
+    private final Task task;
 
     private ScheduledFuture<?> future;
 
+    private RegistrationInfo registrationInfo;
+
     @Override
+    public void setRegistrationInfo(final RegistrationInfo registrationInfo) {
+        this.registrationInfo = registrationInfo;
+        if (this.task instanceof RegisterAware) {
+            ((RegisterAware) this.task).setRegistrationInfo(registrationInfo);
+        }
+    }
+
     public void run() {
         try {
             this.task.run();
@@ -71,9 +67,13 @@ public class AutoCancelTask implements Runnable {
         return false;
     }
 
-    public AutoCancelTask schedule(final TaskScheduler scheduler) {
+    public AutoCancelCronTask schedule(final TaskScheduler scheduler) {
         this.future = scheduler.schedule(this, this.getTrigger());
         return this;
+    }
+
+    public String getTaskJson() {
+        return JsonUtils.toJSONString(this.task);
     }
 
 }
