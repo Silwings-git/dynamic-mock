@@ -40,7 +40,8 @@ public class MockHandlerFactory {
                 .name(definition.getName())
                 .httpMethodList(definition.getHttpMethods())
                 .requestUri(definition.getRequestUri())
-                .delayTime(definition.getDelayTime());
+                .delayTime(definition.getDelayTime())
+                .version(definition.getVersion());
 
         // 自定义空间.
         builder.customizeSpaceInterpreter(new CustomizeSpaceNodeInterpreter(definition.getCustomizeSpace(), this.jsonNodeParser.parse(definition.getCustomizeSpace())));

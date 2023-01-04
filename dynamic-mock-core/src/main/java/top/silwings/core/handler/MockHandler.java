@@ -34,38 +34,40 @@ public class MockHandler {
     /**
      * 唯一标识符
      */
-    private Identity handlerId;
+    private final Identity handlerId;
 
     /**
      * 名称
      */
-    private String name;
+    private final String name;
 
     /**
      * 支持的请求方式
      */
-    private List<HttpMethod> httpMethodList;
+    private final List<HttpMethod> httpMethodList;
 
     /**
      * 支持的请求地址
      */
-    private String requestUri;
+    private final String requestUri;
 
     /**
      * 延迟执行时间
      */
-    private int delayTime;
+    private final int delayTime;
+
+    private final long version;
 
     /**
      * 自定义空间
      */
-    private NodeInterpreter customizeSpaceInterpreter;
+    private final NodeInterpreter customizeSpaceInterpreter;
 
-    private List<MockResponseInfo> responseInfoList;
+    private final List<MockResponseInfo> responseInfoList;
 
-    private List<MockTaskInfo> syncTaskInfoList;
+    private final List<MockTaskInfo> syncTaskInfoList;
 
-    private List<MockTaskInfo> asyncTaskInfoList;
+    private final List<MockTaskInfo> asyncTaskInfoList;
 
     public boolean support(final RequestInfo requestInfo) {
         return PathMatcherUtils.match(this.requestUri, requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
