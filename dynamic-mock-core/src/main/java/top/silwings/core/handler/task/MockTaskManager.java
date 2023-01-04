@@ -61,7 +61,7 @@ public class MockTaskManager implements DisposableBean {
                     .schedule(this.taskScheduler);
 
             final RegistrationInfo registrationInfo = RegistrationInfo.builder()
-                    .taskCode(this.buildTaskCode(mockTask.getHandlerId()))
+                    .taskCode(this.buildAsyncTaskCode(mockTask.getHandlerId()))
                     .registrationTime(System.currentTimeMillis())
                     .build();
 
@@ -126,7 +126,7 @@ public class MockTaskManager implements DisposableBean {
      * @param handlerId Mock Handler id
      * @return 任务id
      */
-    private String buildTaskCode(final Identity handlerId) {
+    private String buildAsyncTaskCode(final Identity handlerId) {
         return handlerId.stringValue() + "-" + System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
     }
 
@@ -156,8 +156,23 @@ public class MockTaskManager implements DisposableBean {
                 .collect(Collectors.toList());
     }
 
+    public void registerDisposableSyncTask(final MockTask mockTask) {
+
+        mockTask.setRegistrationInfo(RegistrationInfo.builder()
+                .taskCode(this.buildSyncTaskCode(mockTask.getHandlerId()))
+                .registrationTime(System.currentTimeMillis())
+                .build());
+
+        mockTask.run();
+    }
+
+    private String buildSyncTaskCode(final Identity handlerId) {
+        return "Sync-" + handlerId.stringValue() + "-" + System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
+    }
+
     @Override
     public void destroy() {
         this.taskScheduler.destroy();
     }
+
 }

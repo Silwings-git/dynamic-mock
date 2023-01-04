@@ -7,9 +7,7 @@ import org.springframework.http.ResponseEntity;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.handler.response.MockResponseInfo;
-import top.silwings.core.handler.task.MockTask;
 import top.silwings.core.handler.task.MockTaskInfo;
-import top.silwings.core.handler.task.RegistrationInfo;
 import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.utils.DelayUtils;
 import top.silwings.core.utils.PathMatcherUtils;
@@ -17,7 +15,6 @@ import top.silwings.core.utils.PathMatcherUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -90,8 +87,10 @@ public class MockHandler {
         // 筛选异步定时任务
         for (final MockTaskInfo mockTaskInfo : this.asyncTaskInfoList) {
             if (mockTaskInfo.support(mockHandlerContext)) {
-                // -- 初始化异步定时任务
-                DynamicMockContext.getInstance().getMockTaskManager().registerAsyncTask(mockTaskInfo.getMockTask(mockHandlerContext));
+                // 初始化异步定时任务
+                DynamicMockContext.getInstance()
+                        .getMockTaskManager()
+                        .registerAsyncTask(mockTaskInfo.getMockTask(mockHandlerContext));
             }
         }
 
@@ -108,8 +107,10 @@ public class MockHandler {
         // 筛选同步task
         for (final MockTaskInfo mockTaskInfo : this.syncTaskInfoList) {
             if (mockTaskInfo.support(mockHandlerContext)) {
-                // 同步定时任务仅执行一次
-                this.runTask(mockTaskInfo, mockHandlerContext);
+                // 同步任务仅执行一次
+                DynamicMockContext.getInstance()
+                        .getMockTaskManager()
+                        .registerDisposableSyncTask(mockTaskInfo.getMockTask(mockHandlerContext));
             }
         }
 
@@ -120,22 +121,6 @@ public class MockHandler {
         return mockResponse
                 .delay()
                 .toResponseEntity();
-    }
-
-    private void runTask(final MockTaskInfo mockTaskInfo, final MockHandlerContext mockHandlerContext) {
-
-        final MockTask mockTask = mockTaskInfo.getMockTask(mockHandlerContext);
-
-        mockTask.setRegistrationInfo(RegistrationInfo.builder()
-                .taskCode(this.getSyncTaskCode(mockTask.getHandlerId()))
-                .registrationTime(System.currentTimeMillis())
-                .build());
-
-        mockTask.run();
-    }
-
-    private String getSyncTaskCode(final Identity handlerId) {
-        return "Sync-" + handlerId.stringValue() + "-" + System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
     }
 
     public MockHandler delay() {
