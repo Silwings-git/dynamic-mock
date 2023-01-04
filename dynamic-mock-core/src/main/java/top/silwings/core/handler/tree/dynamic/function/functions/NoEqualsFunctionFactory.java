@@ -42,7 +42,7 @@ public class NoEqualsFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "neq".equalsIgnoreCase(methodName) || "noequals".equalsIgnoreCase(methodName);
+        return "neq".equalsIgnoreCase(methodName) || "noEquals".equalsIgnoreCase(methodName);
     }
 
     @Override

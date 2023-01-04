@@ -34,8 +34,11 @@ public class DynamicMockAdminConfig implements WebMvcConfigurer {
     @Value("${project.version}")
     private String projectVersion;
 
-    @Autowired
-    private LoginService loginService;
+    private final LoginService loginService;
+
+    public DynamicMockAdminConfig(final LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {

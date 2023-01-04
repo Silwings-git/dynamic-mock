@@ -32,7 +32,7 @@ public class ToBeanFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "tobean".equalsIgnoreCase(methodName);
+        return "toBean".equalsIgnoreCase(methodName);
     }
 
     @Override

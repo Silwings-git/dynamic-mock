@@ -148,7 +148,7 @@ public class MockTaskController {
             UserHolder.validProjectId(param.getProjectId());
             unregisterHandlerId = this.mockHandlerService.queryHandlerIds(param.getProjectId());
 
-        } else if (null != param.getProjectId() && null != param.getHandlerId()) {
+        } else if (null != param.getProjectId()) {
 
             UserHolder.validProjectId(param.getProjectId());
             CheckUtils.isIn(param.getHandlerId(), this.mockHandlerService.queryHandlerIds(param.getProjectId()), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));
@@ -220,7 +220,7 @@ public class MockTaskController {
             UserHolder.validProjectId(param.getProjectId());
             deleteHandlerIdList = this.mockHandlerService.queryHandlerIds(param.getProjectId());
 
-        } else if (null != param.getProjectId() && null != param.getHandlerId()) {
+        } else if (null != param.getProjectId()) {
 
             UserHolder.validProjectId(param.getProjectId());
             CheckUtils.isIn(param.getHandlerId(), this.mockHandlerService.queryHandlerIds(param.getProjectId()), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "handlerId"));

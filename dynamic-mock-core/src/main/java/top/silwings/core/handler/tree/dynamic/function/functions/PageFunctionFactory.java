@@ -75,6 +75,7 @@ public class PageFunctionFactory implements FunctionFactory {
             return new PageFunction(dynamicValueList);
         }
 
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         public List<Object> doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
 
@@ -102,18 +103,6 @@ public class PageFunctionFactory implements FunctionFactory {
             }
 
             throw DynamicMockException.from("Parameter incorrectly of `page` : " + JsonUtils.toJSONString(childNodeValueList));
-        }
-
-        private boolean isListStr(final Object arg) {
-
-            if (arg instanceof String) {
-                final String argStr = (String) arg;
-                if (argStr.startsWith("[") && argStr.endsWith("]") && JsonUtils.isValidJson(argStr)) {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private List<Object> pageFormData(final int pageNum, final int pageSize, final int total, final Object pageItem, final boolean dynamic, final MockHandlerContext mockHandlerContext) {

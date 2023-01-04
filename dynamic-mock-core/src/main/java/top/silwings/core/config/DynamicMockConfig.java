@@ -41,11 +41,6 @@ public class DynamicMockConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AsyncRestTemplate asyncRestTemplate() {
-        return new AsyncRestTemplate();
-    }
-
-    @Bean
     public WebClient webClient() {
         return WebClient.builder()
                 .defaultHeader("Requester", "Dynamic-Mock-Service")

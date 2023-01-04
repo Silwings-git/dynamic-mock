@@ -42,7 +42,7 @@ public class IsNotNullFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "isnotnull".equalsIgnoreCase(methodName);
+        return "isNotNull".equalsIgnoreCase(methodName);
     }
 
     @Override

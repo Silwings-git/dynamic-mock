@@ -38,7 +38,7 @@ public class IsBlankFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "isblank".equalsIgnoreCase(methodName);
+        return "isBlank".equalsIgnoreCase(methodName);
     }
 
     @Override

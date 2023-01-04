@@ -1,13 +1,5 @@
 package top.silwings.admin.web.vo.param;
 
-/**
- * @ClassName DeleteUserParam
- * @Description 删除用户参数
- * @Author Silwings
- * @Date 2022/11/25 22:17
- * @Since
- **/
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -17,6 +9,13 @@ import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.CheckUtils;
 
+/**
+ * @ClassName DeleteUserParam
+ * @Description 删除用户参数
+ * @Author Silwings
+ * @Date 2022/11/25 22:17
+ * @Since
+ **/
 @Getter
 @Setter
 @ApiModel(description = "删除任务日志参数")

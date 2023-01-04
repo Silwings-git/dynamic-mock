@@ -42,7 +42,7 @@ public class IsEmptyFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "isempty".equalsIgnoreCase(methodName);
+        return "isEmpty".equalsIgnoreCase(methodName);
     }
 
     @Override
