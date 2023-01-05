@@ -41,6 +41,7 @@ import top.silwings.core.handler.tree.dynamic.function.functions.NowFunctionFact
 import top.silwings.core.handler.tree.dynamic.function.functions.PageFunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.functions.PrintFunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.functions.RandomFunctionFactory;
+import top.silwings.core.handler.tree.dynamic.function.functions.SaveCacheFunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.functions.SearchFunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.functions.ToBeanFunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.functions.UUIDFunctionFactory;
@@ -164,7 +165,8 @@ public class MockHandlerJmh {
                             new SearchFunctionFactory(),
                             new ToBeanFunctionFactory(),
                             new ToJsonStringFunctionFactory(),
-                            new UUIDFunctionFactory()
+                            new UUIDFunctionFactory(),
+                            new SaveCacheFunctionFactory()
                     )
                     .collect(Collectors.toList());
         }

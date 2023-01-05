@@ -1,4 +1,4 @@
-package top.silwings.admin.web.setup;
+package top.silwings.admin.web;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.SimpleIdGenerator;
 import org.springframework.web.reactive.function.client.WebClient;
+import top.silwings.admin.web.setup.MockHandlerDefinitionMock;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.config.MockTaskLogProperties;
 import top.silwings.core.config.TaskSchedulerProperties;

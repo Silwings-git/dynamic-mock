@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName MockDefinitionMock
@@ -50,6 +52,7 @@ public class MockHandlerDefinitionMock {
         map.put("11", "Random");
         map.put("pageNum", 1);
         map.put("pageSize", 10);
+        map.put("list6", Stream.iterate(0, i -> i + 2).limit(200).collect(Collectors.toList()));
 
         return map;
     }
@@ -147,7 +150,15 @@ public class MockHandlerDefinitionMock {
                 " \"body\": \"${#search('$.pageNum')}\"" +
                 "}";
 
-        definition.body(JsonUtils.toBean(search));
+        final String iterator = "{" +
+                " \"list\": \"${#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')}\"" +
+                "}";
+
+        final String iteratorObj = "{" +
+                " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
+                "}";
+
+        definition.body(JsonUtils.toBean(iteratorObj));
 
         return definition.build();
     }
