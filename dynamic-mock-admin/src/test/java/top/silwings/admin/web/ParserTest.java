@@ -202,8 +202,16 @@ public class ParserTest {
 //        expressionList.add("#search('param','customizeSpace')");
 //        expressionList.add("#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')");
 //        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
-        expressionList.add("#search('abcabcabc','customizeSpace','御坂美琴')");
-        expressionList.add("#search('abcabcabc','localcache','Misaka Mikoto')");
+//        expressionList.add("#search('abcabcabc','customizeSpace','御坂美琴')");
+//        expressionList.add("#search('abcabcabc','localcache','Misaka Mikoto')");
+//        expressionList.add("#search(#saveCache('abcabcabc','abcabcabc'),'localcache','Misaka Mikoto')");
+//        expressionList.add("#search(#saveCache('abcabcabc','御坂美琴','key'),'localcache','Misaka Mikoto')");
+//        expressionList.add("#print(#saveCache('abcabcabc','御坂美琴','key'))");
+//        expressionList.add("#print(#saveCache('abcabcabc','御坂美琴','value'))");
+//        expressionList.add("#print(#saveCache('abcabcabc','御坂美琴','all'))");
+        expressionList.add("#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
+        expressionList.add("#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))" +
+                "+#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -225,6 +233,7 @@ public class ParserTest {
         requestContext.addCustomizeParam("list3", Stream.of(1, 2, 3).collect(Collectors.toList()));
         requestContext.addCustomizeParam("list4", Stream.of("1", "2", "3").collect(Collectors.toList()));
         requestContext.addCustomizeParam("list5", Stream.of("1", "3").collect(Collectors.toList()));
+        requestContext.addCustomizeParam("list6", Stream.of("1", "3", "5").collect(Collectors.toList()));
         requestContext.addCustomizeParam("page_param", "{\"page\": \"10\"}");
 
         final Map<String, Object> baseUser = new HashMap<>();
