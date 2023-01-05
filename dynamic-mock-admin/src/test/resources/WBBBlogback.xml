@@ -13,5 +13,5 @@
     </appender>
 
     <!-- 日志输出级别 -->
-    <logger name="org.springframework" level="ERROR"/>
+    <logger name="org.springframework" level="INFO"/>
 </configuration>

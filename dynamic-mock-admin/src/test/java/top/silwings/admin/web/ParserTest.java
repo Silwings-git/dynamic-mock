@@ -201,7 +201,9 @@ public class ParserTest {
 //        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\"}',true)");
 //        expressionList.add("#search('param','customizeSpace')");
 //        expressionList.add("#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')");
-        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
+//        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
+        expressionList.add("#search('abcabcabc','customizeSpace','御坂美琴')");
+        expressionList.add("#search('abcabcabc','localcache','Misaka Mikoto')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();

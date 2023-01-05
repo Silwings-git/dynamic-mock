@@ -39,6 +39,10 @@ public class RequestContext {
      */
     private final RequestInfo requestInfo;
     /**
+     * 本地缓存,可用于运行时函数向其中读写数据
+     */
+    private final Map<Object, Object> localCache = new HashMap<>();
+    /**
      * 自定义空间
      */
     @Setter

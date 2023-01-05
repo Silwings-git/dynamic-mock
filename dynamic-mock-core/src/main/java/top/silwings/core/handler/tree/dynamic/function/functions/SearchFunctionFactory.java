@@ -11,6 +11,7 @@ import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
 import top.silwings.core.utils.CheckUtils;
+import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class SearchFunctionFactory implements FunctionFactory {
     private static final FunctionInfo SEARCH_FUNCTION_INFO = FunctionInfo.builder()
             .functionName("Search")
             .minArgsNumber(1)
-            .maxArgsNumber(2)
+            .maxArgsNumber(3)
             .build();
     private static final String SYMBOL = "#search(...)";
 
@@ -54,6 +55,8 @@ public class SearchFunctionFactory implements FunctionFactory {
         CUSTOMIZESPACE,
         // 请求信息
         REQUESTINFO,
+        // 本地缓存
+        LOCALCACHE,
         ;
 
         public static SearchScope valueOfName(final String str) {
@@ -73,6 +76,7 @@ public class SearchFunctionFactory implements FunctionFactory {
      * 搜索函数
      * #search(搜索词)
      * #search(搜索词,搜索范围)
+     * #search(搜索词,搜索范围,默认值)
      */
     public static class SearchFunction extends AbstractDynamicValue {
 
@@ -91,14 +95,21 @@ public class SearchFunctionFactory implements FunctionFactory {
             }
 
             final Object jsonObject;
+            final Object defaultValue = childNodeValueList.size() >= 3 ? childNodeValueList.get(2) : null;
 
             if (childNodeValueList.size() > 1) {
                 final SearchScope searchScope = SearchScope.valueOfName(String.valueOf(childNodeValueList.get(1)));
                 if (SearchScope.CUSTOMIZESPACE.equals(searchScope)) {
+
                     jsonObject = mockHandlerContext.getRequestContext().getCustomizeSpace();
                 } else if (SearchScope.REQUESTINFO.equals(searchScope)) {
+
                     jsonObject = mockHandlerContext.getRequestContext().getRequestInfo();
+                } else if (SearchScope.LOCALCACHE.equals(searchScope)) {
+
+                    jsonObject = mockHandlerContext.getRequestContext().getLocalCache();
                 } else {
+
                     jsonObject = childNodeValueList.get(1);
                 }
             } else {
@@ -106,10 +117,10 @@ public class SearchFunctionFactory implements FunctionFactory {
             }
 
             try {
-                return JsonUtils.jsonPathRead(jsonObject, String.valueOf(childNodeValueList.get(0)));
+                return ConvertUtils.getNoNullOrDefault(JsonUtils.jsonPathRead(jsonObject, String.valueOf(childNodeValueList.get(0))), defaultValue);
             } catch (Exception e) {
                 log.error("Json path error.", e);
-                return null;
+                return defaultValue;
             }
         }
 
