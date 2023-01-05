@@ -76,6 +76,8 @@ import java.util.stream.Stream;
  * @Since
  **/
 @Slf4j
+//@RunWith(value = SpringRunner.class)
+//@SpringBootTest(classes = DynamicMockAdminApplication.class)
 public class MockHandlerJunit {
 
     @Test
