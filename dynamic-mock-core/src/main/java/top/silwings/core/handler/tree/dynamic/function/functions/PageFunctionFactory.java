@@ -113,10 +113,18 @@ public class PageFunctionFactory implements FunctionFactory {
                 return Collections.emptyList();
             }
 
-            return Stream.iterate(0, t -> t + 1)
+            final Stream<Object> stream = Stream.iterate(0, t -> t + 1)
                     .limit(returnSize)
-                    .map(i -> dynamic ? this.dynamicData(pageItem, mockHandlerContext) : pageItem)
-                    .collect(Collectors.toList());
+                    .map(i -> pageItem);
+
+            if (dynamic) {
+                final NodeInterpreter pageInterpreter = this.buildNodeInterpreter(pageItem);
+                return stream
+                        .map(i -> pageInterpreter.interpret(mockHandlerContext))
+                        .collect(Collectors.toList());
+            }
+
+            return stream.collect(Collectors.toList());
         }
 
         private int getReturnSize(final int pageNum, final int pageSize, final int total) {
@@ -140,18 +148,26 @@ public class PageFunctionFactory implements FunctionFactory {
 
             final int start = (pageNum - 1) * pageSize;
 
-            return Stream.iterate(start, t -> t + 1)
+            final Stream<Object> objectStream = Stream.iterate(start, t -> t + 1)
                     .limit(returnSize)
-                    .map(pageDataList::get)
-                    .map(pageData -> dynamic ? this.dynamicData(pageData, mockHandlerContext) : pageData)
-                    .collect(Collectors.toList());
+                    .map(pageDataList::get);
+
+            if (dynamic) {
+                return objectStream
+                        .map(this::buildNodeInterpreter)
+                        .map(interpreter -> interpreter.interpret(mockHandlerContext))
+                        .collect(Collectors.toList());
+            }
+
+            return objectStream.collect(Collectors.toList());
         }
 
-        private Object dynamicData(final Object obj, final MockHandlerContext mockHandlerContext) {
+        private NodeInterpreter buildNodeInterpreter(final Object obj) {
 
             final NodeInterpreter pageInterpreter;
 
             if (obj instanceof String && !JsonUtils.isValidJson((String) obj)) {
+
                 final DynamicValueFactory dynamicValueFactory = DynamicMockContext.getInstance().getDynamicValueFactory();
 
                 final String resultStr = (String) obj;
@@ -160,13 +176,14 @@ public class PageFunctionFactory implements FunctionFactory {
 
                     pageInterpreter = new NodeInterpreter(dynamicValueFactory.buildDynamicValue(resultStr));
                 } else {
+
                     pageInterpreter = new NodeInterpreter(StaticValueNode.from(obj));
                 }
             } else {
                 pageInterpreter = new NodeInterpreter(DynamicMockContext.getInstance().getJsonNodeParser().parse(obj));
             }
 
-            return pageInterpreter.interpret(mockHandlerContext);
+            return pageInterpreter;
         }
 
         @Override

@@ -1,9 +1,12 @@
-package top.silwings.dynamicmock.core;
+package top.silwings.admin.web;
 
 import lombok.Getter;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.SimpleIdGenerator;
@@ -19,8 +22,10 @@ import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.task.MockTaskManager;
+import top.silwings.core.handler.tree.NodeInterpreter;
 import top.silwings.core.handler.tree.dynamic.AutoTypeParser;
 import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
+import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.dynamic.expression.ExpressionDynamicValueFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionDynamicValueFactory;
@@ -75,11 +80,39 @@ import java.util.stream.Stream;
  * @Date 2022/11/9 21:16
  * @Since
  **/
+@Fork(3)
+@Warmup(iterations = 2, time = 10)
+@Measurement(iterations = 2, time = 10)
 public class MockHandlerJmh {
 
     @Benchmark
     public void test202(final TestData testData) {
         testData.getStaticPageMockHandler().mock(MockHandlerContext.from(testData.getRequest()));
+    }
+
+    @Benchmark
+    public void test203(final TestData testData) {
+
+        final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
+
+        final DynamicValue dynamicValue = testData.getApplicationContent().getDynamicValueFactory().buildDynamicValue(str);
+
+        new NodeInterpreter(dynamicValue).interpret(MockHandlerContext.from(testData.getRequest()));
+    }
+
+    @Benchmark
+    public void test204(final TestData testData) {
+        testData.getPageNodeInterpreter().interpret(MockHandlerContext.from(testData.getRequest()));
+    }
+
+    @Benchmark
+    public void test205(final TestData testData) {
+
+        final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
+
+        final DynamicValue dynamicValue = testData.getApplicationContent().getDynamicValueFactory().buildDynamicValue(str);
+
+        new NodeInterpreter(dynamicValue);
     }
 
     @Getter
@@ -91,6 +124,8 @@ public class MockHandlerJmh {
         private final MockHandler staticPageMockHandler;
 
         private final MockHandlerJmh.ApplicationContent applicationContent;
+
+        private final NodeInterpreter pageNodeInterpreter;
 
         public TestData() {
 
@@ -104,6 +139,10 @@ public class MockHandlerJmh {
 
             final MockHandlerDto staticPage = MockHandlerDefinitionMock.build();
             this.staticPageMockHandler = this.applicationContent.getMockHandlerFactory().buildMockHandler(staticPage);
+
+            final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
+            final DynamicValue dynamicValue = this.applicationContent.getDynamicValueFactory().buildDynamicValue(str);
+            this.pageNodeInterpreter = new NodeInterpreter(dynamicValue);
         }
     }
 
