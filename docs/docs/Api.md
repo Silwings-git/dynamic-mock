@@ -237,7 +237,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 动态表达式被分为函数表达式和逻辑表达式。函数表达式由函数声明和函数参数组成，例如`#search('code','customizespace')`,search为函数名，'code','customizespace'则为调用该函数时传递的两个参数。非函数表达式的的动态表达式均认为是逻辑表达式。
 
-注意: 动态表达式中所有想表述为字符串的内容必须添加单引号`'`，如果有嵌套,需要添加转义符号。函数声明不需要添加字符串(因为其不表述为普通字符串)。
+注意: 动态表达式中所有想表述为字符串的内容必须添加单引号`'`，如果有嵌套,需要添加转义符号，因为转义单引号与JSON存在冲突，所以在动态表达式中转义符号使用`^`，而不是`\`，使用方法一致。函数声明不需要添加字符串(因为其不表述为普通字符串)。
 
 示例：
 
@@ -245,7 +245,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 2. `${#page(1,10,100,'{"name":"Misaka Mikoto"}',false)}`：1,10,100分别作为数值类型参数，不添加单引号。`{"name":"Misaka Mikoto"}`整体作为字符串参数，需要适用单引号。false作为boolean类型的参数，不添加单引号。
 
-3. `${#page(1,10,100,'{"name":"#search(\\'code\\')"}'),false}`：和上一个示例类似，不同的是json字符串中添加了search函数，作为search函数的字符串参数code，因为整个json字符串已经添加了单引号，所以code上的单引号需要添加转义符。
+3. `${#page(1,10,100,'{"name":"#search(^'code^')"}'),false}`：和上一个示例类似，不同的是json字符串中添加了search函数，作为search函数的字符串参数code，因为整个json字符串已经添加了单引号，所以code上的单引号需要添加转义符。
 
    **tips:**
 
@@ -296,24 +296,33 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 ​	搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
 
-​	该函数提供三个重载形式。
+​	该函数提供五个重载形式。
 
    1. `#search(jsonPath,jsonObject)`
 
-            1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
-            2. jsonObject，json类型或可转换为json的字符串。
+   2. `#search(jsonPath,jsonObject,defaultValue)`
 
-   2. `#search(jsonPath)`
+          1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
+          2. jsonObject，json类型或可转换为json的字符串。
+           3. defaultValue，不限制类型。当查询结果为null时使用defaultValue返回。
 
-   3. `#search(jsonPath,searchScope)`
+   3. `#search(jsonPath)`
+
+   4. `#search(jsonPath,SearchScope)`
+
+   5. `#search(jsonPath,SearchScope,defaultValue)`
 
       1. jsonPath，字符类型。用于指定要查询的值的路径。如果指定路径不存在将返回null。
 
-      2. searchScope，字符类型。用于指定查询的范围。支持`CUSTOMIZESPACE`和`REQUESTINFO`，不区分大小写，不传或值不合法时默认为`CUSTOMIZESPACE`。
+      2. defaultValue，不限制类型。当查询结果为null时使用defaultValue返回。
+
+      3. searchScope，字符类型。用于指定查询的范围。支持`CUSTOMIZESPACE`和`REQUESTINFO`，不区分大小写，不传或值不合法时默认为`CUSTOMIZESPACE`。
 
          1. `CUSTOMIZESPACE`：自定义参数空间。自定义信息中的内容在创建Mock Handler是指定。
 
-         2. `REQUESTINFO`：请求信息。当有http请求到达Dynamic Mock服务，会将请求信息解析为requestInfo实例，该实例中包含这次http请求的大部分信息。requestInfo结构如下(requestInfo数据来源为HttpServletRequest)：
+         2. `LOCALCACHE`：本地缓存。通过SaveCache函数添加缓存信息。每次请求对应的LocalCache相互独立。
+
+         3. `REQUESTINFO`：请求信息。当有http请求到达Dynamic Mock服务，会将请求信息解析为requestInfo实例，该实例中包含这次http请求的大部分信息。requestInfo结构如下(requestInfo数据来源为HttpServletRequest)：
 
             ```json
             {
@@ -605,7 +614,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
    3. 数据集动态：#page(当前页,每页数量,数据集)
       1. `#page(1,10,#search('list'))`
       2. `#page(1,2,'[{"name":"Misaka Mikoto","age":14},{"name":"Misaka Mikoto","age":15},{"name":"Misaka Mikoto","age":16}]')`
-      3. `#page(2,2,'[{"name":"Misaka Mikoto","age":14},{"name":"Misaka Mikoto","age":15},{"name":"Misaka Mikoto","age":"${#search(\'param\')}"}]')`
+      3. `#page(2,2,'[{"name":"Misaka Mikoto","age":14},{"name":"Misaka Mikoto","age":15},{"name":"Misaka Mikoto","age":"${#search(^'param^')}"}]')`
    4. 数据集指定是否动态：#page(当前页,每页数量,数据集,数据是否动态)
       1. `#page(1,2,101,'${1+1}',false)`
 
@@ -778,3 +787,41 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 
 1. `#print(#toBean('{"name":"Misaka Mikoto"}'))`=>打印：{name=Misaka Mikoto}
 2. `#print(#tjs(#toBean('{"name":"Misaka Mikoto"}')))`=>打印：{"name":"Misaka Mikoto"}
+
+
+
+##### 20.SaveCache
+
+​	向请求上下文的本地缓存写入数据。缓存的key，value不限制类型，但需要注意，如果key设置为非字符类型，Search函数将无法从缓存中获取值。
+
+​	该函数提供两个重载形式：
+
+1. `#saveCache(key，value)`
+
+2. `#saveCache(key，value, ReturnType)`
+
+   1. key：缓存的key值，类型不限。
+
+   2. value：缓存的value值，类型不限。
+
+   3. ReturnType：函数返回类型。支持`KEY`，`VALUE`，`ALL`，不限大小写。默认值为`VALUE`。
+
+      1. KEY：返回设置缓存时的key值。
+      2. VALUE：返回设置缓存时的value值。
+      3. ALL：将设置的缓存组合成映射返回。
+
+      ```json
+      {
+      	"key":"",
+      	"value":""
+      }
+      ```
+
+示例：
+
+1. `#saveCache('name','Misaka Mikoto')` => Misaka Mikoto
+2. `#saveCache('name','Misaka Mikoto','VALUE')` => Misaka Mikoto
+3. `#saveCache('name','Misaka Mikoto','key')` => name
+4. `#saveCache('name','Misaka Mikoto','ALL')` => 映射对象，json表示为：{"key":"name","value":"Misaka Mikoto"}
+5. 安丰
+
