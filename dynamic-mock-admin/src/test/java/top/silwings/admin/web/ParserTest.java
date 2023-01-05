@@ -6,12 +6,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.silwings.admin.DynamicMockAdminApplication;
-import top.silwings.core.common.Identity;
+import top.silwings.admin.web.setup.MockHandlerDefinitionMock;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
@@ -27,20 +26,15 @@ import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.MockResponseDto;
-import top.silwings.core.model.MockResponseInfoDto;
-import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
 import top.silwings.core.utils.JsonUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -71,146 +65,150 @@ public class ParserTest {
 
         final List<String> expressionList = new ArrayList<>();
 
-        expressionList.add("1+2");
-        expressionList.add("1+2*3");
-        expressionList.add("2+#search('age')");
-        expressionList.add("2+#search('age')*2");
-        expressionList.add("(2+#search('age'))*2+2*4");
-        expressionList.add("#uuid(#search(1+1),#search(true))");
-        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
-        expressionList.add("1/2");
-        expressionList.add("2/1");
-        expressionList.add("2-1");
-        expressionList.add("1-2");
-        expressionList.add("-1");
-        expressionList.add("1--1");
-        expressionList.add("1--1-1");
-        expressionList.add("123,456");
-        expressionList.add("#search(#search(#search(#search('param')+#search('param'))))");
-        expressionList.add("#search(#search(#search(#search('param')+(19-#search('paramA')))))");
-        expressionList.add("#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))");
-        expressionList.add("#search('abc.abc')");
-        expressionList.add("#isBlank('abc.abc')");
-        expressionList.add("#isBlank('abc.abc')");
-        expressionList.add("#isBlank()");
-        expressionList.add("#isBlank('')");
-        expressionList.add("#isBlank() && true");
-        expressionList.add("#isBlank() && false");
-        expressionList.add("#search(#isBlank())");
-        expressionList.add("#search(10+#isBlank())");
-        expressionList.add("'2+2'");
-        expressionList.add("2+2");
-        expressionList.add("'2+2'");
-        expressionList.add("#eq(#uuid(),1)");
-        expressionList.add("#eq(#search('abcMap.list[0],customizeSpace'),-1)");
-        expressionList.add("#uuid(,,)");
-        expressionList.add("#uuid(,,false)");
-        expressionList.add("#uuid(,,true)");
-        expressionList.add("#uuid(,10)");
-        expressionList.add("#uuid(,10,true)");
-        // 触发表达式解析异常
-//        expressionList.add("#uuid(UserCode-,10,true)");
-//        expressionList.add("#uuid(<UserCode->,10,true)");
-
-        expressionList.add("             10  + 1-1        == 11-1 ");
-        expressionList.add("10+1-1==11-1");
-        expressionList.add("#eq(#eq(1,2),false)");
-        expressionList.add("#eq(#eq(1,2),true)");
-        expressionList.add("#random()");
-        expressionList.add("#random('int')");
-        expressionList.add("#random('int',1)");
-        expressionList.add("#random('int',1,10)");
-        expressionList.add("#random('long')");
-        expressionList.add("#random('long',1)");
-        expressionList.add("#random('long',1,10)");
-        expressionList.add("#random('double')");
-        expressionList.add("#random('double',1)");
-        expressionList.add("#random('double',1.9999999999999999,2.000000000000001)");
-        expressionList.add("#random('boolean')");
-        expressionList.add("#random('boolean',1)");
-        expressionList.add("#random('boolean',1,2)");
-        expressionList.add("(1+2)-(2*4)");
-        expressionList.add("((1+2)-(2*4)+5)+(4+6)");
-        expressionList.add("#join(,1,2,3,4,,5)");
-        expressionList.add("#join('-',1,2,3,4,,5)");
-        expressionList.add("#concat(,1,2,3,4,,5)");
-        expressionList.add("#concat('-',1,2,3,4,,5)");
-        expressionList.add("#join('-',1,2)");
-        expressionList.add("#join('-',)");
-        expressionList.add("#join('#',1,,2,,3)");
-        expressionList.add("#now()");
-        expressionList.add("#now('yyyy-MM-dd')");
-        expressionList.add("#now('yyyy-MM-dd HH:mm:ss')");
-        expressionList.add("#now('yyyy')");
-
-        expressionList.add("#page(1,2,101,'{\"name\":88}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'age^')>0}\"}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"#search(^'age^')\"}')");
-        expressionList.add("#page(1,2,101,'1+1')");
-        expressionList.add("#page(1,2,101,1+1)");
-
-        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
-        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
-        expressionList.add("#equals(1,1 -  1+1)");
-        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
-        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
-        expressionList.add("#page(1,10,#search('list'))");
-        expressionList.add("#page(1,10,#search('list2'))");
-        expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
-        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(^'param^')}\"}]')");
-        expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
-        expressionList.add("#page(1,2,101,'${1+1}')");
-        expressionList.add("#page(1,2,101,'${1+1}',false)");
-        expressionList.add("#uuid(,,true)");
-        expressionList.add("#uuid(,10,true)");
-        expressionList.add("#uuid(,40,true)");
-        expressionList.add("#uuid('UserCode',,false)");
-        expressionList.add("#uuid('UserCode',10,true)");
-        expressionList.add("#isNotNull()");
-        expressionList.add("#isNotNull('')");
-        expressionList.add("#isNull()");
-        expressionList.add("#isNull('')");
-        expressionList.add("#search('$[0]',#search('list2'))");
-        expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
-        expressionList.add("#search('$.page',#search('page_param'))");
-        expressionList.add("#isNull(2)");
-        expressionList.add("#isNull('3')");
-        expressionList.add("#isNull(3.4)");
-        expressionList.add("#isNull(3.4+1.6)");
-        expressionList.add("#isEmpty('[]')");
-        expressionList.add("#isEmpty('[1]')");
-        expressionList.add("#random()");
-        expressionList.add("#random('boolean')");
-        expressionList.add("#random('int',100)");
-        expressionList.add("#random('int',10,20)");
-        expressionList.add("#Contains('a','abc')");
-        expressionList.add("#Contains('abc','a')");
-        expressionList.add("#Contains(#search('list3'),'a')");
-        expressionList.add("#Contains(#search('list3'),'2')");
-        expressionList.add("#Contains(#search('list3'),2)");
-        expressionList.add("#Contains(#search('list4'),'2')");
-        expressionList.add("#Contains(#search('list4'),2)");
-        expressionList.add("#Contains(#search('list4'),#search('list5'))");
-        expressionList.add("#Contains(#toBean('[1,2,3]'),1)");
-        expressionList.add("#Contains(#toBean('[1,2,3]'),'1')");
-        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,3]'))");
-        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,\"3\"]'))");
-        expressionList.add("#Contains(#toBean('[1,2,\"3\"]'),#toBean('[1,\"3\"]'))");
-        expressionList.add("#toBean('{\"name\":\"御坂美琴\"}')");
-        expressionList.add("#toBean('[\"1\",\"2\"]')");
-        expressionList.add("#tjs(#toBean('{\"name\":\"御坂美琴\"}'))");
-        expressionList.add("#print(#toBean('{\"name\":\"御坂美琴\"}'))");
-        expressionList.add("#print(#tjs(#toBean('{\"name\":\"御坂美琴\"}')))");
-        expressionList.add("3*(1+1)");
-        expressionList.add("3*(1+1)--2-6");
-        expressionList.add("#search(#print(3*(1+1)--2-6))");
-        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\"}',true)");
-        expressionList.add("#search('param','customizeSpace')");
+//        expressionList.add("1+2");
+//        expressionList.add("1+2*3");
+//        expressionList.add("2+#search('age')");
+//        expressionList.add("2+#search('age')*2");
+//        expressionList.add("(2+#search('age'))*2+2*4");
+//        expressionList.add("#uuid(#search(1+1),#search(true))");
+//        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
+//        expressionList.add("1/2");
+//        expressionList.add("2/1");
+//        expressionList.add("2-1");
+//        expressionList.add("1-2");
+//        expressionList.add("-1");
+//        expressionList.add("1--1");
+//        expressionList.add("1--1-1");
+//        expressionList.add("123,456");
+//        expressionList.add("#search(#search(#search(#search('param')+#search('param'))))");
+//        expressionList.add("#search(#search(#search(#search('param')+(19-#search('paramA')))))");
+//        expressionList.add("#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))");
+//        expressionList.add("#search('abc.abc')");
+//        expressionList.add("#isBlank('abc.abc')");
+//        expressionList.add("#isBlank('abc.abc')");
+//        expressionList.add("#isBlank()");
+//        expressionList.add("#isBlank('')");
+//        expressionList.add("#isBlank() && true");
+//        expressionList.add("#isBlank() && false");
+//        expressionList.add("#search(#isBlank())");
+//        expressionList.add("#search(10+#isBlank())");
+//        expressionList.add("'2+2'");
+//        expressionList.add("2+2");
+//        expressionList.add("'2+2'");
+//        expressionList.add("#eq(#uuid(),1)");
+//        expressionList.add("#eq(#search('abcMap.list[0],customizeSpace'),-1)");
+//        expressionList.add("#uuid(,,)");
+//        expressionList.add("#uuid(,,false)");
+//        expressionList.add("#uuid(,,true)");
+//        expressionList.add("#uuid(,10)");
+//        expressionList.add("#uuid(,10,true)");
+//        // 触发表达式解析异常
+////        expressionList.add("#uuid(UserCode-,10,true)");
+////        expressionList.add("#uuid(<UserCode->,10,true)");
+//
+//        expressionList.add("             10  + 1-1        == 11-1 ");
+//        expressionList.add("10+1-1==11-1");
+//        expressionList.add("#eq(#eq(1,2),false)");
+//        expressionList.add("#eq(#eq(1,2),true)");
+//        expressionList.add("#random()");
+//        expressionList.add("#random('int')");
+//        expressionList.add("#random('int',1)");
+//        expressionList.add("#random('int',1,10)");
+//        expressionList.add("#random('long')");
+//        expressionList.add("#random('long',1)");
+//        expressionList.add("#random('long',1,10)");
+//        expressionList.add("#random('double')");
+//        expressionList.add("#random('double',1)");
+//        expressionList.add("#random('double',1.9999999999999999,2.000000000000001)");
+//        expressionList.add("#random('boolean')");
+//        expressionList.add("#random('boolean',1)");
+//        expressionList.add("#random('boolean',1,2)");
+//        expressionList.add("(1+2)-(2*4)");
+//        expressionList.add("((1+2)-(2*4)+5)+(4+6)");
+//        expressionList.add("#join(,1,2,3,4,,5)");
+//        expressionList.add("#join('-',1,2,3,4,,5)");
+//        expressionList.add("#concat(,1,2,3,4,,5)");
+//        expressionList.add("#concat('-',1,2,3,4,,5)");
+//        expressionList.add("#join('-',1,2)");
+//        expressionList.add("#join('-',)");
+//        expressionList.add("#join('#',1,,2,,3)");
+//        expressionList.add("#now()");
+//        expressionList.add("#now('yyyy-MM-dd')");
+//        expressionList.add("#now('yyyy-MM-dd HH:mm:ss')");
+//        expressionList.add("#now('yyyy')");
+//
+//        expressionList.add("#page(1,2,101,'{\"name\":88}')");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'age^')>0}\"}')");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"#search(^'age^')\"}')");
+//        expressionList.add("#page(1,2,101,'1+1')");
+//        expressionList.add("#page(1,2,101,1+1)");
+//
+//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'), 'Misaka Mikoto' )");
+//        expressionList.add("#equals(#search('baseUser.name','customizeSpace'),'Misaka Mikoto')");
+//        expressionList.add("#equals(1,1 -  1+1)");
+//        expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
+//        expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
+//        expressionList.add("#page(1,10,#search('list'))");
+//        expressionList.add("#page(1,10,#search('list2'))");
+//        expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+//        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(^'param^')}\"}]')");
+//        expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
+//        expressionList.add("#page(1,2,101,'${1+1}')");
+//        expressionList.add("#page(1,2,101,'${1+1}',false)");
+//        expressionList.add("#uuid(,,true)");
+//        expressionList.add("#uuid(,10,true)");
+//        expressionList.add("#uuid(,40,true)");
+//        expressionList.add("#uuid('UserCode',,false)");
+//        expressionList.add("#uuid('UserCode',10,true)");
+//        expressionList.add("#isNotNull()");
+//        expressionList.add("#isNotNull('')");
+//        expressionList.add("#isNull()");
+//        expressionList.add("#isNull('')");
+//        expressionList.add("#search('$[0]',#search('list2'))");
+//        expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
+//        expressionList.add("#search('$.page',#search('page_param'))");
+//        expressionList.add("#isNull(2)");
+//        expressionList.add("#isNull('3')");
+//        expressionList.add("#isNull(3.4)");
+//        expressionList.add("#isNull(3.4+1.6)");
+//        expressionList.add("#isEmpty('[]')");
+//        expressionList.add("#isEmpty('[1]')");
+//        expressionList.add("#random()");
+//        expressionList.add("#random('boolean')");
+//        expressionList.add("#random('int',100)");
+//        expressionList.add("#random('int',10,20)");
+//        expressionList.add("#Contains('a','abc')");
+//        expressionList.add("#Contains('abc','a')");
+//        expressionList.add("#Contains(#search('list3'),'a')");
+//        expressionList.add("#Contains(#search('list3'),'2')");
+//        expressionList.add("#Contains(#search('list3'),2)");
+//        expressionList.add("#Contains(#search('list4'),'2')");
+//        expressionList.add("#Contains(#search('list4'),2)");
+//        expressionList.add("#Contains(#search('list4'),#search('list5'))");
+//        expressionList.add("#Contains(#toBean('[1,2,3]'),1)");
+//        expressionList.add("#Contains(#toBean('[1,2,3]'),'1')");
+//        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,3]'))");
+//        expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,\"3\"]'))");
+//        expressionList.add("#Contains(#toBean('[1,2,\"3\"]'),#toBean('[1,\"3\"]'))");
+//        expressionList.add("#toBean('{\"name\":\"御坂美琴\"}')");
+//        expressionList.add("#toBean('[\"1\",\"2\"]')");
+//        expressionList.add("#tjs(#toBean('{\"name\":\"御坂美琴\"}'))");
+//        expressionList.add("#print(#toBean('{\"name\":\"御坂美琴\"}'))");
+//        expressionList.add("#print(#tjs(#toBean('{\"name\":\"御坂美琴\"}')))");
+//        expressionList.add("3*(1+1)");
+//        expressionList.add("3*(1+1)--2-6");
+//        expressionList.add("#search(#print(3*(1+1)--2-6))");
+//        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\"}',true)");
+//        expressionList.add("#search('param','customizeSpace')");
+//        expressionList.add("#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')");
+        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
         abcMap.put("list", Collections.singletonList(-1));
         final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
+        requestContext.addCustomizeParam("pageNum", 1);
+        requestContext.addCustomizeParam("pageSize", 10);
         requestContext.addCustomizeParam("paramA", -1);
         requestContext.addCustomizeParam("abcMap", abcMap);
         requestContext.addCustomizeParam("param", 20);
@@ -404,124 +402,4 @@ public class ParserTest {
         }
     }
 
-    /**
-     * @ClassName MockDefinitionMock
-     * @Description
-     * @Author Silwings
-     * @Date 2022/11/12 23:05
-     * @Since
-     **/
-    public static class MockHandlerDefinitionMock {
-
-        public static MockHandlerDto build() {
-            final Random random = new Random();
-            return MockHandlerDto.builder()
-                    .name("MockHandlerDefinitionMock#build")
-                    .httpMethods(Arrays.asList(HttpMethod.GET, HttpMethod.POST))
-                    .requestUri("/user/{name}")
-                    .label("test")
-                    .delayTime(0)
-                    .customizeSpace(buildCustomizeSpace())
-                    .responses(buildResponseInfo())
-                    .tasks(buildTasksInfo())
-                    .handlerId(Identity.from(random.nextInt(1000)))
-                    .build();
-        }
-
-        private static Map<String, Object> buildCustomizeSpace() {
-
-            final Map<String, Object> map = new HashMap<>();
-            map.put("name", "御坂美琴");
-            map.put("phoneNumbers", Arrays.asList("180", "188"));
-            map.put("11", "Random");
-
-            return map;
-        }
-
-        private static List<TaskInfoDto> buildTasksInfo() {
-
-            final TaskInfoDto.TaskInfoDtoBuilder builderA = TaskInfoDto.builder();
-            builderA.name("MockHandlerDefinitionMock#build");
-            builderA.support(Collections.emptyList());
-            builderA.async(true);
-            builderA.cron(null);
-            builderA.numberOfExecute(3);
-            builderA.request(buildMockTask());
-            final TaskInfoDto def1 = builderA.build();
-
-            final TaskInfoDto.TaskInfoDtoBuilder def2 = TaskInfoDto.builder();
-            def2.name("MockHandlerDefinitionMock#build#同步任务");
-            def2.support(Collections.emptyList());
-            def2.async(false);
-            def2.cron(null);
-            def2.numberOfExecute(1);
-            def2.request(buildMockTask2());
-
-            return Arrays.asList(def1);
-        }
-
-        private static TaskRequestDto buildMockTask2() {
-            final TaskRequestDto.TaskRequestDtoBuilder definition = TaskRequestDto.builder();
-
-            final HashMap<String, List<String>> uriVariables = new HashMap<>();
-            uriVariables.put("name", Arrays.asList("${#uuid()}"));
-            uriVariables.put("age", Arrays.asList("10", "20"));
-
-            definition.requestUrl("http://localhost:8080/silwings");
-            definition.httpMethod(HttpMethod.GET);
-            definition.uriVariables(uriVariables);
-
-            return definition.build();
-        }
-
-        private static TaskRequestDto buildMockTask() {
-
-            final TaskRequestDto.TaskRequestDtoBuilder definition = TaskRequestDto.builder();
-
-            final HashMap<String, List<String>> headers = new HashMap<>();
-            headers.put("userAuthToken", Arrays.asList("${#uuid()}"));
-            headers.put("dp", Arrays.asList("1", "${#uuid()}"));
-
-
-            definition.requestUrl("http://localhost:8080/404");
-            definition.httpMethod(HttpMethod.GET);
-            definition.headers(headers);
-
-            return definition.build();
-        }
-
-        private static List<MockResponseInfoDto> buildResponseInfo() {
-
-            final MockResponseInfoDto.MockResponseInfoDtoBuilder definition = MockResponseInfoDto.builder();
-            definition.name("MockHandlerDefinitionMock#buildResponse");
-            definition.support(Collections.emptyList());
-            definition.delayTime(0);
-            definition.response(buildResponse());
-
-            return Collections.singletonList(definition.build());
-        }
-
-        private static MockResponseDto buildResponse() {
-
-            final MockResponseDto.MockResponseDtoBuilder definition = MockResponseDto.builder();
-            definition.status(201);
-            definition.headers(null);
-
-            final String s = "{" +
-                    "\"${#uuid()}\": \"${#uuid()}\"," +
-                    "\"uuidKeyA\": \"${#uuid()}\"," +
-                    "\"uuidKeyB\": \"${#uuid()}\"," +
-                    "\"name\": \"${#search('name')}\"," +
-                    "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
-                    "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
-                    "\"random\": \"${#search('$.'+(1+2*5))}\"," +
-                    " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
-                    "}";
-            definition.body(JsonUtils.toBean(s));
-
-
-            return definition.build();
-        }
-
-    }
 }

@@ -1,0 +1,94 @@
+# JMH version: 1.35
+# VM version: JDK 1.8.0_271, Java HotSpot(TM) 64-Bit Server VM, 25.271-b09
+# VM invoker: D:\Java\jdk1.8.0_271\jdk1.8.0_271\jre\bin\java.exe
+# VM options: -javaagent:D:\develop\IntelliJ IDEA 2022.3\lib\idea_rt.jar=51280:D:\develop\IntelliJ IDEA 2022.3\bin -Dfile.encoding=UTF-8
+# Blackhole mode: full + dont-inline hint (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: top.silwings.dynamicmock.core.MockHandlerJmh.test202
+
+# Run progress: 0.00% complete, ETA 00:08:20
+# Fork: 1 of 5
+# Warmup Iteration   1: 167365.730 ops/s
+# Warmup Iteration   2: 193422.511 ops/s
+# Warmup Iteration   3: 178908.575 ops/s
+# Warmup Iteration   4: 190838.091 ops/s
+# Warmup Iteration   5: 185740.643 ops/s
+Iteration   1: 193322.166 ops/s
+Iteration   2: 193838.649 ops/s
+Iteration   3: 193346.534 ops/s
+Iteration   4: 191915.893 ops/s
+Iteration   5: 186079.040 ops/s
+
+# Run progress: 20.00% complete, ETA 00:06:48
+# Fork: 2 of 5
+# Warmup Iteration   1: 173631.576 ops/s
+# Warmup Iteration   2: 191340.139 ops/s
+# Warmup Iteration   3: 188944.501 ops/s
+# Warmup Iteration   4: 188398.472 ops/s
+# Warmup Iteration   5: 193788.419 ops/s
+Iteration   1: 191811.860 ops/s
+Iteration   2: 192912.816 ops/s
+Iteration   3: 194036.156 ops/s
+Iteration   4: 189444.144 ops/s
+Iteration   5: 194855.272 ops/s
+
+# Run progress: 40.00% complete, ETA 00:05:06
+# Fork: 3 of 5
+# Warmup Iteration   1: 175696.022 ops/s
+# Warmup Iteration   2: 186030.109 ops/s
+# Warmup Iteration   3: 193764.036 ops/s
+# Warmup Iteration   4: 194554.975 ops/s
+# Warmup Iteration   5: 194232.690 ops/s
+Iteration   1: 192958.639 ops/s
+Iteration   2: 193911.213 ops/s
+Iteration   3: 190344.257 ops/s
+Iteration   4: 192817.964 ops/s
+Iteration   5: 193701.433 ops/s
+
+# Run progress: 60.00% complete, ETA 00:03:24
+# Fork: 4 of 5
+# Warmup Iteration   1: 134293.437 ops/s
+# Warmup Iteration   2: 148662.303 ops/s
+# Warmup Iteration   3: 183202.524 ops/s
+# Warmup Iteration   4: 182980.277 ops/s
+# Warmup Iteration   5: 187057.497 ops/s
+Iteration   1: 184437.737 ops/s
+Iteration   2: 187071.104 ops/s
+Iteration   3: 186165.667 ops/s
+Iteration   4: 185434.404 ops/s
+Iteration   5: 185115.947 ops/s
+
+# Run progress: 80.00% complete, ETA 00:01:42
+# Fork: 5 of 5
+# Warmup Iteration   1: 163336.310 ops/s
+# Warmup Iteration   2: 169068.647 ops/s
+# Warmup Iteration   3: 167654.538 ops/s
+# Warmup Iteration   4: 181138.743 ops/s
+# Warmup Iteration   5: 175971.361 ops/s
+Iteration   1: 182341.297 ops/s
+Iteration   2: 177775.666 ops/s
+Iteration   3: 181824.395 ops/s
+Iteration   4: 176253.504 ops/s
+Iteration   5: 173012.162 ops/s
+
+
+Result "top.silwings.dynamicmock.core.MockHandlerJmh.test202":
+  188189.117 ±(99.9%) 4645.871 ops/s [Average]
+  (min, avg, max) = (173012.162, 188189.117, 194855.272), stdev = 6202.105
+  CI (99.9%): [183543.246, 192834.988] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:08:29
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                Mode  Cnt       Score      Error  Units
+MockHandlerJmh.test202  thrpt   25  188189.117 ± 4645.871  ops/s
