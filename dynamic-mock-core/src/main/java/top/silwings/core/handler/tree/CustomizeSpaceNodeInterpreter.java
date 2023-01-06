@@ -15,7 +15,7 @@ import java.util.Stack;
 
 /**
  * @ClassName CustomizeSpaceNodeInterpreter
- * @Description customizeSpace专用解释器
+ * @Description customizeSpace专用解释器,主要用于解决其中的嵌套search
  * @Author Silwings
  * @Date 2022/12/10 18:39
  * @Since

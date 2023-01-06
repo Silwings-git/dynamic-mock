@@ -21,6 +21,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +42,7 @@ public class RequestContext {
     /**
      * 本地缓存,可用于运行时函数向其中读写数据
      */
-    private final Map<Object, Object> localCache = new HashMap<>();
+    private final Map<Object, Object> localCache = new ConcurrentHashMap<>();
     /**
      * 自定义空间
      */
