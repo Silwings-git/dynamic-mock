@@ -7,6 +7,7 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class JoinFunctionFactory implements FunctionFactory {
             .functionName("Join")
             .minArgsNumber(2)
             .maxArgsNumber(Integer.MAX_VALUE)
+            .functionReturnType(FunctionReturnType.STRING)
             .build();
 
     private static final String SYMBOL = "#join(...)";

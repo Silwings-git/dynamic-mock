@@ -10,6 +10,7 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
@@ -31,6 +32,7 @@ public class SearchFunctionFactory implements FunctionFactory {
             .functionName("Search")
             .minArgsNumber(1)
             .maxArgsNumber(3)
+            .functionReturnType(FunctionReturnType.OBJECT)
             .build();
     private static final String SYMBOL = "#search(...)";
 

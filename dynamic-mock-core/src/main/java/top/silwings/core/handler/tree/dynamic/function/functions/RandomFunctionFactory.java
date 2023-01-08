@@ -9,6 +9,7 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.TypeUtils;
 
@@ -30,6 +31,7 @@ public class RandomFunctionFactory implements FunctionFactory {
             .functionName("Random")
             .minArgsNumber(0)
             .maxArgsNumber(3)
+            .functionReturnType(FunctionReturnType.OBJECT)
             .build();
 
     private static final String SYMBOL = "#random(...)";

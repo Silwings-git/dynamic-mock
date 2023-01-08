@@ -8,6 +8,7 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class IsNullFunctionFactory implements FunctionFactory {
             .functionName("IsNull")
             .minArgsNumber(0)
             .maxArgsNumber(1)
+            .functionReturnType(FunctionReturnType.BOOLEAN)
             .build();
 
     private static final String SYMBOL = "#IsNull(...)";

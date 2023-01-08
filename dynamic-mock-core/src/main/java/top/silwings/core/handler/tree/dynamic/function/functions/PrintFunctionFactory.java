@@ -8,6 +8,7 @@ import top.silwings.core.handler.tree.dynamic.AbstractDynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class PrintFunctionFactory implements FunctionFactory {
             .functionName("Print")
             .minArgsNumber(1)
             .maxArgsNumber(1)
+            .functionReturnType(FunctionReturnType.OBJECT)
             .build();
 
     private static final String SYMBOL = "#print(...)";

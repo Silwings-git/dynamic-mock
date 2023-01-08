@@ -12,6 +12,7 @@ import top.silwings.core.handler.tree.dynamic.DynamicValue;
 import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.handler.tree.dynamic.function.FunctionInfo;
+import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
 import top.silwings.core.handler.tree.structure.StaticValueNode;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
@@ -37,6 +38,7 @@ public class PageFunctionFactory implements FunctionFactory {
             .functionName("Page")
             .minArgsNumber(3)
             .maxArgsNumber(5)
+            .functionReturnType(FunctionReturnType.LIST)
             .build();
 
     private static final String SYMBOL = "#page(...)";

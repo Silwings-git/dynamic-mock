@@ -31,6 +31,8 @@ public class FunctionInfo implements Comparable<FunctionInfo> {
      */
     private final int maxArgsNumber;
 
+    private final FunctionReturnType functionReturnType;
+
     @Override
     public int compareTo(final FunctionInfo other) {
         return this.functionName.compareTo(other.getFunctionName());

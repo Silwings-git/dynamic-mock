@@ -4,10 +4,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageResult;
+import top.silwings.admin.web.vo.param.QueryFunctionInfoParam;
 import top.silwings.admin.web.vo.result.FunctionInfoResult;
 import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
 import top.silwings.core.utils.ConvertUtils;
@@ -36,9 +38,9 @@ public class FunctionController {
     }
 
     @PostMapping("/query")
-    @PermissionLimit()
+    @PermissionLimit(limit = false)
     @ApiOperation(value = "查询全部函数信息")
-    public PageResult<FunctionInfoResult> query() {
+    public PageResult<FunctionInfoResult> query(@RequestBody final QueryFunctionInfoParam queryFunctionInfoParam) {
 
         final List<FunctionInfoResult> functionInfoResultList = this.functionFactoryList.stream()
                 .map(FunctionFactory::getFunctionInfo)
@@ -64,7 +66,21 @@ public class FunctionController {
         functionInfoResultList.add(0, dynamic);
         functionInfoResultList.add(0, constant);
 
-        return PageResult.ok(functionInfoResultList, functionInfoResultList.size());
+        final List<FunctionInfoResult> returnList = this.filter(queryFunctionInfoParam, functionInfoResultList);
+
+        return PageResult.ok(returnList, returnList.size());
+    }
+
+    private List<FunctionInfoResult> filter(final QueryFunctionInfoParam queryFunctionInfoParam, final List<FunctionInfoResult> functionInfoResultList) {
+
+        if (null == queryFunctionInfoParam.getFunctionReturnType()) {
+            return functionInfoResultList;
+        }
+
+        return functionInfoResultList.stream()
+                .filter(info -> null != info.getFunctionReturnType())
+                .filter(info -> info.getFunctionReturnType().equals(queryFunctionInfoParam.getFunctionReturnType()))
+                .collect(Collectors.toList());
     }
 
 }
