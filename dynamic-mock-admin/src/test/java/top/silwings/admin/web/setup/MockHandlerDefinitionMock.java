@@ -52,7 +52,7 @@ public class MockHandlerDefinitionMock {
         map.put("11", "Random");
         map.put("pageNum", 1);
         map.put("pageSize", 10);
-        map.put("list6", Stream.iterate(0, i -> i + 2).limit(200).collect(Collectors.toList()));
+        map.put("list6", Stream.iterate(0, i -> i + 1).limit(200).collect(Collectors.toList()));
 
         return map;
     }
@@ -157,6 +157,10 @@ public class MockHandlerDefinitionMock {
         final String iteratorObj = "{" +
                 " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
                 "}";
+
+        final String iteratorObj2 = " {\n" +
+                "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
+                "            }";
 
         definition.body(JsonUtils.toBean(iteratorObj));
 

@@ -32,6 +32,13 @@ public class WebContextHolder {
      * 获取当前语言
      */
     public static String getLanguage() {
-        return getWebContext().getLanguage();
+
+        final WebContext webContext = getWebContext();
+
+        if (null == webContext) {
+            return WebContext.defaultLanguage();
+        }
+
+        return webContext.getLanguage();
     }
 }

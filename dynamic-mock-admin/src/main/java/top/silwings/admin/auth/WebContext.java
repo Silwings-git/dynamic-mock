@@ -19,6 +19,10 @@ public class WebContext {
 
     private final String language;
 
+    public static String defaultLanguage() {
+        return DEFAULT_LANGUAGE;
+    }
+
     public String getLanguage() {
         // 仅当language是Language枚举支持的才使用language返回
         return ConvertUtils.getNoBlankOrDefault(Language.support(this.language) ? this.language : null, DEFAULT_LANGUAGE);

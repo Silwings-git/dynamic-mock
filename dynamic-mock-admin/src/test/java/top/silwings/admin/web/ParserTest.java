@@ -215,6 +215,9 @@ public class ParserTest {
         // 遍历集合
         expressionList.add("#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')");
         expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')");
+        expressionList.add("#select(true,1,2)");
+        expressionList.add("#select(false,1,2)");
+        expressionList.add("#select(#search('40'),1,2)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
