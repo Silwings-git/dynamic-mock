@@ -4,10 +4,12 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.HandlerInfoDto;
 import top.silwings.admin.model.ProjectDto;
+import top.silwings.admin.model.QueryDisableHandlerIdsConditionDto;
+import top.silwings.admin.model.QueryEnableHandlerConditionDto;
+import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.QueryConditionDto;
 
 import java.util.List;
 
@@ -20,15 +22,13 @@ import java.util.List;
  **/
 public interface MockHandlerService {
 
-    String FILE_FLAG = "mockfile:";
-
     void delete(Identity handlerId);
 
     MockHandlerDto find(Identity handlerId);
 
     Identity findProjectId(Identity handlerId);
 
-    PageData<MockHandlerDto> query(QueryConditionDto queryCondition, PageParam pageParam);
+    PageData<MockHandlerDto> query(QueryHandlerConditionDto queryCondition, PageParam pageParam);
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus, ProjectDto project);
 
@@ -38,17 +38,16 @@ public interface MockHandlerService {
 
     Identity updateById(MockHandlerDto mockHandlerDto);
 
-    PageData<MockHandlerDto> queryEnableHandlerList(PageParam pageParam);
+    PageData<MockHandlerDto> queryEnableHandlerList(QueryEnableHandlerConditionDto conditionParamDto, PageParam pageParam);
+
+    PageData<Identity> queryDisableHandlerList(QueryDisableHandlerIdsConditionDto conditionParamDto, PageParam pageParam);
 
     List<Identity> queryHandlerIds(Identity projectId);
 
     List<Identity> queryHandlerIds(List<Identity> projectIdList);
 
-    void reRegisterHandler(ProjectDto project);
-
-    void registerHandler(MockHandlerDto mockHandler, ProjectDto project);
-
     List<HandlerInfoDto> queryOwn(List<Identity> projectIdList);
 
     HandlerInfoDto findHandlerInfo(Identity handlerId);
+
 }

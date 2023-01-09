@@ -31,3 +31,7 @@ dynamic-mock:
           allowedHeaders: "*" # 允许在请求中携带的头信息
           allowCredentials: true # 是否允许携带cookie
           maxAge: 7200 # 这次跨域检测的有效期
+    sync-handler:
+      register-cron: 0/5 * * * * ?
+      un-register-cron: 0/5 * * * * ?
+      refresh-cron: 0/5 * * * * ?

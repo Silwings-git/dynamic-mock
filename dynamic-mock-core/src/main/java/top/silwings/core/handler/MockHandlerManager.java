@@ -10,7 +10,9 @@ import top.silwings.core.exceptions.NoMockHandlerFoundException;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MockHandlerManager
@@ -31,11 +33,12 @@ public class MockHandlerManager {
 
     public void registerHandler(final MockHandler mockHandler) {
         this.handlerMap.put(mockHandler.getHandlerId(), mockHandler);
-        log.info("Mock Handler {} registered.", mockHandler.getName());
+        log.info("Mock Handler {}:{} registered.", mockHandler.getHandlerId(), mockHandler.getName());
     }
 
     public void unregisterHandler(final Identity handlerId) {
         this.handlerMap.remove(handlerId);
+        log.info("Mock Handler unregistered, Handler Id: {}", handlerId);
     }
 
     public boolean match(final String requestUri, final HttpMethod httpMethod) {
@@ -64,6 +67,14 @@ public class MockHandlerManager {
         }
 
         return mockHandler.mock(mockHandlerContext);
+    }
+
+    public Set<Identity> registeredHandlerIds() {
+        return this.handlerMap.keySet();
+    }
+
+    public Map<Identity, Long> registeredHandlerVersions() {
+        return this.handlerMap.values().stream().collect(Collectors.toMap(MockHandler::getHandlerId, MockHandler::getVersion, (v1, v2) -> v2));
     }
 
 }

@@ -16,8 +16,8 @@ import org.apache.ibatis.session.RowBounds;
 @ApiModel(description = "分页参数")
 public class PageParam {
 
-    private static final int MIN_PAGE_NUM = 1;
-    private static final int MAX_PAGE_SIZE = 100;
+    public static final int MIN_PAGE_NUM = 1;
+    public static final int MAX_PAGE_SIZE = 1000;
     private static final int DEFAULT_PAGE_SIZE = 5;
 
     private static final RowBounds ONE_ROW = new RowBounds(0, 1);

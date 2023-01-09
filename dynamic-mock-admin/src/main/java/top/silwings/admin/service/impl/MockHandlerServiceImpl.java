@@ -2,39 +2,36 @@ package top.silwings.admin.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.HandlerInfoDto;
 import top.silwings.admin.model.ProjectDto;
-import top.silwings.admin.model.TextFile;
+import top.silwings.admin.model.QueryDisableHandlerIdsConditionDto;
+import top.silwings.admin.model.QueryEnableHandlerConditionDto;
+import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.MockHandlerUniquePo;
-import top.silwings.admin.service.FileService;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
-import top.silwings.core.utils.JsonUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -50,23 +47,17 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerManager mockHandlerManager;
 
-    private final MockHandlerFactory mockHandlerFactory;
-
     private final MockHandlerMapper mockHandlerMapper;
 
     private final MockHandlerUniqueMapper mockHandlerUniqueMapper;
 
     private final MockHandlerDaoConverter mockHandlerDaoConverter;
 
-    private final FileService fileService;
-
-    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerFactory mockHandlerFactory, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final FileService fileService) {
+    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter) {
         this.mockHandlerManager = mockHandlerManager;
-        this.mockHandlerFactory = mockHandlerFactory;
         this.mockHandlerMapper = mockHandlerMapper;
         this.mockHandlerUniqueMapper = mockHandlerUniqueMapper;
         this.mockHandlerDaoConverter = mockHandlerDaoConverter;
-        this.fileService = fileService;
     }
 
     @Override
@@ -161,7 +152,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
-    public PageData<MockHandlerDto> query(final QueryConditionDto queryCondition, final PageParam pageParam) {
+    public PageData<MockHandlerDto> query(final QueryHandlerConditionDto queryCondition, final PageParam pageParam) {
 
         if (CollectionUtils.isEmpty(queryCondition.getProjectIdList())) {
             return PageData.empty();
@@ -217,7 +208,9 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
             final MockHandlerDto mockHandlerDto = this.find(handlerId);
 
-            this.registerHandler(mockHandlerDto, project);
+            DynamicMockAdminContext.getInstance()
+                    .getMockHandlerRegisterService()
+                    .registerHandler(mockHandlerDto, project);
 
         } else {
 
@@ -236,27 +229,47 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
-    public PageData<MockHandlerDto> queryEnableHandlerList(final PageParam pageParam) {
+    public PageData<MockHandlerDto> queryEnableHandlerList(final QueryEnableHandlerConditionDto conditionParamDto, final PageParam pageParam) {
 
         final Example queryCondition = new Example(MockHandlerPo.class);
-        queryCondition.createCriteria()
+        final Example.Criteria criteria = queryCondition.createCriteria();
+        criteria
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.ENABLE.code());
+
+        if (null != conditionParamDto) {
+
+            if (CollectionUtils.isNotEmpty(conditionParamDto.getExcludeHandlerIdList())) {
+                final List<Integer> excludeIdList = conditionParamDto.getExcludeHandlerIdList().stream().map(Identity::intValue).collect(Collectors.toList());
+                criteria.andNotIn(MockHandlerPo.C_HANDLER_ID, excludeIdList);
+            }
+
+            if (null != conditionParamDto.getProjectId()) {
+                criteria.andEqualTo(MockHandlerPo.C_PROJECT_ID, conditionParamDto.getProjectId());
+            }
+        }
 
         return this.queryPageData(queryCondition, pageParam.toRowBounds());
     }
 
-    private List<MockHandlerDto> queryEnableHandlerList(final Identity projectId) {
+    @Override
+    public PageData<Identity> queryDisableHandlerList(final QueryDisableHandlerIdsConditionDto conditionParamDto, final PageParam pageParam) {
 
         final Example queryCondition = new Example(MockHandlerPo.class);
-        queryCondition.createCriteria()
-                .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.ENABLE.code())
-                .andEqualTo(MockHandlerPo.C_PROJECT_ID, projectId.intValue());
+        final Example.Criteria criteria = queryCondition.createCriteria();
+        criteria
+                .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.DISABLE.code());
 
-        return this.mockHandlerMapper.selectByCondition(queryCondition).stream()
-                .map(this.mockHandlerDaoConverter::convert)
-                .collect(Collectors.toList());
+        if (null != conditionParamDto) {
+
+            if (CollectionUtils.isNotEmpty(conditionParamDto.getHandlerIdRangeList())) {
+                final List<Integer> handlerIdList = conditionParamDto.getHandlerIdRangeList().stream().map(Identity::intValue).collect(Collectors.toList());
+                criteria.andIn(MockHandlerPo.C_HANDLER_ID, handlerIdList);
+            }
+
+        }
+
+        return this.queryHandlerIdPageData(queryCondition, pageParam.toRowBounds());
     }
-
 
     private PageData<MockHandlerDto> queryPageData(final Example queryCondition, final RowBounds rowBounds) {
 
@@ -275,6 +288,23 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         return PageData.of(mockHandlerDtoList, total);
     }
 
+    private PageData<Identity> queryHandlerIdPageData(final Example queryCondition, final RowBounds rowBounds) {
+
+        final long total = this.mockHandlerMapper.selectCountByExample(queryCondition);
+        if (total <= 0) {
+            return PageData.empty();
+        }
+
+        final List<MockHandlerPo> mockHandlerList = this.mockHandlerMapper.selectByConditionAndRowBounds(queryCondition, rowBounds);
+
+        final List<Identity> handlerIdList = mockHandlerList
+                .stream()
+                .map(MockHandlerPo::getHandlerId)
+                .map(Identity::from)
+                .collect(Collectors.toList());
+
+        return PageData.of(handlerIdList, total);
+    }
 
     /**
      * 根据项目id查询所属的全部处理器id
@@ -322,52 +352,6 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void reRegisterHandler(final ProjectDto project) {
-
-        final List<MockHandlerDto> mockHandlerList = this.queryEnableHandlerList(project.getProjectId());
-
-        mockHandlerList.stream().map(MockHandlerDto::getHandlerId).forEach(this.mockHandlerManager::unregisterHandler);
-
-        mockHandlerList.forEach(handler -> this.registerHandler(handler, project));
-    }
-
-    @Override
-    public void registerHandler(final MockHandlerDto mockHandler, final ProjectDto project) {
-
-        CheckUtils.isEquals(mockHandler.getProjectId(), project.getProjectId(), DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_PROJECT_MISMATCH, mockHandler.getProjectId().stringValue(), project.getProjectId().stringValue()));
-
-        MockHandlerDto actualMockHandler;
-
-        if (StringUtils.isNotBlank(project.getBaseUri())) {
-            // 在原始的处理地址上添加项目基础uri
-            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> {
-                builder.requestUri(project.getBaseUri() + mockHandler.getRequestUri());
-                this.customizeSpaceFileProcessing(mockHandler);
-            });
-        } else {
-            actualMockHandler = MockHandlerDto.copyOf(mockHandler, (handler, builder) -> this.customizeSpaceFileProcessing(mockHandler));
-        }
-
-        this.mockHandlerManager.registerHandler(this.mockHandlerFactory.buildMockHandler(actualMockHandler));
-    }
-
-    private void customizeSpaceFileProcessing(final MockHandlerDto mockHandler) {
-        final Map<String, Object> customizeSpace = mockHandler.getCustomizeSpace();
-
-        for (final Map.Entry<String, Object> entry : customizeSpace.entrySet()) {
-            final Object value = entry.getValue();
-            if (value instanceof String) {
-                final String valueStr = (String) value;
-                if (valueStr.startsWith(FILE_FLAG) && (valueStr.endsWith(".json") || valueStr.endsWith(".txt"))) {
-                    final TextFile textFile = this.fileService.find(valueStr.replace(FILE_FLAG, "").trim());
-                    CheckUtils.isTrue(JsonUtils.isValidJson(textFile.getContent()), DynamicMockAdminException.supplier(ErrorCode.CONTENT_FORMAT_ERROR));
-                    customizeSpace.put(entry.getKey(), JsonUtils.toBean(textFile.getContent()));
-                }
-            }
-        }
-    }
-
     /**
      * 根据项目id查询handler信息.如果 projectIdList 为 null 表示查询所有
      *
@@ -410,6 +394,5 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .findFirst()
                 .orElse(null);
     }
-
 
 }

@@ -12,6 +12,8 @@ import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.model.ProjectDto;
+import top.silwings.admin.model.QueryHandlerConditionDto;
+import top.silwings.admin.service.MockHandlerRegisterService;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
@@ -28,7 +30,6 @@ import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.QueryConditionDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
 
 import java.util.Collections;
@@ -57,7 +58,7 @@ public class MockHandlerController {
 
     private final ProjectService projectService;
 
-    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
+    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService, final MockHandlerRegisterService mockHandlerRegisterService) {
         this.mockHandlerService = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
@@ -115,7 +116,7 @@ public class MockHandlerController {
             UserHolder.validProjectId(param.getProjectId());
         }
 
-        final QueryConditionDto queryCondition = QueryConditionDto.builder()
+        final QueryHandlerConditionDto queryCondition = QueryHandlerConditionDto.builder()
                 .projectIdList(UserHolder.getUser().getProjectIdList())
                 .projectId(param.getProjectId())
                 .name(param.getName())

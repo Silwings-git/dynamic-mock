@@ -1,4 +1,4 @@
-package top.silwings.core.model;
+package top.silwings.admin.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QueryConditionDto {
+public class QueryHandlerConditionDto {
 
     /**
      * 项目id集.如果为null表示允许查询所有

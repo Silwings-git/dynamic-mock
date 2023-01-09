@@ -9,7 +9,7 @@ import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.TextFileMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.TextFilePo;
-import top.silwings.admin.service.MockHandlerService;
+import top.silwings.admin.service.MockHandlerRegisterService;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class FileCleanUpScheduled {
 
         final Example example = new Example(MockHandlerPo.class);
         example.createCriteria()
-                .andLike(MockHandlerPo.C_CUSTOMIZE_SPACE, "%" + MockHandlerService.FILE_FLAG + "%");
+                .andLike(MockHandlerPo.C_CUSTOMIZE_SPACE, "%" + MockHandlerRegisterService.FILE_FLAG + "%");
 
         example.selectProperties(MockHandlerPo.C_CUSTOMIZE_SPACE);
 
@@ -78,8 +78,8 @@ public class FileCleanUpScheduled {
                 .stream()
                 .filter(String.class::isInstance)
                 .map(String.class::cast)
-                .filter(e -> e.contains(MockHandlerService.FILE_FLAG))
-                .map(e -> e.replace(MockHandlerService.FILE_FLAG, "").trim())
+                .filter(e -> e.contains(MockHandlerRegisterService.FILE_FLAG))
+                .map(e -> e.replace(MockHandlerRegisterService.FILE_FLAG, "").trim())
                 .distinct()
                 .collect(Collectors.toList());
     }

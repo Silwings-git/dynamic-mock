@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
@@ -85,7 +86,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 如果basicUri发生了变化,需要重新注册任务
         if (!original.getBaseUri().equals(ConvertUtils.getNoNullOrDefault(baseUri, ""))) {
-            this.mockHandlerService.reRegisterHandler(ProjectDto.from(project));
+            DynamicMockAdminContext.getInstance()
+                    .getMockHandlerRegisterService()
+                    .refreshRegisteredHandlerByProject(Identity.from(project.getProjectId()));
         }
 
         return projectId;
