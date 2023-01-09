@@ -218,6 +218,7 @@ public class ParserTest {
         expressionList.add("#select(true,1,2)");
         expressionList.add("#select(false,1,2)");
         expressionList.add("#select(#search('40'),1,2)");
+        expressionList.add("#select(10>0,1,2)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();

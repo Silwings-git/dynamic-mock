@@ -823,5 +823,24 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
 2. `#saveCache('name','Misaka Mikoto','VALUE')` => Misaka Mikoto
 3. `#saveCache('name','Misaka Mikoto','key')` => name
 4. `#saveCache('name','Misaka Mikoto','ALL')` => 映射对象，json表示为：{"key":"name","value":"Misaka Mikoto"}
-5. 安丰
+
+
+
+##### 21.Select
+
+​	基于第一个参数选择第二或者第三个参数返回.效果等于三元运算符`boolean?argA:argB`。
+
+​	函数声明：
+
+​	`#select(boolean,argA,argB)`
+
+1. boolean：布尔值，如果为true，函数返回argA，否则返回argB。
+2. argA：类型不限
+3. argB：类型不限
+
+示例：
+
+1. `#select(true,1,2)` => 1
+2. `#select(false,1,2)` => 2
+3. `#select(10 > 0 ,1,2)` => 1
 
