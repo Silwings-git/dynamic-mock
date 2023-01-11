@@ -218,6 +218,9 @@ public class ParserTest {
         expressionList.add("#select(false,1,2)");
         expressionList.add("#select(#search('40'),1,2)");
         expressionList.add("#select(10>0,1,2)");
+        expressionList.add("#toJsonString(1+1)");
+        expressionList.add("#toJsonString('{\"name\":\"aka Mikoto\"}')");
+        expressionList.add("#toJsonString(#search('user'))");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -241,6 +244,9 @@ public class ParserTest {
         requestContext.addCustomizeParam("list5", Stream.of("1", "3").collect(Collectors.toList()));
         requestContext.addCustomizeParam("list6", Stream.iterate(0, i -> i + 2).limit(200).collect(Collectors.toList()));
         requestContext.addCustomizeParam("page_param", "{\"page\": \"10\"}");
+        requestContext.addCustomizeParam("user", new HashMap<String, String>() {{
+            put("name", "Misaka Mikoto");
+        }});
 
         final Map<String, Object> baseUser = new HashMap<>();
         baseUser.put("name", "Misaka Mikoto");

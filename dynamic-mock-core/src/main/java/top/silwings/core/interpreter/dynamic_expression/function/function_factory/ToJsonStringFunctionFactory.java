@@ -1,5 +1,6 @@
 package top.silwings.core.interpreter.dynamic_expression.function.function_factory;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicValueCompileException;
 import top.silwings.core.handler.context.MockHandlerContext;
@@ -7,6 +8,7 @@ import top.silwings.core.interpreter.ExpressionTreeNode;
 import top.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
 import top.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
+import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.JsonUtils;
 
@@ -19,6 +21,7 @@ import java.util.List;
  * @Date 2022/12/31 17:07
  * @Since
  **/
+@Slf4j
 @Component
 public class ToJsonStringFunctionFactory implements FunctionFactory {
 
@@ -26,6 +29,7 @@ public class ToJsonStringFunctionFactory implements FunctionFactory {
             .functionName("ToJsonString")
             .minArgsNumber(1)
             .maxArgsNumber(1)
+            .functionReturnType(FunctionReturnType.STRING)
             .build();
 
     private static final String SYMBOL = "#toJsonString(...)";
@@ -46,6 +50,10 @@ public class ToJsonStringFunctionFactory implements FunctionFactory {
         return ToJsonStringFunction.from(functionExpressionList);
     }
 
+    /**
+     * #toJsonString(arg)
+     * #toJsonString(arg,strict)
+     */
     public static class ToJsonStringFunction extends AbstractFunctionExpression {
 
         protected ToJsonStringFunction(final List<ExpressionTreeNode> functionExpressionList) {
@@ -58,7 +66,11 @@ public class ToJsonStringFunctionFactory implements FunctionFactory {
 
         @Override
         protected Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
-            return JsonUtils.toJSONString(childNodeValueList.get(0));
+            try {
+                return JsonUtils.toJSONString(childNodeValueList.get(0));
+            } catch (Exception e) {
+                return childNodeValueList.get(0);
+            }
         }
 
         @Override
