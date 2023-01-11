@@ -9,6 +9,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.handler.context.RequestInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
-import top.silwings.core.handler.MockHandlerContext;
+import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.DelayUtils;
 

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import top.silwings.core.config.MockHandlerHolder;
+import top.silwings.core.handler.context.MockHandlerContext;
 
 import javax.servlet.http.HttpServletRequest;
 

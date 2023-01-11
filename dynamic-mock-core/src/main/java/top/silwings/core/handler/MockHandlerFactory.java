@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
-import top.silwings.core.interpreter.CustomizeSpaceInterpreter;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 

@@ -1,6 +1,6 @@
 package top.silwings.core.exceptions;
 
-import top.silwings.core.handler.RequestInfo;
+import top.silwings.core.handler.context.RequestInfo;
 
 /**
  * @ClassName NoMockHandlerFoundException

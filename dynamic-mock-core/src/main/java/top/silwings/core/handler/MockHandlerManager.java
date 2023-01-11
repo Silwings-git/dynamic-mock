@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.exceptions.NoMockHandlerFoundException;
+import top.silwings.core.handler.context.MockHandlerContext;
+import top.silwings.core.handler.context.RequestInfo;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Map;

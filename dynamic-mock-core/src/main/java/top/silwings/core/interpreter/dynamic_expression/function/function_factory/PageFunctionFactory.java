@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.MockHandlerContext;
+import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.interpreter.ExpressionTreeNode;
 import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory;

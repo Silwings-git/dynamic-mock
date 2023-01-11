@@ -2,7 +2,7 @@ package top.silwings.core.interpreter;
 
 import lombok.Getter;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.MockHandlerContext;
+import top.silwings.core.handler.context.MockHandlerContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

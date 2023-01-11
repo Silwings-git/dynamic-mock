@@ -6,6 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.DynamicMockContext;
+import top.silwings.core.handler.context.MockHandlerContext;
+import top.silwings.core.handler.context.RequestInfo;
 import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.interpreter.ExpressionInterpreter;
