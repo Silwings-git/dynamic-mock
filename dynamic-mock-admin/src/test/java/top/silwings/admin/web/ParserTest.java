@@ -18,11 +18,11 @@ import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.handler.RequestContext;
-import top.silwings.core.interpreter.Expression;
 import top.silwings.core.interpreter.ExpressionInterpreter;
+import top.silwings.core.interpreter.ExpressionTreeNode;
 import top.silwings.core.interpreter.TreeNodeReader;
-import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
-import top.silwings.core.interpreter.expression.parser.DynamicExpressionStringParser;
+import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.dynamic_expression.parser.DynamicExpressionStringParser;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.TaskRequestDto;
@@ -252,7 +252,7 @@ public class ParserTest {
 
     private void extracted(final String str, final RequestContext requestContext) {
 
-        final Expression functionExpression = this.dynamicExpressionFactory.buildDynamicValue(str);
+        final ExpressionTreeNode functionExpression = this.dynamicExpressionFactory.buildDynamicValue(str);
 
         final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(requestContext)
@@ -266,7 +266,7 @@ public class ParserTest {
 
         final TestData testData = new TestData();
 
-        final Expression analyze1 = this.jsonTreeParser.parse(testData.getTest002());
+        final ExpressionTreeNode analyze1 = this.jsonTreeParser.parse(testData.getTest002());
 
         final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(testData.getRequestContext())
@@ -282,13 +282,13 @@ public class ParserTest {
 
         final TestData testData = new TestData();
 
-        final Expression expression = this.jsonTreeParser.parse(testData.getTest002());
+        final ExpressionTreeNode expression = this.jsonTreeParser.parse(testData.getTest002());
 
-        final List<Expression> expressionList = TreeNodeReader.postOrderTraversal(expression);
+        final List<ExpressionTreeNode> expressionList = TreeNodeReader.postOrderTraversal(expression);
 
         final Stack<Object> stack = new Stack<>();
 
-        for (final Expression ele : expressionList) {
+        for (final ExpressionTreeNode ele : expressionList) {
 
             final int nodeCount = ele.getNodeCount();
 
@@ -319,7 +319,7 @@ public class ParserTest {
         String expression = "1==2";
         expression = "#uuid()";
 
-        final Expression functionExpression = this.dynamicExpressionFactory.buildDynamicValue(expression);
+        final ExpressionTreeNode functionExpression = this.dynamicExpressionFactory.buildDynamicValue(expression);
 
         final ExpressionInterpreter expressionInterpreter = new ExpressionInterpreter(functionExpression);
 

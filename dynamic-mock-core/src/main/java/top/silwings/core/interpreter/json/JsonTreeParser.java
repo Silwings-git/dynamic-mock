@@ -1,8 +1,8 @@
 package top.silwings.core.interpreter.json;
 
 import org.springframework.stereotype.Component;
-import top.silwings.core.interpreter.Expression;
-import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.ExpressionTreeNode;
+import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Collection;
@@ -24,7 +24,7 @@ public class JsonTreeParser {
         this.dynamicExpressionFactory = dynamicExpressionFactory;
     }
 
-    public Expression parse(final Object bean) {
+    public ExpressionTreeNode parse(final Object bean) {
 
         if (bean instanceof String) {
             return this.doParse(JsonUtils.toBean((String) bean));
@@ -38,9 +38,9 @@ public class JsonTreeParser {
      * @param json json实例
      * @return 节点树
      */
-    private Expression doParse(final Object json) {
+    private ExpressionTreeNode doParse(final Object json) {
 
-        final Expression jsonNode;
+        final ExpressionTreeNode jsonNode;
 
         if (json instanceof Map) {
 
@@ -77,7 +77,7 @@ public class JsonTreeParser {
      * @param obj 节点中要存储的元素实例
      * @return 节点实例
      */
-    private Expression buildNode(final Object obj) {
+    private ExpressionTreeNode buildNode(final Object obj) {
         if (this.isMap(obj) || this.isCollection(obj)) {
 
             return this.doParse(obj);

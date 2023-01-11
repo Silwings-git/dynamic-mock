@@ -13,4 +13,6 @@ public interface TreeNode<T> {
 
     List<T> getChildNodes();
 
+    int getNodeCount();
+
 }

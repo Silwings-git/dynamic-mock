@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import top.silwings.core.interpreter.expression.function.FunctionReturnType;
+import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
 
 /**
  * @ClassName QueryFunctionInfoParam

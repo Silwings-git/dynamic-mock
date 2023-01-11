@@ -19,10 +19,10 @@ import java.util.Stack;
 @Getter
 public class ExpressionInterpreter {
 
-    private final Expression expression;
-    private final List<Expression> expressionFlattenedList;
+    private final ExpressionTreeNode expression;
+    private final List<ExpressionTreeNode> expressionFlattenedList;
 
-    public ExpressionInterpreter(final Expression expression) {
+    public ExpressionInterpreter(final ExpressionTreeNode expression) {
         this.expression = expression;
         this.expressionFlattenedList = TreeNodeReader.postOrderTraversal(expression);
     }
@@ -31,7 +31,7 @@ public class ExpressionInterpreter {
 
         final Stack<Object> stack = new Stack<>();
 
-        for (final Expression expression : this.expressionFlattenedList) {
+        for (final ExpressionTreeNode expression : this.expressionFlattenedList) {
 
             final int nodeCount = expression.getNodeCount();
 

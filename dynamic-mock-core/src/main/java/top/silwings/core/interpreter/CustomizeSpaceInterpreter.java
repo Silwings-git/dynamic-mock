@@ -3,8 +3,8 @@ package top.silwings.core.interpreter;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
-import top.silwings.core.interpreter.expression.function.function_factory.SearchFunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SearchFunctionFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class CustomizeSpaceInterpreter extends ExpressionInterpreter {
 
     private final Map<String, Object> customizeSpace;
 
-    public CustomizeSpaceInterpreter(final Map<String, Object> customizeSpace, final Expression tree) {
+    public CustomizeSpaceInterpreter(final Map<String, Object> customizeSpace, final ExpressionTreeNode tree) {
         super(tree);
         this.customizeSpace = customizeSpace;
     }
@@ -35,7 +35,7 @@ public class CustomizeSpaceInterpreter extends ExpressionInterpreter {
 
         mockHandlerContext.getRequestContext().setCustomizeSpace(this.customizeSpace);
 
-        for (final Expression expression : this.getExpressionFlattenedList()) {
+        for (final ExpressionTreeNode expression : this.getExpressionFlattenedList()) {
 
             final int nodeCount = expression.getNodeCount();
 
@@ -78,7 +78,7 @@ public class CustomizeSpaceInterpreter extends ExpressionInterpreter {
 
             final DynamicExpressionFactory dynamicExpressionFactory = DynamicMockContext.getInstance().getDynamicExpressionFactory();
 
-            final Expression functionExpression = dynamicExpressionFactory.buildDynamicValue((String) interpret);
+            final ExpressionTreeNode functionExpression = dynamicExpressionFactory.buildDynamicValue((String) interpret);
 
             interpret = new ExpressionInterpreter(functionExpression).interpret(mockHandlerContext);
 

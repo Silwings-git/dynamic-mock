@@ -1,7 +1,7 @@
 package top.silwings.core.interpreter.json;
 
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.interpreter.Expression;
+import top.silwings.core.interpreter.ExpressionTreeNode;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @Date 2022/11/12 14:58
  * @Since
  **/
-public class StaticValueNode implements Expression {
+public class StaticValueNode implements ExpressionTreeNode {
 
     private final Object context;
 
@@ -31,7 +31,7 @@ public class StaticValueNode implements Expression {
     }
 
     @Override
-    public List<Expression> getChildNodes() {
+    public List<ExpressionTreeNode> getChildNodes() {
         return Collections.emptyList();
     }
 

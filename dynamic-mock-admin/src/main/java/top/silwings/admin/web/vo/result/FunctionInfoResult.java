@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
-import top.silwings.core.interpreter.expression.function.FunctionInfo;
-import top.silwings.core.interpreter.expression.function.FunctionReturnType;
+import top.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
+import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
 
 /**
  * @ClassName FunctionInfo

@@ -1,7 +1,7 @@
 package top.silwings.core.interpreter.json;
 
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.interpreter.Expression;
+import top.silwings.core.interpreter.ExpressionTreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +13,15 @@ import java.util.List;
  * @Date 2022/10/28 15:22
  * @Since
  **/
-public class ArrayNode implements Expression {
+public class ArrayNode implements ExpressionTreeNode {
 
-    private final List<Expression> expressionList;
+    private final List<ExpressionTreeNode> expressionList;
 
     public ArrayNode() {
         this.expressionList = new ArrayList<>();
     }
 
-    public ArrayNode add(final Expression expression) {
+    public ArrayNode add(final ExpressionTreeNode expression) {
         this.expressionList.add(expression);
         return this;
     }
@@ -32,7 +32,7 @@ public class ArrayNode implements Expression {
     }
 
     @Override
-    public List<Expression> getChildNodes() {
+    public List<ExpressionTreeNode> getChildNodes() {
         return this.expressionList;
     }
 

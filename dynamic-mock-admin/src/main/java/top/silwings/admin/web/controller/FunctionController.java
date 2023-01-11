@@ -11,7 +11,7 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.web.vo.param.QueryFunctionInfoParam;
 import top.silwings.admin.web.vo.result.FunctionInfoResult;
-import top.silwings.core.interpreter.expression.function.FunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;

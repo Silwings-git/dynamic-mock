@@ -2,7 +2,7 @@ package top.silwings.core.handler.response;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.interpreter.ExpressionInterpreter;
-import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;

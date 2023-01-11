@@ -5,15 +5,14 @@ import top.silwings.core.handler.MockHandlerContext;
 import java.util.List;
 
 /**
- * @ClassName Node
- * @Description
+ * @ClassName Expression
+ * @Description 表达式
  * @Author Silwings
- * @Date 2022/10/28 14:54
+ * @Date 2023/1/11 21:48
  * @Since
  **/
-public interface Expression extends TreeNode<Expression> {
+public interface Expression {
 
     Object interpret(MockHandlerContext mockHandlerContext, List<Object> childNodeValueList);
 
-    int getNodeCount();
 }

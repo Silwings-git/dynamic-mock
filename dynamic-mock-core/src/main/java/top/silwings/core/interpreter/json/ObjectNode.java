@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.interpreter.Expression;
+import top.silwings.core.interpreter.ExpressionTreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * @Date 2022/10/28 15:22
  * @Since
  **/
-public class ObjectNode implements Expression {
+public class ObjectNode implements ExpressionTreeNode {
 
     private final List<BinaryTreeExpression> binaryTreeNodeList;
 
@@ -27,7 +27,7 @@ public class ObjectNode implements Expression {
         this.binaryTreeNodeList = new ArrayList<>();
     }
 
-    public ObjectNode put(final Expression key, final Expression value) {
+    public ObjectNode put(final ExpressionTreeNode key, final ExpressionTreeNode value) {
         final BinaryTreeExpression treeNode = new BinaryTreeExpression();
         treeNode.setLeft(key);
         treeNode.setRight(value);
@@ -56,7 +56,7 @@ public class ObjectNode implements Expression {
     }
 
     @Override
-    public List<Expression> getChildNodes() {
+    public List<ExpressionTreeNode> getChildNodes() {
         return new ArrayList<>(this.binaryTreeNodeList);
     }
 
@@ -67,20 +67,20 @@ public class ObjectNode implements Expression {
 
     @Getter
     @Setter
-    public static class BinaryTreeExpression implements Expression {
+    public static class BinaryTreeExpression implements ExpressionTreeNode {
 
         /**
          * 左子树节点
          */
-        private Expression left;
+        private ExpressionTreeNode left;
 
         /**
          * 右子树节点
          */
-        private Expression right;
+        private ExpressionTreeNode right;
 
         @Override
-        public List<Expression> getChildNodes() {
+        public List<ExpressionTreeNode> getChildNodes() {
             return Stream.of(this.left, this.right).collect(Collectors.toList());
         }
 
