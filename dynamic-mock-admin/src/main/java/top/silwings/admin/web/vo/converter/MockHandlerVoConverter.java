@@ -18,6 +18,7 @@ import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
 import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,7 @@ public class MockHandlerVoConverter {
                 .customizeSpace(vo.getCustomizeSpace())
                 .responses(vo.getResponses().stream().map(this::convert).collect(Collectors.toList()))
                 .tasks(vo.getTasks().stream().map(this::convert).collect(Collectors.toList()))
+                .updateTime(new Date())
                 .build();
     }
 
