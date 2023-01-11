@@ -2,9 +2,9 @@ package top.silwings.core.handler.task;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.Identity;
-import top.silwings.core.handler.JsonNodeParser;
-import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.interpreter.ExpressionInterpreter;
+import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
 
@@ -22,13 +22,13 @@ public class MockTaskInfoFactory {
 
     private static final String DEFAULT_CRON = "* * * * * ?";
 
-    private final DynamicValueFactory dynamicValueFactory;
+    private final DynamicExpressionFactory dynamicExpressionFactory;
 
-    private final JsonNodeParser jsonNodeParser;
+    private final JsonTreeParser jsonTreeParser;
 
-    public MockTaskInfoFactory(final DynamicValueFactory dynamicValueFactory, final JsonNodeParser jsonNodeParser) {
-        this.dynamicValueFactory = dynamicValueFactory;
-        this.jsonNodeParser = jsonNodeParser;
+    public MockTaskInfoFactory(final DynamicExpressionFactory dynamicExpressionFactory, final JsonTreeParser jsonTreeParser) {
+        this.dynamicExpressionFactory = dynamicExpressionFactory;
+        this.jsonTreeParser = jsonTreeParser;
     }
 
     public MockTaskInfo buildTask(final Identity handlerId, final TaskInfoDto definition) {
@@ -36,11 +36,11 @@ public class MockTaskInfoFactory {
                 .handlerId(handlerId)
                 .name(definition.getName())
                 .support(definition.getSupport())
-                .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
+                .supportInterpreterList(definition.getSupport().stream().map(this.dynamicExpressionFactory::buildDynamicValue).map(ExpressionInterpreter::new).collect(Collectors.toList()))
                 .async(definition.isAsync())
                 .cron(ConvertUtils.getNoBlankOrDefault(definition.getCron(), DEFAULT_CRON))
                 .numberOfExecute(ConvertUtils.getNoNullOrDefault(definition.getNumberOfExecute(), 1))
-                .mockTaskInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getRequest())))
+                .mockTaskInterpreter(new ExpressionInterpreter(this.jsonTreeParser.parse(definition.getRequest())))
                 .build();
     }
 

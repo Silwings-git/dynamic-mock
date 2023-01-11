@@ -4,7 +4,8 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
-import top.silwings.core.handler.tree.CustomizeSpaceNodeInterpreter;
+import top.silwings.core.interpreter.CustomizeSpaceInterpreter;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 
 import java.util.List;
@@ -20,14 +21,14 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerFactory {
 
-    private final JsonNodeParser jsonNodeParser;
+    private final JsonTreeParser jsonTreeParser;
 
     private final MockResponseInfoFactory mockResponseInfoFactory;
 
     private final MockTaskInfoFactory mockTaskInfoFactory;
 
-    public MockHandlerFactory(final JsonNodeParser jsonNodeParser, final MockResponseInfoFactory mockResponseInfoFactory, final MockTaskInfoFactory mockTaskInfoFactory) {
-        this.jsonNodeParser = jsonNodeParser;
+    public MockHandlerFactory(final JsonTreeParser jsonTreeParser, final MockResponseInfoFactory mockResponseInfoFactory, final MockTaskInfoFactory mockTaskInfoFactory) {
+        this.jsonTreeParser = jsonTreeParser;
         this.mockResponseInfoFactory = mockResponseInfoFactory;
         this.mockTaskInfoFactory = mockTaskInfoFactory;
     }
@@ -44,7 +45,7 @@ public class MockHandlerFactory {
                 .version(definition.getVersion());
 
         // 自定义空间.
-        builder.customizeSpaceInterpreter(new CustomizeSpaceNodeInterpreter(definition.getCustomizeSpace(), this.jsonNodeParser.parse(definition.getCustomizeSpace())));
+        builder.customizeSpaceInterpreter(new CustomizeSpaceInterpreter(definition.getCustomizeSpace(), this.jsonTreeParser.parse(definition.getCustomizeSpace())));
 
         // 响应信息
         builder.responseInfoList(

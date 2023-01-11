@@ -12,19 +12,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.web.setup.MockHandlerDefinitionMock;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.handler.JsonNodeParser;
+import top.silwings.core.handler.MockEndPoint;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
-import top.silwings.core.handler.MockEndPoint;
 import top.silwings.core.handler.RequestContext;
-import top.silwings.core.handler.tree.Node;
-import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.handler.tree.NodeReader;
-import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
-import top.silwings.core.handler.tree.dynamic.DynamicValue;
-import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.interpreter.Expression;
+import top.silwings.core.interpreter.ExpressionInterpreter;
+import top.silwings.core.interpreter.TreeNodeReader;
+import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.expression.parser.DynamicExpressionStringParser;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.TaskRequestDto;
 import top.silwings.core.utils.JsonUtils;
@@ -46,10 +45,10 @@ import java.util.stream.Stream;
 public class ParserTest {
 
     @Autowired
-    private DynamicValueFactory dynamicValueFactory;
+    private DynamicExpressionFactory dynamicExpressionFactory;
 
     @Autowired
-    private JsonNodeParser jsonNodeParser;
+    private JsonTreeParser jsonTreeParser;
     @Autowired
     private MockHandlerManager mockHandlerManager;
     @Autowired
@@ -253,13 +252,13 @@ public class ParserTest {
 
     private void extracted(final String str, final RequestContext requestContext) {
 
-        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(str);
+        final Expression functionExpression = this.dynamicExpressionFactory.buildDynamicValue(str);
 
         final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(requestContext)
                 .build();
 
-        System.out.println(str + "结果 : " + JsonUtils.toJSONString(new NodeInterpreter(dynamicValue).interpret(mockHandlerContext)));
+        System.out.println(str + "结果 : " + JsonUtils.toJSONString(new ExpressionInterpreter(functionExpression).interpret(mockHandlerContext)));
     }
 
     @Test
@@ -267,7 +266,7 @@ public class ParserTest {
 
         final TestData testData = new TestData();
 
-        final Node analyze1 = this.jsonNodeParser.parse(testData.getTest002());
+        final Expression analyze1 = this.jsonTreeParser.parse(testData.getTest002());
 
         final MockHandlerContext mockHandlerContext = MockHandlerContext.builder()
                 .requestContext(testData.getRequestContext())
@@ -283,13 +282,13 @@ public class ParserTest {
 
         final TestData testData = new TestData();
 
-        final Node node = this.jsonNodeParser.parse(testData.getTest002());
+        final Expression expression = this.jsonTreeParser.parse(testData.getTest002());
 
-        final List<Node> nodeList = NodeReader.postOrderTraversal(node);
+        final List<Expression> expressionList = TreeNodeReader.postOrderTraversal(expression);
 
         final Stack<Object> stack = new Stack<>();
 
-        for (final Node ele : nodeList) {
+        for (final Expression ele : expressionList) {
 
             final int nodeCount = ele.getNodeCount();
 
@@ -320,11 +319,11 @@ public class ParserTest {
         String expression = "1==2";
         expression = "#uuid()";
 
-        final DynamicValue dynamicValue = this.dynamicValueFactory.buildDynamicValue(expression);
+        final Expression functionExpression = this.dynamicExpressionFactory.buildDynamicValue(expression);
 
-        final NodeInterpreter nodeInterpreter = new NodeInterpreter(dynamicValue);
+        final ExpressionInterpreter expressionInterpreter = new ExpressionInterpreter(functionExpression);
 
-        final Object interpret = nodeInterpreter.interpret(MockHandlerContext.builder().build());
+        final Object interpret = expressionInterpreter.interpret(MockHandlerContext.builder().build());
 
         System.out.println("interpret = " + interpret);
 

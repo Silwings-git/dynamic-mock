@@ -8,7 +8,7 @@ import top.silwings.core.converter.UriVariableConvertor;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
@@ -29,7 +29,7 @@ public class MockTaskInfo extends AbstractSupportAble {
 
     private final List<String> support;
 
-    private final List<NodeInterpreter> supportInterpreterList;
+    private final List<ExpressionInterpreter> supportInterpreterList;
 
     private final boolean async;
 
@@ -37,12 +37,12 @@ public class MockTaskInfo extends AbstractSupportAble {
 
     private final int numberOfExecute;
 
-    private final NodeInterpreter mockTaskInterpreter;
+    private final ExpressionInterpreter mockTaskInterpreter;
 
     private Identity handlerId;
 
     @Override
-    protected List<NodeInterpreter> getSupportInterpreterList() {
+    protected List<ExpressionInterpreter> getSupportInterpreterList() {
         return this.supportInterpreterList;
     }
 

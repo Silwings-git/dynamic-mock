@@ -1,7 +1,7 @@
 package top.silwings.core.handler;
 
 import org.apache.commons.collections4.CollectionUtils;
-import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.interpreter.ExpressionInterpreter;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  **/
 public abstract class AbstractSupportAble {
 
-    protected abstract List<NodeInterpreter> getSupportInterpreterList();
+    protected abstract List<ExpressionInterpreter> getSupportInterpreterList();
 
     public boolean support(final MockHandlerContext mockHandlerContext) {
 
@@ -22,7 +22,7 @@ public abstract class AbstractSupportAble {
             return true;
         }
 
-        for (final NodeInterpreter interpreter : this.getSupportInterpreterList()) {
+        for (final ExpressionInterpreter interpreter : this.getSupportInterpreterList()) {
             if (!Boolean.TRUE.equals(interpreter.interpret(mockHandlerContext))) {
                 return false;
             }

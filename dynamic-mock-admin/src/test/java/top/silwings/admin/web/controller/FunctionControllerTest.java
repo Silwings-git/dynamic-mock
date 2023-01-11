@@ -12,11 +12,10 @@ import top.silwings.admin.DynamicMockAdminApplication;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.web.vo.param.QueryFunctionInfoParam;
 import top.silwings.admin.web.vo.result.FunctionInfoResult;
-import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.FunctionReturnType;
+import top.silwings.core.interpreter.expression.function.FunctionFactory;
+import top.silwings.core.interpreter.expression.function.FunctionReturnType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName FunctionControllerTest
@@ -46,7 +45,7 @@ public class FunctionControllerTest {
 
         queryFunctionInfoParam.setFunctionReturnType(FunctionReturnType.BOOLEAN);
         final PageResult<FunctionInfoResult> pageResultB = this.functionController.query(queryFunctionInfoParam);
-        Assert.assertEquals(pageResultB.getPageData().size(),pageResult.getPageData().stream()
+        Assert.assertEquals(pageResultB.getPageData().size(), pageResult.getPageData().stream()
                 .filter(info -> FunctionReturnType.BOOLEAN.equals(info.getFunctionReturnType())).count());
     }
 

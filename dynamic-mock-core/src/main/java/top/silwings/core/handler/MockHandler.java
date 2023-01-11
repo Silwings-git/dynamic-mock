@@ -8,7 +8,7 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTaskInfo;
-import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.DelayUtils;
 import top.silwings.core.utils.PathMatcherUtils;
 
@@ -58,7 +58,7 @@ public class MockHandler {
     /**
      * 自定义空间
      */
-    private final NodeInterpreter customizeSpaceInterpreter;
+    private final ExpressionInterpreter customizeSpaceInterpreter;
 
     private final List<MockResponseInfo> responseInfoList;
 

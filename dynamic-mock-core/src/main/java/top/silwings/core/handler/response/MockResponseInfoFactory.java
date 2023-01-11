@@ -1,9 +1,9 @@
 package top.silwings.core.handler.response;
 
 import org.springframework.stereotype.Component;
-import top.silwings.core.handler.JsonNodeParser;
-import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
+import top.silwings.core.interpreter.ExpressionInterpreter;
+import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
 
@@ -19,21 +19,21 @@ import java.util.stream.Collectors;
 @Component
 public class MockResponseInfoFactory {
 
-    private final DynamicValueFactory dynamicValueFactory;
+    private final DynamicExpressionFactory dynamicExpressionFactory;
 
-    private final JsonNodeParser jsonNodeParser;
+    private final JsonTreeParser jsonTreeParser;
 
-    public MockResponseInfoFactory(final DynamicValueFactory dynamicValueFactory, final JsonNodeParser jsonNodeParser) {
-        this.dynamicValueFactory = dynamicValueFactory;
-        this.jsonNodeParser = jsonNodeParser;
+    public MockResponseInfoFactory(final DynamicExpressionFactory dynamicExpressionFactory, final JsonTreeParser jsonTreeParser) {
+        this.dynamicExpressionFactory = dynamicExpressionFactory;
+        this.jsonTreeParser = jsonTreeParser;
     }
 
     public MockResponseInfo buildResponseInfo(final MockResponseInfoDto definition) {
         return MockResponseInfo.builder()
                 .name(definition.getName())
-                .supportInterpreterList(definition.getSupport().stream().map(this.dynamicValueFactory::buildDynamicValue).map(NodeInterpreter::new).collect(Collectors.toList()))
+                .supportInterpreterList(definition.getSupport().stream().map(this.dynamicExpressionFactory::buildDynamicValue).map(ExpressionInterpreter::new).collect(Collectors.toList()))
                 .delayTime(ConvertUtils.getNoNullOrDefault(definition.getDelayTime(), 0))
-                .responseInterpreter(new NodeInterpreter(this.jsonNodeParser.parse(definition.getResponse())))
+                .responseInterpreter(new ExpressionInterpreter(this.jsonTreeParser.parse(definition.getResponse())))
                 .build();
     }
 

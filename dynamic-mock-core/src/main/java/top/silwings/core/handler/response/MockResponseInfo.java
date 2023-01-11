@@ -8,7 +8,7 @@ import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.MockHandlerContext;
-import top.silwings.core.handler.tree.NodeInterpreter;
+import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.DelayUtils;
 
 import java.util.List;
@@ -27,14 +27,14 @@ public class MockResponseInfo extends AbstractSupportAble {
 
     private final String name;
 
-    private final List<NodeInterpreter> supportInterpreterList;
+    private final List<ExpressionInterpreter> supportInterpreterList;
 
     private final int delayTime;
 
-    private final NodeInterpreter responseInterpreter;
+    private final ExpressionInterpreter responseInterpreter;
 
     @Override
-    protected List<NodeInterpreter> getSupportInterpreterList() {
+    protected List<ExpressionInterpreter> getSupportInterpreterList() {
         return this.supportInterpreterList;
     }
 

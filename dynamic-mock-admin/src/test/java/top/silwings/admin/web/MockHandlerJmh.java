@@ -15,56 +15,56 @@ import top.silwings.admin.web.setup.MockHandlerDefinitionMock;
 import top.silwings.core.config.DynamicMockContext;
 import top.silwings.core.config.MockTaskLogProperties;
 import top.silwings.core.config.TaskSchedulerProperties;
-import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.task.MockTaskManager;
-import top.silwings.core.handler.tree.NodeInterpreter;
-import top.silwings.core.handler.tree.dynamic.AutoTypeParser;
-import top.silwings.core.handler.tree.dynamic.DynamicExpressionStringParser;
-import top.silwings.core.handler.tree.dynamic.DynamicValue;
-import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.expression.ExpressionDynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.function.FunctionDynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.function.FunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.ToJsonStringFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.ConcatFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.ContainsFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.EqualsFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsBlankFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsEmptyFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsNotBlankFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsNotEmptyFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsNotNullFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.IsNullFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.JoinFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.NoEqualsFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.NowFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.PageFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.PrintFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.RandomFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.SaveCacheFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.SearchFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.ToBeanFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.function.functions.UUIDFunctionFactory;
-import top.silwings.core.handler.tree.dynamic.operator.OperationDynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.operator.OperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.AdditionOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.AndOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.ArithmeticEqualOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.ArithmeticNoEqualOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.DivisionOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.GreaterEqualOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.GreaterOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.LessEqualOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.LessOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.MultiplicationOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.OrDoubleOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.RemainderOperatorFactory;
-import top.silwings.core.handler.tree.dynamic.operator.operators.SubtractionOperatorFactory;
+import top.silwings.core.interpreter.Expression;
+import top.silwings.core.interpreter.ExpressionInterpreter;
+import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.expression.ExpressionFactory;
+import top.silwings.core.interpreter.expression.function.FunctionExpressionFactory;
+import top.silwings.core.interpreter.expression.function.FunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.ConcatFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.ContainsFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.EqualsFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsBlankFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsEmptyFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsNotBlankFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsNotEmptyFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsNotNullFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.IsNullFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.JoinFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.NoEqualsFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.NowFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.PageFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.PrintFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.RandomFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.SaveCacheFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.SearchFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.ToBeanFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.ToJsonStringFunctionFactory;
+import top.silwings.core.interpreter.expression.function.function_factory.UUIDFunctionFactory;
+import top.silwings.core.interpreter.expression.operator.OperatorExpressionFactory;
+import top.silwings.core.interpreter.expression.operator.OperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.AdditionOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.AndOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.ArithmeticEqualOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.ArithmeticNoEqualOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.DivisionOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.GreaterEqualOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.GreaterOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.LessEqualOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.LessOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.MultiplicationOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.OrDoubleOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.RemainderOperatorFactory;
+import top.silwings.core.interpreter.expression.operator.operator_factory.SubtractionOperatorFactory;
+import top.silwings.core.interpreter.expression.parser.AutoTypeParser;
+import top.silwings.core.interpreter.expression.parser.DynamicExpressionStringParser;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,14 +95,14 @@ public class MockHandlerJmh {
 
         final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
 
-        final DynamicValue dynamicValue = testData.getApplicationContent().getDynamicValueFactory().buildDynamicValue(str);
+        final Expression functionExpression = testData.getApplicationContent().getDynamicExpressionFactory().buildDynamicValue(str);
 
-        new NodeInterpreter(dynamicValue).interpret(MockHandlerContext.from(testData.getRequest()));
+        new ExpressionInterpreter(functionExpression).interpret(MockHandlerContext.from(testData.getRequest()));
     }
 
     @Benchmark
     public void test204(final TestData testData) {
-        testData.getPageNodeInterpreter().interpret(MockHandlerContext.from(testData.getRequest()));
+        testData.getPageExpressionInterpreter().interpret(MockHandlerContext.from(testData.getRequest()));
     }
 
     @Benchmark
@@ -110,9 +110,9 @@ public class MockHandlerJmh {
 
         final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
 
-        final DynamicValue dynamicValue = testData.getApplicationContent().getDynamicValueFactory().buildDynamicValue(str);
+        final Expression functionExpression = testData.getApplicationContent().getDynamicExpressionFactory().buildDynamicValue(str);
 
-        new NodeInterpreter(dynamicValue);
+        new ExpressionInterpreter(functionExpression);
     }
 
     @Getter
@@ -125,7 +125,7 @@ public class MockHandlerJmh {
 
         private final MockHandlerJmh.ApplicationContent applicationContent;
 
-        private final NodeInterpreter pageNodeInterpreter;
+        private final ExpressionInterpreter pageExpressionInterpreter;
 
         public TestData() {
 
@@ -141,8 +141,8 @@ public class MockHandlerJmh {
             this.staticPageMockHandler = this.applicationContent.getMockHandlerFactory().buildMockHandler(staticPage);
 
             final String str = "#page(1,10,100,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')";
-            final DynamicValue dynamicValue = this.applicationContent.getDynamicValueFactory().buildDynamicValue(str);
-            this.pageNodeInterpreter = new NodeInterpreter(dynamicValue);
+            final Expression functionExpression = this.applicationContent.getDynamicExpressionFactory().buildDynamicValue(str);
+            this.pageExpressionInterpreter = new ExpressionInterpreter(functionExpression);
         }
     }
 
@@ -150,11 +150,11 @@ public class MockHandlerJmh {
     public static class ApplicationContent {
         private final DynamicExpressionStringParser dynamicExpressionStringParser;
         private final AutoTypeParser autoTypeParser;
-        private final OperationDynamicValueFactory operationDynamicValueFactory;
-        private final ExpressionDynamicValueFactory expressionFactory;
-        private final FunctionDynamicValueFactory functionFactory;
-        private final DynamicValueFactory dynamicValueFactory;
-        private final JsonNodeParser jsonNodeParser;
+        private final OperatorExpressionFactory operatorExpressionFactory;
+        private final ExpressionFactory expressionFactory;
+        private final FunctionExpressionFactory functionFactory;
+        private final DynamicExpressionFactory dynamicExpressionFactory;
+        private final JsonTreeParser jsonTreeParser;
         private final MockResponseInfoFactory mockResponseInfoFactory;
         private final MockTaskInfoFactory mockTaskInfoFactory;
         private final MockHandlerFactory mockHandlerFactory;
@@ -165,17 +165,17 @@ public class MockHandlerJmh {
         public ApplicationContent() {
             this.dynamicExpressionStringParser = new DynamicExpressionStringParser();
             this.autoTypeParser = new AutoTypeParser(new DynamicExpressionStringParser());
-            this.operationDynamicValueFactory = new OperationDynamicValueFactory(this.loadOperation());
-            this.expressionFactory = new ExpressionDynamicValueFactory(this.dynamicExpressionStringParser, this.autoTypeParser, this.operationDynamicValueFactory);
-            this.functionFactory = new FunctionDynamicValueFactory(this.loadFunction());
-            this.dynamicValueFactory = new DynamicValueFactory(this.expressionFactory, this.functionFactory);
-            this.jsonNodeParser = new JsonNodeParser(this.dynamicValueFactory);
-            this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicValueFactory, this.jsonNodeParser);
-            this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicValueFactory, this.jsonNodeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonNodeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory);
+            this.operatorExpressionFactory = new OperatorExpressionFactory(this.loadOperation());
+            this.expressionFactory = new ExpressionFactory(this.dynamicExpressionStringParser, this.autoTypeParser, this.operatorExpressionFactory);
+            this.functionFactory = new FunctionExpressionFactory(this.loadFunction());
+            this.dynamicExpressionFactory = new DynamicExpressionFactory(this.expressionFactory, this.functionFactory);
+            this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
+            this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
+            this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory);
             this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
-            this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonNodeParser, this.dynamicValueFactory, this.functionFactory, webClient, obj -> {
+            this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {
             }, new MockTaskLogProperties());
             this.dynamicMockContext.afterPropertiesSet();
         }

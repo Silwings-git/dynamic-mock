@@ -6,10 +6,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.IdGenerator;
 import org.springframework.web.reactive.function.client.WebClient;
-import top.silwings.core.handler.JsonNodeParser;
 import top.silwings.core.handler.task.MockTaskManager;
-import top.silwings.core.handler.tree.dynamic.DynamicValueFactory;
-import top.silwings.core.handler.tree.dynamic.function.FunctionDynamicValueFactory;
+import top.silwings.core.interpreter.expression.DynamicExpressionFactory;
+import top.silwings.core.interpreter.expression.function.FunctionExpressionFactory;
+import top.silwings.core.interpreter.json.JsonTreeParser;
 
 /**
  * @ClassName DynamicMockContext
@@ -28,11 +28,11 @@ public class DynamicMockContext implements InitializingBean {
 
     private final IdGenerator idGenerator;
 
-    private final JsonNodeParser jsonNodeParser;
+    private final JsonTreeParser jsonTreeParser;
 
-    private final DynamicValueFactory dynamicValueFactory;
+    private final DynamicExpressionFactory dynamicExpressionFactory;
 
-    private final FunctionDynamicValueFactory functionDynamicValueFactory;
+    private final FunctionExpressionFactory functionExpressionFactory;
 
     private final WebClient webClient;
 
@@ -40,12 +40,12 @@ public class DynamicMockContext implements InitializingBean {
 
     private final MockTaskLogProperties mockTaskLogProperties;
 
-    public DynamicMockContext(final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonNodeParser jsonNodeParser, final DynamicValueFactory dynamicValueFactory, final FunctionDynamicValueFactory functionDynamicValueFactory, final WebClient webClient, final ApplicationEventPublisher applicationEventPublisher, final MockTaskLogProperties mockTaskLogProperties) {
+    public DynamicMockContext(final MockTaskManager mockTaskManager, final IdGenerator idGenerator, final JsonTreeParser jsonTreeParser, final DynamicExpressionFactory dynamicExpressionFactory, final FunctionExpressionFactory functionExpressionFactory, final WebClient webClient, final ApplicationEventPublisher applicationEventPublisher, final MockTaskLogProperties mockTaskLogProperties) {
         this.mockTaskManager = mockTaskManager;
         this.idGenerator = idGenerator;
-        this.jsonNodeParser = jsonNodeParser;
-        this.dynamicValueFactory = dynamicValueFactory;
-        this.functionDynamicValueFactory = functionDynamicValueFactory;
+        this.jsonTreeParser = jsonTreeParser;
+        this.dynamicExpressionFactory = dynamicExpressionFactory;
+        this.functionExpressionFactory = functionExpressionFactory;
         this.webClient = webClient;
         this.applicationEventPublisher = applicationEventPublisher;
         this.mockTaskLogProperties = mockTaskLogProperties;
