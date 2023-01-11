@@ -17,7 +17,7 @@ import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerContext;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockHandlerManager;
-import top.silwings.core.handler.MockHandlerPoint;
+import top.silwings.core.handler.MockEndPoint;
 import top.silwings.core.handler.RequestContext;
 import top.silwings.core.handler.tree.Node;
 import top.silwings.core.handler.tree.NodeInterpreter;
@@ -55,7 +55,7 @@ public class ParserTest {
     @Autowired
     private MockHandlerFactory mockHandlerFactory;
     @Autowired
-    private MockHandlerPoint mockHandlerPoint;
+    private MockEndPoint mockEndPoint;
 
     @Autowired
     private DynamicExpressionStringParser dynamicExpressionStringParser;
@@ -343,7 +343,7 @@ public class ParserTest {
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> responseEntity = this.mockHandlerPoint.executeMock(request);
+        final ResponseEntity<Object> responseEntity = this.mockEndPoint.executeMock(request);
 
         log.info(JsonUtils.toJSONString(responseEntity.getBody()));
 

@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @Slf4j
 @Component
-public class MockHandlerPoint {
+public class MockEndPoint {
 
     private final MockHandlerManager mockHandlerManager;
 
-    public MockHandlerPoint(final MockHandlerManager mockHandlerManager) {
+    public MockEndPoint(final MockHandlerManager mockHandlerManager) {
         this.mockHandlerManager = mockHandlerManager;
     }
 

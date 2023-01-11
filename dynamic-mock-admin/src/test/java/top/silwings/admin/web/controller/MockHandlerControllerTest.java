@@ -31,7 +31,7 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.MockHandlerHolder;
 import top.silwings.core.handler.MockHandlerFactory;
-import top.silwings.core.handler.MockHandlerPoint;
+import top.silwings.core.handler.MockEndPoint;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.utils.JsonUtils;
 
@@ -56,7 +56,7 @@ public class MockHandlerControllerTest {
     @Autowired
     private ProjectController projectController;
     @Autowired
-    private MockHandlerPoint mockHandlerPoint;
+    private MockEndPoint mockEndPoint;
 
     @Autowired
     private MockHandlerService mockHandlerService;
@@ -177,7 +177,7 @@ public class MockHandlerControllerTest {
         request.addParameter("execute", "1");
         request.setContent("{\"pageNum\": \"1\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> response = this.mockHandlerPoint.executeMock(request);
+        final ResponseEntity<Object> response = this.mockEndPoint.executeMock(request);
 
         Assert.assertNotNull(response.getBody());
 

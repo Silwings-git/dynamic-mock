@@ -28,15 +28,15 @@ public class DynamicMockHandlerMapping extends AbstractHandlerMethodMapping<Obje
 
     private final MockHandlerManager mockHandlerManager;
 
-    private final MockHandlerPoint mockHandlerPoint;
+    private final MockEndPoint mockEndPoint;
 
     private final Method mockMethod;
 
-    public DynamicMockHandlerMapping(final MockHandlerManager mockHandlerManager, final MockHandlerPoint mockHandlerPoint) {
+    public DynamicMockHandlerMapping(final MockHandlerManager mockHandlerManager, final MockEndPoint mockEndPoint) {
         this.mockHandlerManager = mockHandlerManager;
-        this.mockHandlerPoint = mockHandlerPoint;
+        this.mockEndPoint = mockEndPoint;
         try {
-            this.mockMethod = MockHandlerPoint.class.getMethod("executeMock", HttpServletRequest.class);
+            this.mockMethod = MockEndPoint.class.getMethod("executeMock", HttpServletRequest.class);
         } catch (NoSuchMethodException e) {
             throw new DynamicMockException(e);
         }
@@ -53,7 +53,7 @@ public class DynamicMockHandlerMapping extends AbstractHandlerMethodMapping<Obje
         if (null != mockHandler) {
             MockHandlerHolder.remove();
             MockHandlerHolder.set(mockHandler);
-            return new HandlerMethod(this.mockHandlerPoint, this.mockMethod);
+            return new HandlerMethod(this.mockEndPoint, this.mockMethod);
         }
 
         return super.getHandlerInternal(request);
