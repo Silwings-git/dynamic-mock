@@ -134,7 +134,7 @@ public class MockTaskLogServiceImpl implements MockTaskLogService, ApplicationLi
 
         final Example example = new Example(MockTaskLogPo.class);
         example.createCriteria()
-                .andEqualTo(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
+                .andIn(MockTaskLogPo.C_HANDLER_ID, Identity.toInt(handlerIdList))
                 .andLessThanOrEqualTo(MockTaskLogPo.C_CREATE_TIME, typeCondition.getBeforeTime())
                 .andLessThan(MockTaskLogPo.C_LOG_ID, minId)
                 .andEqualTo(MockTaskLogPo.C_LOG_ID, ConvertUtils.getNoNullOrDefault(logId, null, Identity::intValue));
