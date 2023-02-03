@@ -82,3 +82,7 @@ CREATE TABLE `dm_text_file` (
 PRIMARY KEY (`id`),
 UNIQUE KEY `dm_text_file_file_name_uindex` (`file_name`)
 ) ENGINE=InnoDB COLLATE=utf8mb4_0900_ai_ci COMMENT='文本文件内容表';
+
+-- 初始化用户信息
+INSERT INTO dev_dynamic_mock.dm_user (username, user_account, password, role, permission) VALUES
+('root', 'root', '63a9f0ea7bb98050796b649e85481845', 1, null);
