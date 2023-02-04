@@ -92,6 +92,10 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
 
         final Set<Identity> handlerIdSet = this.mockHandlerManager.registeredHandlerIds();
 
+        if (CollectionUtils.isEmpty(handlerIdSet)) {
+            return;
+        }
+
         final QueryDisableHandlerIdsConditionDto conditionParamDto = QueryDisableHandlerIdsConditionDto.builder()
                 .handlerIdRangeList(handlerIdSet)
                 .build();
