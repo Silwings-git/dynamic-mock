@@ -1,19 +1,15 @@
 package top.silwings.core.handler.response;
 
 import lombok.Builder;
-import lombok.Getter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.interpreter.ExpressionInterpreter;
-import top.silwings.core.utils.DelayUtils;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName MockResponse
@@ -49,29 +45,11 @@ public class MockResponseInfo extends AbstractSupportAble {
         final Map<?, ?> map = (Map<?, ?>) interpret;
 
         return MockResponse.builder()
-                .delayTime(this.delayTime)
+                .delayTime(ConvertUtils.getNoNullOrDefault(this.delayTime, 0))
                 .status(Integer.parseInt(String.valueOf(map.get("status"))))
                 .headers(HttpHeaderConverter.from(map.get("headers")))
                 .body(map.get("body"))
                 .build();
-    }
-
-    @Getter
-    @Builder
-    public static class MockResponse {
-        private final int delayTime;
-        private final int status;
-        private final HttpHeaders headers;
-        private final Object body;
-
-        public ResponseEntity<Object> toResponseEntity() {
-            return new ResponseEntity<>(this.body, this.headers, this.status);
-        }
-
-        public MockResponse delay() {
-            DelayUtils.delay(this.delayTime, TimeUnit.MILLISECONDS);
-            return this;
-        }
     }
 
 
