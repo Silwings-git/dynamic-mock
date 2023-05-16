@@ -61,6 +61,10 @@ public class RequestContext {
         this.customizeSpace.put(key, value);
     }
 
+    public FinalRequestContext toFinal() {
+        return FinalRequestContext.from(this);
+    }
+
     @Slf4j
     @Getter
     @Setter
@@ -70,102 +74,102 @@ public class RequestContext {
         /**
          * 授权类型
          */
-        private final String authType;
+        private String authType;
 
         /**
          * 上下文路径
          */
-        private final String contextPath;
+        private String contextPath;
 
         /**
          * cookie
          */
-        private final List<Cookie> cookies;
+        private List<Cookie> cookies;
 
         /**
          * cookie key value映射集
          */
-        private final Map<String, String> cookieMap;
+        private Map<String, String> cookieMap;
 
         /**
          * 请求头
          */
-        private final List<Map<String, String>> headers;
+        private List<Map<String, String>> headers;
 
         /**
          * 请求头key value映射
          */
-        private final Map<String, String> headerMap;
+        private Map<String, String> headerMap;
 
         /**
          * 请求方法
          */
-        private final String method;
+        private String method;
 
         /**
          * pathInfo
          */
-        private final String pathInfo;
+        private String pathInfo;
 
         /**
          * pathTranslated
          */
-        private final String pathTranslated;
+        private String pathTranslated;
 
         /**
          * queryString
          */
-        private final String queryString;
+        private String queryString;
 
         /**
          * remoteUser
          */
-        private final String remoteUser;
+        private String remoteUser;
 
         /**
          * 请求URI
          */
-        private final String requestURI;
+        private String requestURI;
 
         /**
          * 请求URL
          */
-        private final String requestURL;
+        private String requestURL;
 
         /**
          * servletPath
          */
-        private final String servletPath;
+        private String servletPath;
 
         /**
          * 请求体
          */
-        private final Object body;
+        private Object body;
 
         /**
          * application/json
          */
-        private final Map<String, ?> jsonBody;
+        private Map<String, ?> jsonBody;
 
         /**
          * text/plain
          */
-        private final String textBody;
+        private String textBody;
 
         /**
          * x-www-form-urlencoded
          */
-        private final Map<String, List<String>> formBody;
+        private Map<String, List<String>> formBody;
 
         /**
          * form-data
          */
-        private final Map<String, List<String>> parameterMap;
+        private Map<String, List<String>> parameterMap;
 
         /**
          * 路径参数
          */
-        private final Map<String, String> pathParameterMap;
+        private Map<String, String> pathParameterMap;
 
         public static RequestInfo from(final HttpServletRequest request) {
 
