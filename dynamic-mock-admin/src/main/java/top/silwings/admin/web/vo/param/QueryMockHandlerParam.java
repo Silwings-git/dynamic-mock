@@ -34,4 +34,7 @@ public class QueryMockHandlerParam extends PageParam {
     @ApiModelProperty(value = "处理器标签", example = "erp")
     private String label;
 
+    @ApiModelProperty(value = "处理器状态", example = "2")
+    private Integer enableStatus;
+
 }

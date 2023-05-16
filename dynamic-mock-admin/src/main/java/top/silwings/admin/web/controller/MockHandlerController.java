@@ -13,7 +13,6 @@ import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
-import top.silwings.admin.service.MockHandlerRegisterService;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
@@ -58,7 +57,7 @@ public class MockHandlerController {
 
     private final ProjectService projectService;
 
-    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService, final MockHandlerRegisterService mockHandlerRegisterService) {
+    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
         this.mockHandlerService = mockHandlerApplication;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
@@ -123,6 +122,7 @@ public class MockHandlerController {
                 .httpMethod(param.getHttpMethod())
                 .requestUri(param.getRequestUri())
                 .label(param.getLabel())
+                .enableStatus(EnableStatus.valueOfCode(param.getEnableStatus()))
                 .build();
 
         final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, param);

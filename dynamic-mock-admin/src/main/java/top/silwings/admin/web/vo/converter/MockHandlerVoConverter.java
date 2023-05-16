@@ -42,7 +42,7 @@ public class MockHandlerVoConverter {
                 .httpMethods(vo.getHttpMethods().stream().map(method -> HttpMethod.resolve(method.toUpperCase())).filter(Objects::nonNull).collect(Collectors.toList()))
                 .requestUri(requestUri.startsWith("/") ? requestUri : "/" + requestUri)
                 .label(vo.getLabel())
-                .delayTime(vo.getDelayTime())
+                .delayTime(ConvertUtils.getNoNullOrDefault(vo.getDelayTime(), 0))
                 .customizeSpace(vo.getCustomizeSpace())
                 .responses(vo.getResponses().stream().map(this::convert).collect(Collectors.toList()))
                 .tasks(vo.getTasks().stream().map(this::convert).collect(Collectors.toList()))
@@ -56,6 +56,7 @@ public class MockHandlerVoConverter {
 
         resultVo.setProjectId(dto.getProjectId());
         resultVo.setProjectName(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getProjectName));
+        resultVo.setBaseUri(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getBaseUri));
         resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(dto.getHandlerId());
         resultVo.setName(dto.getName());
@@ -75,7 +76,7 @@ public class MockHandlerVoConverter {
         return TaskInfoDto.builder()
                 .name(vo.getName())
                 .support(vo.getSupport())
-                .async(vo.getAsync())
+                .async(ConvertUtils.getNoNullOrDefault(vo.getAsync(), false))
                 .cron(vo.getCron())
                 .numberOfExecute(vo.getNumberOfExecute())
                 .request(this.convert(vo.getRequest()))

@@ -34,6 +34,9 @@ public class MockHandlerInfoResult {
     @ApiModelProperty(value = "项目名称", example = "P1")
     private String projectName;
 
+    @ApiModelProperty(value = "项目基础路径", example = "/basic")
+    private String baseUri;
+
     @ApiModelProperty(value = "处理器id", example = "H1")
     private Identity handlerId;
 
