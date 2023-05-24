@@ -11,7 +11,7 @@ import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.exceptions.UserNotLoggedOnException;
 import top.silwings.admin.utils.I18nUtils;
-import top.silwings.core.exceptions.DynamicMockException;
+import top.silwings.core.exceptions.BaseDynamicMockException;
 import top.silwings.core.exceptions.DynamicValueCompileException;
 
 /**
@@ -25,8 +25,8 @@ import top.silwings.core.exceptions.DynamicValueCompileException;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(value = DynamicMockException.class)
-    public ResponseEntity<Object> handlingException(final DynamicMockException exception) {
+    @ExceptionHandler(value = BaseDynamicMockException.class)
+    public ResponseEntity<Object> handlingException(final BaseDynamicMockException exception) {
         if (exception instanceof DynamicValueCompileException) {
             // 表达式编译错误需要在admin中响应,需要支持多语言
             return this.handlingException(DynamicMockAdminException.of(ErrorCode.EXPRESSION_INCORRECT, exception.getMessage()));

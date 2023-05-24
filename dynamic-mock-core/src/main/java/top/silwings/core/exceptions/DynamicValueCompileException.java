@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  * @Date 2022/11/18 22:38
  * @Since
  **/
-public class DynamicValueCompileException extends DynamicMockException {
+public class DynamicValueCompileException extends BaseDynamicMockException {
 
     public DynamicValueCompileException(final String message) {
         super(message);

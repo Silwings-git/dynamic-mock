@@ -7,7 +7,7 @@ package top.silwings.core.exceptions;
  * @Date 2022/11/20 20:53
  * @Since
  **/
-public class TypeCastException extends DynamicMockException {
+public class TypeCastException extends BaseDynamicMockException {
 
     public TypeCastException(final String message) {
         super(message);

@@ -11,6 +11,7 @@ import top.silwings.core.handler.response.MockResponse;
  * @Date 2023/5/16 22:03
  * @Since
  **/
+@FunctionalInterface
 public interface PreResponseInterceptor {
 
     void execute(MockResponse response, FinalRequestContext requestContext, MockWorkflowControl mockWorkflowControl);

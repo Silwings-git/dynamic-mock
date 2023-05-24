@@ -2,13 +2,17 @@ package top.silwings.admin.web.setup;
 
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
+import top.silwings.core.handler.plugin.script.ScriptInterfaceType;
+import top.silwings.core.handler.plugin.script.ScriptLanguageType;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
+import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
 import top.silwings.core.utils.JsonUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -39,9 +43,36 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
+                .mockScriptList(buildScriptList())
                 .updateTime(new Date())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
+    }
+
+    private static List<MockScriptDto> buildScriptList() {
+
+        final List<MockScriptDto> mockScriptList = new ArrayList<>();
+        final MockScriptDto script = MockScriptDto.builder()
+                .scriptName("测试脚本")
+                .scriptLanguageType(ScriptLanguageType.PYTHON)
+                .scriptInterfaceType(ScriptInterfaceType.PRE_MOCK_INTERCEPTOR)
+                .scriptText("class MockResponse:\n" +
+                            "    def __init__(self, delayTime, status, headers, body):\n" +
+                            "        self.delayTime = delayTime\n" +
+                            "        self.status = status\n" +
+                            "        self.headers = headers\n" +
+                            "        self.body = body\n" +
+                            "def execute(requestContext, mockWorkflowControl):\n" +
+                            "    print(\"Request Context:\", requestContext)\n" +
+                            "    print(\"Mock Workflow Control:\", mockWorkflowControl)\n" +
+                            "    mockWorkflowControl.interruptAndReturn = True\n" +
+                            "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
+                .remark("这是备注")
+                .build();
+        mockScriptList.add(script);
+
+
+        return mockScriptList;
     }
 
     private static Map<String, Object> buildCustomizeSpace() {
@@ -128,39 +159,39 @@ public class MockHandlerDefinitionMock {
         definition.headers(null);
 
         final String s = "{" +
-                "\"${#uuid()}\": \"${#uuid()}\"," +
-                "\"uuidKeyA\": \"${#uuid()}\"," +
-                "\"uuidKeyB\": \"${#uuid()}\"," +
-                "\"name\": \"${#search('name')}\"," +
-                "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
-                "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
-                "\"random\": \"${#search('$.'+(1+2*5))}\"," +
-                " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
-                "}";
+                         "\"${#uuid()}\": \"${#uuid()}\"," +
+                         "\"uuidKeyA\": \"${#uuid()}\"," +
+                         "\"uuidKeyB\": \"${#uuid()}\"," +
+                         "\"name\": \"${#search('name')}\"," +
+                         "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
+                         "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
+                         "\"random\": \"${#search('$.'+(1+2*5))}\"," +
+                         " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
+                         "}";
 
         final String dynamicPage = "{" +
-                " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')}\"" +
-                "}";
+                                   " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')}\"" +
+                                   "}";
 
         final String staticPage = "{" +
-                " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}',false)}\"" +
-                "}";
+                                  " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}',false)}\"" +
+                                  "}";
 
         final String search = "{" +
-                " \"body\": \"${#search('$.pageNum')}\"" +
-                "}";
+                              " \"body\": \"${#search('$.pageNum')}\"" +
+                              "}";
 
         final String iterator = "{" +
-                " \"list\": \"${#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')}\"" +
-                "}";
+                                " \"list\": \"${#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')}\"" +
+                                "}";
 
         final String iteratorObj = "{" +
-                " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
-                "}";
+                                   " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
+                                   "}";
 
         final String iteratorObj2 = " {\n" +
-                "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
-                "            }";
+                                    "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
+                                    "            }";
 
         definition.body(JsonUtils.toBean(iteratorObj));
 
