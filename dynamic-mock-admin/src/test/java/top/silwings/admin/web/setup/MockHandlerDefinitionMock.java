@@ -10,7 +10,6 @@ import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
-import top.silwings.core.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +68,8 @@ public class MockHandlerDefinitionMock {
                             "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
                 .remark("这是备注")
                 .build();
-        mockScriptList.add(script);
+        // 目前脚本解析还存在问题
+//        mockScriptList.add(script);
 
 
         return mockScriptList;
@@ -193,7 +193,12 @@ public class MockHandlerDefinitionMock {
                                     "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
                                     "            }";
 
-        definition.body(JsonUtils.toBean(iteratorObj));
+//        definition.body(JsonUtils.toBean(iteratorObj));
+//        definition.body("{\"title\":\"${#concat('官方',#now('yyyyMMdd'),'001')}\"}");
+//        definition.body("${#toJsonString(#parseJsonString('{\"name\":\"${#uuid()}\"}'))}");
+        definition.body("${#toJsonString(#parseJsonString('{\"jingdong_ware_read_searchWare4Valid_responce\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'官方UA Rival Camo男子抓绒连帽户外运动卫衣Under Armour^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}'))}");
+        definition.body("${#toJsonString(#parseJsonString('[{\"name\":\"Demo Name\"},{\"jingdong_ware_read_searchWare4Valid_responce\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'官方UA Rival Camo男子抓绒连帽户外运动卫衣Under Armour^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}]'))}");
+
 
         return definition.build();
     }

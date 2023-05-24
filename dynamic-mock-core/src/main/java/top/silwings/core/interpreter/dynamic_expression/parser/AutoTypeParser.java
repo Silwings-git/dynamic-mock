@@ -57,6 +57,7 @@ public class AutoTypeParser implements Parser<Object, Object> {
 
             // 数值类型默认使用int,长度不满足使用long,浮点类型使用double
             if (text.indexOf(".") > 0) {
+                // 这里有意忽略掉索引为0的数据,因为这里对数据的要求是第一个字符为数值,而不是点号
                 return Double.parseDouble(text);
             } else {
                 try {
@@ -65,7 +66,7 @@ public class AutoTypeParser implements Parser<Object, Object> {
                     try {
                         return Long.parseLong(text);
                     } catch (NumberFormatException e) {
-                        throw DynamicValueCompileException.from("Illegal character : " + text);
+                        throw DynamicValueCompileException.from("Illegal character : " + text + ". Please check if it contains illegal symbols or forgot to add escape symbols.");
                     }
                 }
             }

@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -210,7 +209,7 @@ public class ParserTest {
         expressionList.add("#print(#saveCache('abcabcabc','御坂美琴','all'))");
         expressionList.add("#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
         expressionList.add("#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))" +
-                "+#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
+                           "+#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
         // 遍历集合
         expressionList.add("#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')");
         expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')");
@@ -221,6 +220,17 @@ public class ParserTest {
         expressionList.add("#toJsonString(1+1)");
         expressionList.add("#toJsonString('{\"name\":\"aka Mikoto\"}')");
         expressionList.add("#toJsonString(#search('user'))");
+        expressionList.add("#parseJsonString('{\"name\":\"御坂美琴\"}')");
+        expressionList.add("#parseJsonString('{\"name\":\"${#search(10,^'customizespace^')}\"}')");
+        expressionList.add("#parseJsonString('[{\"name\":\"${#search(10,^'customizespace^')}\"}]')");
+        // page函数返回的数据类型不是string,这里使用toJsonString函数将对象转字符串再交给parseJsonString处理
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',true)))");
+        expressionList.add("#parseJsonString('{\"name\":\"御坂美琴\"}',false)");
+        expressionList.add("#parseJsonString('{\"name\":\"${#search(10,^'customizespace^')}\"}',false)");
+        expressionList.add("#parseJsonString('[{\"name\":\"${#search(10,^'customizespace^')}\"}]',false)");
+        // page函数返回的数据类型不是string,这里使用toJsonString函数将对象转字符串再交给parseJsonString处理
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',true)),false)");
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',false)),false)");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
@@ -264,7 +274,12 @@ public class ParserTest {
                 .requestContext(requestContext)
                 .build();
 
-        System.out.println(str + "结果 : " + JsonUtils.toJSONString(new ExpressionInterpreter(functionExpression).interpret(mockHandlerContext)));
+        final Object interpret = new ExpressionInterpreter(functionExpression).interpret(mockHandlerContext);
+        if (null != interpret) {
+            System.out.println(str + "-type: " + interpret.getClass().getName() + "-结果 : " + JsonUtils.toJSONString(interpret));
+        }else {
+            System.out.println(str + "结果 : 返回null");
+        }
     }
 
     @Test
@@ -350,27 +365,28 @@ public class ParserTest {
 
         final ResponseEntity<Object> responseEntity = this.mockEndPoint.executeMock(request);
 
-        log.info(JsonUtils.toJSONString(responseEntity.getBody()));
+        final Object body = responseEntity.getBody();
+        log.info("res type: " + body.getClass().getName() + "--" + JsonUtils.toJSONString(body));
 
-        TimeUnit.SECONDS.sleep(5);
+//        TimeUnit.SECONDS.sleep(5);
     }
 
     @Test
     public void test003() {
 
         TaskRequestDto httpTaskRequestInfoDefinition = JsonUtils.toBean("{\n" +
-                "  \"body\": {\n" +
-                "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
-                "  }\n" +
-                "}", TaskRequestDto.class);
+                                                                        "  \"body\": {\n" +
+                                                                        "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
+                                                                        "  }\n" +
+                                                                        "}", TaskRequestDto.class);
 
         System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
 
         httpTaskRequestInfoDefinition = JsonUtils.toBean("{\n" +
-                "  \"abc\": {\n" +
-                "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
-                "  }\n" +
-                "}", TaskRequestDto.class);
+                                                         "  \"abc\": {\n" +
+                                                         "    \"name\": [\"御坂美琴\",\"白井黑子\"]\n" +
+                                                         "  }\n" +
+                                                         "}", TaskRequestDto.class);
 
         System.out.println(JsonUtils.toJSONString(httpTaskRequestInfoDefinition));
 
@@ -398,18 +414,18 @@ public class ParserTest {
         final MockHandlerContext mockHandlerContext;
         private final String test001 = "#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))";
         private final String test002 = "{\n" +
-                "\"id\":\"${#uuid('abc')}\"," +
-                "\"${#search('def')}\": \"${#search(#search(#concat('a',(3*(1+1)--2-6))))}\"," +
-                "\"${#search('abcabc')}\": \"${#search(#search('a'+(3*(1+1)--2-6)))}\"," +
-                "\"age\": \"${#search('age')}\"," +
-                "\"zbd\": \"${#search('zbd')}\"," +
-                "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
-                "\"uuidKey\": \"${#uuid(1,2)}\"" +
-                "}";
+                                       "\"id\":\"${#uuid('abc')}\"," +
+                                       "\"${#search('def')}\": \"${#search(#search(#concat('a',(3*(1+1)--2-6))))}\"," +
+                                       "\"${#search('abcabc')}\": \"${#search(#search('a'+(3*(1+1)--2-6)))}\"," +
+                                       "\"age\": \"${#search('age')}\"," +
+                                       "\"zbd\": \"${#search('zbd')}\"," +
+                                       "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
+                                       "\"uuidKey\": \"${#uuid(1,2)}\"" +
+                                       "}";
         private final String test004 = "{\n" +
-                "\"${#search('def')}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
-                "\"uuidKey\": \"${#uuid(1,2)}\"" +
-                "}";
+                                       "\"${#search('def')}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                                       "\"uuidKey\": \"${#uuid(1,2)}\"" +
+                                       "}";
         private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
 
         public TestData() {
