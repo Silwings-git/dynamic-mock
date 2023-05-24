@@ -40,6 +40,7 @@ import top.silwings.core.interpreter.dynamic_expression.function.function_factor
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.NoEqualsFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.NowFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.PageFunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ParseJsonStringFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.PrintFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.RandomFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SaveCacheFunctionFactory;
@@ -205,7 +206,8 @@ public class MockHandlerJmh {
                             new ToBeanFunctionFactory(),
                             new ToJsonStringFunctionFactory(),
                             new UUIDFunctionFactory(),
-                            new SaveCacheFunctionFactory()
+                            new SaveCacheFunctionFactory(),
+                            new ParseJsonStringFunctionFactory()
                     )
                     .collect(Collectors.toList());
         }

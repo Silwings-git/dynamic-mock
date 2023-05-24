@@ -36,7 +36,7 @@ public class ToJsonStringFunctionFactory implements FunctionFactory {
 
     @Override
     public boolean support(final String methodName) {
-        return "tojsonstring".equalsIgnoreCase(methodName) || "tjs".equalsIgnoreCase(methodName);
+        return "tojsonstring".equalsIgnoreCase(methodName) || "tojsonstr".equalsIgnoreCase(methodName) || "tjs".equalsIgnoreCase(methodName);
     }
 
     @Override

@@ -7,7 +7,6 @@ import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
-import top.silwings.core.utils.JsonUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -128,41 +127,46 @@ public class MockHandlerDefinitionMock {
         definition.headers(null);
 
         final String s = "{" +
-                "\"${#uuid()}\": \"${#uuid()}\"," +
-                "\"uuidKeyA\": \"${#uuid()}\"," +
-                "\"uuidKeyB\": \"${#uuid()}\"," +
-                "\"name\": \"${#search('name')}\"," +
-                "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
-                "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
-                "\"random\": \"${#search('$.'+(1+2*5))}\"," +
-                " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
-                "}";
+                         "\"${#uuid()}\": \"${#uuid()}\"," +
+                         "\"uuidKeyA\": \"${#uuid()}\"," +
+                         "\"uuidKeyB\": \"${#uuid()}\"," +
+                         "\"name\": \"${#search('name')}\"," +
+                         "\"phoneNumber\": \"${#search('$.phoneNumbers[0]')}\"," +
+                         "\"uri\": \"${#search('$.requestURI','requestInfo')}\"," +
+                         "\"random\": \"${#search('$.'+(1+2*5))}\"," +
+                         " \"body\": \"${#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"${#search(^'name^')}\\\",\\\"status\\\": \\\"${#uuid()}\\\"}')}\"" +
+                         "}";
 
         final String dynamicPage = "{" +
-                " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')}\"" +
-                "}";
+                                   " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')}\"" +
+                                   "}";
 
         final String staticPage = "{" +
-                " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}',false)}\"" +
-                "}";
+                                  " \"body\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}',false)}\"" +
+                                  "}";
 
         final String search = "{" +
-                " \"body\": \"${#search('$.pageNum')}\"" +
-                "}";
+                              " \"body\": \"${#search('$.pageNum')}\"" +
+                              "}";
 
         final String iterator = "{" +
-                " \"list\": \"${#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')}\"" +
-                "}";
+                                " \"list\": \"${#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')}\"" +
+                                "}";
 
         final String iteratorObj = "{" +
-                " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
-                "}";
+                                   " \"list\": \"${#page(1,10,100,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"" +
+                                   "}";
 
         final String iteratorObj2 = " {\n" +
-                "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
-                "            }";
+                                    "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
+                                    "            }";
 
-        definition.body(JsonUtils.toBean(iteratorObj));
+//        definition.body(JsonUtils.toBean(iteratorObj));
+//        definition.body("{\"title\":\"${#concat('官方',#now('yyyyMMdd'),'001')}\"}");
+//        definition.body("${#toJsonString(#parseJsonString('{\"name\":\"${#uuid()}\"}'))}");
+        definition.body("${#toJsonString(#parseJsonString('{\"data\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'data^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}'))}");
+        definition.body("${#toJsonString(#parseJsonString('[{\"name\":\"Demo Name\"},{\"data\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'data^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}]'))}");
+
 
         return definition.build();
     }
