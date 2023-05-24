@@ -59,6 +59,7 @@ public class ParseJsonStringFunctionFactory implements FunctionFactory {
 
     /**
      * json字符串解析函数
+     * 解析Json格式字符串并执行json中包含的动态表达式
      * 1.#parseJsonString(json格式字符串)
      * 2.#parseJsonString(json格式字符串,数据是否动态)
      * 不指定第二个参数时默认为true

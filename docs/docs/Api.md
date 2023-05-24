@@ -247,7 +247,7 @@ Handler实现动态逻辑的核心，表达式在运行时基于上下文信息�
 
    **tips:**
 
-   ​ 如果直接编写MockHandler json，因为整个表达式是在json字符串内，所以双引号内容也需要转义。如果使用图形化客户端录入可以不考虑该问题。
+    如果直接编写MockHandler json，因为整个表达式是在json字符串内，所以双引号内容也需要转义。如果使用图形化客户端录入可以不考虑该问题。
 
 ### 逻辑运算符
 
@@ -288,9 +288,9 @@ Mock系统的特性，需要注意区分，当函数不具备这种特性时，�
 
 ##### 1.Search
 
-​ 搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
+ 搜索函数。用于从请求信息或自定义参数空间搜索参数信息，是最常用的函数。借助该函数可以实现通过请求信息或自定义空间中的数据控制执行逻辑，如获取分页参数，辅助page函数计算返回值，控制support条件是否成立等。
 
-​ 该函数提供五个重载形式。
+ 该函数提供五个重载形式。
 
 1. `#search(jsonPath,jsonObject)`
 
@@ -377,7 +377,7 @@ Mock系统的特性，需要注意区分，当函数不具备这种特性时，�
 
 ##### 2.Concat
 
-​ 用于将参数拼接的函数
+ 用于将参数拼接的函数
 
 1. 最小参数数量：0（为0时默认为空串。）
 
@@ -397,7 +397,7 @@ Mock系统的特性，需要注意区分，当函数不具备这种特性时，�
 
 ##### 3.Equals
 
-​ 比较两个参数内容转换为String后是否完全一致，可简写为`eq`。
+ 比较两个参数内容转换为String后是否完全一致，可简写为`eq`。
 
 1. 最小参数数量：2
 
@@ -417,7 +417,7 @@ Mock系统的特性，需要注意区分，当函数不具备这种特性时，�
 
 ##### 4.NoEquals
 
-​ Equals函数的取反。可简写为`neq`
+ Equals函数的取反。可简写为`neq`
 
 1. 最小参数数量：2
 2. 最大参数数量：2
@@ -600,7 +600,7 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 其中，1和2是使用数据模板生成Mock数据的方式，3，4使用指定数据集筛选数据。1 是 2
 的简写形式，如果使用1的函数，数据是否动态将默认为true。3是4的简写形式，如果使用3的函数，数据是否动态将默认为true。
 
-​ 如果分页数据模板提供的是json对象格式字符串，返回结果将尝试将其转换为对象返回，否则按照纯字符串处理。
+ 如果分页数据模板提供的是json对象格式字符串，返回结果将尝试将其转换为对象返回，否则按照纯字符串处理。
 
 **参数说明：**
 
@@ -624,13 +624,13 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
 无论是基于数据模板，还是数据集，其本质都是使用数据模板生成动态数据（数据集的方式其实是有序的指定多个数据模板），所以需要在运行时进行解析，因此在对分页Mock有速度要求时，需要注意函数的选择。四种重载方式的速度对比如下（数据集动态的性能较其他差距巨大，有速度要求时慎用）：
 
-​ 快 ---> 数据模板静态 > 数据集静态 > 数据模板动态 > 数据集动态 ---> 慢
+ 快 ---> 数据模板静态 > 数据集静态 > 数据模板动态 > 数据集动态 ---> 慢
 
 ##### 14.UUID
 
-​ 生成uuid。可通过参数简单控制生成结果的长度和格式。
+ 生成uuid。可通过参数简单控制生成结果的长度和格式。
 
-​ 提供2个重载函数：
+ 提供2个重载函数：
 
 1. `#uuid()`
    1. 生成一个uuid
@@ -649,7 +649,7 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
 ##### 15.Random
 
-​ 随机数函数，支持生成int/long/double/boolean类型的随机数。可通过参数控制生成的随机数的范围。
+ 随机数函数，支持生成int/long/double/boolean类型的随机数。可通过参数控制生成的随机数的范围。
 
 提供4个重载函数：
 
@@ -674,9 +674,9 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
 ##### 16.Contains
 
-​ 用于判断指定字符串或集合中是否包含某个元素。当`被包含元素（集合）`存在于`集合`或指定`字符串`中时，该函数返回true。
+ 用于判断指定字符串或集合中是否包含某个元素。当`被包含元素（集合）`存在于`集合`或指定`字符串`中时，该函数返回true。
 
-​ 提供三个重载函数
+ 提供三个重载函数
 
 1. `#contains(集合,被包含元素)`
     1. 集合：对象类型。因为该函数同时支持纯字符串判断，所以不具备手动录入集合字符串自动转换为集合对象的特性，请使用Search函数获取运行时集合数据。
@@ -691,7 +691,7 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
     2. 被包含元素：字符串类型。类型不匹配时固定返回false。
     3. 返回值类型：boolean
 
-​ 示例：
+ 示例：
 
 1. `#Contains(#toBean('[1,2,3]'),1)`=>true
 2. `#Contains(#toBean('[1,2,3]'),'1')`=>false
@@ -703,57 +703,59 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
 ##### 17.ToBean
 
-​ 用于将json字符串转换为json对象的函数。当参数无法转换为json对象时将抛出异常。
+ 用于将json字符串转换为json对象的函数。当参数无法转换为json对象时将抛出异常。
 
-​ 函数声明：
+ 函数声明：
 
 ​    `#toBean(json格式字符串)`
 
 1. json格式字符串：其中的字符串类型使用双引号`""`,而不是单引号。
 2. 返回值类型：json对象
 
-​ 示例：
+ 示例：
 
 1. `#toBean('{"name":"Misaka Mikoto"}')`
 2. `#toBean('["1","2"]')`
 
 ##### 18.ToJsonString
 
-​ 尝试将对象转换为json字符串。如果本身就是字符串类型将原样返回。可简写为`tjs`。通常用于调试。
+ 尝试将对象转换为json字符串。如果本身就是字符串类型将原样返回。可简写为`tjs`或`tojsonstr`
 
-​ 函数声明：
+ 函数声明：
 
 ​    `#ToJsonString(待转换对象)`
 
 1. 待转换对象：可通过Search函数或ToBean函数获得
 2. 返回值类型：String
 
-​ 示例：
+ 示例：
 
 1. `#toJsonString(#toBean('{"name":"Misaka Mikoto"}'))`=> {"name":"Misaka Mikoto"}
 2. `#tjs(#toBean('{"name":"Misaka Mikoto"}'))`=> {"name":"Misaka Mikoto"}
+3. `toJsonString(1+1)`=> 2
+4. `toJsonString(#search('user'))` => {"name":"Misaka Mikoto"}
 
 ##### 19.Print
 
-​ 打印函数。可在日志中打印输入参数，并将入参重新返回。通常用于调试。
+ 打印函数。可在日志中打印输入参数，并将入参重新返回。通常用于调试。
 
-​ 函数声明：
+ 函数声明：
 
 ​    `#print(待打印内容)`
 
 1. 待打印内容：类型不限。
 2. 返回值：返回入参。
 
-​ 示例：
+ 示例：
 
 1. `#print(#toBean('{"name":"Misaka Mikoto"}'))`=>打印：{name=Misaka Mikoto}
 2. `#print(#tjs(#toBean('{"name":"Misaka Mikoto"}')))`=>打印：{"name":"Misaka Mikoto"}
 
 ##### 20.SaveCache
 
-​ 向请求上下文的本地缓存写入数据。缓存的key，value不限制类型，但需要注意，如果key设置为非字符类型，Search函数将无法从缓存中获取值。
+ 向请求上下文的本地缓存写入数据。缓存的key，value不限制类型，但需要注意，如果key设置为非字符类型，Search函数将无法从缓存中获取值。
 
-​ 该函数提供两个重载形式：
+ 该函数提供两个重载形式：
 
 1. `#saveCache(key，value)`
 
@@ -785,9 +787,9 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
 ##### 21.Select
 
-​ 基于第一个参数选择第二或者第三个参数返回.效果等于三元运算符`boolean?argA:argB`。
+ 基于第一个参数选择第二或者第三个参数返回.效果等于三元运算符`boolean?argA:argB`。
 
-​ 函数声明：
+ 函数声明：
 
 ​    `#select(boolean,argA,argB)`
 
@@ -801,17 +803,31 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 2. `#select(false,1,2)` => 2
 3. `#select(10 > 0 ,1,2)` => 1
 
-##### 22.ToJsonString
+##### 22.ParseJsonString
 
-​ 尝试将参数转换为Json格式字符串。如果转换失败将使用原始数据返回。
+ 解析Json格式字符串并执行json中包含的动态表达式， 如果json字符串格式错误，无法成功反序列化为json对象，将抛出错误，这里的json格式对象支持对象和数组两种格式。
 
-​ 函数声明：
+ 该函数提供两个重载形式：
 
-`#toJsonString(arg)`
+2. `#parseJsonString(json格式字符串)`
+2. `#parseJsonString(json格式字符串,数据是否动态)`
 
-1. arg：尝试转换为json的参数
+但参数的形式为双参数的简写形式，数据是否动态默认为true。
+如果不是动态数据,该函数将尝试将json字符串反序列化为json对象后直接返回（效果等同于`ToBean`函数）。
+如果是动态数据,将进一步对json对象进行解析,并执行相关的动态表达式。
+如果json字符串格式错误，无法成功反序列化为json对象，将抛出错误。
 
 示例：
 
-1. `toJsonString(1+1)` => 2
-2. `toJsonString(#search('user'))` => {"name":"Misaka Mikoto"}
+1. `#parseJsonString('{"name":"Misaka Mikoto"}')`=>{"name":"Misaka Mikoto"}
+
+2. `#parseJsonString('{"name":"${#search(^'name^',^'REQUESTINFO^')}"}')`=>{"name":"Misaka Mikoto"}
+
+3. `#parseJsonString(#toJsonString(#page(1,2,101,'{"name":"${#search(^'name^')}","uid":"${#uuid()}"}',true)))`=>[{"uid":"7b22a3b9-6dd1-488a-88e7-8ba521ef8d3f","name":"御坂美琴"},{"uid":"d40c13a1-8801-4635-889a-60dbc231e2d3","name":"御坂美琴"}]
+
+   这里page函数返回的数据类型不是string，而是数组（集合）实例，这里使用toJsonString函数将对象转字符串再交给parseJsonString处理。
+
+4. `#parseJsonString('{"name":"${#search(10,^'customizespace^')}"}',false)`=>{"name":"${#search(10,'customizespace')}"}
+
+   显示设置为数据不动态时，json字符串中包含的动态表达式将不会被执行。
+
