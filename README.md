@@ -35,4 +35,4 @@ Dynamic-Mock是一款用于便捷创建动态的Http请求模拟响应数据的�
 
 **tips:**
 
-更多API说明请参阅`docs/docs/Api.md`。
+更多API说明请参阅[使用文档](https://gitee.com/silwings/dynamic-mock/blob/master/docs/docs/Api.md)。
