@@ -3,13 +3,15 @@ package top.silwings.core.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.JdkIdGenerator;
-import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.silwings.core.converter.NonString2TextHttpMessageConverter;
 
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -45,6 +47,12 @@ public class DynamicMockConfig implements WebMvcConfigurer {
         return WebClient.builder()
                 .defaultHeader("Requester", "Dynamic-Mock-Service")
                 .build();
+    }
+
+    @Override
+    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+        // 添加自定义的HttpMessageConverter
+        converters.add(new NonString2TextHttpMessageConverter());
     }
 
 }
