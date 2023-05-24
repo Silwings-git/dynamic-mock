@@ -10,8 +10,8 @@ import top.silwings.core.handler.context.FinalRequestContext;
  * @Date 2023/5/16 22:01
  * @Since
  **/
+@FunctionalInterface
 public interface PreMockInterceptor {
-    // TODO_Silwings: 2023/5/16 做异常中断处理
     void execute(FinalRequestContext requestContext, MockWorkflowControl mockWorkflowControl);
 
 }

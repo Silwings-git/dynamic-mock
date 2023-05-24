@@ -2,9 +2,10 @@ package top.silwings.core.handler.plugin.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.silwings.core.utils.ConvertUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,21 +24,10 @@ public class MockInterceptorContextFactory {
     @Autowired(required = false)
     private List<PreResponseInterceptor> preResponseInterceptorList;
 
-    @PostConstruct
-    public void init() {
-        // 当不存在系统拦截器时,将集合初始化一下
-        if (null == this.preMockInterceptorList) {
-            this.preMockInterceptorList = new ArrayList<>();
-        }
-        if (null == this.preResponseInterceptorList) {
-            this.preResponseInterceptorList = new ArrayList<>();
-        }
-    }
-
     public Builder builder() {
         return Builder.builder()
-                .preMockInterceptorList(new ArrayList<>(this.preMockInterceptorList))
-                .preResponseInterceptorList(new ArrayList<>(this.preResponseInterceptorList))
+                .preMockInterceptorList(new ArrayList<>(ConvertUtils.getNoNullOrDefault(this.preMockInterceptorList, Collections.emptyList())))
+                .preResponseInterceptorList(new ArrayList<>(ConvertUtils.getNoNullOrDefault(this.preResponseInterceptorList, Collections.emptyList())))
                 .build();
     }
 

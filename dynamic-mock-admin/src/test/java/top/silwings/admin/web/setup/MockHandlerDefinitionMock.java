@@ -2,12 +2,17 @@ package top.silwings.admin.web.setup;
 
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
+import top.silwings.core.handler.plugin.script.ScriptInterfaceType;
+import top.silwings.core.handler.plugin.script.ScriptLanguageType;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
+import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
+import top.silwings.core.utils.JsonUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -38,9 +43,36 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
+                .mockScriptList(buildScriptList())
                 .updateTime(new Date())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
+    }
+
+    private static List<MockScriptDto> buildScriptList() {
+
+        final List<MockScriptDto> mockScriptList = new ArrayList<>();
+        final MockScriptDto script = MockScriptDto.builder()
+                .scriptName("测试脚本")
+                .scriptLanguageType(ScriptLanguageType.PYTHON)
+                .scriptInterfaceType(ScriptInterfaceType.PRE_MOCK_INTERCEPTOR)
+                .scriptText("class MockResponse:\n" +
+                            "    def __init__(self, delayTime, status, headers, body):\n" +
+                            "        self.delayTime = delayTime\n" +
+                            "        self.status = status\n" +
+                            "        self.headers = headers\n" +
+                            "        self.body = body\n" +
+                            "def execute(requestContext, mockWorkflowControl):\n" +
+                            "    print(\"Request Context:\", requestContext)\n" +
+                            "    print(\"Mock Workflow Control:\", mockWorkflowControl)\n" +
+                            "    mockWorkflowControl.interruptAndReturn = True\n" +
+                            "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
+                .remark("这是备注")
+                .build();
+        mockScriptList.add(script);
+
+
+        return mockScriptList;
     }
 
     private static Map<String, Object> buildCustomizeSpace() {
@@ -161,12 +193,7 @@ public class MockHandlerDefinitionMock {
                                     "                \"list\": \"${#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',(#search(^'$.pageNum^')-1)*#search(^'$.pageSize^')-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\\\"}')}\"\n" +
                                     "            }";
 
-//        definition.body(JsonUtils.toBean(iteratorObj));
-//        definition.body("{\"title\":\"${#concat('官方',#now('yyyyMMdd'),'001')}\"}");
-//        definition.body("${#toJsonString(#parseJsonString('{\"name\":\"${#uuid()}\"}'))}");
-        definition.body("${#toJsonString(#parseJsonString('{\"data\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'data^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}'))}");
-        definition.body("${#toJsonString(#parseJsonString('[{\"name\":\"Demo Name\"},{\"data\":{\"code\":\"0\",\"page\":{\"data\":[{\"title\":\"${#concat(^'data^',#now(^'yyyyMMdd^'),^'001^')}\",\"wareId\":\"${#concat(^'100^',#now(^'yyyyMMdd^'),^'001^')}\",\"colType\":0,\"itemNum\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"outerId\":\"${#concat(#now(^'yyyyMMdd^'),^'001^')}\",\"categoryId\":9764,\"onlineTime\":1596249693000,\"wareStatus\":2,\"offlineTime\":1646018070000}],\"pageNo\":1,\"pageSize\":20,\"totalItem\":1}}}]'))}");
-
+        definition.body(JsonUtils.toBean(iteratorObj));
 
         return definition.build();
     }

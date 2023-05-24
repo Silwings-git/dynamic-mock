@@ -81,6 +81,11 @@ public class MockHandlerDto {
      */
     private List<TaskInfoDto> tasks;
 
+    /**
+     * 脚本数据集
+     */
+    private List<MockScriptDto> mockScriptList;
+
     private Date updateTime;
 
     public static MockHandlerDto copyOf(final MockHandlerDto dto, final BiConsumer<MockHandlerDto, MockHandlerDtoBuilder> builderConsumer) {

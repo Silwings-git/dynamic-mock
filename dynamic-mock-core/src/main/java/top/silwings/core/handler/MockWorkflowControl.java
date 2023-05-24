@@ -57,7 +57,9 @@ public class MockWorkflowControl {
     }
 
     public static MockWorkflowControl build() {
-        return new MockWorkflowControl();
+        final MockWorkflowControl control = new MockWorkflowControl();
+        control.setInterruptResult(MockResponse.newInstance());
+        return control;
     }
 
 

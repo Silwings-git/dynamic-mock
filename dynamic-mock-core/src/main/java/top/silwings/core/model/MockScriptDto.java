@@ -1,9 +1,7 @@
 package top.silwings.core.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import top.silwings.core.handler.plugin.script.ScriptInterfaceType;
 import top.silwings.core.handler.plugin.script.ScriptLanguageType;
 
@@ -16,8 +14,6 @@ import top.silwings.core.handler.plugin.script.ScriptLanguageType;
  **/
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class MockScriptDto {
 
     /**

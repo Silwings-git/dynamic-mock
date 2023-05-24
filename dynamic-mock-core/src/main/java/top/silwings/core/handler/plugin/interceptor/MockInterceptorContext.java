@@ -2,6 +2,7 @@ package top.silwings.core.handler.plugin.interceptor;
 
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,4 +28,7 @@ public class MockInterceptorContext {
         return new MockInterceptorContext(preMockInterceptorList, preResponseInterceptorList);
     }
 
+    public static MockInterceptorContext empty() {
+        return MockInterceptorContext.of(Collections.emptyList(), Collections.emptyList());
+    }
 }

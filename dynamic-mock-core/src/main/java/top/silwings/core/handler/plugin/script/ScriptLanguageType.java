@@ -1,6 +1,8 @@
 package top.silwings.core.handler.plugin.script;
 
 import lombok.Getter;
+import top.silwings.core.handler.plugin.script.mapping.PythonScriptMappingFactory;
+import top.silwings.core.handler.plugin.script.mapping.ScriptMapper;
 
 /**
  * @ClassName ScriptLanguageType
@@ -12,12 +14,14 @@ import lombok.Getter;
 @Getter
 public enum ScriptLanguageType {
 
-    PYTHON("python"),
+    PYTHON("python", PythonScriptMappingFactory.class),
     ;
 
     private final String language;
+    private final Class<? extends ScriptMapper> scriptMapperClass;
 
-    ScriptLanguageType(final String language) {
+    ScriptLanguageType(final String language, final Class<? extends ScriptMapper> scriptMapperClass) {
         this.language = language;
+        this.scriptMapperClass = scriptMapperClass;
     }
 }

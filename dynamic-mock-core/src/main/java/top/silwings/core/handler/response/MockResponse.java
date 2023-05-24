@@ -1,7 +1,10 @@
 package top.silwings.core.handler.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.utils.ConvertUtils;
@@ -18,11 +21,23 @@ import java.util.concurrent.TimeUnit;
  **/
 @Getter
 @Builder
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MockResponse {
     private int delayTime;
     private int status;
     private HttpHeaders headers;
     private Object body;
+
+    public static MockResponse newInstance() {
+        return MockResponse.builder()
+                .delayTime(0)
+                .status(200)
+                .headers(new HttpHeaders())
+                .body(null)
+                .build();
+    }
 
     public ResponseEntity<Object> toResponseEntity() {
         return new ResponseEntity<>(this.body, this.headers, this.status);

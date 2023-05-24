@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  * @Date 2022/11/6 15:06
  * @Since
  **/
-public class DynamicMockException extends RuntimeException {
+public class DynamicMockException extends BaseDynamicMockException {
 
     public DynamicMockException() {
         super();
