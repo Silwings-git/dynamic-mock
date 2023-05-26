@@ -166,6 +166,7 @@ public class MockHandler {
                 if (mockResponseInfo.support(mockHandlerContext)) {
                     // -- 初始化Response
                     mockResponse = mockResponseInfo.getMockResponse(mockHandlerContext);
+                    break;
                 }
             }
         }
