@@ -51,6 +51,7 @@ import top.silwings.core.interpreter.dynamic_expression.function.function_factor
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SelectFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ToBeanFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ToJsonStringFunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.function_factory.URLDecodeFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.UUIDFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.operator.OperatorExpressionFactory;
 import top.silwings.core.interpreter.dynamic_expression.operator.OperatorFactory;
@@ -196,7 +197,8 @@ public class MockHandlerJunit {
                             new ToJsonStringFunctionFactory(),
                             new UUIDFunctionFactory(),
                             new SelectFunctionFactory(),
-                            new ParseJsonStringFunctionFactory()
+                            new ParseJsonStringFunctionFactory(),
+                            new URLDecodeFunctionFactory()
                     )
                     .collect(Collectors.toList());
         }
