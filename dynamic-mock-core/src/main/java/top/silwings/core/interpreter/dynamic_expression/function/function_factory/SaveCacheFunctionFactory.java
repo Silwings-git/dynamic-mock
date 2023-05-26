@@ -3,6 +3,7 @@ package top.silwings.core.interpreter.dynamic_expression.function.function_facto
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
@@ -83,6 +84,7 @@ public class SaveCacheFunctionFactory implements FunctionFactory {
      * #saveCache(key,value)
      * #saveCache(key,value,returnType)
      */
+    @Slf4j
     public static class SaveCacheFunction extends AbstractFunctionExpression {
 
         public SaveCacheFunction(final List<ExpressionTreeNode> functionExpressionList) {
@@ -111,7 +113,12 @@ public class SaveCacheFunctionFactory implements FunctionFactory {
             final Object key = childNodeValueList.get(0);
             final Object value = childNodeValueList.get(1);
 
-            mockHandlerContext.getRequestContext().getLocalCache().put(key, value);
+            try {
+                mockHandlerContext.getRequestContext().getLocalCache().put(key, value);
+            } catch (NullPointerException e) {
+                // 忽略空指针
+                log.error("SaveCacheFunction put null value.");
+            }
 
             if (ReturnType.KEY.equals(returnType)) {
 
