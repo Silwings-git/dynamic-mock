@@ -82,6 +82,7 @@ public class ExpressionFactory {
         final List<Integer> indexList = new ArrayList<>();
 
         int num = 0;
+        boolean escape = false;
 
         // 在获取i之前,要比较i是否在""之外,只取""之外的逗号
         // 拿到括号外的逗号的角标
@@ -89,11 +90,28 @@ public class ExpressionFactory {
         for (int i = 0; i < charArray.length; i++) {
             final char c = charArray[i];
             if ('(' == c || '{' == c || '[' == c) {
-                num++;
+                if (!escape) {
+                    num++;
+                } else {
+                    escape = false;
+                }
             } else if (')' == c || '}' == c || ']' == c) {
-                num--;
+                if (!escape) {
+                    num--;
+                } else {
+                    escape = false;
+                }
             } else if (',' == c && num == 0) {
-                indexList.add(i);
+                // 前一个字符不是转义符时,记录索引
+                if (!escape) {
+                    indexList.add(i);
+                } else {
+                    // 如果是转义符,忽略该索引
+                    escape = false;
+                }
+            } else if ('^' == c) {
+                // 当遇到转义符时,检查之前是否存在转义符,如果之前存在转义符,则当前不作为转义符,之前不存在转义符,当前作为转义
+                escape = !escape;
             }
         }
 
