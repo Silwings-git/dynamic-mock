@@ -11,7 +11,7 @@ import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnT
 import top.silwings.core.utils.CheckUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -23,41 +23,41 @@ import java.util.List;
  * @Since
  **/
 @Component
-public class URLDecodeFunctionFactory implements FunctionFactory {
+public class URLEncodeFunctionFactory implements FunctionFactory {
 
-    private static final FunctionInfo URL_DECODE_FUNCTION_INFO = FunctionInfo.builder()
-            .functionName("UrlDecode")
+    private static final FunctionInfo URL_ENCODE_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("UrlEncode")
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.STRING)
             .build();
 
-    private static final String SYMBOL = "#urlDecode(...)";
+    private static final String SYMBOL = "#urlEncode(...)";
 
     @Override
     public boolean support(final String methodName) {
-        return "urldecode".equalsIgnoreCase(methodName);
+        return "urlencode".equalsIgnoreCase(methodName);
     }
 
     @Override
     public FunctionInfo getFunctionInfo() {
-        return URL_DECODE_FUNCTION_INFO;
+        return URL_ENCODE_FUNCTION_INFO;
     }
 
     @Override
-    public URLDecodeFunction buildFunction(final List<ExpressionTreeNode> expressionList) {
-        CheckUtils.sizeBetween(expressionList, URL_DECODE_FUNCTION_INFO.getMinArgsNumber(), URL_DECODE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UrlDecode function."));
-        return URLDecodeFunction.from(expressionList);
+    public URLEncodeFunction buildFunction(final List<ExpressionTreeNode> expressionList) {
+        CheckUtils.sizeBetween(expressionList, URL_ENCODE_FUNCTION_INFO.getMinArgsNumber(), URL_ENCODE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UrlDecode function."));
+        return URLEncodeFunction.from(expressionList);
     }
 
-    public static class URLDecodeFunction extends AbstractFunctionExpression{
+    public static class URLEncodeFunction extends AbstractFunctionExpression{
 
-        protected URLDecodeFunction(final List<ExpressionTreeNode> functionExpressionList) {
+        protected URLEncodeFunction(final List<ExpressionTreeNode> functionExpressionList) {
             super(functionExpressionList);
         }
 
-        public static URLDecodeFunction from(final List<ExpressionTreeNode> expressionList) {
-            return new URLDecodeFunction(expressionList);
+        public static URLEncodeFunction from(final List<ExpressionTreeNode> expressionList) {
+            return new URLEncodeFunction(expressionList);
         }
 
         @Override
@@ -69,7 +69,7 @@ public class URLDecodeFunctionFactory implements FunctionFactory {
             }
 
             try {
-                return URLDecoder.decode(String.valueOf(obj), StandardCharsets.UTF_8.toString());
+                return URLEncoder.encode(String.valueOf(obj), StandardCharsets.UTF_8.toString());
             } catch (UnsupportedEncodingException e) {
                 return obj;
             }
