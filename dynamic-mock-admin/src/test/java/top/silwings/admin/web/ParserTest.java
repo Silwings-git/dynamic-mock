@@ -232,6 +232,10 @@ public class ParserTest {
         expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',true)),false)");
         expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',false)),false)");
         expressionList.add("#urlDecode('https://api.jd.com/routerjson?access_token=08e8832e14b040e8b230e58e050e347czmmu&app_key=84FC1EA413556FB66F299EFA075FCCF5&method=jingdong.stock.read.findSkuStock&v=2.0&sign=3DD9CC61A7DE2D79A5D83366BDF46F21&360buy_param_json=%7B%22skuId%22%3A10034950683476%2C%22field%22%3A%22detailStock%2CskuId%2CstockNum%2CstoreId%22%7D&timestamp=2023-05-26+17%3A42%3A14.059%2B0800')");
+        expressionList.add("#Contains('userCode001^,userCode','001^,userCode')");
+        expressionList.add("#Contains('^{userCode001^,userCode','001^,userCode')");
+//        expressionList.add("#Contains('{不存在userCode^,不存在userCode','100^,不存在userCode')");
+        expressionList.add("#Contains('^^userCode001^,userCode','001^,userCode')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
