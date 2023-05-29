@@ -61,10 +61,6 @@ public class RequestContext {
         this.customizeSpace.put(key, value);
     }
 
-    public FinalRequestContext toFinal() {
-        return FinalRequestContext.from(this);
-    }
-
     @Slf4j
     @Getter
     @Setter

@@ -2,8 +2,7 @@ package top.silwings.admin.web.setup;
 
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
-import top.silwings.core.handler.plugin.script.ScriptInterfaceType;
-import top.silwings.core.handler.plugin.script.ScriptLanguageType;
+import top.silwings.core.script.ScriptLanguage;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -42,38 +41,38 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
-                .mockScriptList(buildScriptList())
+//                .mockScriptList(buildScriptList())
                 .updateTime(new Date())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
     }
 
-    private static List<MockScriptDto> buildScriptList() {
-
-        final List<MockScriptDto> mockScriptList = new ArrayList<>();
-        final MockScriptDto script = MockScriptDto.builder()
-                .scriptName("测试脚本")
-                .scriptLanguageType(ScriptLanguageType.PYTHON)
-                .scriptInterfaceType(ScriptInterfaceType.PRE_MOCK_INTERCEPTOR)
-                .scriptText("class MockResponse:\n" +
-                            "    def __init__(self, delayTime, status, headers, body):\n" +
-                            "        self.delayTime = delayTime\n" +
-                            "        self.status = status\n" +
-                            "        self.headers = headers\n" +
-                            "        self.body = body\n" +
-                            "def execute(requestContext, mockWorkflowControl):\n" +
-                            "    print(\"Request Context:\", requestContext)\n" +
-                            "    print(\"Mock Workflow Control:\", mockWorkflowControl)\n" +
-                            "    mockWorkflowControl.interruptAndReturn = True\n" +
-                            "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
-                .remark("这是备注")
-                .build();
-        // 目前脚本解析还存在问题
+//    private static List<MockScriptDto> buildScriptList() {
+//
+//        final List<MockScriptDto> mockScriptList = new ArrayList<>();
+//        final MockScriptDto script = MockScriptDto.builder()
+//                .scriptName("测试脚本")
+//                .scriptLanguage(ScriptLanguage.PYTHON)
+//                .scriptInterfaceType(ScriptInterfaceType.PRE_MOCK_INTERCEPTOR)
+//                .scriptText("class MockResponse:\n" +
+//                            "    def __init__(self, delayTime, status, headers, body):\n" +
+//                            "        self.delayTime = delayTime\n" +
+//                            "        self.status = status\n" +
+//                            "        self.headers = headers\n" +
+//                            "        self.body = body\n" +
+//                            "def execute(requestContext, mockWorkflowControl):\n" +
+//                            "    print(\"Request Context:\", requestContext)\n" +
+//                            "    print(\"Mock Workflow Control:\", mockWorkflowControl)\n" +
+//                            "    mockWorkflowControl.interruptAndReturn = True\n" +
+//                            "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
+//                .remark("这是备注")
+//                .build();
+//        // 目前脚本解析还存在问题
 //        mockScriptList.add(script);
-
-
-        return mockScriptList;
-    }
+//
+//
+//        return mockScriptList;
+//    }
 
     private static Map<String, Object> buildCustomizeSpace() {
 

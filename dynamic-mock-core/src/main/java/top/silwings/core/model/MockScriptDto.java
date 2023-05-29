@@ -2,8 +2,7 @@ package top.silwings.core.model;
 
 import lombok.Builder;
 import lombok.Getter;
-import top.silwings.core.handler.plugin.script.ScriptInterfaceType;
-import top.silwings.core.handler.plugin.script.ScriptLanguageType;
+import top.silwings.core.script.ScriptLanguage;
 
 /**
  * @ClassName MockScriptDto
@@ -24,12 +23,7 @@ public class MockScriptDto {
     /**
      * 脚本语言类型
      */
-    private ScriptLanguageType scriptLanguageType;
-
-    /**
-     * 脚本接口类型
-     */
-    private ScriptInterfaceType scriptInterfaceType;
+    private ScriptLanguage scriptLanguage;
 
     /**
      * 脚本代码
