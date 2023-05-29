@@ -18,11 +18,6 @@ import top.silwings.core.config.TaskSchedulerProperties;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
-import top.silwings.core.handler.plugin.interceptor.MockInterceptorContextFactory;
-import top.silwings.core.handler.plugin.script.ScriptLanguageType;
-import top.silwings.core.handler.plugin.script.mapping.PythonScriptMappingFactory;
-import top.silwings.core.handler.plugin.script.mapping.ScriptMapper;
-import top.silwings.core.handler.plugin.script.mapping.ScriptMappingFactory;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.task.MockTaskManager;
@@ -75,10 +70,8 @@ import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -170,8 +163,6 @@ public class MockHandlerJmh {
         private final DynamicMockContext dynamicMockContext;
         private final MockTaskManager mockTaskManager;
         private final WebClient webClient;
-        private final MockInterceptorContextFactory mockInterceptorContextFactory;
-        private final ScriptMappingFactory scriptMappingFactory;
 
         public ApplicationContent() {
             this.dynamicExpressionStringParser = new DynamicExpressionStringParser();
@@ -183,23 +174,7 @@ public class MockHandlerJmh {
             this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockInterceptorContextFactory = new MockInterceptorContextFactory();
-            this.scriptMappingFactory = new ScriptMappingFactory();
-            final Field scriptMapperMap;
-            try {
-                scriptMapperMap = ScriptMappingFactory.class.getDeclaredField("scriptMapperMap");
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            }
-            scriptMapperMap.setAccessible(true);
-            final Map<ScriptLanguageType, ScriptMapper> map;
-            try {
-                map = (Map<ScriptLanguageType, ScriptMapper>) scriptMapperMap.get(this.scriptMappingFactory);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            map.put(ScriptLanguageType.PYTHON, new PythonScriptMappingFactory());
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, this.mockInterceptorContextFactory, this.scriptMappingFactory);
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory);
             this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
             this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {

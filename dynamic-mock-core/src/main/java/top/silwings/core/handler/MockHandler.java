@@ -6,11 +6,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.DynamicMockContext;
-import top.silwings.core.handler.context.FinalRequestContext;
+import top.silwings.core.handler.context.DefaultPreMockContext;
+import top.silwings.core.handler.context.DefaultPreResponseContext;
 import top.silwings.core.handler.context.MockHandlerContext;
+import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.context.RequestInfo;
-import top.silwings.core.handler.plugin.interceptor.MockInterceptorContext;
-import top.silwings.core.handler.plugin.interceptor.PreResponseInterceptor;
+import top.silwings.core.handler.plugin.PluginExecutorManager;
+import top.silwings.core.handler.plugin.PluginInterfaceType;
+import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.response.MockResponse;
 import top.silwings.core.handler.response.MockResponseInfo;
 import top.silwings.core.handler.task.MockTaskInfo;
@@ -72,7 +75,7 @@ public class MockHandler {
 
     private final List<MockTaskInfo> asyncTaskInfoList;
 
-    private final MockInterceptorContext mockInterceptorContext;
+    private final PluginExecutorManager pluginExecutorManager;
 
     public boolean support(final RequestInfo requestInfo) {
         return PathMatcherUtils.match(this.requestUri, requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
@@ -84,14 +87,14 @@ public class MockHandler {
         this.mockInit(mockHandlerContext);
 
         final MockWorkflowControl mockWorkflowControl = MockWorkflowControl.build();
-        final FinalRequestContext finalRequestContext = mockHandlerContext.getRequestContext().toFinal();
+        final DefaultPreMockContext defaultPreMockContext = DefaultPreMockContext.of(mockHandlerContext.getRequestContext(), mockWorkflowControl);
 
         // 执行mock前置拦截器
-        this.executePreMockInterceptor(mockWorkflowControl, finalRequestContext);
+        this.executePreMockInterceptor(defaultPreMockContext);
 
         // 前置处理器执行结束后要求中断并返回的,需要按照给出的结果立刻执行响应
         if (mockWorkflowControl.isInterruptAndReturn()) {
-            return this.response(mockWorkflowControl.getInterruptResult(), finalRequestContext, mockWorkflowControl);
+            return this.response(mockWorkflowControl.getInterruptResult(), defaultPreMockContext, mockWorkflowControl);
         }
 
         // 处理器延迟
@@ -106,7 +109,7 @@ public class MockHandler {
         // 注册并执行一次性的同步任务
         this.registerDisposableSyncTask(mockHandlerContext, mockWorkflowControl);
 
-        return this.response(mockResponse, finalRequestContext, mockWorkflowControl);
+        return this.response(mockResponse, defaultPreMockContext, mockWorkflowControl);
     }
 
     /**
@@ -126,9 +129,14 @@ public class MockHandler {
         }
     }
 
-    private void executePreMockInterceptor(final MockWorkflowControl mockWorkflowControl, final FinalRequestContext finalRequestContext) {
-        this.mockInterceptorContext.getPreMockInterceptorList()
-                .forEach(interceptor -> interceptor.execute(finalRequestContext, mockWorkflowControl));
+    private void executePreMockInterceptor(final MockPluginContext defaultPreMockContext) {
+        final List<PluginExecutor<?>> executors = this.pluginExecutorManager.getExecutors(PluginInterfaceType.PRE_MOCK);
+        for (final PluginExecutor<?> executor : executors) {
+            executor.execute(defaultPreMockContext);
+            if (defaultPreMockContext.getMockWorkflowControl().isInterruptAndReturn()) {
+                return;
+            }
+        }
     }
 
     /**
@@ -191,15 +199,15 @@ public class MockHandler {
     /**
      * 执行响应,如果有响应前拦截器,将会在此处执行
      *
-     * @param mockResponse        响应结果
-     * @param finalRequestContext mock上下文
-     * @param mockWorkflowControl 控制信息
+     * @param mockResponse          响应结果
+     * @param defaultPreMockContext mock上下文
+     * @param mockWorkflowControl   控制信息
      * @return HTTP响应实例
      */
-    private ResponseEntity<Object> response(MockResponse mockResponse, FinalRequestContext finalRequestContext, final MockWorkflowControl mockWorkflowControl) {
+    private ResponseEntity<Object> response(MockResponse mockResponse, DefaultPreMockContext defaultPreMockContext, final MockWorkflowControl mockWorkflowControl) {
 
         // 执行响应前拦截器
-        this.executePreResponseInterceptor(mockResponse, finalRequestContext, mockWorkflowControl);
+        this.executePreResponseInterceptor(defaultPreMockContext, mockResponse);
 
         if (mockWorkflowControl.isInterruptAndReturn()) {
             mockResponse = mockWorkflowControl.getInterruptResult();
@@ -217,13 +225,16 @@ public class MockHandler {
     /**
      * 执行响应前拦截器.响应前拦截器执行中断返回时不会再次被响应拦截器处理
      *
-     * @param mockResponse        原始响应信息
-     * @param finalRequestContext mock上下文
-     * @param mockWorkflowControl 流程控制
+     * @param defaultPreMockContext mock上下文
+     * @param mockResponse          原始响应信息
      */
-    private void executePreResponseInterceptor(final MockResponse mockResponse, final FinalRequestContext finalRequestContext, final MockWorkflowControl mockWorkflowControl) {
-        for (final PreResponseInterceptor interceptor : this.mockInterceptorContext.getPreResponseInterceptorList()) {
-            interceptor.execute(mockResponse, finalRequestContext, mockWorkflowControl);
+    private void executePreResponseInterceptor(final DefaultPreMockContext defaultPreMockContext, final MockResponse mockResponse) {
+        final List<PluginExecutor<?>> executorList = this.pluginExecutorManager.getExecutors(PluginInterfaceType.PRE_RESPONSE);
+        for (final PluginExecutor<?> executor : executorList) {
+            executor.execute(DefaultPreResponseContext.of(defaultPreMockContext, mockResponse));
+            if (defaultPreMockContext.getMockWorkflowControl().isInterruptAndReturn()) {
+                return;
+            }
         }
     }
 
