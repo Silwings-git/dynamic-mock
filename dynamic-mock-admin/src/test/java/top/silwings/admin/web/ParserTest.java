@@ -283,7 +283,7 @@ public class ParserTest {
         final Object interpret = new ExpressionInterpreter(functionExpression).interpret(mockHandlerContext);
         if (null != interpret) {
             System.out.println(str + "-type: " + interpret.getClass().getName() + "-结果 : " + JsonUtils.toJSONString(interpret));
-        }else {
+        } else {
             System.out.println(str + "结果 : 返回null");
         }
     }

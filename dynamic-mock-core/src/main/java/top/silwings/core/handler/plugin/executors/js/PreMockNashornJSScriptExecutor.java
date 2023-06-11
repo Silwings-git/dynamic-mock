@@ -20,8 +20,10 @@ public class PreMockNashornJSScriptExecutor extends AbstractNashornJSScriptExecu
 
     private final ScriptEngine engine;
     private final Invocable invocable;
+    private final String scriptName;
 
-    private PreMockNashornJSScriptExecutor(final String script) throws javax.script.ScriptException {
+    private PreMockNashornJSScriptExecutor(final String name, final String script) throws javax.script.ScriptException {
+        this.scriptName = name;
         // 使用jdk11以上版本无法获取到engine
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
         // 实现一个简单的console实例用于打印信息
@@ -30,9 +32,9 @@ public class PreMockNashornJSScriptExecutor extends AbstractNashornJSScriptExecu
         this.invocable = (Invocable) this.engine;
     }
 
-    public static PreMockNashornJSScriptExecutor from(final String script) {
+    public static PreMockNashornJSScriptExecutor from(final String name, final String script) {
         try {
-            return new PreMockNashornJSScriptExecutor(script);
+            return new PreMockNashornJSScriptExecutor(name, script);
         } catch (javax.script.ScriptException e) {
             throw new ScriptException(e);
         }
@@ -61,5 +63,10 @@ public class PreMockNashornJSScriptExecutor extends AbstractNashornJSScriptExecu
     @Override
     Invocable getInvocable() {
         return this.invocable;
+    }
+
+    @Override
+    String scriptName() {
+        return this.scriptName;
     }
 }
