@@ -23,7 +23,7 @@ import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
-import top.silwings.core.handler.plugin.ScriptRegistrationProgram;
+import top.silwings.core.handler.plugin.PluginRegistrationProgram;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
@@ -132,7 +132,7 @@ public class MockHandlerJunit {
     }
 
     @Component
-    public static class PrintSomethingScript implements ScriptRegistrationProgram {
+    public static class PrintSomethingPlugin implements PluginRegistrationProgram {
         @Override
         public void register(final MockHandlerDto definition, final PluginExecutorManager manager) {
             manager.register(new PluginExecutor<Void>() {
@@ -191,7 +191,7 @@ public class MockHandlerJunit {
             this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, Collections.singletonList(new PrintSomethingScript()));
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, Collections.singletonList(new PrintSomethingPlugin()));
             this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
             this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {

@@ -9,6 +9,6 @@ import top.silwings.core.model.MockHandlerDto;
  * @Date 2023/6/11 20:02
  * @Since
  **/
-public interface ScriptRegistrationProgram {
+public interface PluginRegistrationProgram {
     void register(final MockHandlerDto definition, final PluginExecutorManager manager);
 }
