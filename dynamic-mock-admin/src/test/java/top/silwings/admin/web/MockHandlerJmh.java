@@ -174,7 +174,7 @@ public class MockHandlerJmh {
             this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory);
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, null);
             this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
             this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {

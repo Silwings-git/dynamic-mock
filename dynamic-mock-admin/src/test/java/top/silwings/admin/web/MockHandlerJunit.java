@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.SimpleIdGenerator;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +20,11 @@ import top.silwings.core.config.TaskSchedulerProperties;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
+import top.silwings.core.handler.context.MockPluginContext;
+import top.silwings.core.handler.plugin.PluginExecutorManager;
+import top.silwings.core.handler.plugin.PluginInterfaceType;
+import top.silwings.core.handler.plugin.ScriptRegistrationProgram;
+import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.task.MockTaskManager;
@@ -72,6 +78,7 @@ import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -123,6 +130,34 @@ public class MockHandlerJunit {
         }
     }
 
+    @Component
+    public static class PrintSomethingScript implements ScriptRegistrationProgram {
+        @Override
+        public void register(final PluginExecutorManager manager) {
+            manager.register(new PluginExecutor<Void>() {
+                @Override
+                public PluginInterfaceType getPluginInterfaceType() {
+                    return PluginInterfaceType.PRE_MOCK;
+                }
+
+                @Override
+                public void close() {
+                }
+
+                @Override
+                public int getOrder() {
+                    return 0;
+                }
+
+                @Override
+                public Void execute(final MockPluginContext mockPluginContext) {
+                    System.out.println("JAVA脚本被执行.");
+                    return null;
+                }
+            });
+        }
+    }
+
     @Getter
     public static class ApplicationContent {
         private final DynamicExpressionStringParser dynamicExpressionStringParser;
@@ -140,6 +175,7 @@ public class MockHandlerJunit {
         private final WebClient webClient;
 
         public ApplicationContent() throws NoSuchFieldException, IllegalAccessException {
+
             this.dynamicExpressionStringParser = new DynamicExpressionStringParser();
             this.autoTypeParser = new AutoTypeParser(new DynamicExpressionStringParser());
             this.operatorExpressionFactory = new OperatorExpressionFactory(this.loadOperation());
@@ -149,7 +185,7 @@ public class MockHandlerJunit {
             this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory);
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, Collections.singletonList(new PrintSomethingScript()));
             this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
             this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {

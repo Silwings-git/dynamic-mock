@@ -15,6 +15,7 @@ import java.io.IOException;
  * @Date 2023/6/11 19:45
  * @Since
  **/
+@Slf4j
 public abstract class AbstractNashornJSScriptExecutor<T> implements PluginExecutor<T> {
 
     @Override
@@ -25,7 +26,7 @@ public abstract class AbstractNashornJSScriptExecutor<T> implements PluginExecut
                 return (int) orderInt;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(this.scriptName() + " without a getOrder() method, the default weight ordering will be used.");
         }
         return 0;
     }
@@ -48,6 +49,8 @@ public abstract class AbstractNashornJSScriptExecutor<T> implements PluginExecut
     abstract ScriptEngine getScriptEngine();
 
     abstract Invocable getInvocable();
+
+    abstract String scriptName();
 
     @Slf4j
     public static class SimpleConsole {

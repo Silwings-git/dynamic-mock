@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.ScriptNoSupportException;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
+import top.silwings.core.handler.plugin.ScriptRegistrationProgram;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.plugin.executors.js.PreMockNashornJSScriptExecutor;
 import top.silwings.core.handler.plugin.executors.js.PreResponseNashornJSScriptExecutor;
@@ -15,7 +16,9 @@ import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.script.ScriptLanguage;
+import top.silwings.core.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,10 +38,16 @@ public class MockHandlerFactory {
 
     private final MockTaskInfoFactory mockTaskInfoFactory;
 
-    public MockHandlerFactory(final JsonTreeParser jsonTreeParser, final MockResponseInfoFactory mockResponseInfoFactory, final MockTaskInfoFactory mockTaskInfoFactory) {
+    private final List<ScriptRegistrationProgram> scriptRegistrationProgram;
+
+    public MockHandlerFactory(final JsonTreeParser jsonTreeParser,
+                              final MockResponseInfoFactory mockResponseInfoFactory,
+                              final MockTaskInfoFactory mockTaskInfoFactory,
+                              final List<ScriptRegistrationProgram> scriptRegistrationProgram) {
         this.jsonTreeParser = jsonTreeParser;
         this.mockResponseInfoFactory = mockResponseInfoFactory;
         this.mockTaskInfoFactory = mockTaskInfoFactory;
+        this.scriptRegistrationProgram = ConvertUtils.getNoNullOrDefault(scriptRegistrationProgram, Collections::emptyList);
     }
 
     public MockHandler buildMockHandler(final MockHandlerDto definition) {
@@ -92,9 +101,9 @@ public class MockHandlerFactory {
                                 throw new ScriptNoSupportException("JAVA language is not supported yet.");
                             case JAVA_SCRIPT:
                                 if (PluginInterfaceType.PRE_MOCK.equals(scriptInfo.getInterfaceType())) {
-                                    pluginExecutor = PreMockNashornJSScriptExecutor.from(scriptInfo.getScriptText());
+                                    pluginExecutor = PreMockNashornJSScriptExecutor.from(scriptInfo.getScriptName(), scriptInfo.getScriptText());
                                 } else if (PluginInterfaceType.PRE_RESPONSE.equals(scriptInfo.getInterfaceType())) {
-                                    pluginExecutor = PreResponseNashornJSScriptExecutor.from(scriptInfo.getScriptText());
+                                    pluginExecutor = PreResponseNashornJSScriptExecutor.from(scriptInfo.getScriptName(), scriptInfo.getScriptText());
                                 } else {
                                     throw new IllegalArgumentException();
                                 }
@@ -106,6 +115,9 @@ public class MockHandlerFactory {
                     })
                     .forEach(manager::register);
         }
+
+        this.scriptRegistrationProgram.forEach(program -> program.register(manager));
+
         return manager;
     }
 

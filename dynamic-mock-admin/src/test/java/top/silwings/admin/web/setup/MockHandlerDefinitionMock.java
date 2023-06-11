@@ -3,13 +3,13 @@ package top.silwings.admin.web.setup;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
-import top.silwings.core.script.ScriptLanguage;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
+import top.silwings.core.script.ScriptLanguage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,10 +57,10 @@ public class MockHandlerDefinitionMock {
                 .interfaceType(PluginInterfaceType.PRE_MOCK)
                 .scriptText("function preMock(context) {\n" +
                             "    console.log(context.getRequestInfo().getRequestURI());\n" +
-                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\")\n" +
+                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\");\n" +
                             "}\n" +
                             "\n" +
-                            "function order(){\n" +
+                            "function getOrder(){\n" +
                             "    return 10;\n" +
                             "}")
                 .remark("这是备注")
@@ -76,7 +76,7 @@ public class MockHandlerDefinitionMock {
                             "    context.getMockWorkflowControl().getInterruptResult().setBody(context.getMockWorkflowControl().getInterruptResult().getBody()+\"*2\")\n" +
                             "}\n" +
                             "\n" +
-                            "function order(){\n" +
+                            "function getOrder(){\n" +
                             "    return 10;\n" +
                             "}")
                 .remark("这是备注")
@@ -90,7 +90,7 @@ public class MockHandlerDefinitionMock {
                             "    context.getResponse().setBody(\"222\")\n" +
                             "}\n" +
                             "\n" +
-                            "function order(){\n" +
+                            "function getOrder(){\n" +
                             "    return 10;\n" +
                             "}")
                 .remark("这是备注")
