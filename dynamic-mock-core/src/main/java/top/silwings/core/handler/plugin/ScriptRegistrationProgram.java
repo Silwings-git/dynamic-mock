@@ -1,5 +1,7 @@
 package top.silwings.core.handler.plugin;
 
+import top.silwings.core.model.MockHandlerDto;
+
 /**
  * @ClassName ScriptRegistrationProgram
  * @Description 脚本注册程序
@@ -8,5 +10,5 @@ package top.silwings.core.handler.plugin;
  * @Since
  **/
 public interface ScriptRegistrationProgram {
-    void register(final PluginExecutorManager manager);
+    void register(final MockHandlerDto definition, final PluginExecutorManager manager);
 }

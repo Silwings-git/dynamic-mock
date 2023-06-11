@@ -86,6 +86,11 @@ public class MockHandlerDto {
      */
     private List<MockScriptDto> mockScriptList;
 
+    /**
+     * 用于拓展的额外数据
+     */
+    private Object extData;
+
     private Date updateTime;
 
     public static MockHandlerDto copyOf(final MockHandlerDto dto, final BiConsumer<MockHandlerDto, MockHandlerDtoBuilder> builderConsumer) {
