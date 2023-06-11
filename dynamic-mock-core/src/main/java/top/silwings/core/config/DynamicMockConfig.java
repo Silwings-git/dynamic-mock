@@ -50,7 +50,7 @@ public class DynamicMockConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(final List<HttpMessageConverter<?>> converters) {
         // 添加自定义的HttpMessageConverter
         converters.add(new NonString2TextHttpMessageConverter());
     }

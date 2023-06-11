@@ -1,11 +1,20 @@
 package top.silwings.core.handler;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+import top.silwings.core.exceptions.ScriptNoSupportException;
+import top.silwings.core.handler.plugin.PluginExecutorManager;
+import top.silwings.core.handler.plugin.PluginInterfaceType;
+import top.silwings.core.handler.plugin.executors.PluginExecutor;
+import top.silwings.core.handler.plugin.executors.js.PreMockNashornJSScriptExecutor;
+import top.silwings.core.handler.plugin.executors.js.PreResponseNashornJSScriptExecutor;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockScriptDto;
+import top.silwings.core.script.ScriptLanguage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,12 +73,40 @@ public class MockHandlerFactory {
         // 异步Task
         builder.asyncTaskInfoList(mockTaskInfoList.stream().filter(MockTaskInfo::isAsync).collect(Collectors.toList()));
 
-        // 拦截器
-        // TODO_Silwings: 2023/5/29 注册插件
-//        builder.mockInterceptorContext(this.buildMockInterceptorContext(definition.getMockScriptList()));
-
+        // 脚本
+        builder.pluginExecutorManager(this.buildPluginExecutorManager(definition.getMockScriptList()));
 
         return builder.build();
+    }
+
+    private PluginExecutorManager buildPluginExecutorManager(final List<MockScriptDto> mockScriptList) {
+
+        final PluginExecutorManager manager = new PluginExecutorManager();
+        if (CollectionUtils.isNotEmpty(mockScriptList)) {
+            mockScriptList.stream()
+                    .map(scriptInfo -> {
+                        final ScriptLanguage scriptLanguage = scriptInfo.getScriptLanguage();
+                        final PluginExecutor<?> pluginExecutor;
+                        switch (scriptLanguage) {
+                            case JAVA:
+                                throw new ScriptNoSupportException("JAVA language is not supported yet.");
+                            case JAVA_SCRIPT:
+                                if (PluginInterfaceType.PRE_MOCK.equals(scriptInfo.getInterfaceType())) {
+                                    pluginExecutor = PreMockNashornJSScriptExecutor.from(scriptInfo.getScriptText());
+                                } else if (PluginInterfaceType.PRE_RESPONSE.equals(scriptInfo.getInterfaceType())) {
+                                    pluginExecutor = PreResponseNashornJSScriptExecutor.from(scriptInfo.getScriptText());
+                                } else {
+                                    throw new IllegalArgumentException();
+                                }
+                                break;
+                            default:
+                                throw new IllegalArgumentException();
+                        }
+                        return pluginExecutor;
+                    })
+                    .forEach(manager::register);
+        }
+        return manager;
     }
 
 }
