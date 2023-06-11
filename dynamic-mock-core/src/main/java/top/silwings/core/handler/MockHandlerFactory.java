@@ -98,6 +98,7 @@ public class MockHandlerFactory {
                         final PluginExecutor<?> pluginExecutor;
                         switch (scriptLanguage) {
                             case JAVA:
+                                // 脚本注入暂不支持java,如果需要使用java直接使用ScriptRegistrationProgram进行注册
                                 throw new ScriptNoSupportException("JAVA language is not supported yet.");
                             case JAVA_SCRIPT:
                                 if (PluginInterfaceType.PRE_MOCK.equals(scriptInfo.getInterfaceType())) {

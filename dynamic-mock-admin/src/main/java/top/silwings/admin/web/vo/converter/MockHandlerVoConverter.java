@@ -154,6 +154,7 @@ public class MockHandlerVoConverter {
 
         resultVo.setProjectId(dto.getProjectId());
         resultVo.setProjectName(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getProjectName));
+        resultVo.setBaseUri(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getBaseUri));
         resultVo.setEnableStatus(dto.getEnableStatus().code());
         resultVo.setHandlerId(dto.getHandlerId());
         resultVo.setName(dto.getName());
