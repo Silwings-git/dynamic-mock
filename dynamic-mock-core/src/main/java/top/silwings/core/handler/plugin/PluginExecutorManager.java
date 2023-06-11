@@ -1,13 +1,10 @@
 package top.silwings.core.handler.plugin;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.plugin.interfaces.Ordered;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
@@ -20,19 +17,12 @@ import java.util.Map;
  * @Date 2023/5/29 19:35
  * @Since
  **/
-public class PluginExecutorManager implements ApplicationContextAware {
+public class PluginExecutorManager {
 
     private final Map<PluginInterfaceType, List<PluginExecutor<?>>> scriptLanguageScriptMap = new EnumMap<>(PluginInterfaceType.class);
 
     public List<PluginExecutor<?>> getExecutors(final PluginInterfaceType pluginInterfaceType) {
-        return this.scriptLanguageScriptMap.get(pluginInterfaceType);
-    }
-
-    @Override
-    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-        applicationContext.getBeansOfType(PluginExecutor.class)
-                .values()
-                .forEach(this::register);
+        return this.scriptLanguageScriptMap.getOrDefault(pluginInterfaceType, Collections.emptyList());
     }
 
     public void register(final PluginExecutor<?> pluginExecutor) {

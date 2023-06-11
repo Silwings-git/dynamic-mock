@@ -2,6 +2,7 @@ package top.silwings.admin.web.setup;
 
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
+import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.script.ScriptLanguage;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
@@ -41,38 +42,64 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
-//                .mockScriptList(buildScriptList())
+                .mockScriptList(buildScriptList())
                 .updateTime(new Date())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
     }
 
-//    private static List<MockScriptDto> buildScriptList() {
-//
-//        final List<MockScriptDto> mockScriptList = new ArrayList<>();
-//        final MockScriptDto script = MockScriptDto.builder()
-//                .scriptName("测试脚本")
-//                .scriptLanguage(ScriptLanguage.PYTHON)
-//                .scriptInterfaceType(ScriptInterfaceType.PRE_MOCK_INTERCEPTOR)
-//                .scriptText("class MockResponse:\n" +
-//                            "    def __init__(self, delayTime, status, headers, body):\n" +
-//                            "        self.delayTime = delayTime\n" +
-//                            "        self.status = status\n" +
-//                            "        self.headers = headers\n" +
-//                            "        self.body = body\n" +
-//                            "def execute(requestContext, mockWorkflowControl):\n" +
-//                            "    print(\"Request Context:\", requestContext)\n" +
-//                            "    print(\"Mock Workflow Control:\", mockWorkflowControl)\n" +
-//                            "    mockWorkflowControl.interruptAndReturn = True\n" +
-//                            "    mockWorkflowControl.interruptResult =  {delayTime=500, status=200, headers={'Content-Type': 'application/json'}, body={'message': 'Hello World'}}")
-//                .remark("这是备注")
-//                .build();
-//        // 目前脚本解析还存在问题
-//        mockScriptList.add(script);
-//
-//
-//        return mockScriptList;
-//    }
+    private static List<MockScriptDto> buildScriptList() {
+
+        final List<MockScriptDto> mockScriptList = new ArrayList<>();
+        final MockScriptDto preMock = MockScriptDto.builder()
+                .scriptName("测试脚本")
+                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
+                .interfaceType(PluginInterfaceType.PRE_MOCK)
+                .scriptText("function preMock(context) {\n" +
+                            "    console.log(context.getRequestInfo().getRequestURI());\n" +
+                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\")\n" +
+                            "}\n" +
+                            "\n" +
+                            "function order(){\n" +
+                            "    return 10;\n" +
+                            "}")
+                .remark("这是备注")
+                .build();
+        mockScriptList.add(preMock);
+
+        final MockScriptDto preResponse = MockScriptDto.builder()
+                .scriptName("响应前")
+                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
+                .interfaceType(PluginInterfaceType.PRE_RESPONSE)
+                .scriptText("function preResponse(context) {\n" +
+                            "    context.getMockWorkflowControl().setInterruptAndReturn(true);" +
+                            "    context.getMockWorkflowControl().getInterruptResult().setBody(context.getMockWorkflowControl().getInterruptResult().getBody()+\"*2\")\n" +
+                            "}\n" +
+                            "\n" +
+                            "function order(){\n" +
+                            "    return 10;\n" +
+                            "}")
+                .remark("这是备注")
+                .build();
+
+        final MockScriptDto preResponse2 = MockScriptDto.builder()
+                .scriptName("响应前")
+                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
+                .interfaceType(PluginInterfaceType.PRE_RESPONSE)
+                .scriptText("function preResponse(context) {\n" +
+                            "    context.getResponse().setBody(\"222\")\n" +
+                            "}\n" +
+                            "\n" +
+                            "function order(){\n" +
+                            "    return 10;\n" +
+                            "}")
+                .remark("这是备注")
+                .build();
+        // 目前脚本解析还存在问题
+        mockScriptList.add(preResponse2);
+
+        return mockScriptList;
+    }
 
     private static Map<String, Object> buildCustomizeSpace() {
 
