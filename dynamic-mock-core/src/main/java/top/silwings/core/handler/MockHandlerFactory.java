@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.ScriptNoSupportException;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
-import top.silwings.core.handler.plugin.ScriptRegistrationProgram;
+import top.silwings.core.handler.plugin.PluginRegistrationProgram;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.plugin.executors.js.PreMockNashornJSScriptExecutor;
 import top.silwings.core.handler.plugin.executors.js.PreResponseNashornJSScriptExecutor;
@@ -38,16 +38,16 @@ public class MockHandlerFactory {
 
     private final MockTaskInfoFactory mockTaskInfoFactory;
 
-    private final List<ScriptRegistrationProgram> scriptRegistrationProgram;
+    private final List<PluginRegistrationProgram> pluginRegistrationProgram;
 
     public MockHandlerFactory(final JsonTreeParser jsonTreeParser,
                               final MockResponseInfoFactory mockResponseInfoFactory,
                               final MockTaskInfoFactory mockTaskInfoFactory,
-                              final List<ScriptRegistrationProgram> scriptRegistrationProgram) {
+                              final List<PluginRegistrationProgram> pluginRegistrationProgram) {
         this.jsonTreeParser = jsonTreeParser;
         this.mockResponseInfoFactory = mockResponseInfoFactory;
         this.mockTaskInfoFactory = mockTaskInfoFactory;
-        this.scriptRegistrationProgram = ConvertUtils.getNoNullOrDefault(scriptRegistrationProgram, Collections::emptyList);
+        this.pluginRegistrationProgram = ConvertUtils.getNoNullOrDefault(pluginRegistrationProgram, Collections::emptyList);
     }
 
     public MockHandler buildMockHandler(final MockHandlerDto definition) {
@@ -117,7 +117,7 @@ public class MockHandlerFactory {
                     .forEach(manager::register);
         }
 
-        this.scriptRegistrationProgram.forEach(program -> program.register(definition, manager));
+        this.pluginRegistrationProgram.forEach(program -> program.register(definition, manager));
 
         return manager;
     }
