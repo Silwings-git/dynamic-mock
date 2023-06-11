@@ -133,7 +133,7 @@ public class MockHandlerJunit {
     @Component
     public static class PrintSomethingScript implements ScriptRegistrationProgram {
         @Override
-        public void register(final PluginExecutorManager manager) {
+        public void register(final MockHandlerDto definition, final PluginExecutorManager manager) {
             manager.register(new PluginExecutor<Void>() {
                 @Override
                 public PluginInterfaceType getPluginInterfaceType() {

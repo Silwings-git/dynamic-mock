@@ -83,13 +83,13 @@ public class MockHandlerFactory {
         builder.asyncTaskInfoList(mockTaskInfoList.stream().filter(MockTaskInfo::isAsync).collect(Collectors.toList()));
 
         // 脚本
-        builder.pluginExecutorManager(this.buildPluginExecutorManager(definition.getMockScriptList()));
+        builder.pluginExecutorManager(this.buildPluginExecutorManager(definition));
 
         return builder.build();
     }
 
-    private PluginExecutorManager buildPluginExecutorManager(final List<MockScriptDto> mockScriptList) {
-
+    private PluginExecutorManager buildPluginExecutorManager(final MockHandlerDto definition) {
+        final List<MockScriptDto> mockScriptList = definition.getMockScriptList();
         final PluginExecutorManager manager = new PluginExecutorManager();
         if (CollectionUtils.isNotEmpty(mockScriptList)) {
             mockScriptList.stream()
@@ -116,7 +116,7 @@ public class MockHandlerFactory {
                     .forEach(manager::register);
         }
 
-        this.scriptRegistrationProgram.forEach(program -> program.register(manager));
+        this.scriptRegistrationProgram.forEach(program -> program.register(definition, manager));
 
         return manager;
     }
