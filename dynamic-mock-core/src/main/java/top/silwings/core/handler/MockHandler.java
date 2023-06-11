@@ -204,7 +204,7 @@ public class MockHandler {
      * @param mockWorkflowControl   控制信息
      * @return HTTP响应实例
      */
-    private ResponseEntity<Object> response(MockResponse mockResponse, DefaultPreMockContext defaultPreMockContext, final MockWorkflowControl mockWorkflowControl) {
+    private ResponseEntity<Object> response(MockResponse mockResponse, final DefaultPreMockContext defaultPreMockContext, final MockWorkflowControl mockWorkflowControl) {
 
         // 执行响应前拦截器
         this.executePreResponseInterceptor(defaultPreMockContext, mockResponse);
