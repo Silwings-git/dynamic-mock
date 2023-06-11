@@ -1,8 +1,10 @@
 package top.silwings.core.handler.plugin.executors.js;
 
 import lombok.extern.slf4j.Slf4j;
+import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.plugin.interfaces.Ordered;
+import top.silwings.core.script.JSScriptExecutor;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -16,7 +18,7 @@ import java.io.IOException;
  * @Since
  **/
 @Slf4j
-public abstract class AbstractNashornJSScriptExecutor<T> implements PluginExecutor<T> {
+public abstract class AbstractNashornJSScriptExecutor<T> implements PluginExecutor<T>, JSScriptExecutor<T, MockPluginContext> {
 
     @Override
     public int getOrder() {

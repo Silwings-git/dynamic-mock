@@ -57,8 +57,8 @@ public class MockHandlerController {
 
     private final ProjectService projectService;
 
-    public MockHandlerController(final MockHandlerService mockHandlerApplication, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
-        this.mockHandlerService = mockHandlerApplication;
+    public MockHandlerController(final MockHandlerService mockHandlerService, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
+        this.mockHandlerService = mockHandlerService;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
         this.projectService = projectService;

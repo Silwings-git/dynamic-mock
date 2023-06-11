@@ -74,6 +74,7 @@ import top.silwings.core.interpreter.dynamic_expression.parser.AutoTypeParser;
 import top.silwings.core.interpreter.dynamic_expression.parser.DynamicExpressionStringParser;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.script.ScriptLanguage;
 import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -153,6 +154,11 @@ public class MockHandlerJunit {
                 public Void execute(final MockPluginContext mockPluginContext) {
                     System.out.println("JAVA脚本被执行.");
                     return null;
+                }
+
+                @Override
+                public ScriptLanguage getLanguege() {
+                    return ScriptLanguage.JAVA;
                 }
             });
         }
