@@ -41,7 +41,7 @@ public class PluginExecutorManager implements Closeable {
             try {
                 pluginExecutor.close();
             } catch (IOException e) {
-                log.error("插件关闭异常.", e);
+                log.error("Plug-in shutdown exception.", e);
             }
         }));
     }
