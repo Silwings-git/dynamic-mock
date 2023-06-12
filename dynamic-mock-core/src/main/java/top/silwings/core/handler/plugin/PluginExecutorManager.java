@@ -1,8 +1,11 @@
 package top.silwings.core.handler.plugin;
 
+import lombok.extern.slf4j.Slf4j;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.plugin.interfaces.Ordered;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +20,8 @@ import java.util.Map;
  * @Date 2023/5/29 19:35
  * @Since
  **/
-public class PluginExecutorManager {
+@Slf4j
+public class PluginExecutorManager implements Closeable {
 
     private final Map<PluginInterfaceType, List<PluginExecutor<?>>> scriptLanguageScriptMap = new EnumMap<>(PluginInterfaceType.class);
 
@@ -31,4 +35,14 @@ public class PluginExecutorManager {
         pluginExecutorList.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 
+    @Override
+    public void close() {
+        this.scriptLanguageScriptMap.values().forEach(pluginExecutors -> pluginExecutors.forEach(pluginExecutor -> {
+            try {
+                pluginExecutor.close();
+            } catch (IOException e) {
+                log.error("插件关闭异常.", e);
+            }
+        }));
+    }
 }
