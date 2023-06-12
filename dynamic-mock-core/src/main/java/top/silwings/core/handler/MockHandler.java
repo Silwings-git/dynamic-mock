@@ -21,6 +21,7 @@ import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.DelayUtils;
 import top.silwings.core.utils.PathMatcherUtils;
 
+import java.io.Closeable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Getter
 @Builder
-public class MockHandler {
+public class MockHandler implements Closeable {
 
     /**
      * 唯一标识符
@@ -238,4 +239,10 @@ public class MockHandler {
         }
     }
 
+    @Override
+    public void close() {
+        if (null != this.pluginExecutorManager) {
+            this.pluginExecutorManager.close();
+        }
+    }
 }

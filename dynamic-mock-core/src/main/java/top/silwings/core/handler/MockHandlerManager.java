@@ -39,7 +39,10 @@ public class MockHandlerManager {
     }
 
     public void unregisterHandler(final Identity handlerId) {
-        this.handlerMap.remove(handlerId);
+        final MockHandler remove = this.handlerMap.remove(handlerId);
+        if (null != remove) {
+            remove.close();
+        }
         log.info("Mock Handler unregistered, Handler Id: {}", handlerId);
     }
 
