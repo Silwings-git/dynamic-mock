@@ -831,3 +831,26 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 
    显示设置为数据不动态时，json字符串中包含的动态表达式将不会被执行。
 
+##### 22.TimeShift
+
+时移函数.以给定格式返回日期，并添加指定的秒数，分钟，小时，天数.
+
+函数声明:
+
+`#timeshift(Format,DateToShift,ValueToShift,LocaleToUseForFormat)`
+
+1. Format: 日期格式，不指定会返回毫秒值
+2. DateToShift: 要转换的日期，不指定默认为当前时间
+3. ValueToShift: 要移动的时间数。格式参考: [移动时间表示格式](https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-)
+4. LocaleToUseForFormat: 语言环境的字符串格式，如：zh_CN，en_US
+
+注意, 不传值，使用默认值的，也需要标记参数分隔符","，如: #timeshift('yyyy-MM-dd HH:mm:ss',,'P10DT-1H-5M5S',)
+
+示例:
+
+1. `#timeshift(,,,)`=>1686929850627
+2. `#timeshift('yyyy-MM-dd HH:mm:ss',,,)`=>2023-06-16 23:37:30
+3. `#timeshift('yyyy-MM-dd HH:mm:ss','2023-06-16 12:00:00',,)`=>2023-06-16 12:00:00
+4. `#timeshift('yyyy-MM-dd HH:mm:ss','2023-06-16 12:00:00','P10DT-1H-5M5S',)`=>2023-06-26 10:55:05
+5. `#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','zh_CN')`=>2023-06-26T10:55:05
+6. `#timeshift('yyyy-MM-dd HH:mm:ss','','P10DT-1H-5M5S','zh_CN')`=>2023-06-26 22:32:35

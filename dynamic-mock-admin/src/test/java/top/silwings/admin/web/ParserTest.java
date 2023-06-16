@@ -237,6 +237,13 @@ public class ParserTest {
         expressionList.add("#Contains('^{userCode001^,userCode','001^,userCode')");
 //        expressionList.add("#Contains('{不存在userCode^,不存在userCode','100^,不存在userCode')");
         expressionList.add("#Contains('^^userCode001^,userCode','001^,userCode')");
+        expressionList.add("#timeshift(,,,)");
+        expressionList.add("#timeshift('yyyy-MM-dd HH:mm:ss',,,)");
+        expressionList.add("#timeshift('yyyy-MM-dd HH:mm:ss','2023-06-16 12:00:00',,)");
+        expressionList.add("#timeshift('yyyy-MM-dd HH:mm:ss','2023-06-16 12:00:00','P10DT-1H-5M5S',)");
+        expressionList.add("#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','zh_CN')");
+        expressionList.add("#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','en_US')");
+        expressionList.add("#timeshift('yyyy-MM-dd HH:mm:ss','','P10DT-1H-5M5S','zh_CN')");
 
 
         final HashMap<String, Object> abcMap = new HashMap<>();
