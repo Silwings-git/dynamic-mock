@@ -46,6 +46,7 @@ import top.silwings.core.interpreter.dynamic_expression.function.function_factor
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SaveCacheFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SearchFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SelectFunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.function_factory.TimeShiftFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ToBeanFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ToJsonStringFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.URLDecodeFunctionFactory;
@@ -215,7 +216,8 @@ public class MockHandlerJmh {
                             new ParseJsonStringFunctionFactory(),
                             new URLDecodeFunctionFactory(),
                             new URLEncodeFunctionFactory(),
-                            new SaveCacheFunctionFactory()
+                            new SaveCacheFunctionFactory(),
+                            new TimeShiftFunctionFactory()
                     )
                     .collect(Collectors.toList());
         }
