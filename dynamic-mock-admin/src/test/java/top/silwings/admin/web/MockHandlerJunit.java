@@ -48,6 +48,7 @@ import top.silwings.core.interpreter.dynamic_expression.function.function_factor
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ParseJsonStringFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.PrintFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.RandomFunctionFactory;
+import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SaveCacheFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SearchFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.SelectFunctionFactory;
 import top.silwings.core.interpreter.dynamic_expression.function.function_factory.ToBeanFunctionFactory;
@@ -192,7 +193,9 @@ public class MockHandlerJunit {
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
             this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, Collections.singletonList(new PrintSomethingPlugin()));
-            this.mockTaskManager = new MockTaskManager(new ThreadPoolTaskScheduler(), new TaskSchedulerProperties());
+            final ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+            taskScheduler.initialize();
+            this.mockTaskManager = new MockTaskManager(taskScheduler, new TaskSchedulerProperties());
             this.webClient = WebClient.builder().defaultHeader("Requester", "Dynamic-Mock-Service").build();
             this.dynamicMockContext = new DynamicMockContext(this.mockTaskManager, new SimpleIdGenerator(), this.jsonTreeParser, this.dynamicExpressionFactory, this.functionFactory, webClient, obj -> {
             }, new MockTaskLogProperties());
@@ -227,7 +230,8 @@ public class MockHandlerJunit {
                             new SelectFunctionFactory(),
                             new ParseJsonStringFunctionFactory(),
                             new URLDecodeFunctionFactory(),
-                            new URLEncodeFunctionFactory()
+                            new URLEncodeFunctionFactory(),
+                            new SaveCacheFunctionFactory()
                     )
                     .collect(Collectors.toList());
         }
