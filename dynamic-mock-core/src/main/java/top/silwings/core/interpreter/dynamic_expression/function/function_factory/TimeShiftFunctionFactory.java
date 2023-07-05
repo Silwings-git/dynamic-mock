@@ -157,8 +157,7 @@ public class TimeShiftFunctionFactory implements FunctionFactory {
          * 创建时间格式化类.
          * 该方法实现和jmeter保持一致
          *
-         * @param format 格式
-         * @param locale 地区信息
+         * @param localeFormatObject 地区,格式信息
          * @return DateTimeFormatter
          */
         @SuppressWarnings("JavaTimeDefaultTimeZone")
