@@ -244,7 +244,9 @@ public class ParserTest {
         expressionList.add("#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','zh_CN')");
         expressionList.add("#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','en_US')");
         expressionList.add("#timeshift('yyyy-MM-dd HH:mm:ss','','P10DT-1H-5M5S','zh_CN')");
-
+        expressionList.add("#concat('a^,v','b')");
+        expressionList.add("#concat('a^'^,v','b')");
+        expressionList.add("#concat('a^'^^^,v','b')");
 
         final HashMap<String, Object> abcMap = new HashMap<>();
         abcMap.put("list", Collections.singletonList(-1));

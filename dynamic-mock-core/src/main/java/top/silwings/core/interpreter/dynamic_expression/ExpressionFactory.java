@@ -83,6 +83,7 @@ public class ExpressionFactory {
 
         int num = 0;
         boolean escape = false;
+        int lastEscapeIndex = -10;
 
         // 在获取i之前,要比较i是否在""之外,只取""之外的逗号
         // 拿到括号外的逗号的角标
@@ -110,8 +111,15 @@ public class ExpressionFactory {
                     escape = false;
                 }
             } else if ('^' == c) {
+                // 仅当之前的转义符与当前转义符相邻时才对escape取反
                 // 当遇到转义符时,检查之前是否存在转义符,如果之前存在转义符,则当前不作为转义符,之前不存在转义符,当前作为转义
-                escape = !escape;
+                escape = !escape || lastEscapeIndex != i - 1;
+                if (escape) {
+                    lastEscapeIndex = i;
+                }
+            } else if (escape && lastEscapeIndex == i - 1) {
+                // 处理完转义符后的字符后是否存在转义符需要置为false
+                escape = false;
             }
         }
 
