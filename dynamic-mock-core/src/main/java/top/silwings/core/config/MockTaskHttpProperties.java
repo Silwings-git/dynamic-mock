@@ -19,7 +19,7 @@ public class MockTaskHttpProperties {
     /**
      * 响应超时时间(读取超时时间)
      */
-    private long responseTimeout = 10_000L;
+    private int responseTimeout = 10_000;
 
     /**
      * 连接超时时间
