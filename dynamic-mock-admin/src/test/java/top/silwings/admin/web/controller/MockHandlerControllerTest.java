@@ -177,7 +177,7 @@ public class MockHandlerControllerTest {
         request.addParameter("execute", "1");
         request.setContent("{\"pageNum\": \"1\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> response = this.mockEndPoint.executeMock(request);
+        final ResponseEntity<?> response = this.mockEndPoint.executeMock(request);
 
         Assert.assertNotNull(response.getBody());
 

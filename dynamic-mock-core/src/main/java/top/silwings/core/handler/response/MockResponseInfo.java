@@ -44,7 +44,7 @@ public class MockResponseInfo extends AbstractSupportAble {
 
         final Map<?, ?> map = (Map<?, ?>) interpret;
 
-        return MockResponse.builder()
+        return CommonMockResponse.builder()
                 .delayTime(ConvertUtils.getNoNullOrDefault(this.delayTime, 0))
                 .status(Integer.parseInt(String.valueOf(map.get("status"))))
                 .headers(HttpHeaderConverter.from(map.get("headers")))

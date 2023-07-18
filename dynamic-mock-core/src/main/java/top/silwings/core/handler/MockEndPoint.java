@@ -25,7 +25,7 @@ public class MockEndPoint {
         this.mockHandlerManager = mockHandlerManager;
     }
 
-    public ResponseEntity<Object> executeMock(final HttpServletRequest request) {
+    public ResponseEntity<?> executeMock(final HttpServletRequest request) {
         try {
             return this.mockHandlerManager.mock(MockHandlerContext.from(request));
         } finally {

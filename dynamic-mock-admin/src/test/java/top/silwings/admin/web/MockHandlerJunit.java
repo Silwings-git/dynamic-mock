@@ -103,7 +103,7 @@ public class MockHandlerJunit {
 
         final TestData testData = new TestData();
 
-        final ResponseEntity<Object> mock = testData.getMockHandler().mock(MockHandlerContext.from(testData.getRequest()));
+        final ResponseEntity<?> mock = testData.getMockHandler().mock(MockHandlerContext.from(testData.getRequest()));
 
         log.info("Result: {}", JsonUtils.toJSONString(mock));
     }

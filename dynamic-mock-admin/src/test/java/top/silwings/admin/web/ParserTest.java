@@ -378,7 +378,7 @@ public class ParserTest {
         request.setRequestURI(definition.getRequestUri().replace("{", "").replace("}", ""));
         request.setContent("{\"pageNum\": \"11\",\"pageSize\": \"10\"}".getBytes(StandardCharsets.UTF_8));
 
-        final ResponseEntity<Object> responseEntity = this.mockEndPoint.executeMock(request);
+        final ResponseEntity<?> responseEntity = this.mockEndPoint.executeMock(request);
 
         final Object body = responseEntity.getBody();
         log.info("res type: " + body.getClass().getName() + "--" + JsonUtils.toJSONString(body));
