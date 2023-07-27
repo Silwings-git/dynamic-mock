@@ -248,6 +248,66 @@ public class ParserTest {
         expressionList.add("#concat('a^'^,v','b')");
         expressionList.add("#concat('a^'^^^,v','b')");
 
+        // false
+        expressionList.add("#startsWith('abc','1')");
+        // true
+        expressionList.add("#startsWith('abc','a')");
+        // true
+        expressionList.add("#startsWith('abc','ab')");
+        // true
+        expressionList.add("#startsWith('abc','abc')");
+        // false
+        expressionList.add("#startsWith('abc','A')");
+        // false
+        expressionList.add("#startsWith('abc','AB')");
+        // false
+        expressionList.add("#startsWith('abc','ABC')");
+
+        // false
+        expressionList.add("#startsWith('abc','1',true)");
+        // true
+        expressionList.add("#startsWith('abc','a',true)");
+        // true
+        expressionList.add("#startsWith('abc','ab',true)");
+        // true
+        expressionList.add("#startsWith('abc','abc',true)");
+        // true
+        expressionList.add("#startsWith('abc','A',true)");
+        // true
+        expressionList.add("#startsWith('abc','AB',true)");
+        // true
+        expressionList.add("#startsWith('abc','ABC',true)");
+
+        // false
+        expressionList.add("#endsWith('abc','1')");
+        // true
+        expressionList.add("#endsWith('abc','c')");
+        // true
+        expressionList.add("#endsWith('abc','bc')");
+        // true
+        expressionList.add("#endsWith('abc','abc')");
+        // false
+        expressionList.add("#endsWith('abc','C')");
+        // false
+        expressionList.add("#endsWith('abc','BC')");
+        // false
+        expressionList.add("#endsWith('abc','ABC')");
+
+        // false
+        expressionList.add("#endsWith('abc','1',true)");
+        // true
+        expressionList.add("#endsWith('abc','c',true)");
+        // true
+        expressionList.add("#endsWith('abc','bc',true)");
+        // true
+        expressionList.add("#endsWith('abc','abc',true)");
+        // true
+        expressionList.add("#endsWith('abc','C',true)");
+        // true
+        expressionList.add("#endsWith('abc','BC',true)");
+        // true
+        expressionList.add("#endsWith('abc','ABC',true)");
+
         final HashMap<String, Object> abcMap = new HashMap<>();
         abcMap.put("list", Collections.singletonList(-1));
         final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();
