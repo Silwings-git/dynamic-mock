@@ -213,10 +213,10 @@ public class ParserTest {
         // 遍历集合
         expressionList.add("#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')");
         expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')");
-        expressionList.add("#select(true,1,2)");
-        expressionList.add("#select(false,1,2)");
-        expressionList.add("#select(#search('40'),1,2)");
-        expressionList.add("#select(10>0,1,2)");
+        expressionList.add("#selectIf(true,1,2)");
+        expressionList.add("#selectIf(false,1,2)");
+        expressionList.add("#selectIf(#search('40'),1,2)");
+        expressionList.add("#selectIf(10>0,1,2)");
         expressionList.add("#toJsonString(1+1)");
         expressionList.add("#toJsonString('{\"name\":\"aka Mikoto\"}')");
         expressionList.add("#toJsonString(#search('user'))");

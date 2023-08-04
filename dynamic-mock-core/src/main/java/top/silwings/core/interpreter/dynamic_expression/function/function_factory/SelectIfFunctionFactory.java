@@ -22,46 +22,46 @@ import java.util.List;
  * @Since
  **/
 @Component
-public class SelectFunctionFactory implements FunctionFactory {
+public class SelectIfFunctionFactory implements FunctionFactory {
 
-    private static final FunctionInfo SELECT_FUNCTION_INFO = FunctionInfo.builder()
-            .functionName("Concat")
+    private static final FunctionInfo SELECT_IF_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("SelectIf")
             .minArgsNumber(3)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.OBJECT)
             .build();
 
-    private static final String SYMBOL = "#select(...)";
+    private static final String SYMBOL = "#selectIf(...)";
 
     @Override
     public boolean support(final String methodName) {
-        return "select".equalsIgnoreCase(methodName);
+        return "selectIf".equalsIgnoreCase(methodName);
     }
 
     @Override
     public FunctionInfo getFunctionInfo() {
-        return SELECT_FUNCTION_INFO;
+        return SELECT_IF_FUNCTION_INFO;
     }
 
     @Override
     public FunctionExpression buildFunction(final List<ExpressionTreeNode> functionExpressionList) {
-        CheckUtils.sizeBetween(functionExpressionList, SELECT_FUNCTION_INFO.getMinArgsNumber(), SELECT_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Select function."));
-        return SelectFunction.from(functionExpressionList);
+        CheckUtils.sizeBetween(functionExpressionList, SELECT_IF_FUNCTION_INFO.getMinArgsNumber(), SELECT_IF_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of SelectIf function."));
+        return SelectIfFunction.from(functionExpressionList);
     }
 
     /**
      * 选择函数
      * 等于三元运算表达式
-     * #select(boolean,argA,argB)
+     * #selectIf(boolean,argA,argB)
      */
-    public static class SelectFunction extends AbstractFunctionExpression {
+    public static class SelectIfFunction extends AbstractFunctionExpression {
 
-        public SelectFunction(final List<ExpressionTreeNode> functionExpressionList) {
+        public SelectIfFunction(final List<ExpressionTreeNode> functionExpressionList) {
             super(functionExpressionList);
         }
 
-        public static SelectFunction from(final List<ExpressionTreeNode> functionExpressionList) {
-            return new SelectFunction(functionExpressionList);
+        public static SelectIfFunction from(final List<ExpressionTreeNode> functionExpressionList) {
+            return new SelectIfFunction(functionExpressionList);
         }
 
         @Override
