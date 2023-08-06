@@ -15,7 +15,7 @@ import top.silwings.core.utils.TypeUtils;
 import java.util.List;
 
 /**
- * @ClassName SelectFunctionFactory
+ * @ClassName SelectIfFunctionFactory
  * @Description 选择函数(三元运算符)
  * @Author Silwings
  * @Date 2023/1/8 22:21
