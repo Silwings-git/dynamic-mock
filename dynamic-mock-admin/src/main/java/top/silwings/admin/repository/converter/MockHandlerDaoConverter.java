@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.repository.po.MockHandlerPo;
+import top.silwings.admin.repository.po.pack.MockHandlerPoWrap;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
@@ -13,6 +14,8 @@ import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -28,27 +31,36 @@ public class MockHandlerDaoConverter {
     private static final String EMPTY_LIST = "[]";
     private static final String EMPTY_JSON = "{}";
 
-    public MockHandlerPo convert(final MockHandlerDto mockHandlerDto) {
+    private final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter;
 
-        final MockHandlerPo dao = new MockHandlerPo();
-        dao.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::intValue));
-        dao.setProjectId(mockHandlerDto.getProjectId().intValue());
-        dao.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
-        dao.setName(mockHandlerDto.getName());
-        if (CollectionUtils.isNotEmpty(mockHandlerDto.getHttpMethods())) {
-            dao.setHttpMethods(mockHandlerDto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.joining(",")));
-        }
-        dao.setRequestUri(mockHandlerDto.getRequestUri());
-        dao.setLabel(mockHandlerDto.getLabel());
-        dao.setDelayTime(mockHandlerDto.getDelayTime());
-        dao.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
-        dao.setResponses(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
-        dao.setTasks(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getTasks(), EMPTY_LIST)));
-
-        return dao;
+    public MockHandlerDaoConverter(final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter) {
+        this.mockHandlerTaskDaoConverter = mockHandlerTaskDaoConverter;
     }
 
-    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo) {
+    public MockHandlerPoWrap convert(final MockHandlerDto mockHandlerDto) {
+
+        final MockHandlerPo mockHandlerPo = new MockHandlerPo();
+        mockHandlerPo.setHandlerId(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getHandlerId(), null, Identity::intValue));
+        mockHandlerPo.setProjectId(mockHandlerDto.getProjectId().intValue());
+        mockHandlerPo.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getEnableStatus(), EnableStatus.DISABLE.code(), EnableStatus::code));
+        mockHandlerPo.setName(mockHandlerDto.getName());
+        if (CollectionUtils.isNotEmpty(mockHandlerDto.getHttpMethods())) {
+            mockHandlerPo.setHttpMethods(mockHandlerDto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.joining(",")));
+        }
+        mockHandlerPo.setRequestUri(mockHandlerDto.getRequestUri());
+        mockHandlerPo.setLabel(mockHandlerDto.getLabel());
+        mockHandlerPo.setDelayTime(mockHandlerDto.getDelayTime());
+        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
+        mockHandlerPo.setResponses(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
+
+        final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
+        handlerPoWrap.setMockHandlerPo(mockHandlerPo);
+        handlerPoWrap.setMockHandlerTaskPoWrapList(this.mockHandlerTaskDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getTasks()));
+
+        return handlerPoWrap;
+    }
+
+    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo, final List<TaskInfoDto> taskInfoDtoList) {
 
         return MockHandlerDto.builder()
                 .handlerId(Identity.from(mockHandlerPo.getHandlerId()))
@@ -61,7 +73,7 @@ public class MockHandlerDaoConverter {
                 .delayTime(mockHandlerPo.getDelayTime())
                 .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
                 .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), "[]"), MockResponseInfoDto.class))
-                .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), "[]"), TaskInfoDto.class))
+                .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
     }

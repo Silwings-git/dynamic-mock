@@ -16,17 +16,20 @@ import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryDisableHandlerIdsConditionDto;
 import top.silwings.admin.model.QueryEnableHandlerConditionDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
+import top.silwings.admin.repository.MockHandlerTaskRepository;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.MockHandlerUniqueMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.MockHandlerUniquePo;
+import top.silwings.admin.repository.po.pack.MockHandlerPoWrap;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.CheckUtils;
 import top.silwings.core.utils.ConvertUtils;
 
@@ -53,21 +56,25 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerDaoConverter mockHandlerDaoConverter;
 
-    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter) {
+    private final MockHandlerTaskRepository mockHandlerTaskRepository;
+
+    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final MockHandlerTaskRepository mockHandlerTaskRepository) {
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerMapper = mockHandlerMapper;
         this.mockHandlerUniqueMapper = mockHandlerUniqueMapper;
         this.mockHandlerDaoConverter = mockHandlerDaoConverter;
+        this.mockHandlerTaskRepository = mockHandlerTaskRepository;
     }
 
     @Override
     @Transactional
     public Identity create(final MockHandlerDto mockHandlerDto) {
 
-        final MockHandlerPo mockHandlerPo = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        final MockHandlerPoWrap mockHandlerPoWrap = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        final MockHandlerPo mockHandlerPo = mockHandlerPoWrap.getMockHandlerPo();
         mockHandlerPo.setHandlerId(null);
 
-        this.mockHandlerMapper.insertSelective(mockHandlerPo);
+        this.saveMockHandlerWrapByHandlerId(mockHandlerPoWrap);
 
         final List<MockHandlerUniquePo> uniqueList = mockHandlerDto.getHttpMethods().stream()
                 .map(method -> MockHandlerUniquePo.of(mockHandlerPo.getHandlerId(), mockHandlerPo.getRequestUri(), method.name()))
@@ -82,21 +89,44 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         return Identity.from(mockHandlerPo.getHandlerId());
     }
 
+    private void saveMockHandlerWrapByHandlerId(final MockHandlerPoWrap mockHandlerPoWrap) {
+
+        this.saveMockHandlerByHandlerId(mockHandlerPoWrap.getMockHandlerPo());
+
+        // 保存完成后mockHandlerPo中一定包含handlerId
+        mockHandlerPoWrap
+                .getMockHandlerTaskPoWrapList()
+                .forEach(e -> e.getMockHandlerTaskPo().setHandlerId(mockHandlerPoWrap.getMockHandlerPo().getHandlerId()));
+
+        if (this.mockHandlerTaskRepository.removeMockHandlerTask(Identity.from(mockHandlerPoWrap.getMockHandlerPo().getHandlerId()))) {
+            this.mockHandlerTaskRepository.insertMockHandlerTask(mockHandlerPoWrap.getMockHandlerTaskPoWrapList());
+        }
+    }
+
+    private void saveMockHandlerByHandlerId(final MockHandlerPo mockHandlerPo) {
+        if (null == mockHandlerPo.getHandlerId()) {
+            this.mockHandlerMapper.insertSelective(mockHandlerPo);
+        } else {
+            final Example updateCondition = new Example(MockHandlerPo.class);
+            updateCondition.createCriteria()
+                    .andEqualTo(MockHandlerPo.C_HANDLER_ID, mockHandlerPo.getHandlerId());
+            this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
+        }
+    }
+
     @Override
     @Transactional
     public Identity updateById(final MockHandlerDto mockHandlerDto) {
 
         final Identity handlerId = mockHandlerDto.getHandlerId();
 
-        final MockHandlerPo mockHandlerPo = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        final MockHandlerPoWrap mockHandlerPoWrap = this.mockHandlerDaoConverter.convert(mockHandlerDto);
+        final MockHandlerPo mockHandlerPo = mockHandlerPoWrap.getMockHandlerPo();
+
         // 更新后的Mock Handler需要重新注册
         mockHandlerPo.setEnableStatus(EnableStatus.DISABLE.code());
 
-        final Example updateCondition = new Example(MockHandlerPo.class);
-        updateCondition.createCriteria()
-                .andEqualTo(MockHandlerPo.C_HANDLER_ID, handlerId.intValue());
-
-        this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
+        this.saveMockHandlerWrapByHandlerId(mockHandlerPoWrap);
 
         // 删除唯一表该handler的数据,重新创建
         final Example deleteCondition = new Example(MockHandlerUniquePo.class);
@@ -128,11 +158,13 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final MockHandlerPo mockHandlerPo = this.mockHandlerMapper.selectOne(findCondition);
 
+        final List<TaskInfoDto> taskInfoDtoList = this.mockHandlerTaskRepository.queryMockHandlerTaskList(handlerId);
+
         if (null == mockHandlerPo) {
             throw new DynamicMockException("Mock handler does not exist: " + handlerId);
         }
 
-        return this.mockHandlerDaoConverter.convert(mockHandlerPo);
+        return this.mockHandlerDaoConverter.convert(mockHandlerPo, taskInfoDtoList);
     }
 
     @Override
@@ -259,13 +291,9 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         criteria
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, EnableStatus.DISABLE.code());
 
-        if (null != conditionParamDto) {
-
-            if (CollectionUtils.isNotEmpty(conditionParamDto.getHandlerIdRangeList())) {
-                final List<Integer> handlerIdList = conditionParamDto.getHandlerIdRangeList().stream().map(Identity::intValue).collect(Collectors.toList());
-                criteria.andIn(MockHandlerPo.C_HANDLER_ID, handlerIdList);
-            }
-
+        if (null != conditionParamDto && CollectionUtils.isNotEmpty(conditionParamDto.getHandlerIdRangeList())) {
+            final List<Integer> handlerIdList = conditionParamDto.getHandlerIdRangeList().stream().map(Identity::intValue).collect(Collectors.toList());
+            criteria.andIn(MockHandlerPo.C_HANDLER_ID, handlerIdList);
         }
 
         return this.queryHandlerIdPageData(queryCondition, pageParam.toRowBounds());
@@ -282,9 +310,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final List<MockHandlerDto> mockHandlerDtoList = mockHandlerList
                 .stream()
-                .map(this.mockHandlerDaoConverter::convert)
+                .map(mockHandlerPo -> this.mockHandlerDaoConverter.convert(mockHandlerPo, this.mockHandlerTaskRepository.queryMockHandlerTaskList(Identity.from(mockHandlerPo.getHandlerId()))))
                 .collect(Collectors.toList());
-
         return PageData.of(mockHandlerDtoList, total);
     }
 

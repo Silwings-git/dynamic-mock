@@ -93,12 +93,6 @@ public class MockHandlerPo {
     private String responses;
 
     /**
-     * 任务集
-     */
-    @Column(name = "tasks")
-    private String tasks;
-
-    /**
      * 负责人
      */
     @Column(name = "author")
