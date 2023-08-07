@@ -79,7 +79,7 @@ CREATE TABLE `dm_text_file`
     `file_name`          varchar(64)  NOT NULL COMMENT '文件名',
     `original_file_name` varchar(128) NOT NULL COMMENT '原始文件名',
     `content`            longtext COMMENT '文本内容',
-    `create_time`        datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `dm_text_file_file_name_uindex` (`file_name`)
 ) ENGINE=InnoDB  COMMENT='文本文件内容表';
@@ -91,6 +91,7 @@ CREATE TABLE `dm_mock_handler_condition`
     `component_id`   INT         NOT NULL COMMENT '组件id',
     `component_type` VARCHAR(64) NOT NULL COMMENT '组件类型.MockHandlerComponentType',
     `expression`     TEXT        NOT NULL COMMENT '条件表达式',
+    `create_time`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`condition_id`),
     KEY              `dmmockhandlercondition_componentid_componenttype` (`component_id`,`component_type`) USING BTREE
 ) ENGINE=InnoDB COMMENT='条件信息表';
@@ -103,6 +104,7 @@ CREATE TABLE `dm_mock_handler_task`
     `async`             TINYINT(2) NOT NULL COMMENT '是否异步.1-是,0-否',
     `cron`              VARCHAR(32) NOT NULL COMMENT 'Cron表达式',
     `number_of_execute` INT         NOT NULL DEFAULT 1 COMMENT '执行次数',
+    `create_time`       DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`task_id`),
     KEY                 `dmmockhandlertask_handlerid` (`handler_id`) USING BTREE,
     KEY                 `dmmockhandlertask_taskid` (`task_id`) USING BTREE
@@ -116,8 +118,9 @@ CREATE TABLE `dm_mock_handler_task_request`
     `request_url`     VARCHAR(256) NOT NULL COMMENT '请求地址',
     `http_method`     VARCHAR(8)   NOT NULL COMMENT '请求方式',
     `headers`         JSON COMMENT '请求头',
-    `body`            TEXT DEFAULT NULL COMMENT '请求体',
+    `body`            TEXT                  DEFAULT NULL COMMENT '请求体',
     `uri_variables`   JSON COMMENT '请求体',
+    `create_time`     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`task_request_id`),
     KEY               `dmmockhandlertaskrequest_handlerid` (`handler_id`) USING BTREE,
     UNIQUE KEY `dmmockhandlertaskrequest_taskid` (`task_id`) USING BTREE

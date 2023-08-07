@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.po.ConditionPo;
 import top.silwings.core.common.Identity;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ConditionDaoConverter {
     private ConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression) {
         final ConditionPo po = new ConditionPo();
         po.setConditionId(null);
-        po.setHandlerId(handlerId.intValue());
+        po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setComponentId(null);
         po.setComponentType(componentType);
         po.setExpression(expression);

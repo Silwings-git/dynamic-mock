@@ -1,6 +1,7 @@
 package top.silwings.admin.repository.impl;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.MockHandlerTaskRepository;
@@ -79,6 +80,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
     }
 
     @Override
+    @Transactional
     public void insertMockHandlerTask(final List<MockHandlerTaskPoWrap> mockHandlerTaskPoWrapList) {
 
         mockHandlerTaskPoWrapList.forEach(mockHandlerTaskPoWrap -> {
@@ -95,11 +97,13 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
 
             final MockHandlerTaskRequestPo mockHandlerTaskRequestPo = mockHandlerTaskPoWrap.getMockHandlerTaskRequestPo();
             mockHandlerTaskRequestPo.setHandlerId(mockHandlerTaskPo.getHandlerId());
+            mockHandlerTaskRequestPo.setTaskId(mockHandlerTaskPo.getTaskId());
             this.mockHandlerTaskRequestMapper.insertSelective(mockHandlerTaskRequestPo);
         });
     }
 
     @Override
+    @Transactional
     public boolean removeMockHandlerTask(final Identity handlerId) {
         final Example taskExample = new Example(MockHandlerTaskPo.class);
         taskExample.createCriteria()

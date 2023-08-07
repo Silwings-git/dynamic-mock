@@ -88,6 +88,14 @@ public class JsonUtils {
         }
     }
 
+    public static Object tryToBean(final String jsonStr) {
+        try {
+            return MAPPER.readValue(jsonStr, Object.class);
+        } catch (IOException e) {
+            return jsonStr;
+        }
+    }
+
     public static boolean isValidJson(final String jsonStr) {
 
         if (StringUtils.isBlank(jsonStr)) {

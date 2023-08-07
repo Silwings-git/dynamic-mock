@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskRequestDto;
+import top.silwings.core.utils.ConvertUtils;
 import top.silwings.core.utils.JsonUtils;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class MockHandlerTaskRequestDaoConverter {
                 .httpMethod(taskRequestPo.getHttpMethod())
                 .headers(JsonUtils.nativeRead(taskRequestPo.getHeaders(), new TypeReference<Map<String, List<String>>>() {
                 }))
-                .body(JsonUtils.toBean(taskRequestPo.getBody()))
+                .body(JsonUtils.tryToBean(taskRequestPo.getBody()))
                 .uriVariables(JsonUtils.nativeRead(taskRequestPo.getUriVariables(), new TypeReference<Map<String, List<String>>>() {
                 }))
                 .build();
@@ -35,7 +36,7 @@ public class MockHandlerTaskRequestDaoConverter {
 
         final MockHandlerTaskRequestPo po = new MockHandlerTaskRequestPo();
         po.setTaskRequestId(null);
-        po.setHandlerId(handlerId.intValue());
+        po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setTaskId(null);
         po.setRequestUrl(taskRequestDto.getRequestUrl());
         po.setHttpMethod(taskRequestDto.getHttpMethod());

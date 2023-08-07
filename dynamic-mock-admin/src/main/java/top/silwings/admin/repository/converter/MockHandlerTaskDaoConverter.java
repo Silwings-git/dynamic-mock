@@ -9,6 +9,7 @@ import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
+import top.silwings.core.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +67,7 @@ public class MockHandlerTaskDaoConverter {
     private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto) {
         final MockHandlerTaskPo po = new MockHandlerTaskPo();
         po.setTaskId(null);
-        po.setHandlerId(handlerId.intValue());
+        po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(taskInfoDto.getName());
         po.setAsync(taskInfoDto.isAsync());
         po.setCron(taskInfoDto.getCron());
