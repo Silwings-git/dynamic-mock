@@ -47,4 +47,10 @@ public class MockHandlerResponsePo {
     @Column(name = "delay_time")
     private Integer delayTime;
 
+    /**
+     * 排序
+     */
+    @Column(name = "sort")
+    private Integer sort;
+
 }

@@ -6,7 +6,7 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.MockHandlerTaskRepository;
 import top.silwings.admin.repository.converter.MockHandlerTaskDaoConverter;
-import top.silwings.admin.repository.mapper.ConditionMapper;
+import top.silwings.admin.repository.mapper.MockHandlerConditionMapper;
 import top.silwings.admin.repository.mapper.MockHandlerTaskMapper;
 import top.silwings.admin.repository.mapper.MockHandlerTaskRequestMapper;
 import top.silwings.admin.repository.po.ConditionPo;
@@ -16,6 +16,7 @@ import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository {
 
-    private final ConditionMapper conditionMapper;
+    private final MockHandlerConditionMapper mockHandlerConditionMapper;
 
     private final MockHandlerTaskMapper mockHandlerTaskMapper;
 
@@ -37,8 +38,8 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
 
     private final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter;
 
-    public MockHandlerTaskRepositoryImpl(final ConditionMapper conditionMapper, final MockHandlerTaskMapper mockHandlerTaskMapper, final MockHandlerTaskRequestMapper mockHandlerTaskRequestMapper, final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter) {
-        this.conditionMapper = conditionMapper;
+    public MockHandlerTaskRepositoryImpl(final MockHandlerConditionMapper mockHandlerConditionMapper, final MockHandlerTaskMapper mockHandlerTaskMapper, final MockHandlerTaskRequestMapper mockHandlerTaskRequestMapper, final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter) {
+        this.mockHandlerConditionMapper = mockHandlerConditionMapper;
         this.mockHandlerTaskMapper = mockHandlerTaskMapper;
         this.mockHandlerTaskRequestMapper = mockHandlerTaskRequestMapper;
         this.mockHandlerTaskDaoConverter = mockHandlerTaskDaoConverter;
@@ -53,6 +54,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
 
         return this.mockHandlerTaskMapper.selectByCondition(taskExample)
                 .stream()
+                .sorted(Comparator.comparingInt(MockHandlerTaskPo::getSort))
                 .map(mockHandlerTaskPo -> {
                     final Identity taskId = Identity.from(mockHandlerTaskPo.getTaskId());
 
@@ -77,7 +79,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
                 .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue())
                 .andEqualTo(ConditionPo.C_COMPONENT_ID, taskId.intValue())
                 .andEqualTo(ConditionPo.C_COMPONENT_TYPE, MockHandlerComponentType.MOCK_HANDLER_TASK);
-        return this.conditionMapper.selectByCondition(conditionExample);
+        return this.mockHandlerConditionMapper.selectByCondition(conditionExample);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
                 e.setHandlerId(mockHandlerTaskPo.getHandlerId());
                 e.setComponentId(mockHandlerTaskPo.getTaskId());
                 e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_TASK);
-                this.conditionMapper.insertSelective(e);
+                this.mockHandlerConditionMapper.insertSelective(e);
             });
 
             final MockHandlerTaskRequestPo mockHandlerTaskRequestPo = mockHandlerTaskPoWrap.getMockHandlerTaskRequestPo();
@@ -114,7 +116,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
         final Example conditionExample = new Example(ConditionPo.class);
         taskExample.createCriteria()
                 .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue());
-        this.conditionMapper.deleteByCondition(conditionExample);
+        this.mockHandlerConditionMapper.deleteByCondition(conditionExample);
 
         final Example requestExample = new Example(MockHandlerTaskRequestPo.class);
         taskExample.createCriteria()

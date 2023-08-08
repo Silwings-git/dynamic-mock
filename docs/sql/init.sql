@@ -91,6 +91,7 @@ CREATE TABLE `dm_mock_handler_condition`
     `component_id`   INT         NOT NULL COMMENT '组件id',
     `component_type` VARCHAR(64) NOT NULL COMMENT '组件类型.MockHandlerComponentType',
     `expression`     TEXT        NOT NULL COMMENT '条件表达式',
+    `sort`           INT         NOT NULL COMMENT '排序',
     `create_time`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`condition_id`),
     KEY              `idx_dmmockhandlercondition_componentid_componenttype` (`component_id`,`component_type`) USING BTREE
@@ -104,6 +105,7 @@ CREATE TABLE `dm_mock_handler_task`
     `async`             TINYINT(2) NOT NULL COMMENT '是否异步.1-是,0-否',
     `cron`              VARCHAR(32) NOT NULL COMMENT 'Cron表达式',
     `number_of_execute` INT         NOT NULL DEFAULT 1 COMMENT '执行次数',
+    `sort`              INT         NOT NULL COMMENT '排序',
     `create_time`       DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`task_id`),
     KEY                 `idx_dmmockhandlertask_handlerid` (`handler_id`) USING BTREE,
@@ -132,18 +134,21 @@ CREATE TABLE `dm_mock_handler_response`
     `handler_id`  INT         NOT NULL COMMENT 'mock处理器ID',
     `name`        VARCHAR(64) NOT NULL COMMENT '响应名称',
     `delay_time`  INT         NOT NULL DEFAULT '0' COMMENT '延迟时间',
+    `sort`        INT         NOT NULL COMMENT '排序',
+    `create_time` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`response_id`),
     KEY           `idx_dmmockhandlerresponse_handlerid` (`handler_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器响应信息表';
 
 CREATE TABLE `dm_mock_handler_response_item`
 (
-    `response_item_id` INT NOT NULL AUTO_INCREMENT,
-    `response_id`      INT NOT NULL COMMENT 'mock 响应ID',
-    `handler_id`       INT NOT NULL COMMENT 'mock处理器ID',
-    `status`           INT NOT NULL COMMENT '响应码',
+    `response_item_id` INT      NOT NULL AUTO_INCREMENT,
+    `response_id`      INT      NOT NULL COMMENT 'mock 响应ID',
+    `handler_id`       INT      NOT NULL COMMENT 'mock处理器ID',
+    `status`           INT      NOT NULL COMMENT '响应码',
     `headers`          JSON COMMENT '响应头',
     `body`             TEXT COMMENT '延迟时间',
+    `create_time`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`response_item_id`),
     KEY                `idx_dmmockhandlerresponseitem_handlerid_responseid` (`handler_id`,`response_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器响应详情信息表';

@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
+import top.silwings.admin.model.MockHandlerConditionRepository;
 import top.silwings.admin.repository.MockHandlerResponseRepository;
 import top.silwings.admin.repository.converter.MockHandlerResponseItemDaoConverter;
-import top.silwings.admin.repository.mapper.ConditionMapper;
 import top.silwings.admin.repository.mapper.MockHandlerResponseItemMapper;
 import top.silwings.admin.repository.mapper.MockHandlerResponseMapper;
 import top.silwings.admin.repository.po.ConditionPo;
@@ -17,6 +17,7 @@ import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,14 +35,14 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
 
     private final MockHandlerResponseItemMapper mockHandlerResponseItemMapper;
 
-    private final ConditionMapper conditionMapper;
+    private final MockHandlerConditionRepository mockHandlerConditionRepository;
 
     private final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter;
 
-    public MockHandlerResponseRepositoryImpl(final MockHandlerResponseMapper mockHandlerResponseMapper, final MockHandlerResponseItemMapper mockHandlerResponseItemMapper, final ConditionMapper conditionMapper, final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter) {
+    public MockHandlerResponseRepositoryImpl(final MockHandlerResponseMapper mockHandlerResponseMapper, final MockHandlerResponseItemMapper mockHandlerResponseItemMapper, final MockHandlerConditionRepository mockHandlerConditionRepository, final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter) {
         this.mockHandlerResponseMapper = mockHandlerResponseMapper;
         this.mockHandlerResponseItemMapper = mockHandlerResponseItemMapper;
-        this.conditionMapper = conditionMapper;
+        this.mockHandlerConditionRepository = mockHandlerConditionRepository;
         this.mockHandlerResponseItemDaoConverter = mockHandlerResponseItemDaoConverter;
     }
 
@@ -54,11 +55,12 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
 
         return this.mockHandlerResponseMapper.selectByCondition(responseExample)
                 .stream()
+                .sorted(Comparator.comparingInt(MockHandlerResponsePo::getSort))
                 .map(mockHandlerResponsePo -> {
                     final Identity responseId = Identity.from(mockHandlerResponsePo.getResponseId());
 
                     // 条件信息
-                    final List<ConditionPo> conditionPoList = this.queryConditions(handlerId, responseId);
+                    final List<ConditionPo> conditionPoList = this.mockHandlerConditionRepository.queryConditions(handlerId, responseId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
 
                     // 请求信息
                     final MockHandlerResponseItemPo responseItemPo = this.findResponseItem(handlerId, responseId);
@@ -77,10 +79,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
                 .andEqualTo(MockHandlerResponsePo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerResponseMapper.deleteByCondition(responseExample);
 
-        final Example conditionExample = new Example(ConditionPo.class);
-        conditionExample.createCriteria()
-                .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue());
-        this.conditionMapper.deleteByCondition(conditionExample);
+        this.mockHandlerConditionRepository.deleteByHandlerId(handlerId);
 
         final Example itemExample = new Example(MockHandlerResponseItemPo.class);
         itemExample.createCriteria()
@@ -106,7 +105,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
                 e.setHandlerId(responsePo.getHandlerId());
                 e.setComponentId(responsePo.getResponseId());
                 e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
-                this.conditionMapper.insertSelective(e);
+                this.mockHandlerConditionRepository.insertSelective(e);
             });
 
             final MockHandlerResponseItemPo mockHandlerResponseItemPo = wrap.getMockHandlerResponseItemPo();
@@ -120,15 +119,6 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
         return this.mockHandlerResponseItemMapper.selectOne(new MockHandlerResponseItemPo()
                 .setHandlerId(handlerId.intValue())
                 .setResponseId(responseId.intValue()));
-    }
-
-    private List<ConditionPo> queryConditions(final Identity handlerId, final Identity responseId) {
-        final Example conditionExample = new Example(ConditionPo.class);
-        conditionExample.createCriteria()
-                .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue())
-                .andEqualTo(ConditionPo.C_COMPONENT_ID, responseId.intValue())
-                .andEqualTo(ConditionPo.C_COMPONENT_TYPE, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
-        return this.conditionMapper.selectByCondition(conditionExample);
     }
 
 }

@@ -7,6 +7,7 @@ import top.silwings.admin.repository.po.ConditionPo;
 import top.silwings.admin.repository.po.MockHandlerTaskPo;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
+import top.silwings.admin.utils.Counter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -51,21 +52,21 @@ public class MockHandlerTaskDaoConverter {
         if (CollectionUtils.isEmpty(taskInfoList)) {
             return Collections.emptyList();
         }
-
-        return taskInfoList.stream().map(e -> this.convert2Wrap(handlerId, e)).collect(Collectors.toList());
+        final Counter sort = Counter.newInstance();
+        return taskInfoList.stream().map(e -> this.convert2Wrap(handlerId, e, sort.increment())).collect(Collectors.toList());
     }
 
-    private MockHandlerTaskPoWrap convert2Wrap(final Identity handlerId, final TaskInfoDto taskInfoDto) {
+    private MockHandlerTaskPoWrap convert2Wrap(final Identity handlerId, final TaskInfoDto taskInfoDto, final int sort) {
 
         final MockHandlerTaskPoWrap taskPoWrap = new MockHandlerTaskPoWrap();
-        taskPoWrap.setMockHandlerTaskPo(this.convert(handlerId, taskInfoDto));
+        taskPoWrap.setMockHandlerTaskPo(this.convert(handlerId, taskInfoDto, sort));
         taskPoWrap.setConditionPoList(this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK, taskInfoDto.getSupport()));
         taskPoWrap.setMockHandlerTaskRequestPo(this.mockHandlerTaskRequestDaoConverter.convert(handlerId, taskInfoDto.getRequest()));
 
         return taskPoWrap;
     }
 
-    private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto) {
+    private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto, final int sort) {
         final MockHandlerTaskPo po = new MockHandlerTaskPo();
         po.setTaskId(ConvertUtils.getNoNullOrDefault(taskInfoDto.getTaskId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
@@ -73,6 +74,7 @@ public class MockHandlerTaskDaoConverter {
         po.setAsync(taskInfoDto.isAsync());
         po.setCron(taskInfoDto.getCron());
         po.setNumberOfExecute(taskInfoDto.getNumberOfExecute());
+        po.setSort(sort);
 
         return po;
     }

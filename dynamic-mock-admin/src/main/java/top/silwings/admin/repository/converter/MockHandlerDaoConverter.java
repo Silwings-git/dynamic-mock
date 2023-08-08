@@ -54,8 +54,8 @@ public class MockHandlerDaoConverter {
 
         final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
         handlerPoWrap.setMockHandlerPo(mockHandlerPo);
-        handlerPoWrap.setMockHandlerTaskPoWrapList(this.mockHandlerTaskDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getTasks()));
         handlerPoWrap.setMockHandlerResponsePoWrapList(this.mockHandlerResponseDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getResponses()));
+        handlerPoWrap.setMockHandlerTaskPoWrapList(this.mockHandlerTaskDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getTasks()));
 
         return handlerPoWrap;
     }

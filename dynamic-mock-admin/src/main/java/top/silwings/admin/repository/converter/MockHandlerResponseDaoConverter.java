@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
+import top.silwings.admin.utils.Counter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -36,25 +37,27 @@ public class MockHandlerResponseDaoConverter {
         if (CollectionUtils.isEmpty(responseInfoDtoList)) {
             return Collections.emptyList();
         }
+        final Counter sort = Counter.newInstance();
         return responseInfoDtoList.stream()
-                .map(e -> this.convert2Wrap(handlerId, e))
+                .map(e -> this.convert2Wrap(handlerId, e, sort.increment()))
                 .collect(Collectors.toList());
     }
 
-    private MockHandlerResponsePoWrap convert2Wrap(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto) {
+    private MockHandlerResponsePoWrap convert2Wrap(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final int sort) {
         final MockHandlerResponsePoWrap wrap = new MockHandlerResponsePoWrap();
-        wrap.setMockHandlerResponsePo(this.convert(handlerId, mockResponseInfoDto));
+        wrap.setMockHandlerResponsePo(this.convert(handlerId, mockResponseInfoDto, sort));
         wrap.setConditionPoList(this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE, mockResponseInfoDto.getSupport()));
         wrap.setMockHandlerResponseItemPo(this.mockHandlerResponseItemDaoConverter.convert(handlerId, mockResponseInfoDto.getResponse()));
         return wrap;
     }
 
-    private MockHandlerResponsePo convert(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto) {
+    private MockHandlerResponsePo convert(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final int sort) {
         final MockHandlerResponsePo po = new MockHandlerResponsePo();
         po.setResponseId(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getResponseId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(mockResponseInfoDto.getName());
         po.setDelayTime(mockResponseInfoDto.getDelayTime());
+        po.setSort(sort);
 
         return po;
     }

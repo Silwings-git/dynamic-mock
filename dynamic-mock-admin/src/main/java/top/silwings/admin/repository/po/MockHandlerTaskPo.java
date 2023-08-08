@@ -60,4 +60,10 @@ public class MockHandlerTaskPo {
     @Column(name = "number_of_execute")
     private Integer numberOfExecute;
 
+    /**
+     * 排序
+     */
+    @Column(name = "sort")
+    private int sort;
+
 }

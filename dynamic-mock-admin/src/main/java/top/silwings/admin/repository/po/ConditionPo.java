@@ -56,4 +56,10 @@ public class ConditionPo {
     @Column(name = "expression")
     private String expression;
 
+    /**
+     * 排序
+     */
+    @Column(name = "sort")
+    private int sort;
+
 }

@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.utils.Counter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.ConvertUtils;
 
@@ -24,17 +25,18 @@ public class ConditionDaoConverter {
         if (CollectionUtils.isEmpty(expressionList)) {
             return Collections.emptyList();
         }
-
-        return expressionList.stream().map(e -> this.convert(handlerId, componentType, e)).collect(Collectors.toList());
+        final Counter sort = Counter.newInstance();
+        return expressionList.stream().map(e -> this.convert(handlerId, componentType, e, sort.increment())).collect(Collectors.toList());
     }
 
-    private ConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression) {
+    private ConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression, final int sort) {
         final ConditionPo po = new ConditionPo();
         po.setConditionId(null);
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setComponentId(null);
         po.setComponentType(componentType);
         po.setExpression(expression);
+        po.setSort(sort);
         return po;
     }
 }

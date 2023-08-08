@@ -12,5 +12,5 @@ import top.silwings.admin.repository.po.ConditionPo;
  * @Since
  **/
 @Mapper
-public interface ConditionMapper extends DynamicMockBaseMapper<ConditionPo> {
+public interface MockHandlerConditionMapper extends DynamicMockBaseMapper<ConditionPo> {
 }
