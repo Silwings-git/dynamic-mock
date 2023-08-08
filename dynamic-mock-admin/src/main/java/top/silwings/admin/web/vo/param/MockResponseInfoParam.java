@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel(description = "模拟响应信息")
 public class MockResponseInfoParam {
+
+    @ApiModelProperty(value = "响应id", example = "1")
+    private Identity responseId;
 
     @ApiModelProperty(value = "名称", required = true, example = "正确响应")
     private String name;

@@ -40,6 +40,7 @@ public class MockHandlerResponseItemDaoConverter {
 
     public MockResponseInfoDto convert(final MockHandlerResponsePo mockHandlerResponsePo, final List<ConditionPo> conditionPoList, final MockHandlerResponseItemPo responseItemPo) {
         return MockResponseInfoDto.builder()
+                .responseId(Identity.from(mockHandlerResponsePo.getResponseId()))
                 .name(mockHandlerResponsePo.getName())
                 .support(conditionPoList.stream().map(ConditionPo::getExpression).collect(Collectors.toList()))
                 .delayTime(mockHandlerResponsePo.getDelayTime())

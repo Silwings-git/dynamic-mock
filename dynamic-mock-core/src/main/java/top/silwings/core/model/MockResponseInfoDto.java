@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MockResponseInfoDto {
+
+    /**
+     * 响应id
+     */
+    private Identity responseId;
 
     /**
      * 返回值名称

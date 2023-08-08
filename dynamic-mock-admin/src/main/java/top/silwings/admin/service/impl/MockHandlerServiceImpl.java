@@ -108,14 +108,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                     e.getMockHandlerTaskRequestPo().setHandlerId(handlerId.intValue());
                 });
 
-        // TODO_Silwings: 2023/8/8 后续修改为by id删除
-        if (this.mockHandlerTaskRepository.removeMockHandlerTask(handlerId)) {
-            this.mockHandlerTaskRepository.insertMockHandlerTask(mockHandlerPoWrap.getMockHandlerTaskPoWrapList());
-        }
-
-        // TODO_Silwings: 2023/8/8 后续修改为by id删除
         if (this.mockHandlerResponseRepository.removeMockHandlerResponse(handlerId)) {
             this.mockHandlerResponseRepository.insertMockHandlerResponse(mockHandlerPoWrap.getMockHandlerResponsePoWrapList());
+        }
+
+        if (this.mockHandlerTaskRepository.removeMockHandlerTask(handlerId)) {
+            this.mockHandlerTaskRepository.insertMockHandlerTask(mockHandlerPoWrap.getMockHandlerTaskPoWrapList());
         }
     }
 

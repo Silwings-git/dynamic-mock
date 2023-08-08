@@ -2,6 +2,7 @@ package top.silwings.admin.repository.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.MockHandlerResponseRepository;
@@ -68,6 +69,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
     }
 
     @Override
+    @Transactional
     public boolean removeMockHandlerResponse(final Identity handlerId) {
 
         final Example responseExample = new Example(MockHandlerResponsePo.class);
@@ -89,6 +91,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
     }
 
     @Override
+    @Transactional
     public void insertMockHandlerResponse(final List<MockHandlerResponsePoWrap> mockHandlerResponsePoWrapList) {
 
         if (CollectionUtils.isEmpty(mockHandlerResponsePoWrapList)) {

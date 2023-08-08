@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import top.silwings.core.common.Identity;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskInfoDto {
+
+    /**
+     * 任务id
+     */
+    private Identity taskId;
 
     /**
      * 任务名称

@@ -36,6 +36,7 @@ public class MockHandlerTaskDaoConverter {
 
     public TaskInfoDto convert(final MockHandlerTaskPo mockHandlerTaskPo, final List<ConditionPo> conditionPoList, final MockHandlerTaskRequestPo taskRequestPo) {
         return TaskInfoDto.builder()
+                .taskId(Identity.from(mockHandlerTaskPo.getTaskId()))
                 .name(mockHandlerTaskPo.getName())
                 .support(conditionPoList.stream().map(ConditionPo::getExpression).collect(Collectors.toList()))
                 .async(mockHandlerTaskPo.getAsync())
@@ -66,7 +67,7 @@ public class MockHandlerTaskDaoConverter {
 
     private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto) {
         final MockHandlerTaskPo po = new MockHandlerTaskPo();
-        po.setTaskId(null);
+        po.setTaskId(ConvertUtils.getNoNullOrDefault(taskInfoDto.getTaskId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(taskInfoDto.getName());
         po.setAsync(taskInfoDto.isAsync());

@@ -51,7 +51,7 @@ public class MockHandlerResponseDaoConverter {
 
     private MockHandlerResponsePo convert(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto) {
         final MockHandlerResponsePo po = new MockHandlerResponsePo();
-        po.setResponseId(null);
+        po.setResponseId(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getResponseId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(mockResponseInfoDto.getName());
         po.setDelayTime(mockResponseInfoDto.getDelayTime());

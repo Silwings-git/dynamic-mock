@@ -74,6 +74,7 @@ public class MockHandlerVoConverter {
 
     private TaskInfoDto convert(final SaveTaskInfoParam vo) {
         return TaskInfoDto.builder()
+                .taskId(vo.getTaskId())
                 .name(vo.getName())
                 .support(vo.getSupport())
                 .async(ConvertUtils.getNoNullOrDefault(vo.getAsync(), false))
@@ -95,6 +96,7 @@ public class MockHandlerVoConverter {
 
     private MockResponseInfoDto convert(final MockResponseInfoParam vo) {
         return MockResponseInfoDto.builder()
+                .responseId(vo.getResponseId())
                 .name(vo.getName())
                 .support(vo.getSupport())
                 .delayTime(vo.getDelayTime())
@@ -112,6 +114,7 @@ public class MockHandlerVoConverter {
 
     private SaveTaskInfoParam convert(final TaskInfoDto dto) {
         return SaveTaskInfoParam.builder()
+                .taskId(dto.getTaskId())
                 .name(dto.getName())
                 .support(dto.getSupport())
                 .async(dto.isAsync())
@@ -133,6 +136,7 @@ public class MockHandlerVoConverter {
 
     private MockResponseInfoParam convert(final MockResponseInfoDto dto) {
         return MockResponseInfoParam.builder()
+                .responseId(dto.getResponseId())
                 .name(dto.getName())
                 .support(dto.getSupport())
                 .delayTime(dto.getDelayTime())
