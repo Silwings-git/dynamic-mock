@@ -2,7 +2,7 @@ package top.silwings.admin.repository.po.pack;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 
@@ -27,7 +27,7 @@ public class MockHandlerResponsePoWrap {
     /**
      * 条件信息
      */
-    private List<ConditionPo> conditionPoList;
+    private List<MockHandlerConditionPo> mockHandlerConditionPoList;
 
     /**
      * 响应信息

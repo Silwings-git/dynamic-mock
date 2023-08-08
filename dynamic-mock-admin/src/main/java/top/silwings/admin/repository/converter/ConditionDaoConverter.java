@@ -3,7 +3,7 @@ package top.silwings.admin.repository.converter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.utils.Counter;
 import top.silwings.core.common.Identity;
 import top.silwings.core.utils.ConvertUtils;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  **/
 @Component
 public class ConditionDaoConverter {
-    public List<ConditionPo> listConvert(final Identity handlerId, final MockHandlerComponentType componentType, final List<String> expressionList) {
+    public List<MockHandlerConditionPo> listConvert(final Identity handlerId, final MockHandlerComponentType componentType, final List<String> expressionList) {
         if (CollectionUtils.isEmpty(expressionList)) {
             return Collections.emptyList();
         }
@@ -29,8 +29,8 @@ public class ConditionDaoConverter {
         return expressionList.stream().map(e -> this.convert(handlerId, componentType, e, sort.increment())).collect(Collectors.toList());
     }
 
-    private ConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression, final int sort) {
-        final ConditionPo po = new ConditionPo();
+    private MockHandlerConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression, final int sort) {
+        final MockHandlerConditionPo po = new MockHandlerConditionPo();
         po.setConditionId(null);
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setComponentId(null);

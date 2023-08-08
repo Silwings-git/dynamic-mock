@@ -5,7 +5,7 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.model.MockHandlerConditionRepository;
 import top.silwings.admin.repository.mapper.MockHandlerConditionMapper;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.core.common.Identity;
 
 import java.util.Comparator;
@@ -29,32 +29,33 @@ public class MockHandlerConditionRepositoryImpl implements MockHandlerConditionR
     }
 
     @Override
-    public List<ConditionPo> queryConditions(final Identity handlerId, final Identity componentId, final MockHandlerComponentType componentType) {
-        final Example conditionExample = new Example(ConditionPo.class, true, true);
+    public List<MockHandlerConditionPo> queryConditions(final Identity handlerId, final Identity componentId, final MockHandlerComponentType componentType) {
+        final Example conditionExample = new Example(MockHandlerConditionPo.class, true, true);
         conditionExample.createCriteria()
-                .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue())
-                .andEqualTo(ConditionPo.C_COMPONENT_ID, componentId.intValue())
-                .andEqualTo(ConditionPo.C_COMPONENT_TYPE, componentType);
+                .andEqualTo(MockHandlerConditionPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerConditionPo.C_COMPONENT_ID, componentId.intValue())
+                .andEqualTo(MockHandlerConditionPo.C_COMPONENT_TYPE, componentType);
         return this.mockHandlerConditionMapper.selectByCondition(conditionExample)
                 .stream()
-                .sorted(Comparator.comparingInt(ConditionPo::getSort))
+                .sorted(Comparator.comparingInt(MockHandlerConditionPo::getSort))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public int deleteByHandlerId(final Identity handlerId) {
-        final Example conditionExample = new Example(ConditionPo.class);
+    public int deleteByHandlerId(final Identity handlerId, final MockHandlerComponentType mockHandlerComponentType) {
+        final Example conditionExample = new Example(MockHandlerConditionPo.class, true, true);
         conditionExample.createCriteria()
-                .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue());
+                .andEqualTo(MockHandlerConditionPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerConditionPo.C_COMPONENT_TYPE, mockHandlerComponentType);
         return this.mockHandlerConditionMapper.deleteByCondition(conditionExample);
     }
 
     @Override
-    public int insertSelective(final ConditionPo conditionPo) {
-        if (null == conditionPo) {
+    public int insertSelective(final MockHandlerConditionPo mockHandlerConditionPo) {
+        if (null == mockHandlerConditionPo) {
             return 0;
         }
-        return this.mockHandlerConditionMapper.insertSelective(conditionPo);
+        return this.mockHandlerConditionMapper.insertSelective(mockHandlerConditionPo);
     }
 
 }

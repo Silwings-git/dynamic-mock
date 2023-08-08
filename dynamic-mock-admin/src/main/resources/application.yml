@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
 
 project:
   version: @project.version@
@@ -32,6 +32,10 @@ dynamic-mock:
           allowCredentials: true # 是否允许携带cookie
           maxAge: 7200 # 这次跨域检测的有效期
     sync-handler:
-      register-cron: 0/5 * * * * ?
-      un-register-cron: 0/5 * * * * ?
-      refresh-cron: 0/5 * * * * ?
+      register-cron: 0/5 * * * 1 ?
+      un-register-cron: 0/5 * * * 1 ?
+      refresh-cron: 0/5 * * * 1 ?
+
+logging:
+  level:
+    top.silwings.admin: DEBUG

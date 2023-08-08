@@ -2,7 +2,7 @@ package top.silwings.admin.repository.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import top.silwings.admin.common.DynamicMockBaseMapper;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 
 /**
  * @ClassName MockHandlerConditionMapper
@@ -12,5 +12,5 @@ import top.silwings.admin.repository.po.ConditionPo;
  * @Since
  **/
 @Mapper
-public interface MockHandlerConditionMapper extends DynamicMockBaseMapper<ConditionPo> {
+public interface MockHandlerConditionMapper extends DynamicMockBaseMapper<MockHandlerConditionPo> {
 }

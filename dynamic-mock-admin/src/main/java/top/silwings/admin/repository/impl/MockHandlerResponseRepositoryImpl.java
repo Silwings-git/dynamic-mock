@@ -10,7 +10,7 @@ import top.silwings.admin.repository.MockHandlerResponseRepository;
 import top.silwings.admin.repository.converter.MockHandlerResponseItemDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerResponseItemMapper;
 import top.silwings.admin.repository.mapper.MockHandlerResponseMapper;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
@@ -60,12 +60,12 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
                     final Identity responseId = Identity.from(mockHandlerResponsePo.getResponseId());
 
                     // 条件信息
-                    final List<ConditionPo> conditionPoList = this.mockHandlerConditionRepository.queryConditions(handlerId, responseId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
+                    final List<MockHandlerConditionPo> mockHandlerConditionPoList = this.mockHandlerConditionRepository.queryConditions(handlerId, responseId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
 
                     // 请求信息
                     final MockHandlerResponseItemPo responseItemPo = this.findResponseItem(handlerId, responseId);
 
-                    return this.mockHandlerResponseItemDaoConverter.convert(mockHandlerResponsePo, conditionPoList, responseItemPo);
+                    return this.mockHandlerResponseItemDaoConverter.convert(mockHandlerResponsePo, mockHandlerConditionPoList, responseItemPo);
                 })
                 .collect(Collectors.toList());
     }
@@ -79,7 +79,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
                 .andEqualTo(MockHandlerResponsePo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerResponseMapper.deleteByCondition(responseExample);
 
-        this.mockHandlerConditionRepository.deleteByHandlerId(handlerId);
+        this.mockHandlerConditionRepository.deleteByHandlerId(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
 
         final Example itemExample = new Example(MockHandlerResponseItemPo.class);
         itemExample.createCriteria()
@@ -101,7 +101,7 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
             final MockHandlerResponsePo responsePo = wrap.getMockHandlerResponsePo();
             this.mockHandlerResponseMapper.insertSelective(responsePo);
 
-            wrap.getConditionPoList().forEach(e -> {
+            wrap.getMockHandlerConditionPoList().forEach(e -> {
                 e.setHandlerId(responsePo.getHandlerId());
                 e.setComponentId(responsePo.getResponseId());
                 e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_RESPONSE);

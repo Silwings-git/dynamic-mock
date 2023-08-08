@@ -1,7 +1,7 @@
 package top.silwings.admin.model;
 
 import top.silwings.admin.common.enums.MockHandlerComponentType;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.core.common.Identity;
 
 import java.util.List;
@@ -14,9 +14,9 @@ import java.util.List;
  * @Since
  **/
 public interface MockHandlerConditionRepository {
-    List<ConditionPo> queryConditions(Identity handlerId, Identity componentId, MockHandlerComponentType componentType);
+    List<MockHandlerConditionPo> queryConditions(Identity handlerId, Identity componentId, MockHandlerComponentType componentType);
 
-    int deleteByHandlerId(Identity handlerId);
+    int deleteByHandlerId(Identity handlerId, MockHandlerComponentType mockHandlerComponentType);
 
-    int insertSelective(ConditionPo conditionPo);
+    int insertSelective(MockHandlerConditionPo mockHandlerConditionPo);
 }

@@ -64,6 +64,6 @@ public class MockHandlerTaskPo {
      * 排序
      */
     @Column(name = "sort")
-    private int sort;
+    private Integer sort;
 
 }

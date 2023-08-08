@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
@@ -63,6 +64,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
+    @Transactional
     public synchronized void registerAllEnableHandler(final boolean terminateInError) {
 
         final Set<Identity> handlerIdSet = this.mockHandlerManager.registeredHandlerIds();
@@ -88,6 +90,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
+    @Transactional
     public synchronized void unRegisterAllDisableHandler(final boolean terminateInError) {
 
         final Set<Identity> handlerIdSet = this.mockHandlerManager.registeredHandlerIds();
@@ -119,6 +122,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
+    @Transactional
     public synchronized void refreshRegisteredHandler(final boolean terminateInError) {
 
         final Map<Identity, Long> handlerVersionMap = this.mockHandlerManager.registeredHandlerVersions();

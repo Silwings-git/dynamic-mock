@@ -2,7 +2,7 @@ package top.silwings.admin.repository.po.pack;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerTaskPo;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 
@@ -21,7 +21,7 @@ public class MockHandlerTaskPoWrap {
 
     private MockHandlerTaskPo mockHandlerTaskPo;
 
-    private List<ConditionPo> conditionPoList;
+    private List<MockHandlerConditionPo> mockHandlerConditionPoList;
 
     private MockHandlerTaskRequestPo mockHandlerTaskRequestPo;
 

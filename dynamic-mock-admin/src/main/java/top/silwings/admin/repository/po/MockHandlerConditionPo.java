@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "dm_mock_handler_condition")
-public class ConditionPo {
+public class MockHandlerConditionPo {
 
     public static final String C_COMPONENT_ID = "componentId";
     public static final String C_COMPONENT_TYPE = "componentType";
@@ -60,6 +60,6 @@ public class ConditionPo {
      * 排序
      */
     @Column(name = "sort")
-    private int sort;
+    private Integer sort;
 
 }

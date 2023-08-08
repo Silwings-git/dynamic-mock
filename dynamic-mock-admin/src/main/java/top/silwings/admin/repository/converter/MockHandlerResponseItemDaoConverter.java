@@ -2,7 +2,7 @@ package top.silwings.admin.repository.converter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.core.common.Identity;
@@ -38,11 +38,11 @@ public class MockHandlerResponseItemDaoConverter {
         return po;
     }
 
-    public MockResponseInfoDto convert(final MockHandlerResponsePo mockHandlerResponsePo, final List<ConditionPo> conditionPoList, final MockHandlerResponseItemPo responseItemPo) {
+    public MockResponseInfoDto convert(final MockHandlerResponsePo mockHandlerResponsePo, final List<MockHandlerConditionPo> mockHandlerConditionPoList, final MockHandlerResponseItemPo responseItemPo) {
         return MockResponseInfoDto.builder()
                 .responseId(Identity.from(mockHandlerResponsePo.getResponseId()))
                 .name(mockHandlerResponsePo.getName())
-                .support(conditionPoList.stream().map(ConditionPo::getExpression).collect(Collectors.toList()))
+                .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .delayTime(mockHandlerResponsePo.getDelayTime())
                 .response(this.convert(responseItemPo))
                 .build();

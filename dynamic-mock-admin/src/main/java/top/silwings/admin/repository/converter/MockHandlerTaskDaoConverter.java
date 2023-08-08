@@ -3,7 +3,7 @@ package top.silwings.admin.repository.converter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
-import top.silwings.admin.repository.po.ConditionPo;
+import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerTaskPo;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
@@ -35,11 +35,11 @@ public class MockHandlerTaskDaoConverter {
         this.conditionDaoConverter = conditionDaoConverter;
     }
 
-    public TaskInfoDto convert(final MockHandlerTaskPo mockHandlerTaskPo, final List<ConditionPo> conditionPoList, final MockHandlerTaskRequestPo taskRequestPo) {
+    public TaskInfoDto convert(final MockHandlerTaskPo mockHandlerTaskPo, final List<MockHandlerConditionPo> mockHandlerConditionPoList, final MockHandlerTaskRequestPo taskRequestPo) {
         return TaskInfoDto.builder()
                 .taskId(Identity.from(mockHandlerTaskPo.getTaskId()))
                 .name(mockHandlerTaskPo.getName())
-                .support(conditionPoList.stream().map(ConditionPo::getExpression).collect(Collectors.toList()))
+                .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .async(mockHandlerTaskPo.getAsync())
                 .cron(mockHandlerTaskPo.getCron())
                 .numberOfExecute(mockHandlerTaskPo.getNumberOfExecute())
@@ -60,7 +60,7 @@ public class MockHandlerTaskDaoConverter {
 
         final MockHandlerTaskPoWrap taskPoWrap = new MockHandlerTaskPoWrap();
         taskPoWrap.setMockHandlerTaskPo(this.convert(handlerId, taskInfoDto, sort));
-        taskPoWrap.setConditionPoList(this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK, taskInfoDto.getSupport()));
+        taskPoWrap.setMockHandlerConditionPoList(this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK, taskInfoDto.getSupport()));
         taskPoWrap.setMockHandlerTaskRequestPo(this.mockHandlerTaskRequestDaoConverter.convert(handlerId, taskInfoDto.getRequest()));
 
         return taskPoWrap;
