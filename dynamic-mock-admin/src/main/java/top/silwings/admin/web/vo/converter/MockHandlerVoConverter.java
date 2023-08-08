@@ -95,7 +95,7 @@ public class MockHandlerVoConverter {
                 .requestUrl(vo.getRequestUrl())
                 .httpMethod(HttpMethod.resolve(vo.getHttpMethod()))
                 .headers(vo.getHeaders())
-                .body(vo)
+                .body(vo.getBody())
                 .uriVariables(vo.getUriVariables())
                 .build();
     }
