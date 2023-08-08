@@ -57,23 +57,24 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
                     final Identity taskId = Identity.from(mockHandlerTaskPo.getTaskId());
 
                     // 条件信息
-                    final List<ConditionPo> conditionPoList = this.queryConditions(taskId);
+                    final List<ConditionPo> conditionPoList = this.queryConditions(handlerId, taskId);
 
                     // 请求信息
-                    final MockHandlerTaskRequestPo taskRequestPo = this.findTaskRequest(taskId);
+                    final MockHandlerTaskRequestPo taskRequestPo = this.findTaskRequest(handlerId, taskId);
 
                     return this.mockHandlerTaskDaoConverter.convert(mockHandlerTaskPo, conditionPoList, taskRequestPo);
                 })
                 .collect(Collectors.toList());
     }
 
-    private MockHandlerTaskRequestPo findTaskRequest(final Identity taskId) {
-        return this.mockHandlerTaskRequestMapper.selectOne(new MockHandlerTaskRequestPo().setTaskId(taskId.intValue()));
+    private MockHandlerTaskRequestPo findTaskRequest(final Identity handlerId, final Identity taskId) {
+        return this.mockHandlerTaskRequestMapper.selectOne(new MockHandlerTaskRequestPo().setHandlerId(handlerId.intValue()).setTaskId(taskId.intValue()));
     }
 
-    private List<ConditionPo> queryConditions(final Identity taskId) {
+    private List<ConditionPo> queryConditions(final Identity handlerId, final Identity taskId) {
         final Example conditionExample = new Example(ConditionPo.class);
         conditionExample.createCriteria()
+                .andEqualTo(ConditionPo.C_HANDLER_ID, handlerId.intValue())
                 .andEqualTo(ConditionPo.C_COMPONENT_ID, taskId.intValue())
                 .andEqualTo(ConditionPo.C_COMPONENT_TYPE, MockHandlerComponentType.MOCK_HANDLER_TASK);
         return this.conditionMapper.selectByCondition(conditionExample);
@@ -88,7 +89,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
             this.mockHandlerTaskMapper.insertSelective(mockHandlerTaskPo);
 
             final List<ConditionPo> conditionPoList = mockHandlerTaskPoWrap.getConditionPoList();
-            conditionPoList.stream().forEach(e -> {
+            conditionPoList.forEach(e -> {
                 e.setHandlerId(mockHandlerTaskPo.getHandlerId());
                 e.setComponentId(mockHandlerTaskPo.getTaskId());
                 e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_TASK);

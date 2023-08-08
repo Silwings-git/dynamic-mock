@@ -28,13 +28,13 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerDaoConverter {
 
-    private static final String EMPTY_LIST = "[]";
-    private static final String EMPTY_JSON = "{}";
-
     private final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter;
 
-    public MockHandlerDaoConverter(final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter) {
+    private final MockHandlerResponseDaoConverter mockHandlerResponseDaoConverter;
+
+    public MockHandlerDaoConverter(final MockHandlerTaskDaoConverter mockHandlerTaskDaoConverter, final MockHandlerResponseDaoConverter mockHandlerResponseDaoConverter) {
         this.mockHandlerTaskDaoConverter = mockHandlerTaskDaoConverter;
+        this.mockHandlerResponseDaoConverter = mockHandlerResponseDaoConverter;
     }
 
     public MockHandlerPoWrap convert(final MockHandlerDto mockHandlerDto) {
@@ -50,17 +50,17 @@ public class MockHandlerDaoConverter {
         mockHandlerPo.setRequestUri(mockHandlerDto.getRequestUri());
         mockHandlerPo.setLabel(mockHandlerDto.getLabel());
         mockHandlerPo.setDelayTime(mockHandlerDto.getDelayTime());
-        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), EMPTY_JSON)));
-        mockHandlerPo.setResponses(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getResponses(), EMPTY_LIST)));
+        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), "{}")));
 
         final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
         handlerPoWrap.setMockHandlerPo(mockHandlerPo);
         handlerPoWrap.setMockHandlerTaskPoWrapList(this.mockHandlerTaskDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getTasks()));
+        handlerPoWrap.setMockHandlerResponsePoWrapList(this.mockHandlerResponseDaoConverter.listConvert(mockHandlerDto.getHandlerId(), mockHandlerDto.getResponses()));
 
         return handlerPoWrap;
     }
 
-    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo, final List<TaskInfoDto> taskInfoDtoList) {
+    public MockHandlerDto convert(final MockHandlerPo mockHandlerPo, final List<MockResponseInfoDto> mockResponseInfoDtoList, final List<TaskInfoDto> taskInfoDtoList) {
 
         return MockHandlerDto.builder()
                 .handlerId(Identity.from(mockHandlerPo.getHandlerId()))
@@ -72,7 +72,7 @@ public class MockHandlerDaoConverter {
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
                 .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
-                .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), "[]"), MockResponseInfoDto.class))
+                .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();

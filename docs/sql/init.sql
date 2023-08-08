@@ -81,7 +81,7 @@ CREATE TABLE `dm_text_file`
     `content`            longtext COMMENT '文本内容',
     `create_time`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `dm_text_file_file_name_uindex` (`file_name`)
+    UNIQUE KEY `uidx_dmtextfile_filename` (`file_name`)
 ) ENGINE=InnoDB  COMMENT='文本文件内容表';
 
 CREATE TABLE `dm_mock_handler_condition`
@@ -93,7 +93,7 @@ CREATE TABLE `dm_mock_handler_condition`
     `expression`     TEXT        NOT NULL COMMENT '条件表达式',
     `create_time`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`condition_id`),
-    KEY              `dmmockhandlercondition_componentid_componenttype` (`component_id`,`component_type`) USING BTREE
+    KEY              `idx_dmmockhandlercondition_componentid_componenttype` (`component_id`,`component_type`) USING BTREE
 ) ENGINE=InnoDB COMMENT='条件信息表';
 
 CREATE TABLE `dm_mock_handler_task`
@@ -106,8 +106,8 @@ CREATE TABLE `dm_mock_handler_task`
     `number_of_execute` INT         NOT NULL DEFAULT 1 COMMENT '执行次数',
     `create_time`       DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`task_id`),
-    KEY                 `dmmockhandlertask_handlerid` (`handler_id`) USING BTREE,
-    KEY                 `dmmockhandlertask_taskid` (`task_id`) USING BTREE
+    KEY                 `idx_dmmockhandlertask_handlerid` (`handler_id`) USING BTREE,
+    KEY                 `idx_dmmockhandlertask_taskid` (`task_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器任务表';
 
 CREATE TABLE `dm_mock_handler_task_request`
@@ -122,9 +122,31 @@ CREATE TABLE `dm_mock_handler_task_request`
     `uri_variables`   JSON COMMENT '请求体',
     `create_time`     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`task_request_id`),
-    KEY               `dmmockhandlertaskrequest_handlerid` (`handler_id`) USING BTREE,
+    KEY               `idx_dmmockhandlertaskrequest_handlerid` (`handler_id`) USING BTREE,
     UNIQUE KEY `dmmockhandlertaskrequest_taskid` (`task_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器任务请求信息表';
+
+CREATE TABLE `dm_mock_handler_response`
+(
+    `response_id` INT         NOT NULL AUTO_INCREMENT,
+    `handler_id`  INT         NOT NULL COMMENT 'mock处理器ID',
+    `name`        VARCHAR(64) NOT NULL COMMENT '响应名称',
+    `delay_time`  INT         NOT NULL DEFAULT '0' COMMENT '延迟时间',
+    PRIMARY KEY (`response_id`),
+    KEY           `idx_dmmockhandlerresponse_handlerid` (`handler_id`) USING BTREE
+) ENGINE=InnoDB  COMMENT='Mock处理器响应信息表';
+
+CREATE TABLE `dm_mock_handler_response_item`
+(
+    `response_item_id` INT NOT NULL AUTO_INCREMENT,
+    `response_id`      INT NOT NULL COMMENT 'mock 响应ID',
+    `handler_id`       INT NOT NULL COMMENT 'mock处理器ID',
+    `status`           INT NOT NULL COMMENT '响应码',
+    `headers`          JSON COMMENT '响应头',
+    `body`             TEXT COMMENT '延迟时间',
+    PRIMARY KEY (`response_item_id`),
+    KEY                `idx_dmmockhandlerresponseitem_handlerid_responseid` (`handler_id`,`response_id`) USING BTREE
+) ENGINE=InnoDB  COMMENT='Mock处理器响应详情信息表';
 
 -- 初始化用户信息
 INSERT INTO dev_dynamic_mock.dm_user (username, user_account, password, role, permission)

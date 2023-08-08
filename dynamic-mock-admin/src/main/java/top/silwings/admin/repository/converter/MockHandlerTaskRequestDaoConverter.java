@@ -24,10 +24,10 @@ public class MockHandlerTaskRequestDaoConverter {
         return TaskRequestDto.builder()
                 .requestUrl(taskRequestPo.getRequestUrl())
                 .httpMethod(taskRequestPo.getHttpMethod())
-                .headers(JsonUtils.nativeRead(taskRequestPo.getHeaders(), new TypeReference<Map<String, List<String>>>() {
+                .headers(JsonUtils.nativeRead(ConvertUtils.getNoBlankOrDefault(taskRequestPo.getHeaders(), "{}"), new TypeReference<Map<String, List<String>>>() {
                 }))
                 .body(JsonUtils.tryToBean(taskRequestPo.getBody()))
-                .uriVariables(JsonUtils.nativeRead(taskRequestPo.getUriVariables(), new TypeReference<Map<String, List<String>>>() {
+                .uriVariables(JsonUtils.nativeRead(ConvertUtils.getNoBlankOrDefault(taskRequestPo.getUriVariables(), "{}"), new TypeReference<Map<String, List<String>>>() {
                 }))
                 .build();
     }

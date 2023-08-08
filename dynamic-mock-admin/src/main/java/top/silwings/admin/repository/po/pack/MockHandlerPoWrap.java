@@ -19,6 +19,8 @@ public class MockHandlerPoWrap {
 
     private MockHandlerPo mockHandlerPo;
 
+    private List<MockHandlerResponsePoWrap> mockHandlerResponsePoWrapList;
+
     private List<MockHandlerTaskPoWrap> mockHandlerTaskPoWrapList;
 
 }
