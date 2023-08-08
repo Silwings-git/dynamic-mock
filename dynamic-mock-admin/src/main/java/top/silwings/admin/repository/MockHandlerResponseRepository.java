@@ -16,8 +16,9 @@ import java.util.List;
 public interface MockHandlerResponseRepository {
     List<MockResponseInfoDto> queryMockHandlerResponseList(Identity handlerId);
 
-    boolean removeMockHandlerResponse(Identity handlerId);
+    boolean deleteMockHandlerResponse(Identity handlerId);
 
     void insertMockHandlerResponse(List<MockHandlerResponsePoWrap> mockHandlerResponsePoWrapList);
 
+    void updateByHandlerAndResponseId(Identity handlerId, MockResponseInfoDto responseInfoDto);
 }

@@ -108,7 +108,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                     e.getMockHandlerTaskRequestPo().setHandlerId(handlerId.intValue());
                 });
 
-        if (this.mockHandlerResponseRepository.removeMockHandlerResponse(handlerId)) {
+        if (this.mockHandlerResponseRepository.deleteMockHandlerResponse(handlerId)) {
             this.mockHandlerResponseRepository.insertMockHandlerResponse(mockHandlerPoWrap.getMockHandlerResponsePoWrapList());
         }
 
@@ -439,6 +439,16 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .map(HandlerInfoDto::from)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void updateMockHandlerResponse(final Identity handlerId, final MockResponseInfoDto responseInfoDto) {
+
+        this.mockHandlerResponseRepository.updateByHandlerAndResponseId(handlerId, responseInfoDto);
+
+        // 更新成功后取消注册该handler
+        this.mockHandlerManager.unregisterHandler(handlerId);
     }
 
 }

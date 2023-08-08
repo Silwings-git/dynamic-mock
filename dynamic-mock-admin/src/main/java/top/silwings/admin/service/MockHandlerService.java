@@ -10,6 +10,7 @@ import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockResponseInfoDto;
 
 import java.util.List;
 
@@ -50,4 +51,5 @@ public interface MockHandlerService {
 
     HandlerInfoDto findHandlerInfo(Identity handlerId);
 
+    void updateMockHandlerResponse(Identity handlerId, MockResponseInfoDto responseInfoDto);
 }

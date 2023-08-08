@@ -56,7 +56,7 @@ public class MockHandlerTaskDaoConverter {
         return taskInfoList.stream().map(e -> this.convert2Wrap(handlerId, e, sort.increment())).collect(Collectors.toList());
     }
 
-    private MockHandlerTaskPoWrap convert2Wrap(final Identity handlerId, final TaskInfoDto taskInfoDto, final int sort) {
+    private MockHandlerTaskPoWrap convert2Wrap(final Identity handlerId, final TaskInfoDto taskInfoDto, final Integer sort) {
 
         final MockHandlerTaskPoWrap taskPoWrap = new MockHandlerTaskPoWrap();
         taskPoWrap.setMockHandlerTaskPo(this.convert(handlerId, taskInfoDto, sort));
@@ -66,7 +66,7 @@ public class MockHandlerTaskDaoConverter {
         return taskPoWrap;
     }
 
-    private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto, final int sort) {
+    private MockHandlerTaskPo convert(final Identity handlerId, final TaskInfoDto taskInfoDto, final Integer sort) {
         final MockHandlerTaskPo po = new MockHandlerTaskPo();
         po.setTaskId(ConvertUtils.getNoNullOrDefault(taskInfoDto.getTaskId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));

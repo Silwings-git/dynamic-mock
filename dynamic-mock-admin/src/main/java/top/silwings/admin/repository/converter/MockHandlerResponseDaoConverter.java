@@ -43,7 +43,7 @@ public class MockHandlerResponseDaoConverter {
                 .collect(Collectors.toList());
     }
 
-    private MockHandlerResponsePoWrap convert2Wrap(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final int sort) {
+    private MockHandlerResponsePoWrap convert2Wrap(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final Integer sort) {
         final MockHandlerResponsePoWrap wrap = new MockHandlerResponsePoWrap();
         wrap.setMockHandlerResponsePo(this.convert(handlerId, mockResponseInfoDto, sort));
         wrap.setMockHandlerConditionPoList(this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE, mockResponseInfoDto.getSupport()));
@@ -51,7 +51,7 @@ public class MockHandlerResponseDaoConverter {
         return wrap;
     }
 
-    private MockHandlerResponsePo convert(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final int sort) {
+    public MockHandlerResponsePo convert(final Identity handlerId, final MockResponseInfoDto mockResponseInfoDto, final Integer sort) {
         final MockHandlerResponsePo po = new MockHandlerResponsePo();
         po.setResponseId(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getResponseId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));

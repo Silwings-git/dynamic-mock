@@ -32,6 +32,12 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerVoConverter {
 
+    private final MockHandlerResponseVoConverter mockHandlerResponseVoConverter;
+
+    public MockHandlerVoConverter(final MockHandlerResponseVoConverter mockHandlerResponseVoConverter) {
+        this.mockHandlerResponseVoConverter = mockHandlerResponseVoConverter;
+    }
+
     public MockHandlerDto convert(final MockHandlerInfoParam vo) {
         final String requestUri = vo.getRequestUri();
         return MockHandlerDto.builder()
@@ -44,7 +50,7 @@ public class MockHandlerVoConverter {
                 .label(vo.getLabel())
                 .delayTime(ConvertUtils.getNoNullOrDefault(vo.getDelayTime(), 0))
                 .customizeSpace(vo.getCustomizeSpace())
-                .responses(vo.getResponses().stream().map(this::convert).collect(Collectors.toList()))
+                .responses(vo.getResponses().stream().map(this.mockHandlerResponseVoConverter::convert).collect(Collectors.toList()))
                 .tasks(vo.getTasks().stream().map(this::convert).collect(Collectors.toList()))
                 .updateTime(new Date())
                 .build();
@@ -91,24 +97,6 @@ public class MockHandlerVoConverter {
                 .headers(vo.getHeaders())
                 .body(vo)
                 .uriVariables(vo.getUriVariables())
-                .build();
-    }
-
-    private MockResponseInfoDto convert(final MockResponseInfoParam vo) {
-        return MockResponseInfoDto.builder()
-                .responseId(vo.getResponseId())
-                .name(vo.getName())
-                .support(vo.getSupport())
-                .delayTime(vo.getDelayTime())
-                .response(this.convert(vo.getResponse()))
-                .build();
-    }
-
-    private MockResponseDto convert(final MockResponseParam vo) {
-        return MockResponseDto.builder()
-                .status(vo.getStatus())
-                .headers(vo.getHeaders())
-                .body(vo.getBody())
                 .build();
     }
 

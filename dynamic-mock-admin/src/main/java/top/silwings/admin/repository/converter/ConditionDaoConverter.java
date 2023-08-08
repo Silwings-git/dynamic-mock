@@ -29,7 +29,7 @@ public class ConditionDaoConverter {
         return expressionList.stream().map(e -> this.convert(handlerId, componentType, e, sort.increment())).collect(Collectors.toList());
     }
 
-    private MockHandlerConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression, final int sort) {
+    private MockHandlerConditionPo convert(final Identity handlerId, final MockHandlerComponentType componentType, final String expression, final Integer sort) {
         final MockHandlerConditionPo po = new MockHandlerConditionPo();
         po.setConditionId(null);
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));

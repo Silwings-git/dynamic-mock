@@ -7,6 +7,8 @@ import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.model.MockHandlerConditionRepository;
 import top.silwings.admin.repository.MockHandlerResponseRepository;
+import top.silwings.admin.repository.converter.ConditionDaoConverter;
+import top.silwings.admin.repository.converter.MockHandlerResponseDaoConverter;
 import top.silwings.admin.repository.converter.MockHandlerResponseItemDaoConverter;
 import top.silwings.admin.repository.mapper.MockHandlerResponseItemMapper;
 import top.silwings.admin.repository.mapper.MockHandlerResponseMapper;
@@ -37,13 +39,19 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
 
     private final MockHandlerConditionRepository mockHandlerConditionRepository;
 
+    private final MockHandlerResponseDaoConverter mockHandlerResponseDaoConverter;
+
     private final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter;
 
-    public MockHandlerResponseRepositoryImpl(final MockHandlerResponseMapper mockHandlerResponseMapper, final MockHandlerResponseItemMapper mockHandlerResponseItemMapper, final MockHandlerConditionRepository mockHandlerConditionRepository, final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter) {
+    private final ConditionDaoConverter conditionDaoConverter;
+
+    public MockHandlerResponseRepositoryImpl(final MockHandlerResponseMapper mockHandlerResponseMapper, final MockHandlerResponseItemMapper mockHandlerResponseItemMapper, final MockHandlerConditionRepository mockHandlerConditionRepository, final MockHandlerResponseDaoConverter mockHandlerResponseDaoConverter, final MockHandlerResponseItemDaoConverter mockHandlerResponseItemDaoConverter, final ConditionDaoConverter conditionDaoConverter) {
         this.mockHandlerResponseMapper = mockHandlerResponseMapper;
         this.mockHandlerResponseItemMapper = mockHandlerResponseItemMapper;
         this.mockHandlerConditionRepository = mockHandlerConditionRepository;
+        this.mockHandlerResponseDaoConverter = mockHandlerResponseDaoConverter;
         this.mockHandlerResponseItemDaoConverter = mockHandlerResponseItemDaoConverter;
+        this.conditionDaoConverter = conditionDaoConverter;
     }
 
     @Override
@@ -72,14 +80,14 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
 
     @Override
     @Transactional
-    public boolean removeMockHandlerResponse(final Identity handlerId) {
+    public boolean deleteMockHandlerResponse(final Identity handlerId) {
 
         final Example responseExample = new Example(MockHandlerResponsePo.class);
         responseExample.createCriteria()
                 .andEqualTo(MockHandlerResponsePo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerResponseMapper.deleteByCondition(responseExample);
 
-        this.mockHandlerConditionRepository.deleteByHandlerId(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
+        this.mockHandlerConditionRepository.delete(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
 
         final Example itemExample = new Example(MockHandlerResponseItemPo.class);
         itemExample.createCriteria()
@@ -101,12 +109,11 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
             final MockHandlerResponsePo responsePo = wrap.getMockHandlerResponsePo();
             this.mockHandlerResponseMapper.insertSelective(responsePo);
 
-            wrap.getMockHandlerConditionPoList().forEach(e -> {
-                e.setHandlerId(responsePo.getHandlerId());
-                e.setComponentId(responsePo.getResponseId());
-                e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
-                this.mockHandlerConditionRepository.insertSelective(e);
-            });
+            wrap.getMockHandlerConditionPoList().forEach(e ->
+                    this.mockHandlerConditionRepository.insertSelective(Identity.from(responsePo.getHandlerId()),
+                            Identity.from(responsePo.getResponseId()),
+                            MockHandlerComponentType.MOCK_HANDLER_RESPONSE, e)
+            );
 
             final MockHandlerResponseItemPo mockHandlerResponseItemPo = wrap.getMockHandlerResponseItemPo();
             mockHandlerResponseItemPo.setHandlerId(responsePo.getHandlerId());
@@ -119,6 +126,40 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
         return this.mockHandlerResponseItemMapper.selectOne(new MockHandlerResponseItemPo()
                 .setHandlerId(handlerId.intValue())
                 .setResponseId(responseId.intValue()));
+    }
+
+    @Override
+    @Transactional
+    public void updateByHandlerAndResponseId(final Identity handlerId, final MockResponseInfoDto responseInfoDto) {
+
+        if (null == handlerId || null == responseInfoDto || null == responseInfoDto.getResponseId()) {
+            return;
+        }
+
+        final Identity responseId = responseInfoDto.getResponseId();
+
+        final MockHandlerResponsePo responsePo = this.mockHandlerResponseDaoConverter.convert(handlerId, responseInfoDto, null);
+        final Example responseExample = new Example(MockHandlerResponsePo.class);
+        responseExample.createCriteria()
+                .andEqualTo(MockHandlerResponsePo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerResponsePo.C_RESPONSE_ID, responseId.intValue());
+        this.mockHandlerResponseMapper.updateByConditionSelective(responsePo, responseExample);
+
+        // 条件需要先删后增
+        this.mockHandlerConditionRepository.delete(handlerId, responseId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE);
+        this.conditionDaoConverter.listConvert(handlerId, MockHandlerComponentType.MOCK_HANDLER_RESPONSE, responseInfoDto.getSupport())
+                .forEach(e ->
+                        this.mockHandlerConditionRepository.insertSelective(Identity.from(responsePo.getHandlerId()),
+                                Identity.from(responsePo.getResponseId()),
+                                MockHandlerComponentType.MOCK_HANDLER_RESPONSE, e)
+                );
+
+        final MockHandlerResponseItemPo responseItemPo = this.mockHandlerResponseItemDaoConverter.convert(handlerId, responseInfoDto.getResponse());
+        final Example itemExample = new Example(MockHandlerResponseItemPo.class);
+        itemExample.createCriteria()
+                .andEqualTo(MockHandlerResponseItemPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerResponseItemPo.C_RESPONSE_ID, responseId.intValue());
+        this.mockHandlerResponseItemMapper.updateByConditionSelective(responseItemPo, itemExample);
     }
 
 }

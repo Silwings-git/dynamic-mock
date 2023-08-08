@@ -2,6 +2,7 @@ package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,13 @@ import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
+import top.silwings.admin.web.vo.converter.MockHandlerResponseVoConverter;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
+import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
@@ -29,6 +32,7 @@ import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
 
 import java.util.Collections;
@@ -57,11 +61,14 @@ public class MockHandlerController {
 
     private final ProjectService projectService;
 
-    public MockHandlerController(final MockHandlerService mockHandlerService, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
+    private final MockHandlerResponseVoConverter mockHandlerResponseVoConverter;
+
+    public MockHandlerController(final MockHandlerService mockHandlerService, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService, final MockHandlerResponseVoConverter mockHandlerResponseVoConverter) {
         this.mockHandlerService = mockHandlerService;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
         this.projectService = projectService;
+        this.mockHandlerResponseVoConverter = mockHandlerResponseVoConverter;
     }
 
     @PostMapping("/save")
@@ -190,6 +197,23 @@ public class MockHandlerController {
                 .collect(Collectors.groupingBy(OwnHandlerInfoResult::getProjectId));
 
         return Result.ok(QueryOwnHandlerMappingResult.builder().projectHandlerMap(projectIdHandlerMap).build());
+    }
+
+    @PostMapping("/update/response/{handlerId}")
+    @PermissionLimit
+    @ApiOperation(value = "查询登录用户的全部Handler信息")
+    public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
+                                                      @RequestBody MockResponseInfoParam mockResponseInfoParam) {
+        final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
+        UserHolder.validProjectId(projectId);
+
+        final MockResponseInfoDto responseInfoDto = this.mockHandlerResponseVoConverter.convert(mockResponseInfoParam);
+
+        this.mockHandlerValidator.validateMockResponse(responseInfoDto);
+
+        this.mockHandlerService.updateMockHandlerResponse(handlerId, responseInfoDto);
+
+        return Result.ok(handlerId);
     }
 
 }

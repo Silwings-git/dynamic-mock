@@ -16,7 +16,10 @@ import java.util.List;
 public interface MockHandlerConditionRepository {
     List<MockHandlerConditionPo> queryConditions(Identity handlerId, Identity componentId, MockHandlerComponentType componentType);
 
-    int deleteByHandlerId(Identity handlerId, MockHandlerComponentType mockHandlerComponentType);
+    int delete(Identity handlerId, MockHandlerComponentType mockHandlerComponentType);
 
-    int insertSelective(MockHandlerConditionPo mockHandlerConditionPo);
+    int delete(Identity handlerId, Identity componentId, MockHandlerComponentType mockHandlerComponentType);
+
+    int insertSelective(Identity handlerId, Identity componentId, MockHandlerComponentType mockHandlerComponentType, MockHandlerConditionPo conditionPo);
+
 }

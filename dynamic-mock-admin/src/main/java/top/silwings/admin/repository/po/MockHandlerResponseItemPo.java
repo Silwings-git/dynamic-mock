@@ -23,6 +23,7 @@ import javax.persistence.Table;
 public class MockHandlerResponseItemPo {
 
     public static final String C_HANDLER_ID = "handlerId";
+    public static final String C_RESPONSE_ID = "responseId";
 
     @Id
     @GeneratedValue(generator = "JDBC")

@@ -2,6 +2,7 @@ package top.silwings.admin.repository.po;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -17,10 +18,12 @@ import javax.persistence.Table;
  **/
 @Getter
 @Setter
+@Accessors(chain = true)
 @Table(name = "dm_mock_handler_response")
 public class MockHandlerResponsePo {
 
     public static final String C_HANDLER_ID = "handlerId";
+    public static final String C_RESPONSE_ID = "responseId";
 
     /**
      * 唯一标识

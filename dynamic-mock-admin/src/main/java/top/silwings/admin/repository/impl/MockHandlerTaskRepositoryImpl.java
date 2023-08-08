@@ -82,12 +82,8 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
             this.mockHandlerTaskMapper.insertSelective(mockHandlerTaskPo);
 
             final List<MockHandlerConditionPo> mockHandlerConditionPoList = mockHandlerTaskPoWrap.getMockHandlerConditionPoList();
-            mockHandlerConditionPoList.forEach(e -> {
-                e.setHandlerId(mockHandlerTaskPo.getHandlerId());
-                e.setComponentId(mockHandlerTaskPo.getTaskId());
-                e.setComponentType(MockHandlerComponentType.MOCK_HANDLER_TASK);
-                this.mockHandlerConditionRepository.insertSelective(e);
-            });
+            mockHandlerConditionPoList.forEach(e ->
+                    this.mockHandlerConditionRepository.insertSelective(Identity.from(mockHandlerTaskPo.getHandlerId()), Identity.from(mockHandlerTaskPo.getTaskId()), MockHandlerComponentType.MOCK_HANDLER_TASK, e));
 
             final MockHandlerTaskRequestPo mockHandlerTaskRequestPo = mockHandlerTaskPoWrap.getMockHandlerTaskRequestPo();
             mockHandlerTaskRequestPo.setHandlerId(mockHandlerTaskPo.getHandlerId());
@@ -104,7 +100,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
                 .andEqualTo(MockHandlerTaskPo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerTaskMapper.deleteByCondition(taskExample);
 
-        this.mockHandlerConditionRepository.deleteByHandlerId(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK);
+        this.mockHandlerConditionRepository.delete(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK);
 
         final Example requestExample = new Example(MockHandlerTaskRequestPo.class);
         taskExample.createCriteria()

@@ -42,7 +42,7 @@ public class MockHandlerConditionRepositoryImpl implements MockHandlerConditionR
     }
 
     @Override
-    public int deleteByHandlerId(final Identity handlerId, final MockHandlerComponentType mockHandlerComponentType) {
+    public int delete(final Identity handlerId, final MockHandlerComponentType mockHandlerComponentType) {
         final Example conditionExample = new Example(MockHandlerConditionPo.class, true, true);
         conditionExample.createCriteria()
                 .andEqualTo(MockHandlerConditionPo.C_HANDLER_ID, handlerId.intValue())
@@ -51,10 +51,24 @@ public class MockHandlerConditionRepositoryImpl implements MockHandlerConditionR
     }
 
     @Override
-    public int insertSelective(final MockHandlerConditionPo mockHandlerConditionPo) {
+    public int delete(final Identity handlerId, final Identity componentId, final MockHandlerComponentType mockHandlerComponentType) {
+        final Example conditionExample = new Example(MockHandlerConditionPo.class, true, true);
+        conditionExample.createCriteria()
+                .andEqualTo(MockHandlerConditionPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerConditionPo.C_COMPONENT_ID, componentId.intValue())
+                .andEqualTo(MockHandlerConditionPo.C_COMPONENT_TYPE, mockHandlerComponentType);
+        return this.mockHandlerConditionMapper.deleteByCondition(conditionExample);
+    }
+
+    @Override
+    public int insertSelective(final Identity handlerId, final Identity componentId, final MockHandlerComponentType mockHandlerComponentType, final MockHandlerConditionPo mockHandlerConditionPo) {
         if (null == mockHandlerConditionPo) {
             return 0;
         }
+
+        mockHandlerConditionPo.setHandlerId(handlerId.intValue());
+        mockHandlerConditionPo.setComponentId(componentId.intValue());
+        mockHandlerConditionPo.setComponentType(mockHandlerComponentType);
         return this.mockHandlerConditionMapper.insertSelective(mockHandlerConditionPo);
     }
 
