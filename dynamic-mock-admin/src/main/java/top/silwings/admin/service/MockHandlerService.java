@@ -39,6 +39,8 @@ public interface MockHandlerService {
 
     Identity updateById(MockHandlerDto mockHandlerDto);
 
+    Identity updateById(MockHandlerDto mockHandlerDto, boolean insertIfAbsent);
+
     PageData<MockHandlerDto> queryEnableHandlerList(QueryEnableHandlerConditionDto conditionParamDto, PageParam pageParam);
 
     PageData<Identity> queryDisableHandlerList(QueryDisableHandlerIdsConditionDto conditionParamDto, PageParam pageParam);

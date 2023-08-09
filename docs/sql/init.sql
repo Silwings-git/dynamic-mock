@@ -164,6 +164,18 @@ CREATE TABLE `dm_mock_handler_response_item`
     KEY                `idx_dmmockhandlerresponseitem_handlerid_responseid` (`handler_id`,`response_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器响应详情信息表';
 
+CREATE TABLE dm_mock_handler_define_snapshot
+(
+    snapshot_id      INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    handler_id       INT         NOT NULL COMMENT '处理器ID',
+    snapshot_version VARCHAR(32) NOT NULL COMMENT '版本号',
+    snapshot_data    LONGBLOB    NOT NULL COMMENT 'MockHandler定义信息',
+    create_user      VARCHAR(32) NOT NULL COMMENT '创建人',
+    create_time      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    INDEX            idx_dmmockhandlerdefinesnapshot_snapshotversion (snapshot_version),
+    INDEX            idx_dmmockhandlerdefinesnapshot_handlerid (handler_id)
+) ENGINE=InnoDB COMMENT 'MockHandler定义信息快照表';
+
 -- 初始化用户信息
 INSERT INTO dm_user (username, user_account, password, role, permission)
 VALUES ('root', 'root', '63a9f0ea7bb98050796b649e85481845', 1, null);

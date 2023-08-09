@@ -18,5 +18,5 @@ public interface MockHandlerTaskRepository {
 
     void insertMockHandlerTask(List<MockHandlerTaskPoWrap> mockHandlerTaskPoWrapList);
 
-    boolean removeMockHandlerTask(Identity handlerId);
+    boolean deleteMockHandlerTask(Identity handlerId);
 }

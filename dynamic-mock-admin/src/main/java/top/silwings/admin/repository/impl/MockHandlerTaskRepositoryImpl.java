@@ -94,7 +94,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
 
     @Override
     @Transactional
-    public boolean removeMockHandlerTask(final Identity handlerId) {
+    public boolean deleteMockHandlerTask(final Identity handlerId) {
         final Example taskExample = new Example(MockHandlerTaskPo.class);
         taskExample.createCriteria()
                 .andEqualTo(MockHandlerTaskPo.C_HANDLER_ID, handlerId.intValue());

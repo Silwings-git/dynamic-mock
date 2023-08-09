@@ -6,6 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
@@ -16,6 +17,7 @@ import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryDisableHandlerIdsConditionDto;
 import top.silwings.admin.model.QueryEnableHandlerConditionDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
+import top.silwings.admin.repository.MockHandlerDefineSnapshotRepository;
 import top.silwings.admin.repository.MockHandlerResponseRepository;
 import top.silwings.admin.repository.MockHandlerTaskRepository;
 import top.silwings.admin.repository.converter.MockHandlerDaoConverter;
@@ -62,22 +64,25 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerResponseRepository mockHandlerResponseRepository;
 
-    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final MockHandlerTaskRepository mockHandlerTaskRepository, final MockHandlerResponseRepository mockHandlerResponseRepository) {
+    private final MockHandlerDefineSnapshotRepository mockHandlerDefineSnapshotRepository;
+
+    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final MockHandlerTaskRepository mockHandlerTaskRepository, final MockHandlerResponseRepository mockHandlerResponseRepository, final MockHandlerDefineSnapshotRepository mockHandlerDefineSnapshotRepository) {
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerMapper = mockHandlerMapper;
         this.mockHandlerUniqueMapper = mockHandlerUniqueMapper;
         this.mockHandlerDaoConverter = mockHandlerDaoConverter;
         this.mockHandlerTaskRepository = mockHandlerTaskRepository;
         this.mockHandlerResponseRepository = mockHandlerResponseRepository;
+        this.mockHandlerDefineSnapshotRepository = mockHandlerDefineSnapshotRepository;
     }
 
     @Override
     @Transactional
     public Identity create(final MockHandlerDto mockHandlerDto) {
 
+        // 不手动将handlerId设置为null,如果有冲突就将异常抛出来
         final MockHandlerPoWrap mockHandlerPoWrap = this.mockHandlerDaoConverter.convert(mockHandlerDto);
         final MockHandlerPo mockHandlerPo = mockHandlerPoWrap.getMockHandlerPo();
-        mockHandlerPo.setHandlerId(null);
 
         this.saveMockHandlerWrapByHandlerId(mockHandlerPoWrap);
 
@@ -91,7 +96,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
         }
 
-        return Identity.from(mockHandlerPo.getHandlerId());
+        final Identity handlerId = Identity.from(mockHandlerPo.getHandlerId());
+
+        // 保存快照,MockHandler快照要求与存储在同一个事务中
+        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, mockHandlerDto);
+
+        return handlerId;
     }
 
     private void saveMockHandlerWrapByHandlerId(final MockHandlerPoWrap mockHandlerPoWrap) {
@@ -100,19 +110,24 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         final Identity handlerId = Identity.from(mockHandlerPoWrap.getMockHandlerPo().getHandlerId());
 
-        // 保存完成后mockHandlerPo中一定包含handlerId
-        mockHandlerPoWrap
-                .getMockHandlerTaskPoWrapList()
-                .forEach(e -> {
-                    e.getMockHandlerTaskPo().setHandlerId(handlerId.intValue());
-                    e.getMockHandlerTaskRequestPo().setHandlerId(handlerId.intValue());
-                });
-
         if (this.mockHandlerResponseRepository.deleteMockHandlerResponse(handlerId)) {
+            mockHandlerPoWrap
+                    .getMockHandlerResponsePoWrapList()
+                    .forEach(e -> {
+                        e.getMockHandlerResponsePo().setHandlerId(handlerId.intValue());
+                        e.getMockHandlerResponseItemPo().setHandlerId(handlerId.intValue());
+                    });
             this.mockHandlerResponseRepository.insertMockHandlerResponse(mockHandlerPoWrap.getMockHandlerResponsePoWrapList());
         }
 
-        if (this.mockHandlerTaskRepository.removeMockHandlerTask(handlerId)) {
+        if (this.mockHandlerTaskRepository.deleteMockHandlerTask(handlerId)) {
+            // 保存完成后mockHandlerPo中一定包含handlerId
+            mockHandlerPoWrap
+                    .getMockHandlerTaskPoWrapList()
+                    .forEach(e -> {
+                        e.getMockHandlerTaskPo().setHandlerId(handlerId.intValue());
+                        e.getMockHandlerTaskRequestPo().setHandlerId(handlerId.intValue());
+                    });
             this.mockHandlerTaskRepository.insertMockHandlerTask(mockHandlerPoWrap.getMockHandlerTaskPoWrapList());
         }
     }
@@ -120,13 +135,17 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     private void saveMockHandlerByHandlerId(final MockHandlerPo mockHandlerPo) {
         // 不主动更新version
         mockHandlerPo.setIncrementVersion(null);
+        mockHandlerPo.setAuthor(UserHolder.getUserId().toString());
         if (null == mockHandlerPo.getHandlerId()) {
             this.mockHandlerMapper.insertSelective(mockHandlerPo);
         } else {
             final Example updateCondition = new Example(MockHandlerPo.class);
             updateCondition.createCriteria()
                     .andEqualTo(MockHandlerPo.C_HANDLER_ID, mockHandlerPo.getHandlerId());
-            this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
+            final int row = this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
+            if (row <= 0) {
+                throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_NOT_EXIST);
+            }
         }
     }
 
@@ -160,10 +179,27 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
         }
 
+        // 保存快照,MockHandler快照要求与存储在同一个事务中
+        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, mockHandlerDto);
+
         // 更新成功后取消注册该handler
         this.mockHandlerManager.unregisterHandler(handlerId);
 
         return handlerId;
+    }
+
+    @Override
+    @Transactional
+    public Identity updateById(final MockHandlerDto mockHandlerDto, final boolean insertIfAbsent) {
+        try {
+            return this.updateById(mockHandlerDto);
+        } catch (DynamicMockAdminException e) {
+            if (insertIfAbsent && ErrorCode.MOCK_HANDLER_NOT_EXIST.equals(e.getErrorCode())) {
+                return this.create(mockHandlerDto);
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -319,7 +355,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private PageData<MockHandlerDto> queryPageData(final Example queryCondition, final RowBounds rowBounds) {
 
-        final long total = this.mockHandlerMapper.selectCountByExample(queryCondition);
+        final long total = this.mockHandlerMapper.selectCountByCondition(queryCondition);
         if (total <= 0) {
             return PageData.empty();
         }
@@ -338,7 +374,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private PageData<Identity> queryHandlerIdPageData(final Example queryCondition, final RowBounds rowBounds) {
 
-        final long total = this.mockHandlerMapper.selectCountByExample(queryCondition);
+        final long total = this.mockHandlerMapper.selectCountByCondition(queryCondition);
         if (total <= 0) {
             return PageData.empty();
         }

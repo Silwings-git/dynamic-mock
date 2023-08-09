@@ -13,6 +13,10 @@ import java.nio.charset.StandardCharsets;
  **/
 public class EncryptUtils {
 
+    private EncryptUtils() {
+        throw new AssertionError();
+    }
+
     public static String encryptPassword(final String password) {
         return DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
     }

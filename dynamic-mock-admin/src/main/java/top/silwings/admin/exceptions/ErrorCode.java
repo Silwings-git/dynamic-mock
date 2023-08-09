@@ -51,7 +51,8 @@ public enum ErrorCode {
     FILE_READ_ERROR("file_read_error"),
     FILE_NOT_FOUND("file_not_found"),
 
-    ;
+    // snapshot
+    MOCK_HANDLER_DEFINE_SNAPSHOT_NOT_EXIST("mock_handler_define_snapshot_not_exist");
 
     private final String code;
 
