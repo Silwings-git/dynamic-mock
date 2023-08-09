@@ -75,7 +75,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
         do {
             final PageData<MockHandlerDto> pageData = DynamicMockAdminContext.getInstance()
                     .getMockHandlerService()
-                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 200));
+                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 10));
 
             if (total < 0) {
                 total = pageData.getTotal();
