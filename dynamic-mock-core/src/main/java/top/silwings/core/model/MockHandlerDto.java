@@ -89,7 +89,7 @@ public class MockHandlerDto {
     /**
      * 用于拓展的额外数据
      */
-    private Object extData;
+    private Map<String, ?> extData;
 
     private Date updateTime;
 
