@@ -10,8 +10,6 @@ CREATE TABLE `dm_mock_handler`
     `label`             VARCHAR(128)          DEFAULT NULL COMMENT '标签',
     `delay_time`        INT          NOT NULL DEFAULT '0' COMMENT '延迟处理时间',
     `customize_space`   JSON                  DEFAULT NULL COMMENT '自定义空间',
-    `responses`         JSON                  DEFAULT NULL COMMENT '模拟响应信息集',
-    `tasks`             JSON                  DEFAULT NULL COMMENT '任务信息集',
     `author`            VARCHAR(32)           DEFAULT NULL COMMENT '负责人',
     `create_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
