@@ -159,6 +159,16 @@
         </dependency>
     </dependencies>
 
+    <developers>
+        <developer>
+            <name>Silwings</name>
+            <!-- 邮件 -->
+            <email>silwings@163.com</email>
+            <!-- 开源地址 -->
+            <url>https://github.com/Silwings-git</url>
+        </developer>
+    </developers>
+
     <build>
 
     </build>
