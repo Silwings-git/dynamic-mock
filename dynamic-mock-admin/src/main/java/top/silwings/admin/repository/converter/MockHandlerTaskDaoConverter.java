@@ -43,7 +43,7 @@ public class MockHandlerTaskDaoConverter {
                 .async(mockHandlerTaskPo.getAsync())
                 .cron(mockHandlerTaskPo.getCron())
                 .numberOfExecute(mockHandlerTaskPo.getNumberOfExecute())
-                .request(this.mockHandlerTaskRequestDaoConverter.convert(taskRequestPo))
+                .request(ConvertUtils.getNoNullOrDefault(taskRequestPo, null, this.mockHandlerTaskRequestDaoConverter::convert))
                 .build();
     }
 
