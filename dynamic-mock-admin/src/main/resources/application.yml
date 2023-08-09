@@ -36,6 +36,10 @@ dynamic-mock:
       un-register-cron: 0/5 * * * * ?
       refresh-cron: 0/5 * * * * ?
 
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
 logging:
   level:
     top.silwings.admin: DEBUG

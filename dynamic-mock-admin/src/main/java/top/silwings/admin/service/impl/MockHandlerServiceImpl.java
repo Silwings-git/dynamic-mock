@@ -139,14 +139,25 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         if (null == mockHandlerPo.getHandlerId()) {
             this.mockHandlerMapper.insertSelective(mockHandlerPo);
         } else {
-            final Example updateCondition = new Example(MockHandlerPo.class);
-            updateCondition.createCriteria()
-                    .andEqualTo(MockHandlerPo.C_HANDLER_ID, mockHandlerPo.getHandlerId());
-            final int row = this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
-            if (row <= 0) {
+            final MockHandlerPo handlerPo = this.findPoForUpdate(Identity.from(mockHandlerPo.getHandlerId()));
+            if (null == handlerPo) {
                 throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_NOT_EXIST);
             }
+            final Integer incrementVersion = handlerPo.getIncrementVersion();
+            mockHandlerPo.setIncrementVersion(incrementVersion + 1);
+            final Example updateCondition = new Example(MockHandlerPo.class);
+            updateCondition.createCriteria()
+                    .andEqualTo(MockHandlerPo.C_HANDLER_ID, mockHandlerPo.getHandlerId())
+                    .andEqualTo(MockHandlerPo.C_INCREMENT_VERSION, incrementVersion);
+            final int row = this.mockHandlerMapper.updateByConditionSelective(mockHandlerPo, updateCondition);
+            if (row <= 0) {
+                throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_CONCURRENT_ERROR);
+            }
         }
+    }
+
+    private MockHandlerPo findPoForUpdate(final Identity handlerId) {
+        return this.mockHandlerMapper.findPoForUpdate(handlerId.intValue());
     }
 
     @Override
@@ -205,10 +216,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     @Override
     public MockHandlerDto find(final Identity handlerId) {
 
-        final MockHandlerPo findCondition = new MockHandlerPo();
-        findCondition.setHandlerId(handlerId.intValue());
-
-        final MockHandlerPo mockHandlerPo = this.mockHandlerMapper.selectOne(findCondition);
+        final MockHandlerPo mockHandlerPo = this.findPo(handlerId);
 
         if (null == mockHandlerPo) {
             throw new DynamicMockException("Mock handler does not exist: " + handlerId);
@@ -219,6 +227,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         final List<MockResponseInfoDto> mockResponseInfoDtoList = this.mockHandlerResponseRepository.queryMockHandlerResponseList(handlerId);
 
         return this.mockHandlerDaoConverter.convert(mockHandlerPo, mockResponseInfoDtoList, taskInfoDtoList);
+    }
+
+    private MockHandlerPo findPo(final Identity handlerId) {
+        final MockHandlerPo findCondition = new MockHandlerPo();
+        findCondition.setHandlerId(handlerId.intValue());
+        return this.mockHandlerMapper.selectOne(findCondition);
     }
 
     @Override

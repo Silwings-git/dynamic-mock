@@ -29,6 +29,7 @@ public class MockHandlerPo {
     public static final String C_CUSTOMIZE_SPACE = "customizeSpace";
     public static final String C_REQUEST_URI = "requestUri";
     public static final String C_LABEL = "label";
+    public static final String C_INCREMENT_VERSION = "incrementVersion";
 
     /**
      * 唯一标识
@@ -104,7 +105,10 @@ public class MockHandlerPo {
     @Column(name = "update_time")
     private Date updateTime;
 
+    /**
+     * 递增版本号
+     */
     @Column(name = "increment_version")
-    private Long incrementVersion;
+    private Integer incrementVersion;
 
 }

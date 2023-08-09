@@ -25,6 +25,7 @@ public enum ErrorCode {
     // Mock Handler
     MOCK_HANDLER_DUPLICATE_REQUEST_PATH("mock_handler_duplicate_request_path"),
     MOCK_HANDLER_NOT_EXIST("mock_handler_not_exist"),
+    MOCK_HANDLER_CONCURRENT_ERROR("mock_handler_concurrent_error"),
 
     MOCK_HANDLER_PROJECT_MISMATCH("mock_handler_project_mismatch"),
 

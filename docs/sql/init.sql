@@ -1,7 +1,7 @@
 -- Mock 处理器表
 CREATE TABLE `dm_mock_handler`
 (
-    `handler_Id`        INT          NOT NULL AUTO_INCREMENT,
+    `handler_id`        INT          NOT NULL AUTO_INCREMENT,
     `project_id`        INT          NOT NULL COMMENT '项目id',
     `enable_status`     INT          NOT NULL DEFAULT '2' COMMENT '启用状态.1-启用,其他-禁用',
     `name`              VARCHAR(255) NOT NULL COMMENT '处理器名称',
@@ -14,18 +14,10 @@ CREATE TABLE `dm_mock_handler`
     `create_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `increment_version` INT                   DEFAULT 0 COMMENT '自增版本号',
-    PRIMARY KEY (`handler_Id`) USING BTREE,
+    PRIMARY KEY (`handler_id`) USING BTREE,
     KEY                 `idx_mockhandler_name` (`name`) USING BTREE COMMENT '处理器名称',
     KEY                 `idx_mockhandler_projectid` (`project_id`) USING BTREE COMMENT '项目id'
 ) ENGINE=InnoDB COMMENT='Mock 处理器表';
-
-CREATE TRIGGER mock_handler_increment_version
-    BEFORE UPDATE
-    ON dm_mock_handler
-    FOR EACH ROW
-BEGIN
-    SET NEW.increment_version = OLD.increment_version + 1;
-END;
 
 -- Mock 处理器唯一表
 CREATE TABLE `dm_mock_handler_unique`
