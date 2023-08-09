@@ -93,6 +93,8 @@ public class MockHandlerDto {
 
     private Date updateTime;
 
+    private long version;
+
     public static MockHandlerDto copyOf(final MockHandlerDto dto, final BiConsumer<MockHandlerDto, MockHandlerDtoBuilder> builderConsumer) {
 
         final MockHandlerDtoBuilder handlerBuilder = MockHandlerDto.builder()
@@ -107,7 +109,8 @@ public class MockHandlerDto {
                 .customizeSpace(dto.getCustomizeSpace())
                 .responses(dto.getResponses())
                 .tasks(dto.getTasks())
-                .updateTime(dto.getUpdateTime());
+                .updateTime(dto.getUpdateTime())
+                .version(dto.getVersion());
 
         builderConsumer.accept(dto, handlerBuilder);
 
@@ -115,7 +118,7 @@ public class MockHandlerDto {
     }
 
     public long getVersion() {
-        return this.updateTime.getTime();
+        return this.version;
     }
 
 }

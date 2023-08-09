@@ -75,6 +75,7 @@ public class MockHandlerDaoConverter {
                 .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())
+                .version(mockHandlerPo.getIncrementVersion())
                 .build();
     }
 

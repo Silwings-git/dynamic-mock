@@ -86,18 +86,6 @@ public class MockHandlerPo {
     @Column(name = "customize_space")
     private String customizeSpace;
 
-//    /**
-//     * 模拟响应信息
-//     */
-//    @Column(name = "responses")
-//    private String responses;
-//
-//    /**
-//     * 任务集
-//     */
-//    @Column(name = "tasks")
-//    private String tasks;
-
     /**
      * 负责人
      */
@@ -115,5 +103,8 @@ public class MockHandlerPo {
      */
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Column(name = "increment_version")
+    private Long incrementVersion;
 
 }

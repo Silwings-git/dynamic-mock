@@ -118,6 +118,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     private void saveMockHandlerByHandlerId(final MockHandlerPo mockHandlerPo) {
+        // 不主动更新version
+        mockHandlerPo.setIncrementVersion(null);
         if (null == mockHandlerPo.getHandlerId()) {
             this.mockHandlerMapper.insertSelective(mockHandlerPo);
         } else {
