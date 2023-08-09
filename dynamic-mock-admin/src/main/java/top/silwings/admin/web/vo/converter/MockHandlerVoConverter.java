@@ -108,7 +108,7 @@ public class MockHandlerVoConverter {
                 .async(dto.isAsync())
                 .cron(dto.getCron())
                 .numberOfExecute(dto.getNumberOfExecute())
-                .request(this.convert(dto.getRequest()))
+                .request(ConvertUtils.getNoNullOrDefault(dto.getRequest(), null, this::convert))
                 .build();
     }
 
