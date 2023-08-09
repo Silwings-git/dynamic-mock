@@ -103,7 +103,7 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
         this.mockHandlerConditionRepository.delete(handlerId, MockHandlerComponentType.MOCK_HANDLER_TASK);
 
         final Example requestExample = new Example(MockHandlerTaskRequestPo.class);
-        taskExample.createCriteria()
+        requestExample.createCriteria()
                 .andEqualTo(MockHandlerTaskRequestPo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerTaskRequestMapper.deleteByCondition(requestExample);
 
