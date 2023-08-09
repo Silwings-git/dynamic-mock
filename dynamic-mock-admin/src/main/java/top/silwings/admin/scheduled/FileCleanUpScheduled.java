@@ -39,7 +39,6 @@ public class FileCleanUpScheduled {
     }
 
     @Scheduled(cron = "0 0/2 * * * ?")
-    @Transactional
     public void fileCleanUp() {
 
         final List<String> fileNameList = this.queryHandlerUsedFileNames();

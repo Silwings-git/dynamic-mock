@@ -64,7 +64,6 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
-    @Transactional
     public synchronized void registerAllEnableHandler(final boolean terminateInError) {
 
         final Set<Identity> handlerIdSet = this.mockHandlerManager.registeredHandlerIds();
@@ -90,7 +89,6 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
-    @Transactional
     public synchronized void unRegisterAllDisableHandler(final boolean terminateInError) {
 
         final Set<Identity> handlerIdSet = this.mockHandlerManager.registeredHandlerIds();
@@ -122,7 +120,6 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
     }
 
     @Override
-    @Transactional
     public synchronized void refreshRegisteredHandler(final boolean terminateInError) {
 
         final Map<Identity, Long> handlerVersionMap = this.mockHandlerManager.registeredHandlerVersions();
