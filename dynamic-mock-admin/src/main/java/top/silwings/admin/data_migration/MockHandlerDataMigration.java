@@ -90,9 +90,13 @@ public class MockHandlerDataMigration {
             log.error("失败的handlerId: {}", JsonUtils.toJSONString(failHandlerIdList));
         }
 
-        handlerIdList.removeAll(failHandlerIdList.stream().map(Identity::stringValue).collect(Collectors.toList()));
+        final List<String> migrationHandlerIdList = handlerPoList.stream()
+                .map(DataMigrationMockHandlerPo::getHandlerId)
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+        migrationHandlerIdList.removeAll(failHandlerIdList.stream().map(Identity::stringValue).collect(Collectors.toList()));
 
-        return Result.ok(handlerIdList);
+        return Result.ok(migrationHandlerIdList);
     }
 
     @SuppressWarnings("unchecked")
