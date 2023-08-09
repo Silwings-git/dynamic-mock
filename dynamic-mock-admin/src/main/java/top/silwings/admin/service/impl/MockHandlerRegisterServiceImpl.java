@@ -133,7 +133,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
         do {
             final PageData<MockHandlerDto> pageData = DynamicMockAdminContext.getInstance()
                     .getMockHandlerService()
-                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 200));
+                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 20));
 
             final List<MockHandlerDto> waitRefreshHandlerList = pageData.getList().stream()
                     .filter(handlerInfo -> !((Long) handlerInfo.getVersion()).equals(handlerVersionMap.get(handlerInfo.getHandlerId())))
