@@ -47,7 +47,7 @@ public class MockTaskControllerTest {
     @Test
     public void task() {
 
-        UserHolder.setUser(UserAuthInfo.builder().role(Role.ADMIN_USER.getCode()).build());
+        UserHolder.setUser(UserAuthInfo.builder().userId(Identity.from(-1)).role(Role.ADMIN_USER.getCode()).build());
 
         final Identity projectId = this.setUp.createProject();
         this.query(projectId);

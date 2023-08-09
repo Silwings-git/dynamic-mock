@@ -30,8 +30,8 @@ import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.MockHandlerHolder;
-import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.MockEndPoint;
+import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.utils.JsonUtils;
 
@@ -86,7 +86,7 @@ public class MockHandlerControllerTest {
     }
 
     private void login() {
-        UserHolder.setUser(UserAuthInfo.builder().role(Role.ADMIN_USER.getCode()).build());
+        UserHolder.setUser(UserAuthInfo.builder().userId(Identity.from(-1)).role(Role.ADMIN_USER.getCode()).build());
     }
 
     private MockHandlerInfoParam save() {
