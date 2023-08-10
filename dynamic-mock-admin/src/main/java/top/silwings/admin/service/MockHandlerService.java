@@ -1,6 +1,5 @@
 package top.silwings.admin.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
 import top.silwings.admin.model.HandlerInfoDto;
@@ -34,7 +33,6 @@ public interface MockHandlerService {
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus, ProjectDto project);
 
-    @Transactional
     void disableMockHandler(Identity handlerId);
 
     int findMockHandlerQuantityByProject(Identity projectId);

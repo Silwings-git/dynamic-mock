@@ -12,6 +12,8 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.admin.service.MockHandlerService;
@@ -34,6 +36,7 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +82,9 @@ public class MockHandlerController {
         param.validate();
 
         UserHolder.validProjectId(param.getProjectId());
+
+        final ProjectDto projectDto = this.projectService.find(param.getProjectId());
+        CheckUtils.isNotNull(projectDto, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(param);
 

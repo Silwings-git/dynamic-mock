@@ -3,6 +3,8 @@ package top.silwings.admin.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -10,6 +12,8 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
+import top.silwings.admin.event.MockHandlerAdminEvent;
+import top.silwings.admin.event.UpdatedMockHandlerEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.HandlerInfoDto;
@@ -50,7 +54,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Service
-public class MockHandlerServiceImpl implements MockHandlerService {
+public class MockHandlerServiceImpl implements MockHandlerService, ApplicationListener<MockHandlerAdminEvent> {
 
     private final MockHandlerManager mockHandlerManager;
 
@@ -66,7 +70,9 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
     private final MockHandlerDefineSnapshotRepository mockHandlerDefineSnapshotRepository;
 
-    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final MockHandlerTaskRepository mockHandlerTaskRepository, final MockHandlerResponseRepository mockHandlerResponseRepository, final MockHandlerDefineSnapshotRepository mockHandlerDefineSnapshotRepository) {
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public MockHandlerServiceImpl(final MockHandlerManager mockHandlerManager, final MockHandlerMapper mockHandlerMapper, final MockHandlerUniqueMapper mockHandlerUniqueMapper, final MockHandlerDaoConverter mockHandlerDaoConverter, final MockHandlerTaskRepository mockHandlerTaskRepository, final MockHandlerResponseRepository mockHandlerResponseRepository, final MockHandlerDefineSnapshotRepository mockHandlerDefineSnapshotRepository, final ApplicationEventPublisher applicationEventPublisher) {
         this.mockHandlerManager = mockHandlerManager;
         this.mockHandlerMapper = mockHandlerMapper;
         this.mockHandlerUniqueMapper = mockHandlerUniqueMapper;
@@ -74,6 +80,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
         this.mockHandlerTaskRepository = mockHandlerTaskRepository;
         this.mockHandlerResponseRepository = mockHandlerResponseRepository;
         this.mockHandlerDefineSnapshotRepository = mockHandlerDefineSnapshotRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -190,11 +197,7 @@ public class MockHandlerServiceImpl implements MockHandlerService {
             throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_DUPLICATE_REQUEST_PATH);
         }
 
-        // 保存快照,MockHandler快照要求与存储在同一个事务中
-        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, mockHandlerDto);
-
-        // 更新成功后取消注册该handler
-        this.mockHandlerManager.unregisterHandler(handlerId);
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
 
         return handlerId;
     }
@@ -508,23 +511,29 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         this.mockHandlerResponseRepository.updateByHandlerAndResponseId(handlerId, responseInfoDto);
 
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
+    }
+
+    @Override
+    @Transactional
+    public void onApplicationEvent(final MockHandlerAdminEvent event) {
+        if (event instanceof UpdatedMockHandlerEvent) {
+            this.afterMockHandlerUpdated(event.getHandlerId());
+        } else {
+            log.error("没有可用的消息处理器");
+            throw DynamicMockAdminException.from(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
+    private void afterMockHandlerUpdated(final Identity handlerId) {
         // 响应更新后需要更新mock版本号
-        this.incrementVersion(handlerId);
+        this.mockHandlerMapper.incrementVersion(handlerId.intValue());
 
         // 添加快照
         this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, this.find(handlerId));
 
         // 关闭mock处理器
-        this.disableMockHandler(handlerId);
-    }
-
-    /**
-     * 自增mock处理器版本号
-     *
-     * @param handlerId 处理器ID
-     */
-    private void incrementVersion(final Identity handlerId) {
-        this.mockHandlerMapper.incrementVersion(handlerId.intValue());
+        DynamicMockAdminContext.getInstance().getMockHandlerService().disableMockHandler(handlerId);
     }
 
 }
