@@ -6,6 +6,7 @@ import top.silwings.admin.common.enums.MockHandlerComponentType;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
 import top.silwings.admin.utils.Counter;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -56,6 +57,7 @@ public class MockHandlerResponseDaoConverter {
         po.setResponseId(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getResponseId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(mockResponseInfoDto.getName());
+        po.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getEnableStatus(), null, EnableStatus::code));
         po.setDelayTime(mockResponseInfoDto.getDelayTime());
         po.setSort(sort);
 

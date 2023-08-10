@@ -8,6 +8,7 @@ import top.silwings.admin.repository.po.MockHandlerTaskPo;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
 import top.silwings.admin.utils.Counter;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -39,6 +40,7 @@ public class MockHandlerTaskDaoConverter {
         return TaskInfoDto.builder()
                 .taskId(Identity.from(mockHandlerTaskPo.getTaskId()))
                 .name(mockHandlerTaskPo.getName())
+                .enableStatus(EnableStatus.valueOfCode(mockHandlerTaskPo.getEnableStatus()))
                 .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .async(mockHandlerTaskPo.getAsync())
                 .cron(mockHandlerTaskPo.getCron())
@@ -71,6 +73,7 @@ public class MockHandlerTaskDaoConverter {
         po.setTaskId(ConvertUtils.getNoNullOrDefault(taskInfoDto.getTaskId(), null, Identity::intValue));
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setName(taskInfoDto.getName());
+        po.setEnableStatus(ConvertUtils.getNoNullOrDefault(taskInfoDto.getEnableStatus(), null, EnableStatus::code));
         po.setAsync(taskInfoDto.isAsync());
         po.setCron(taskInfoDto.getCron());
         po.setNumberOfExecute(taskInfoDto.getNumberOfExecute());

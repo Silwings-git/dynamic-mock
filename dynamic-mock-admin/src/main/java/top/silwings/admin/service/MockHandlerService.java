@@ -58,4 +58,7 @@ public interface MockHandlerService {
 
     void updateMockHandlerResponse(Identity handlerId, MockResponseInfoDto responseInfoDto);
 
+    void updateResponseEnableStatus(Identity handlerId, Identity responseId, EnableStatus enableStatus);
+
+    void updateTaskEnableStatus(Identity handlerId, Identity taskId, EnableStatus enableStatus);
 }

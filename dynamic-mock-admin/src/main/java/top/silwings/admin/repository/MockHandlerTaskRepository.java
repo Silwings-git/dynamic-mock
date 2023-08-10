@@ -1,6 +1,7 @@
 package top.silwings.admin.repository;
 
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
 
@@ -19,4 +20,6 @@ public interface MockHandlerTaskRepository {
     void insertMockHandlerTask(List<MockHandlerTaskPoWrap> mockHandlerTaskPoWrapList);
 
     boolean deleteMockHandlerTask(Identity handlerId);
+
+    void updateTaskEnableStatus(Identity handlerId, Identity taskId, EnableStatus enableStatus);
 }

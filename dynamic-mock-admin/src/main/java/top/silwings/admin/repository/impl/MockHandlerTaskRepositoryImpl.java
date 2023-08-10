@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.MockHandlerConditionRepository;
 import top.silwings.admin.repository.MockHandlerTaskRepository;
 import top.silwings.admin.repository.converter.MockHandlerTaskDaoConverter;
@@ -13,8 +15,10 @@ import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerTaskPo;
 import top.silwings.admin.repository.po.MockHandlerTaskRequestPo;
 import top.silwings.admin.repository.po.pack.MockHandlerTaskPoWrap;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.TaskInfoDto;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -110,4 +114,18 @@ public class MockHandlerTaskRepositoryImpl implements MockHandlerTaskRepository 
         return true;
     }
 
+    @Override
+    public void updateTaskEnableStatus(final Identity handlerId, final Identity taskId, final EnableStatus enableStatus) {
+
+        final Example example = new Example(MockHandlerTaskPo.class);
+        example.createCriteria()
+                .andEqualTo(MockHandlerTaskPo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerTaskPo.C_TASK_ID, taskId.intValue());
+
+        final MockHandlerTaskPo newTaskStatus = new MockHandlerTaskPo();
+        newTaskStatus.setEnableStatus(enableStatus.code());
+
+        final int row = this.mockHandlerTaskMapper.updateByConditionSelective(newTaskStatus, example);
+        CheckUtils.isTrue(row > 0, DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_TASK_NOT_EXIST));
+    }
 }

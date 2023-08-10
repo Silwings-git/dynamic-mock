@@ -3,6 +3,7 @@ package top.silwings.admin.web.vo.converter;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
 
@@ -20,6 +21,7 @@ public class MockHandlerResponseVoConverter {
         return MockResponseInfoDto.builder()
                 .responseId(vo.getResponseId())
                 .name(vo.getName())
+                .enableStatus(EnableStatus.valueOfCode(vo.getEnableStatus()))
                 .support(vo.getSupport())
                 .delayTime(vo.getDelayTime())
                 .response(this.convert(vo.getResponse()))

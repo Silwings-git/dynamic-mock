@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -42,6 +43,7 @@ public class MockHandlerResponseItemDaoConverter {
         return MockResponseInfoDto.builder()
                 .responseId(Identity.from(mockHandlerResponsePo.getResponseId()))
                 .name(mockHandlerResponsePo.getName())
+                .enableStatus(EnableStatus.valueOfCode(mockHandlerResponsePo.getEnableStatus()))
                 .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .delayTime(mockHandlerResponsePo.getDelayTime())
                 .response(this.convert(responseItemPo))

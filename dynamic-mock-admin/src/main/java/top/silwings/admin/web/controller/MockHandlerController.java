@@ -27,6 +27,8 @@ import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
+import top.silwings.admin.web.vo.param.UpdateResponseEnableStatusParam;
+import top.silwings.admin.web.vo.param.UpdateTaskEnableStatusParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.admin.web.vo.result.OwnHandlerInfoResult;
@@ -208,7 +210,7 @@ public class MockHandlerController {
 
     @PostMapping("/response/update/{handlerId}")
     @PermissionLimit
-    @ApiOperation(value = "修改响应信息")
+    @ApiOperation(value = "修改响应信息", notes = "修改后Mock处理器将自动关闭")
     public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
                                                       @RequestBody MockResponseInfoParam mockResponseInfoParam) {
 
@@ -226,15 +228,32 @@ public class MockHandlerController {
         return Result.ok(handlerId);
     }
 
-//    @PostMapping("/response/status")
-//    @PermissionLimit
-//    @ApiOperation(value = "修改响应开关")
-//    public Result<Identity> updateResponseEnableStatus(@RequestBody UpdateResponseEnableStatusParam param) {
-//
-//        param.validate();
-//
-//
-//
-//    }
+    @PostMapping("/response/status")
+    @PermissionLimit
+    @ApiOperation(value = "修改响应开关", notes = "修改后Mock处理器将自动关闭")
+    public Result<Identity> updateResponseEnableStatus(@RequestBody UpdateResponseEnableStatusParam param) {
+
+        param.validate();
+
+        UserHolder.validHandlerId(param.getHandlerId());
+
+        this.mockHandlerService.updateResponseEnableStatus(param.getHandlerId(), param.getResponseId(), EnableStatus.valueOfCode(param.getEnableStatus()));
+
+        return Result.ok(param.getHandlerId());
+    }
+
+    @PostMapping("/task/status")
+    @PermissionLimit
+    @ApiOperation(value = "修改任务开关", notes = "修改后Mock处理器将自动关闭")
+    public Result<Identity> updateTaskEnableStatus(@RequestBody UpdateTaskEnableStatusParam param) {
+
+        param.validate();
+
+        UserHolder.validHandlerId(param.getHandlerId());
+
+        this.mockHandlerService.updateTaskEnableStatus(param.getHandlerId(), param.getTaskId(), EnableStatus.valueOfCode(param.getEnableStatus()));
+
+        return Result.ok(param.getHandlerId());
+    }
 
 }

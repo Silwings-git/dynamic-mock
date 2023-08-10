@@ -43,6 +43,14 @@ public class MockHandlerTaskPo {
     private String name;
 
     /**
+     * 启用状态
+     *
+     * @see top.silwings.core.common.EnableStatus
+     */
+    @Column(name = "enable_status")
+    private Integer enableStatus;
+
+    /**
      * 是否异步执行
      */
     @Column(name = "async")

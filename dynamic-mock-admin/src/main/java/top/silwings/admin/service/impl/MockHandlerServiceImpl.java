@@ -86,6 +86,28 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
     @Override
     @Transactional
+    public void onApplicationEvent(final MockHandlerAdminEvent event) {
+        if (event instanceof UpdatedMockHandlerEvent) {
+            this.afterMockHandlerUpdated(event.getHandlerId());
+        } else {
+            log.error("没有可用的消息处理器");
+            throw DynamicMockAdminException.from(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
+    private void afterMockHandlerUpdated(final Identity handlerId) {
+        // 响应更新后需要更新mock版本号
+        this.mockHandlerMapper.incrementVersion(handlerId.intValue());
+
+        // 添加快照
+        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, this.find(handlerId));
+
+        // 关闭mock处理器
+        DynamicMockAdminContext.getInstance().getMockHandlerService().disableMockHandler(handlerId);
+    }
+
+    @Override
+    @Transactional
     public Identity create(final MockHandlerDto mockHandlerDto) {
 
         // 不手动将handlerId设置为null,如果有冲突就将异常抛出来
@@ -528,24 +550,14 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
     @Override
     @Transactional
-    public void onApplicationEvent(final MockHandlerAdminEvent event) {
-        if (event instanceof UpdatedMockHandlerEvent) {
-            this.afterMockHandlerUpdated(event.getHandlerId());
-        } else {
-            log.error("没有可用的消息处理器");
-            throw DynamicMockAdminException.from(ErrorCode.UNKNOWN_ERROR);
-        }
+    public void updateResponseEnableStatus(final Identity handlerId, final Identity responseId, final EnableStatus enableStatus) {
+        this.mockHandlerResponseRepository.updateResponseEnableStatus(handlerId, responseId, enableStatus);
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
     }
 
-    private void afterMockHandlerUpdated(final Identity handlerId) {
-        // 响应更新后需要更新mock版本号
-        this.mockHandlerMapper.incrementVersion(handlerId.intValue());
-
-        // 添加快照
-        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, this.find(handlerId));
-
-        // 关闭mock处理器
-        DynamicMockAdminContext.getInstance().getMockHandlerService().disableMockHandler(handlerId);
+    @Override
+    public void updateTaskEnableStatus(final Identity handlerId, final Identity taskId, final EnableStatus enableStatus) {
+        this.mockHandlerTaskRepository.updateTaskEnableStatus(handlerId, taskId, enableStatus);
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
     }
-
 }

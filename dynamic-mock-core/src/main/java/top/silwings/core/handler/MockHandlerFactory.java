@@ -2,6 +2,7 @@ package top.silwings.core.handler;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.exceptions.ScriptNoSupportException;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
@@ -67,12 +68,14 @@ public class MockHandlerFactory {
         // 响应信息
         builder.responseInfoList(
                 definition.getResponses().stream()
+                        .filter(responseInfo -> EnableStatus.ENABLE.equals(responseInfo.getEnableStatus()))
                         .map(this.mockResponseInfoFactory::buildResponseInfo)
                         .collect(Collectors.toList())
         );
 
         // Task信息
         final List<MockTaskInfo> mockTaskInfoList = definition.getTasks().stream()
+                .filter(taskDef -> EnableStatus.ENABLE.equals(taskDef.getEnableStatus()))
                 .map(taskDef -> this.mockTaskInfoFactory.buildTask(definition.getHandlerId(), taskDef))
                 .collect(Collectors.toList());
 

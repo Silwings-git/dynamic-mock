@@ -32,6 +32,9 @@ public class SaveTaskInfoParam {
     @ApiModelProperty(value = "任务名称", required = true, example = "会员卡支付回调")
     private String name;
 
+    @ApiModelProperty(value = "启用状态", example = "1")
+    private Integer enableStatus;
+
     @ApiModelProperty(value = "支持表达式")
     private List<String> support;
 

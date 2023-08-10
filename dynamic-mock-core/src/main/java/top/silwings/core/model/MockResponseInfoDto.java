@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 
 import java.util.List;
@@ -30,6 +31,11 @@ public class MockResponseInfoDto {
      * 返回值名称
      */
     private String name;
+
+    /**
+     * 启用状态
+     */
+    private EnableStatus enableStatus;
 
     /**
      * 支持条件

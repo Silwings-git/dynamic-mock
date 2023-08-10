@@ -45,6 +45,14 @@ public class MockHandlerResponsePo {
     private String name;
 
     /**
+     * 启用状态
+     *
+     * @see top.silwings.core.common.EnableStatus
+     */
+    @Column(name = "enable_status")
+    private Integer enableStatus;
+
+    /**
      * 延迟时间
      */
     @Column(name = "delay_time")

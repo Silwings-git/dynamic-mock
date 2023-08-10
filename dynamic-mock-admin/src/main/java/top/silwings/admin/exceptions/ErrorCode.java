@@ -30,6 +30,7 @@ public enum ErrorCode {
 
     MOCK_HANDLER_PROJECT_MISMATCH("mock_handler_project_mismatch"),
 
+    MOCK_HANDLER_TASK_NOT_EXIST("mock_handler_task_not_exist"),
     MOCK_TASK_LOG_NOT_EXIST("mock_task_log_not_exist"),
 
     // Project

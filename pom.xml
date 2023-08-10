@@ -169,17 +169,6 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <url>http://nexus.gtech.asia/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven-snapshots</id>
-            <url>http://nexus.gtech.asia/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>

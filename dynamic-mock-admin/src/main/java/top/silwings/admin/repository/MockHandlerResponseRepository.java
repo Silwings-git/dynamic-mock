@@ -1,6 +1,7 @@
 package top.silwings.admin.repository;
 
 import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
 
@@ -21,4 +22,6 @@ public interface MockHandlerResponseRepository {
     void insertMockHandlerResponse(List<MockHandlerResponsePoWrap> mockHandlerResponsePoWrapList);
 
     void updateByHandlerAndResponseId(Identity handlerId, MockResponseInfoDto responseInfoDto);
+
+    void updateResponseEnableStatus(Identity handlerId, Identity responseId, EnableStatus enableStatus);
 }

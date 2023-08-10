@@ -18,8 +18,10 @@ import top.silwings.admin.repository.po.MockHandlerConditionPo;
 import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.admin.repository.po.pack.MockHandlerResponsePoWrap;
+import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -169,4 +171,18 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
         this.mockHandlerResponseItemMapper.updateByConditionSelective(responseItemPo, itemExample);
     }
 
+    @Override
+    public void updateResponseEnableStatus(final Identity handlerId, final Identity responseId, final EnableStatus enableStatus) {
+
+        final Example example = new Example(MockHandlerResponsePo.class);
+        example.createCriteria()
+                .andEqualTo(MockHandlerResponsePo.C_HANDLER_ID, handlerId.intValue())
+                .andEqualTo(MockHandlerResponsePo.C_RESPONSE_ID, responseId.intValue());
+
+        final MockHandlerResponsePo newResponseStatus = new MockHandlerResponsePo();
+        newResponseStatus.setEnableStatus(enableStatus.code());
+
+        final int row = this.mockHandlerResponseMapper.updateByConditionSelective(newResponseStatus, example);
+        CheckUtils.isTrue(row > 0, DynamicMockAdminException.supplier(ErrorCode.MOCK_HANDLER_RESPONSE_NOT_EXIST));
+    }
 }
