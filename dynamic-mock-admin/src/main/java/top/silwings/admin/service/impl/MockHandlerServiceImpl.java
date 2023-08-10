@@ -288,6 +288,9 @@ public class MockHandlerServiceImpl implements MockHandlerService {
                 .andEqualTo(MockHandlerUniquePo.C_HANDLER_ID, handlerId.intValue());
         this.mockHandlerUniqueMapper.deleteByCondition(deleteUniqueCondition);
 
+        this.mockHandlerResponseRepository.deleteMockHandlerResponse(handlerId);
+        this.mockHandlerTaskRepository.deleteMockHandlerTask(handlerId);
+
         this.mockHandlerManager.unregisterHandler(handlerId);
     }
 
