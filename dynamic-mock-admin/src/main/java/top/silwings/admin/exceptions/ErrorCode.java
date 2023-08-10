@@ -25,9 +25,12 @@ public enum ErrorCode {
     // Mock Handler
     MOCK_HANDLER_DUPLICATE_REQUEST_PATH("mock_handler_duplicate_request_path"),
     MOCK_HANDLER_NOT_EXIST("mock_handler_not_exist"),
+    MOCK_HANDLER_RESPONSE_NOT_EXIST("mock_handler_response_not_exist"),
+    MOCK_HANDLER_CONCURRENT_ERROR("mock_handler_concurrent_error"),
 
     MOCK_HANDLER_PROJECT_MISMATCH("mock_handler_project_mismatch"),
 
+    MOCK_HANDLER_TASK_NOT_EXIST("mock_handler_task_not_exist"),
     MOCK_TASK_LOG_NOT_EXIST("mock_task_log_not_exist"),
 
     // Project
@@ -51,7 +54,8 @@ public enum ErrorCode {
     FILE_READ_ERROR("file_read_error"),
     FILE_NOT_FOUND("file_not_found"),
 
-    ;
+    // snapshot
+    MOCK_HANDLER_DEFINE_SNAPSHOT_NOT_EXIST("mock_handler_define_snapshot_not_exist");
 
     private final String code;
 

@@ -82,7 +82,7 @@ public class MockHandler implements Closeable {
         return PathMatcherUtils.match(this.requestUri, requestInfo.getRequestUri()) && this.httpMethodList.contains(requestInfo.getHttpMethod());
     }
 
-    public ResponseEntity<Object> mock(final MockHandlerContext mockHandlerContext) {
+    public ResponseEntity<?> mock(final MockHandlerContext mockHandlerContext) {
 
         // 初始化这次mock的全局信息
         this.mockInit(mockHandlerContext);
@@ -205,7 +205,7 @@ public class MockHandler implements Closeable {
      * @param mockWorkflowControl   控制信息
      * @return HTTP响应实例
      */
-    private ResponseEntity<Object> response(MockResponse mockResponse, final DefaultPreMockContext defaultPreMockContext, final MockWorkflowControl mockWorkflowControl) {
+    private ResponseEntity<?> response(MockResponse mockResponse, final DefaultPreMockContext defaultPreMockContext, final MockWorkflowControl mockWorkflowControl) {
 
         // 执行响应前拦截器
         this.executePreResponseInterceptor(defaultPreMockContext, mockResponse);

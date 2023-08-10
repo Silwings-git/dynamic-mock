@@ -10,6 +10,8 @@ import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
+import top.silwings.core.model.MockResponseInfoDto;
 
 import java.util.List;
 
@@ -28,15 +30,19 @@ public interface MockHandlerService {
 
     Identity findProjectId(Identity handlerId);
 
-    PageData<MockHandlerDto> query(QueryHandlerConditionDto queryCondition, PageParam pageParam);
+    PageData<MockHandlerSummaryDto> querySummary(QueryHandlerConditionDto queryCondition, PageParam pageParam);
 
     void updateEnableStatus(Identity handlerId, EnableStatus enableStatus, ProjectDto project);
+
+    void disableMockHandler(Identity handlerId);
 
     int findMockHandlerQuantityByProject(Identity projectId);
 
     Identity create(MockHandlerDto mockHandlerDto);
 
     Identity updateById(MockHandlerDto mockHandlerDto);
+
+    Identity updateById(MockHandlerDto mockHandlerDto, boolean insertIfAbsent);
 
     PageData<MockHandlerDto> queryEnableHandlerList(QueryEnableHandlerConditionDto conditionParamDto, PageParam pageParam);
 
@@ -50,4 +56,9 @@ public interface MockHandlerService {
 
     HandlerInfoDto findHandlerInfo(Identity handlerId);
 
+    void updateMockHandlerResponse(Identity handlerId, MockResponseInfoDto responseInfoDto);
+
+    void updateResponseEnableStatus(Identity handlerId, Identity responseId, EnableStatus enableStatus);
+
+    void updateTaskEnableStatus(Identity handlerId, Identity taskId, EnableStatus enableStatus);
 }

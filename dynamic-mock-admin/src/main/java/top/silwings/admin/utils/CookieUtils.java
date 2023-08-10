@@ -16,6 +16,10 @@ import java.util.stream.Stream;
  **/
 public class CookieUtils {
 
+    private CookieUtils() {
+        throw new AssertionError();
+    }
+
     // 默认缓存时间,单位/秒, 2H
     private static final int COOKIE_MAX_AGE = Integer.MAX_VALUE;
     // 保存路径,根路径

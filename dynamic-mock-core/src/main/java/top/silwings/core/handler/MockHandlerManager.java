@@ -61,7 +61,7 @@ public class MockHandlerManager {
         return null;
     }
 
-    public ResponseEntity<Object> mock(final MockHandlerContext mockHandlerContext) {
+    public ResponseEntity<?> mock(final MockHandlerContext mockHandlerContext) {
 
         final RequestInfo requestInfo = RequestInfo.from(mockHandlerContext);
 

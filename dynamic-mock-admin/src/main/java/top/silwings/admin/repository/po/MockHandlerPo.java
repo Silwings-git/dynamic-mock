@@ -29,6 +29,8 @@ public class MockHandlerPo {
     public static final String C_CUSTOMIZE_SPACE = "customizeSpace";
     public static final String C_REQUEST_URI = "requestUri";
     public static final String C_LABEL = "label";
+    public static final String C_INCREMENT_VERSION = "incrementVersion";
+    public static final String C_CREATE_TIME = "createTime";
 
     /**
      * 唯一标识
@@ -87,18 +89,6 @@ public class MockHandlerPo {
     private String customizeSpace;
 
     /**
-     * 模拟响应信息
-     */
-    @Column(name = "responses")
-    private String responses;
-
-    /**
-     * 任务集
-     */
-    @Column(name = "tasks")
-    private String tasks;
-
-    /**
      * 负责人
      */
     @Column(name = "author")
@@ -115,5 +105,11 @@ public class MockHandlerPo {
      */
     @Column(name = "update_time")
     private Date updateTime;
+
+    /**
+     * 递增版本号
+     */
+    @Column(name = "increment_version")
+    private Integer incrementVersion;
 
 }

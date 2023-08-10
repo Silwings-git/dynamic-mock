@@ -27,6 +27,8 @@ public class ControllerAdvice {
 
     @ExceptionHandler(value = BaseDynamicMockException.class)
     public ResponseEntity<Object> handlingException(final BaseDynamicMockException exception) {
+        log.error("BaseDynamicMockException.", exception);
+
         if (exception instanceof DynamicValueCompileException) {
             // 表达式编译错误需要在admin中响应,需要支持多语言
             return this.handlingException(DynamicMockAdminException.of(ErrorCode.EXPRESSION_INCORRECT, exception.getMessage()));
@@ -36,6 +38,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(value = DynamicMockAdminException.class)
     public ResponseEntity<Object> handlingException(final DynamicMockAdminException exception) {
+        log.error("DynamicMockAdminException.", exception);
 
         final String value = I18nUtils.getValue(WebContextHolder.getLanguage(), exception.getErrorCode().getCode(), exception.getArgs());
 

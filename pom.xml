@@ -11,7 +11,7 @@
 
     <groupId>top.silwings</groupId>
     <artifactId>dynamic-mock-pom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.3-RELEASE</version>
     <packaging>pom</packaging>
     <name>dynamic-mock</name>
     <description>dynamic-mock</description>
@@ -159,8 +159,41 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <developers>
+        <developer>
+            <name>Silwings</name>
+            <!-- 邮件 -->
+            <email>silwings@163.com</email>
+            <!-- 开源地址 -->
+            <url>https://github.com/Silwings-git</url>
+        </developer>
+    </developers>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <target>1.8</target>
+                    <source>1.8</source>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

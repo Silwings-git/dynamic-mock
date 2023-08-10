@@ -2,7 +2,9 @@ package top.silwings.core.model.validator;
 
 import org.springframework.stereotype.Component;
 import top.silwings.core.handler.MockHandlerFactory;
+import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockResponseInfoDto;
 
 /**
  * @ClassName MockHandlerValidator
@@ -15,13 +17,18 @@ import top.silwings.core.model.MockHandlerDto;
 public class MockHandlerValidator {
 
     private final MockHandlerFactory mockHandlerFactory;
+    private final MockResponseInfoFactory mockResponseInfoFactory;
 
-    public MockHandlerValidator(final MockHandlerFactory mockHandlerFactory) {
+    public MockHandlerValidator(final MockHandlerFactory mockHandlerFactory, final MockResponseInfoFactory mockResponseInfoFactory) {
         this.mockHandlerFactory = mockHandlerFactory;
+        this.mockResponseInfoFactory = mockResponseInfoFactory;
     }
 
     public void validate(final MockHandlerDto mockHandlerDto) {
         this.mockHandlerFactory.buildMockHandler(mockHandlerDto);
     }
 
+    public void validateMockResponse(final MockResponseInfoDto responseInfoDto) {
+        this.mockResponseInfoFactory.buildResponseInfo(responseInfoDto);
+    }
 }

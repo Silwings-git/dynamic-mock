@@ -2,6 +2,7 @@ package top.silwings.core.handler;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.silwings.core.handler.response.CommonMockResponse;
 import top.silwings.core.handler.response.MockResponse;
 
 /**
@@ -58,9 +59,8 @@ public class MockWorkflowControl {
 
     public static MockWorkflowControl build() {
         final MockWorkflowControl control = new MockWorkflowControl();
-        control.setInterruptResult(MockResponse.newInstance());
+        control.setInterruptResult(CommonMockResponse.newInstance());
         return control;
     }
-
 
 }

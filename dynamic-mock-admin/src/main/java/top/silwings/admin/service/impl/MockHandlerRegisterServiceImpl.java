@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
@@ -74,7 +75,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
         do {
             final PageData<MockHandlerDto> pageData = DynamicMockAdminContext.getInstance()
                     .getMockHandlerService()
-                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 200));
+                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 10));
 
             if (total < 0) {
                 total = pageData.getTotal();
@@ -132,7 +133,7 @@ public class MockHandlerRegisterServiceImpl implements MockHandlerRegisterServic
         do {
             final PageData<MockHandlerDto> pageData = DynamicMockAdminContext.getInstance()
                     .getMockHandlerService()
-                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 200));
+                    .queryEnableHandlerList(conditionParam, PageParam.of(1, 20));
 
             final List<MockHandlerDto> waitRefreshHandlerList = pageData.getList().stream()
                     .filter(handlerInfo -> !((Long) handlerInfo.getVersion()).equals(handlerVersionMap.get(handlerInfo.getHandlerId())))

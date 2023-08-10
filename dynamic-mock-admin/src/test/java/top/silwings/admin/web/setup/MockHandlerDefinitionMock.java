@@ -55,9 +55,17 @@ public class MockHandlerDefinitionMock {
                 .scriptName("测试脚本")
                 .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
                 .interfaceType(PluginInterfaceType.PRE_MOCK)
+//                .scriptText("function preMock(context) {\n" +
+//                            "    console.log(context.getRequestInfo().getRequestURI());\n" +
+//                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\");\n" +
+//                            "}\n" +
+//                            "\n" +
+//                            "function getOrder(){\n" +
+//                            "    return 10;\n" +
+//                            "}")
                 .scriptText("function preMock(context) {\n" +
-                            "    console.log(context.getRequestInfo().getRequestURI());\n" +
-                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\");\n" +
+                            "   var a = \"\"+JSON.parse(decodeURIComponent(JSON.parse('{\"formBody\": {\"360buy_param_json\": [\"%7B%22optional_fields%22%3A%22orderId%2CorderType%2CpayType%2CorderTotalPrice%2CorderSellerPrice%2CorderPayment%2CfreightPrice%2CorderRemark%2CorderStartTime%2CconsigneeInfo%2CitemInfoList%2CcouponDetailList%2CvenderRemark%2Cpin%2CpaymentConfirmTime%2ClogisticsId%2CrealPin%2CorderState%2CbalanceUsed%2CdirectParentOrderId%22%2C%22order_id%22%3A274975906226%2C%22order_state%22%3Anull%7D\"]}}').formBody['360buy_param_json'][0])).order_id;\n" +
+                            "   console.log(a);\n" +
                             "}\n" +
                             "\n" +
                             "function getOrder(){\n" +

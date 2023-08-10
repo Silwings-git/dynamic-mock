@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.repository.mapper.MockHandlerMapper;
 import top.silwings.admin.repository.mapper.TextFileMapper;
@@ -37,7 +38,7 @@ public class FileCleanUpScheduled {
         this.textFileMapper = textFileMapper;
     }
 
-    @Scheduled(cron = "* * 0/2 * * ? ")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void fileCleanUp() {
 
         final List<String> fileNameList = this.queryHandlerUsedFileNames();

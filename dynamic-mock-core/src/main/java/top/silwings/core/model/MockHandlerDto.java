@@ -89,9 +89,11 @@ public class MockHandlerDto {
     /**
      * 用于拓展的额外数据
      */
-    private Object extData;
+    private Map<String, ?> extData;
 
     private Date updateTime;
+
+    private long version;
 
     public static MockHandlerDto copyOf(final MockHandlerDto dto, final BiConsumer<MockHandlerDto, MockHandlerDtoBuilder> builderConsumer) {
 
@@ -107,15 +109,12 @@ public class MockHandlerDto {
                 .customizeSpace(dto.getCustomizeSpace())
                 .responses(dto.getResponses())
                 .tasks(dto.getTasks())
-                .updateTime(dto.getUpdateTime());
+                .updateTime(dto.getUpdateTime())
+                .version(dto.getVersion());
 
         builderConsumer.accept(dto, handlerBuilder);
 
         return handlerBuilder.build();
-    }
-
-    public long getVersion() {
-        return this.updateTime.getTime();
     }
 
 }

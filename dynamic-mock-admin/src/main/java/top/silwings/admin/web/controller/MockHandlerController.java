@@ -2,6 +2,7 @@ package top.silwings.admin.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,17 +12,23 @@ import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageResult;
 import top.silwings.admin.common.Result;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.ProjectDto;
 import top.silwings.admin.model.QueryHandlerConditionDto;
 import top.silwings.admin.service.MockHandlerService;
 import top.silwings.admin.service.ProjectService;
+import top.silwings.admin.web.vo.converter.MockHandlerResponseVoConverter;
 import top.silwings.admin.web.vo.converter.MockHandlerVoConverter;
 import top.silwings.admin.web.vo.param.DeleteMockHandlerParam;
 import top.silwings.admin.web.vo.param.EnableStatusParam;
 import top.silwings.admin.web.vo.param.FindMockHandlerParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
+import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.QueryMockHandlerParam;
 import top.silwings.admin.web.vo.param.QueryOwnMockHandlerParam;
+import top.silwings.admin.web.vo.param.UpdateResponseEnableStatusParam;
+import top.silwings.admin.web.vo.param.UpdateTaskEnableStatusParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.admin.web.vo.result.OwnHandlerInfoResult;
@@ -29,7 +36,10 @@ import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
+import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,11 +67,14 @@ public class MockHandlerController {
 
     private final ProjectService projectService;
 
-    public MockHandlerController(final MockHandlerService mockHandlerService, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService) {
+    private final MockHandlerResponseVoConverter mockHandlerResponseVoConverter;
+
+    public MockHandlerController(final MockHandlerService mockHandlerService, final MockHandlerVoConverter mockHandlerVoConverter, final MockHandlerValidator mockHandlerValidator, final ProjectService projectService, final MockHandlerResponseVoConverter mockHandlerResponseVoConverter) {
         this.mockHandlerService = mockHandlerService;
         this.mockHandlerVoConverter = mockHandlerVoConverter;
         this.mockHandlerValidator = mockHandlerValidator;
         this.projectService = projectService;
+        this.mockHandlerResponseVoConverter = mockHandlerResponseVoConverter;
     }
 
     @PostMapping("/save")
@@ -72,6 +85,9 @@ public class MockHandlerController {
         param.validate();
 
         UserHolder.validProjectId(param.getProjectId());
+
+        final ProjectDto projectDto = this.projectService.find(param.getProjectId());
+        CheckUtils.isNotNull(projectDto, DynamicMockAdminException.supplier(ErrorCode.PROJECT_NOT_EXIST));
 
         final MockHandlerDto mockHandlerDto = this.mockHandlerVoConverter.convert(param);
 
@@ -125,10 +141,10 @@ public class MockHandlerController {
                 .enableStatus(EnableStatus.valueOfCode(param.getEnableStatus()))
                 .build();
 
-        final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, param);
+        final PageData<MockHandlerSummaryDto> pageData = this.mockHandlerService.querySummary(queryCondition, param);
 
         final Map<Identity, ProjectDto> projectIdProjectNameMap = pageData.getList().stream()
-                .map(MockHandlerDto::getProjectId)
+                .map(MockHandlerSummaryDto::getProjectId)
                 .distinct()
                 .map(this.projectService::find)
                 .collect(Collectors.toMap(ProjectDto::getProjectId, Function.identity(), (v1, v2) -> v2));
@@ -190,6 +206,54 @@ public class MockHandlerController {
                 .collect(Collectors.groupingBy(OwnHandlerInfoResult::getProjectId));
 
         return Result.ok(QueryOwnHandlerMappingResult.builder().projectHandlerMap(projectIdHandlerMap).build());
+    }
+
+    @PostMapping("/response/update/{handlerId}")
+    @PermissionLimit
+    @ApiOperation(value = "修改响应信息", notes = "修改后Mock处理器将自动关闭")
+    public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
+                                                      @RequestBody MockResponseInfoParam mockResponseInfoParam) {
+
+        mockResponseInfoParam.validate();
+
+        final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
+        UserHolder.validProjectId(projectId);
+
+        final MockResponseInfoDto responseInfoDto = this.mockHandlerResponseVoConverter.convert(mockResponseInfoParam);
+
+        this.mockHandlerValidator.validateMockResponse(responseInfoDto);
+
+        this.mockHandlerService.updateMockHandlerResponse(handlerId, responseInfoDto);
+
+        return Result.ok(handlerId);
+    }
+
+    @PostMapping("/response/status")
+    @PermissionLimit
+    @ApiOperation(value = "修改响应开关", notes = "修改后Mock处理器将自动关闭")
+    public Result<Identity> updateResponseEnableStatus(@RequestBody UpdateResponseEnableStatusParam param) {
+
+        param.validate();
+
+        UserHolder.validHandlerId(param.getHandlerId());
+
+        this.mockHandlerService.updateResponseEnableStatus(param.getHandlerId(), param.getResponseId(), EnableStatus.valueOfCode(param.getEnableStatus()));
+
+        return Result.ok(param.getHandlerId());
+    }
+
+    @PostMapping("/task/status")
+    @PermissionLimit
+    @ApiOperation(value = "修改任务开关", notes = "修改后Mock处理器将自动关闭")
+    public Result<Identity> updateTaskEnableStatus(@RequestBody UpdateTaskEnableStatusParam param) {
+
+        param.validate();
+
+        UserHolder.validHandlerId(param.getHandlerId());
+
+        this.mockHandlerService.updateTaskEnableStatus(param.getHandlerId(), param.getTaskId(), EnableStatus.valueOfCode(param.getEnableStatus()));
+
+        return Result.ok(param.getHandlerId());
     }
 
 }

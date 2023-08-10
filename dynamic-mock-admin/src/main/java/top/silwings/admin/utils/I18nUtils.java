@@ -26,6 +26,10 @@ public class I18nUtils {
 
     private static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
 
+    private I18nUtils() {
+        throw new AssertionError();
+    }
+
     public static Properties loadI18nProp(final String language) {
 
         if (propertiesMap.containsKey(language)) {
