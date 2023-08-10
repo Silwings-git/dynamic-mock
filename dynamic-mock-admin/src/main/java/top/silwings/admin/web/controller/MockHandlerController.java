@@ -204,6 +204,9 @@ public class MockHandlerController {
     @ApiOperation(value = "修改响应信息")
     public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
                                                       @RequestBody MockResponseInfoParam mockResponseInfoParam) {
+
+        mockResponseInfoParam.validate();
+
         final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
         UserHolder.validProjectId(projectId);
 
