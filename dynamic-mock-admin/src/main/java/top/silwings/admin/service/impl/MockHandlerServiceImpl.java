@@ -322,6 +322,12 @@ public class MockHandlerServiceImpl implements MockHandlerService {
     }
 
     @Override
+    @Transactional
+    public void disableMockHandler(final Identity handlerId) {
+        this.updateEnableStatus(handlerId, EnableStatus.DISABLE, null);
+    }
+
+    @Override
     public int findMockHandlerQuantityByProject(final Identity projectId) {
 
         final Example example = new Example(MockHandlerPo.class);
@@ -502,8 +508,8 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         this.mockHandlerResponseRepository.updateByHandlerAndResponseId(handlerId, responseInfoDto);
 
-        // 更新成功后取消注册该handler
-        this.mockHandlerManager.unregisterHandler(handlerId);
+        // 更新成功后修改启用状态
+        this.disableMockHandler(handlerId);
     }
 
 }

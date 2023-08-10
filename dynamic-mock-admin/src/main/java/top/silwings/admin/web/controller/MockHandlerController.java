@@ -201,7 +201,7 @@ public class MockHandlerController {
 
     @PostMapping("/update/response/{handlerId}")
     @PermissionLimit
-    @ApiOperation(value = "查询登录用户的全部Handler信息")
+    @ApiOperation(value = "修改响应信息")
     public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
                                                       @RequestBody MockResponseInfoParam mockResponseInfoParam) {
         final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
