@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import top.silwings.admin.common.enums.MockHandlerComponentType;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.MockHandlerConditionRepository;
 import top.silwings.admin.repository.MockHandlerResponseRepository;
 import top.silwings.admin.repository.converter.ConditionDaoConverter;
@@ -137,6 +139,11 @@ public class MockHandlerResponseRepositoryImpl implements MockHandlerResponseRep
         }
 
         final Identity responseId = responseInfoDto.getResponseId();
+
+        final MockHandlerResponsePo oldResponse = this.mockHandlerResponseMapper.findPoForUpdate(handlerId.intValue(), responseId.intValue());
+        if (null == oldResponse) {
+            throw DynamicMockAdminException.from(ErrorCode.MOCK_HANDLER_RESPONSE_NOT_EXIST);
+        }
 
         final MockHandlerResponsePo responsePo = this.mockHandlerResponseDaoConverter.convert(handlerId, responseInfoDto, null);
         final Example responseExample = new Example(MockHandlerResponsePo.class);
