@@ -3,6 +3,7 @@ package top.silwings.admin.repository.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import top.silwings.admin.common.DynamicMockBaseMapper;
 import top.silwings.admin.repository.po.MockHandlerPo;
 
@@ -35,4 +36,9 @@ public interface MockHandlerMapper extends DynamicMockBaseMapper<MockHandlerPo> 
             " FOR UPDATE")
     MockHandlerPo findPoForUpdate(@Param("handlerId") Integer handlerId);
 
+    @Update(" UPDATE dm_mock_handler " +
+            " SET increment_version = increment_version + 1 " +
+            " WHERE" +
+            " handler_id = #{handlerId}")
+    void incrementVersion(@Param("handlerId") Integer handlerId);
 }

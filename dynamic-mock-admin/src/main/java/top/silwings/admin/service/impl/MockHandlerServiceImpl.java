@@ -508,8 +508,23 @@ public class MockHandlerServiceImpl implements MockHandlerService {
 
         this.mockHandlerResponseRepository.updateByHandlerAndResponseId(handlerId, responseInfoDto);
 
-        // 更新成功后修改启用状态
+        // 响应更新后需要更新mock版本号
+        this.incrementVersion(handlerId);
+
+        // 添加快照
+        this.mockHandlerDefineSnapshotRepository.snapshot(handlerId, this.find(handlerId));
+
+        // 关闭mock处理器
         this.disableMockHandler(handlerId);
+    }
+
+    /**
+     * 自增mock处理器版本号
+     *
+     * @param handlerId 处理器ID
+     */
+    private void incrementVersion(final Identity handlerId) {
+        this.mockHandlerMapper.incrementVersion(handlerId.intValue());
     }
 
 }
