@@ -12,6 +12,7 @@ import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
@@ -140,20 +141,19 @@ public class MockHandlerVoConverter {
                 .build();
     }
 
-    public MockHandlerSummaryResult convertSummary(final MockHandlerDto dto, final ProjectDto project) {
+    public MockHandlerSummaryResult convertSummary(final MockHandlerSummaryDto handlerSummary, final ProjectDto project) {
 
         final MockHandlerSummaryResult resultVo = new MockHandlerSummaryResult();
-
-        resultVo.setProjectId(dto.getProjectId());
+        resultVo.setProjectId(handlerSummary.getProjectId());
         resultVo.setProjectName(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getProjectName));
         resultVo.setBaseUri(ConvertUtils.getNoNullOrDefault(project, null, ProjectDto::getBaseUri));
-        resultVo.setEnableStatus(dto.getEnableStatus().code());
-        resultVo.setHandlerId(dto.getHandlerId());
-        resultVo.setName(dto.getName());
-        resultVo.setHttpMethods(dto.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
-        resultVo.setRequestUri(dto.getRequestUri());
-        resultVo.setLabel(dto.getLabel());
-        resultVo.setUpdateTime(dto.getUpdateTime());
+        resultVo.setEnableStatus(handlerSummary.getEnableStatus().code());
+        resultVo.setHandlerId(handlerSummary.getHandlerId());
+        resultVo.setName(handlerSummary.getName());
+        resultVo.setHttpMethods(handlerSummary.getHttpMethods().stream().map(HttpMethod::name).collect(Collectors.toList()));
+        resultVo.setRequestUri(handlerSummary.getRequestUri());
+        resultVo.setLabel(handlerSummary.getLabel());
+        resultVo.setUpdateTime(handlerSummary.getUpdateTime());
 
         return resultVo;
     }

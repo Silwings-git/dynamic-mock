@@ -117,8 +117,4 @@ public class MockHandlerDto {
         return handlerBuilder.build();
     }
 
-    public long getVersion() {
-        return this.version;
-    }
-
 }

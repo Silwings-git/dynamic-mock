@@ -36,6 +36,7 @@ import top.silwings.core.common.Identity;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.MockHandlerManager;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.CheckUtils;
@@ -255,14 +256,14 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
     }
 
     @Override
-    public PageData<MockHandlerDto> query(final QueryHandlerConditionDto queryCondition, final PageParam pageParam) {
+    public PageData<MockHandlerSummaryDto> querySummary(final QueryHandlerConditionDto queryCondition, final PageParam pageParam) {
 
         if (CollectionUtils.isEmpty(queryCondition.getProjectIdList())) {
             return PageData.empty();
         }
 
-        final Example condition = new Example(MockHandlerPo.class);
-        final Example.Criteria criteria = condition.createCriteria();
+        final Example example = new Example(MockHandlerPo.class);
+        final Example.Criteria criteria = example.createCriteria();
         criteria
                 .andIn(MockHandlerPo.C_PROJECT_ID, Identity.toInt(queryCondition.getProjectIdList()))
                 .andEqualTo(MockHandlerPo.C_PROJECT_ID, ConvertUtils.getNoNullOrDefault(queryCondition.getProjectId(), null, Identity::intValue))
@@ -272,9 +273,20 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
                 .andLike(MockHandlerPo.C_HTTP_METHODS, ConvertUtils.getNoBlankOrDefault(queryCondition.getHttpMethod(), null, label -> "%" + label + "%"))
                 .andEqualTo(MockHandlerPo.C_ENABLE_STATUS, ConvertUtils.getNoNullOrDefault(queryCondition.getEnableStatus(), null, EnableStatus::code));
 
-        condition.orderBy(MockHandlerPo.C_NAME).asc();
+        example.orderBy(MockHandlerPo.C_CREATE_TIME).desc();
 
-        return this.queryPageData(condition, pageParam.toRowBounds());
+        final long total = this.mockHandlerMapper.selectCountByCondition(example);
+        if (total <= 0) {
+            return PageData.empty();
+        }
+
+        final List<MockHandlerPo> mockHandlerList = this.mockHandlerMapper.selectByConditionAndRowBounds(example, pageParam.toRowBounds());
+
+        final List<MockHandlerSummaryDto> mockHandlerSummaryDtoList = mockHandlerList
+                .stream()
+                .map(this.mockHandlerDaoConverter::convertSummary)
+                .collect(Collectors.toList());
+        return PageData.of(mockHandlerSummaryDtoList, total);
     }
 
     @Override

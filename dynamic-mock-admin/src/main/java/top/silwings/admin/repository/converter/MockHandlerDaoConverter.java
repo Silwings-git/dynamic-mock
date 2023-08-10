@@ -8,6 +8,7 @@ import top.silwings.admin.repository.po.pack.MockHandlerPoWrap;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -79,4 +80,17 @@ public class MockHandlerDaoConverter {
                 .build();
     }
 
+    public MockHandlerSummaryDto convertSummary(final MockHandlerPo mockHandlerPo) {
+        return MockHandlerSummaryDto.builder()
+                .handlerId(Identity.from(mockHandlerPo.getHandlerId()))
+                .projectId(Identity.from(mockHandlerPo.getProjectId()))
+                .enableStatus(ConvertUtils.getNoNullOrDefault(mockHandlerPo.getEnableStatus(), EnableStatus.DISABLE, EnableStatus::valueOfCode))
+                .name(mockHandlerPo.getName())
+                .httpMethods(Arrays.stream(mockHandlerPo.getHttpMethods().split(",")).map(HttpMethod::resolve).collect(Collectors.toList()))
+                .requestUri(mockHandlerPo.getRequestUri())
+                .label(mockHandlerPo.getLabel())
+                .delayTime(mockHandlerPo.getDelayTime())
+                .updateTime(mockHandlerPo.getUpdateTime())
+                .build();
+    }
 }

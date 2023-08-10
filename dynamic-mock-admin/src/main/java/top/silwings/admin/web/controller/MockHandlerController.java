@@ -34,6 +34,7 @@ import top.silwings.admin.web.vo.result.QueryOwnHandlerMappingResult;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerSummaryDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.validator.MockHandlerValidator;
 import top.silwings.core.utils.CheckUtils;
@@ -138,10 +139,10 @@ public class MockHandlerController {
                 .enableStatus(EnableStatus.valueOfCode(param.getEnableStatus()))
                 .build();
 
-        final PageData<MockHandlerDto> pageData = this.mockHandlerService.query(queryCondition, param);
+        final PageData<MockHandlerSummaryDto> pageData = this.mockHandlerService.querySummary(queryCondition, param);
 
         final Map<Identity, ProjectDto> projectIdProjectNameMap = pageData.getList().stream()
-                .map(MockHandlerDto::getProjectId)
+                .map(MockHandlerSummaryDto::getProjectId)
                 .distinct()
                 .map(this.projectService::find)
                 .collect(Collectors.toMap(ProjectDto::getProjectId, Function.identity(), (v1, v2) -> v2));
@@ -205,7 +206,7 @@ public class MockHandlerController {
         return Result.ok(QueryOwnHandlerMappingResult.builder().projectHandlerMap(projectIdHandlerMap).build());
     }
 
-    @PostMapping("/update/response/{handlerId}")
+    @PostMapping("/response/update/{handlerId}")
     @PermissionLimit
     @ApiOperation(value = "修改响应信息")
     public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
@@ -224,5 +225,16 @@ public class MockHandlerController {
 
         return Result.ok(handlerId);
     }
+
+//    @PostMapping("/response/status")
+//    @PermissionLimit
+//    @ApiOperation(value = "修改响应开关")
+//    public Result<Identity> updateResponseEnableStatus(@RequestBody UpdateResponseEnableStatusParam param) {
+//
+//        param.validate();
+//
+//
+//
+//    }
 
 }
