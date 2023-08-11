@@ -6,6 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import top.silwings.core.common.Identity;
 import top.silwings.core.config.DynamicMockContext;
+import top.silwings.core.handler.check.CheckInfo;
+import top.silwings.core.handler.check.CheckResult;
 import top.silwings.core.handler.context.DefaultPreMockContext;
 import top.silwings.core.handler.context.DefaultPreResponseContext;
 import top.silwings.core.handler.context.MockHandlerContext;
@@ -76,6 +78,8 @@ public class MockHandler implements Closeable {
 
     private final List<MockTaskInfo> asyncTaskInfoList;
 
+    private final CheckInfo checkInfo;
+
     private final PluginExecutorManager pluginExecutorManager;
 
     public boolean support(final RequestInfo requestInfo) {
@@ -98,6 +102,9 @@ public class MockHandler implements Closeable {
             return this.response(mockWorkflowControl.getInterruptResult(), defaultPreMockContext, mockWorkflowControl);
         }
 
+        // 处理验证逻辑
+        this.check(mockHandlerContext, mockWorkflowControl);
+
         // 处理器延迟
         this.delay(mockWorkflowControl.isExecuteHandlerDelay());
 
@@ -105,12 +112,39 @@ public class MockHandler implements Closeable {
         this.registerAsyncTask(mockHandlerContext, mockWorkflowControl);
 
         // 筛选合适的响应信息
-        final MockResponse mockResponse = this.filterMockResponse(mockHandlerContext, mockWorkflowControl);
+        final MockResponseInfo mockResponseInfo = this.filterMockResponse(mockHandlerContext, mockWorkflowControl);
 
         // 注册并执行一次性的同步任务
         this.registerDisposableSyncTask(mockHandlerContext, mockWorkflowControl);
 
-        return this.response(mockResponse, defaultPreMockContext, mockWorkflowControl);
+        return this.response(mockResponseInfo, mockHandlerContext, defaultPreMockContext, mockWorkflowControl);
+    }
+
+    private void check(final MockHandlerContext mockHandlerContext, final MockWorkflowControl mockWorkflowControl) {
+        if (mockWorkflowControl.isExecuteHandlerCheck()) {
+            final CheckResult checkResult = this.checkInfo.check(mockHandlerContext);
+            if (!checkResult.isPassed()) {
+                mockWorkflowControl.setInterruptAndReturn(true);
+                mockWorkflowControl.setInterruptResult(checkResult.getCheckFailedResponse());
+            }
+        }
+    }
+
+    private ResponseEntity<?> response(final MockResponseInfo mockResponseInfo,
+                                       final MockHandlerContext mockHandlerContext,
+                                       final DefaultPreMockContext defaultPreMockContext,
+                                       final MockWorkflowControl mockWorkflowControl) {
+
+        if (null == mockResponseInfo) {
+            return this.response(null, defaultPreMockContext, mockWorkflowControl);
+        }
+
+        // 处理验证逻辑
+        if (mockWorkflowControl.isExecuteResponseCheck()) {
+            mockResponseInfo.check(mockHandlerContext, mockWorkflowControl);
+        }
+
+        return this.response(mockResponseInfo.getMockResponse(mockHandlerContext), defaultPreMockContext, mockWorkflowControl);
     }
 
     /**
@@ -166,21 +200,19 @@ public class MockHandler implements Closeable {
         }
     }
 
-    private MockResponse filterMockResponse(final MockHandlerContext mockHandlerContext, final MockWorkflowControl mockWorkflowControl) {
-        MockResponse mockResponse = null;
+    private MockResponseInfo filterMockResponse(final MockHandlerContext mockHandlerContext, final MockWorkflowControl mockWorkflowControl) {
 
         if (mockWorkflowControl.isExecuteResponse()) {
             // 筛选Response
             for (final MockResponseInfo mockResponseInfo : this.responseInfoList) {
                 if (mockResponseInfo.support(mockHandlerContext)) {
                     // -- 初始化Response
-                    mockResponse = mockResponseInfo.getMockResponse(mockHandlerContext);
-                    break;
+                    return mockResponseInfo;
                 }
             }
         }
 
-        return mockResponse;
+        return null;
     }
 
     private void registerDisposableSyncTask(final MockHandlerContext mockHandlerContext, final MockWorkflowControl mockWorkflowControl) {

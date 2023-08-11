@@ -22,6 +22,11 @@ public class MockWorkflowControl {
     private boolean executeHandlerDelay = true;
 
     /**
+     * 是否处理Mock处理器check逻辑
+     */
+    private boolean executeHandlerCheck = true;
+
+    /**
      * 是否执行异步任务
      */
     private boolean executeAsyncTask = true;
@@ -30,6 +35,11 @@ public class MockWorkflowControl {
      * 是否执行响应
      */
     private boolean executeResponse = true;
+
+    /**
+     * 是否执行响应check逻辑
+     */
+    private boolean executeResponseCheck = true;
 
     /**
      * 是否执行同步任务

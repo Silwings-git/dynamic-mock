@@ -79,6 +79,15 @@ public class JsonUtils {
         }
     }
 
+    public static <T> T tryToBean(final String jsonStr, final Class<T> tClass, final T defaultReturnValue) {
+        try {
+            return MAPPER.readValue(jsonStr, tClass);
+        } catch (IOException e) {
+            log.debug("Json parsing error: " + jsonStr, e);
+            return defaultReturnValue;
+        }
+    }
+
     public static Object toBean(final String jsonStr) {
         try {
             return MAPPER.readValue(jsonStr, Object.class);

@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.exceptions.ScriptNoSupportException;
+import top.silwings.core.handler.check.CheckInfo;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.handler.plugin.PluginRegistrationProgram;
@@ -64,6 +65,10 @@ public class MockHandlerFactory {
 
         // 自定义空间.
         builder.customizeSpaceInterpreter(new CustomizeSpaceInterpreter(definition.getCustomizeSpace(), this.jsonTreeParser.parse(definition.getCustomizeSpace())));
+
+        // 校验
+        // TODO_Silwings: 2023/8/11 实例化Check
+        builder.checkInfo(CheckInfo.builder().build());
 
         // 响应信息
         builder.responseInfoList(

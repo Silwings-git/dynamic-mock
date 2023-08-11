@@ -4,6 +4,9 @@ import lombok.Builder;
 import top.silwings.core.converter.HttpHeaderConverter;
 import top.silwings.core.exceptions.DynamicMockException;
 import top.silwings.core.handler.AbstractSupportAble;
+import top.silwings.core.handler.MockWorkflowControl;
+import top.silwings.core.handler.check.CheckInfo;
+import top.silwings.core.handler.check.CheckResult;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.interpreter.ExpressionInterpreter;
 import top.silwings.core.utils.ConvertUtils;
@@ -29,6 +32,8 @@ public class MockResponseInfo extends AbstractSupportAble {
 
     private final ExpressionInterpreter responseInterpreter;
 
+    private final CheckInfo checkInfo;
+
     @Override
     protected List<ExpressionInterpreter> getSupportInterpreterList() {
         return this.supportInterpreterList;
@@ -52,5 +57,11 @@ public class MockResponseInfo extends AbstractSupportAble {
                 .build();
     }
 
-
+    public void check(final MockHandlerContext mockHandlerContext, final MockWorkflowControl mockWorkflowControl) {
+        final CheckResult checkResult = this.checkInfo.check(mockHandlerContext);
+        if (!checkResult.isPassed()) {
+            mockWorkflowControl.setInterruptAndReturn(true);
+            mockWorkflowControl.setInterruptResult(checkResult.getCheckFailedResponse());
+        }
+    }
 }
