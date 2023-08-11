@@ -55,6 +55,9 @@ public class MockHandlerInfoParam {
     @ApiModelProperty(value = "自定义参数空间")
     private Map<String, Object> customizeSpace;
 
+    @ApiModelProperty(value = "校验信息")
+    private CheckInfoParam checkInfo;
+
     @ApiModelProperty(value = "响应信息集")
     private List<MockResponseInfoParam> responses;
 

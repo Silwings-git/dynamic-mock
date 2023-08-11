@@ -10,6 +10,7 @@ CREATE TABLE `dm_mock_handler`
     `label`             VARCHAR(128)          DEFAULT NULL COMMENT '标签',
     `delay_time`        INT          NOT NULL DEFAULT '0' COMMENT '延迟处理时间',
     `customize_space`   JSON                  DEFAULT NULL COMMENT '自定义空间',
+    `check_info_json`   JSON                  DEFAULT NULL COMMENT '参数验证信息',
     `author`            VARCHAR(32)           DEFAULT NULL COMMENT '负责人',
     `create_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`       DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -132,15 +133,16 @@ CREATE TABLE `dm_mock_handler_task_request`
 
 CREATE TABLE `dm_mock_handler_response`
 (
-    `response_id`   INT         NOT NULL AUTO_INCREMENT,
-    `handler_id`    INT         NOT NULL COMMENT 'mock处理器ID',
-    `name`          VARCHAR(64) NOT NULL COMMENT '响应名称',
-    `enable_status` INT         NOT NULL DEFAULT 1 COMMENT '启用状态',
-    `delay_time`    INT         NOT NULL DEFAULT 0 COMMENT '延迟时间',
-    `sort`          INT         NOT NULL COMMENT '排序',
-    `create_time`   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `response_id`     INT         NOT NULL AUTO_INCREMENT,
+    `handler_id`      INT         NOT NULL COMMENT 'mock处理器ID',
+    `name`            VARCHAR(64) NOT NULL COMMENT '响应名称',
+    `enable_status`   INT         NOT NULL DEFAULT 1 COMMENT '启用状态',
+    `delay_time`      INT         NOT NULL DEFAULT 0 COMMENT '延迟时间',
+    `check_info_json` JSON                 DEFAULT NULL COMMENT '参数验证信息',
+    `sort`            INT         NOT NULL COMMENT '排序',
+    `create_time`     DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`response_id`),
-    KEY             `idx_dmmockhandlerresponse_handlerid` (`handler_id`) USING BTREE
+    KEY               `idx_dmmockhandlerresponse_handlerid` (`handler_id`) USING BTREE
 ) ENGINE=InnoDB  COMMENT='Mock处理器响应信息表';
 
 CREATE TABLE `dm_mock_handler_response_item`

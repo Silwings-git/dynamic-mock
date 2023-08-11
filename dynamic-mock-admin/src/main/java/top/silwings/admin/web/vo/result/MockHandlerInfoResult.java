@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.silwings.admin.web.vo.param.CheckInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 import top.silwings.core.common.Identity;
@@ -60,6 +61,9 @@ public class MockHandlerInfoResult {
 
     @ApiModelProperty(value = "自定义参数空间")
     private Map<String, ?> customizeSpace;
+
+    @ApiModelProperty(value = "参数校验信息")
+    private CheckInfoParam checkInfo;
 
     @ApiModelProperty(value = "响应信息集")
     private List<MockResponseInfoParam> responses;

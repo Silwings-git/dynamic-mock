@@ -19,7 +19,7 @@ public class CheckItemDto {
     /**
      * 错误消息Id
      */
-    private String errResId;
+    private String errResCode;
 
     /**
      * 错误消息填充参数

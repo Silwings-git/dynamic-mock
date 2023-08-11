@@ -54,9 +54,9 @@ public class CheckInfo {
 
     private MockResponse fillErrorMsg(final CheckItem checkItem) {
 
-        final String errResId = checkItem.getErrResId();
+        final String errResCode = checkItem.getErrResCode();
 
-        final ErrorResponseInfo errRes = this.errResMap.get(errResId);
+        final ErrorResponseInfo errRes = this.errResMap.get(errResCode);
 
         if (null == errRes) {
             return DEFAULT_ERROR_RES;

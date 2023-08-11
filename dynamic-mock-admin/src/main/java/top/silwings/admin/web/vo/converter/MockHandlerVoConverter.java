@@ -4,6 +4,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.model.MockHandlerSummaryDto;
 import top.silwings.admin.model.ProjectDto;
+import top.silwings.admin.web.vo.param.CheckInfoParam;
+import top.silwings.admin.web.vo.param.CheckItemParam;
+import top.silwings.admin.web.vo.param.ErrorResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockHandlerInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
@@ -12,6 +15,9 @@ import top.silwings.admin.web.vo.param.SaveTaskRequestInfoParam;
 import top.silwings.admin.web.vo.result.MockHandlerInfoResult;
 import top.silwings.admin.web.vo.result.MockHandlerSummaryResult;
 import top.silwings.core.common.EnableStatus;
+import top.silwings.core.model.CheckInfoDto;
+import top.silwings.core.model.CheckItemDto;
+import top.silwings.core.model.ErrorResponseInfoDto;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
@@ -72,11 +78,33 @@ public class MockHandlerVoConverter {
         resultVo.setLabel(dto.getLabel());
         resultVo.setDelayTime(dto.getDelayTime());
         resultVo.setCustomizeSpace(dto.getCustomizeSpace());
+        resultVo.setCheckInfo(this.convert(dto.getCheckInfo()));
         resultVo.setResponses(dto.getResponses().stream().map(this::convert).collect(Collectors.toList()));
         resultVo.setTasks(dto.getTasks().stream().map(this::convert).collect(Collectors.toList()));
         resultVo.setUpdateTime(dto.getUpdateTime());
 
         return resultVo;
+    }
+
+    private CheckInfoParam convert(final CheckInfoDto checkInfo) {
+        final CheckInfoParam infoParam = new CheckInfoParam();
+        infoParam.setErrResList(checkInfo.getErrResList().stream().map(this::convert).collect(Collectors.toList()));
+        infoParam.setCheckItemList(checkInfo.getCheckItemList().stream().map(this::convert).collect(Collectors.toList()));
+        return infoParam;
+    }
+
+    private CheckItemParam convert(final CheckItemDto checkItemDto) {
+        return new CheckItemParam()
+                .setErrResCode(checkItemDto.getErrResCode())
+                .setErrMsgFillParam(checkItemDto.getErrMsgFillParam())
+                .setCheckExpression(checkItemDto.getCheckExpression());
+    }
+
+    private ErrorResponseInfoParam convert(final ErrorResponseInfoDto responseInfoDto) {
+        return new ErrorResponseInfoParam()
+                .setStatus(responseInfoDto.getStatus())
+                .setHeaders(responseInfoDto.getHeaders())
+                .setBody(responseInfoDto.getBody());
     }
 
     private TaskInfoDto convert(final SaveTaskInfoParam vo) {
@@ -132,6 +160,7 @@ public class MockHandlerVoConverter {
                 .enableStatus(dto.getEnableStatus().code())
                 .support(dto.getSupport())
                 .delayTime(dto.getDelayTime())
+                .checkInfo(this.convert(dto.getCheckInfo()))
                 .response(this.convert(dto.getResponse()))
                 .build();
     }

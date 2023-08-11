@@ -8,6 +8,7 @@ import top.silwings.admin.repository.po.MockHandlerPo;
 import top.silwings.admin.repository.po.pack.MockHandlerPoWrap;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
+import top.silwings.core.model.CheckInfoDto;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
@@ -52,6 +53,7 @@ public class MockHandlerDaoConverter {
         mockHandlerPo.setLabel(mockHandlerDto.getLabel());
         mockHandlerPo.setDelayTime(mockHandlerDto.getDelayTime());
         mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), "{}")));
+        mockHandlerPo.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCheckInfo(), "{}")));
 
         final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
         handlerPoWrap.setMockHandlerPo(mockHandlerPo);
@@ -73,6 +75,7 @@ public class MockHandlerDaoConverter {
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
                 .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
+                .checkInfo(JsonUtils.toBean(mockHandlerPo.getCheckInfoJson(), CheckInfoDto.class))
                 .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())

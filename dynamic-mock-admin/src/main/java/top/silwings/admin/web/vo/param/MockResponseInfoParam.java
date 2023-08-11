@@ -44,6 +44,9 @@ public class MockResponseInfoParam {
     @ApiModelProperty(value = "延迟响应时间", required = true, example = "0")
     private Integer delayTime;
 
+    @ApiModelProperty(value = "校验信息")
+    private CheckInfoParam checkInfo;
+
     @ApiModelProperty(value = "模拟响应内容", required = true)
     private MockResponseParam response;
 

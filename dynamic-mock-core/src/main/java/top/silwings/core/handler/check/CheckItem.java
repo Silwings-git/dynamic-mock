@@ -21,7 +21,7 @@ public class CheckItem {
     /**
      * 错误消息Id
      */
-    private final String errResId;
+    private final String errResCode;
 
     /**
      * 错误消息填充参数

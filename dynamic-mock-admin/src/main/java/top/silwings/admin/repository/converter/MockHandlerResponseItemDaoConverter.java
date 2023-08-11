@@ -7,6 +7,7 @@ import top.silwings.admin.repository.po.MockHandlerResponseItemPo;
 import top.silwings.admin.repository.po.MockHandlerResponsePo;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
+import top.silwings.core.model.CheckInfoDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -46,6 +47,7 @@ public class MockHandlerResponseItemDaoConverter {
                 .enableStatus(EnableStatus.valueOfCode(mockHandlerResponsePo.getEnableStatus()))
                 .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .delayTime(mockHandlerResponsePo.getDelayTime())
+                .checkInfo(JsonUtils.toBean(mockHandlerResponsePo.getCheckInfoJson(), CheckInfoDto.class))
                 .response(this.convert(responseItemPo))
                 .build();
     }

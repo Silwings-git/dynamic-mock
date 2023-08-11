@@ -89,6 +89,12 @@ public class MockHandlerPo {
     private String customizeSpace;
 
     /**
+     * 处理器参数校验信息
+     */
+    @Column(name = "check_info_json")
+    private String checkInfoJson;
+
+    /**
      * 负责人
      */
     @Column(name = "author")

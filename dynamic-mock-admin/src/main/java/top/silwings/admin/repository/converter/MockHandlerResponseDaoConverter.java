@@ -10,6 +10,7 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.JsonUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +60,7 @@ public class MockHandlerResponseDaoConverter {
         po.setName(mockResponseInfoDto.getName());
         po.setEnableStatus(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getEnableStatus(), null, EnableStatus::code));
         po.setDelayTime(mockResponseInfoDto.getDelayTime());
+        po.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockResponseInfoDto.getCheckInfo(), "{}")));
         po.setSort(sort);
 
         return po;

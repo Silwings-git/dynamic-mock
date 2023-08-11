@@ -8,7 +8,6 @@ package top.silwings.admin.common.enums;
  * @Since
  **/
 public enum MockHandlerComponentType {
-    MOCK_HANDLER_RESPONSE_PARAMETER_VALIDATION,
     MOCK_HANDLER_RESPONSE,
     MOCK_HANDLER_TASK,
     ;

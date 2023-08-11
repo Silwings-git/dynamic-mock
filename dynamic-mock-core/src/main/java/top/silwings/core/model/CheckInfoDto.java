@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName CheckInfoDto
@@ -20,7 +19,7 @@ public class CheckInfoDto {
     /**
      * 错误信息
      */
-    private Map<String, ErrorResponseInfoDto> errResMap;
+    private List<ErrorResponseInfoDto> errResList;
 
     /**
      * 校验项
