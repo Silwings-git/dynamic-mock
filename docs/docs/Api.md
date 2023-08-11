@@ -312,7 +312,7 @@ Mock系统的特性，需要注意区分，当函数不具备这种特性时，�
     2. defaultValue，不限制类型。当查询结果为null时使用defaultValue返回。
 
     3. searchScope，字符类型。用于指定查询的范围。支持`CUSTOMIZESPACE`和`REQUESTINFO`
-       ，不区分大小写，不传或值不合法时默认为`CUSTOMIZESPACE`。
+       ，不区分大小写，不传或值不合法时默认为`REQUESTINFO`。
 
         1. `CUSTOMIZESPACE`：自定义参数空间。自定义信息中的内容在创建Mock Handler是指定。
 

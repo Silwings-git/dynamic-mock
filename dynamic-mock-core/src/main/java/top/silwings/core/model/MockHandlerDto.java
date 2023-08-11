@@ -111,6 +111,7 @@ public class MockHandlerDto {
                 .requestUri(dto.getRequestUri())
                 .label(dto.getLabel())
                 .delayTime(dto.getDelayTime())
+                .checkInfo(dto.getCheckInfo())
                 .customizeSpace(dto.getCustomizeSpace())
                 .responses(dto.getResponses())
                 .tasks(dto.getTasks())

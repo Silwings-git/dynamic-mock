@@ -7,10 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import top.silwings.admin.exceptions.DynamicMockAdminException;
-import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.core.common.Identity;
-import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 
@@ -50,8 +47,4 @@ public class MockResponseInfoParam {
     @ApiModelProperty(value = "模拟响应内容", required = true)
     private MockResponseParam response;
 
-    public void validate() {
-        CheckUtils.isNotNull(this.responseId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "responseId"));
-        CheckUtils.isNotNull(this.response, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "response"));
-    }
 }

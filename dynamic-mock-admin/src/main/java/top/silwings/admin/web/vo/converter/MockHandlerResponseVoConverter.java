@@ -17,6 +17,12 @@ import top.silwings.core.model.MockResponseInfoDto;
 @Component
 public class MockHandlerResponseVoConverter {
 
+    private final MockHandlerCheckVoConverter mockHandlerCheckVoConverter;
+
+    public MockHandlerResponseVoConverter(final MockHandlerCheckVoConverter mockHandlerCheckVoConverter) {
+        this.mockHandlerCheckVoConverter = mockHandlerCheckVoConverter;
+    }
+
     public MockResponseInfoDto convert(final MockResponseInfoParam vo) {
         return MockResponseInfoDto.builder()
                 .responseId(vo.getResponseId())
@@ -24,6 +30,7 @@ public class MockHandlerResponseVoConverter {
                 .enableStatus(EnableStatus.valueOfCode(vo.getEnableStatus()))
                 .support(vo.getSupport())
                 .delayTime(vo.getDelayTime())
+                .checkInfo(this.mockHandlerCheckVoConverter.convert(vo.getCheckInfo()))
                 .response(this.convert(vo.getResponse()))
                 .build();
     }

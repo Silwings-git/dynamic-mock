@@ -2,6 +2,7 @@ package top.silwings.core.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,11 @@ import java.util.Map;
  **/
 @Getter
 @Setter
+@Accessors(chain = true)
 public class ErrorResponseInfoDto {
 
     /**
-     * 错误响应ID
+     * 错误响应Code
      */
     private String errResCode;
 

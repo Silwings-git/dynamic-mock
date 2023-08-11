@@ -63,7 +63,7 @@ public class CheckInfoFactory {
             return Collections.emptyMap();
         }
 
-        return errResList.stream().collect(Collectors.toMap(ErrorResponseInfoDto::getErrResCode, this::buildErrorResponseInfo));
+        return errResList.stream().collect(Collectors.toMap(ErrorResponseInfoDto::getErrResCode, this::buildErrorResponseInfo, (v1, v2) -> v2));
     }
 
     private ErrorResponseInfo buildErrorResponseInfo(final ErrorResponseInfoDto responseInfoDto) {

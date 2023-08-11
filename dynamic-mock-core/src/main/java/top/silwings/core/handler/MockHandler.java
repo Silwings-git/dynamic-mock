@@ -104,6 +104,10 @@ public class MockHandler implements Closeable {
 
         // 处理验证逻辑
         this.check(mockHandlerContext, mockWorkflowControl);
+        // 验证执行结束后要求中断并返回的,需要按照给出的结果立刻执行响应
+        if (mockWorkflowControl.isInterruptAndReturn()) {
+            return this.response(mockWorkflowControl.getInterruptResult(), defaultPreMockContext, mockWorkflowControl);
+        }
 
         // 处理器延迟
         this.delay(mockWorkflowControl.isExecuteHandlerDelay());

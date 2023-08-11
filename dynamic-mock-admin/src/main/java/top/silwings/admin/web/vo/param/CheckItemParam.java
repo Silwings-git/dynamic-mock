@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 
@@ -39,4 +42,7 @@ public class CheckItemParam {
     @ApiModelProperty(value = "检查语句,可以使用动态表达式", required = true, example = "true")
     private String checkExpression;
 
+    public void validate() {
+        CheckUtils.isNotBlank(this.checkExpression, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "checkExpression"));
+    }
 }

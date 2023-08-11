@@ -4,6 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 
@@ -30,5 +34,16 @@ public class CheckInfoParam {
      */
     @ApiModelProperty(value = "校验项")
     private List<CheckItemParam> checkItemList;
+
+    public void validate() {
+        if (CollectionUtils.isNotEmpty(this.errResList)) {
+            this.errResList.forEach(ErrorResponseInfoParam::validate);
+            final long count = this.errResList.stream().map(ErrorResponseInfoParam::getErrResCode).distinct().count();
+            CheckUtils.isTrue(count == this.errResList.size(), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "errResCode"));
+        }
+        if (CollectionUtils.isNotEmpty(this.checkItemList)) {
+            this.checkItemList.forEach(CheckItemParam::validate);
+        }
+    }
 
 }

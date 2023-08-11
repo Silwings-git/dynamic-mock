@@ -214,7 +214,8 @@ public class MockHandlerController {
     public Result<Identity> updateMockHandlerResponse(@PathVariable("handlerId") Identity handlerId,
                                                       @RequestBody MockResponseInfoParam mockResponseInfoParam) {
 
-        mockResponseInfoParam.validate();
+        CheckUtils.isNotNull(mockResponseInfoParam.getResponseId(), DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "responseId"));
+        CheckUtils.isNotNull(mockResponseInfoParam.getResponse(), DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "response"));
 
         final Identity projectId = this.mockHandlerService.findProjectId(handlerId);
         UserHolder.validProjectId(projectId);

@@ -115,7 +115,7 @@ public class SearchFunctionFactory implements FunctionFactory {
                     jsonObject = childNodeValueList.get(1);
                 }
             } else {
-                jsonObject = mockHandlerContext.getRequestContext().getCustomizeSpace();
+                jsonObject = mockHandlerContext.getRequestContext().getRequestInfo();
             }
 
             try {

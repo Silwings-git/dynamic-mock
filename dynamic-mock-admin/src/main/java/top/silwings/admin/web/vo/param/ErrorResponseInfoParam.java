@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import top.silwings.admin.exceptions.DynamicMockAdminException;
+import top.silwings.admin.exceptions.ErrorCode;
+import top.silwings.core.utils.CheckUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +26,16 @@ import java.util.Map;
 public class ErrorResponseInfoParam {
 
     /**
+     * 错误响应Code
+     */
+    @ApiModelProperty(value = "错误响应Code")
+    private String errResCode;
+
+    /**
      * http状态码
      */
     @ApiModelProperty(value = "http状态码")
-    private int status;
+    private Integer status;
 
     /**
      * 响应头信息
@@ -40,4 +49,8 @@ public class ErrorResponseInfoParam {
     @ApiModelProperty(value = "响应体")
     private Object body;
 
+    public void validate() {
+        CheckUtils.isNotBlank(this.errResCode, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "errResCode"));
+        CheckUtils.isNotNull(this.status, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "status"));
+    }
 }

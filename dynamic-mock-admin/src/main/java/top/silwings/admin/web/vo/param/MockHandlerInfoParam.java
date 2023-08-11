@@ -70,5 +70,8 @@ public class MockHandlerInfoParam {
         CheckUtils.hasMinimumSize(this.httpMethods, 1, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "httpMethods"));
         this.httpMethods.forEach(method -> CheckUtils.isNotNull(HttpMethod.resolve(method), DynamicMockAdminException.supplier(ErrorCode.VALID_ERROR, "httpMethods")));
         CheckUtils.isNotBlank(this.requestUri, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "requestUri"));
+        if (null != this.checkInfo) {
+            this.checkInfo.validate();
+        }
     }
 }

@@ -3,11 +3,11 @@ package top.silwings.core.handler.check;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.http.HttpHeaders;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.handler.response.CommonMockResponse;
 import top.silwings.core.handler.response.MockResponse;
 import top.silwings.core.utils.JsonUtils;
+import top.silwings.core.utils.MessageFormatUtils;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Map;
 @Builder
 public class CheckInfo {
 
-    public static final MockResponse DEFAULT_ERROR_RES = ErrorResponseInfo.builder().body("Parameter check failed").build();
+    public static final MockResponse DEFAULT_ERROR_RES = ErrorResponseInfo.builder().status(400).body("Parameter check failed").build();
 
     /**
      * 错误信息
@@ -67,7 +67,7 @@ public class CheckInfo {
             return CommonMockResponse.builder()
                     .delayTime(0)
                     .status(errRes.getStatus())
-                    .headers(JsonUtils.tryToBean(this.fillParam(errRes.getHeaders(), arguments), HttpHeaders.class, errRes::getHeaders))
+                    .headers(errRes.getHeaders())
                     .body(JsonUtils.tryToBean(this.fillParam(errRes.getBody(), arguments)))
                     .build();
         }
@@ -85,7 +85,8 @@ public class CheckInfo {
             return MessageFormat.format((String) pattern, arguments);
         } else {
             final String jsonString = JsonUtils.toJSONString(pattern);
-            return MessageFormat.format(jsonString, arguments);
+            // 这里因为会有Json数据,MessageFormat不能很好的工作,所以使用自定义的MessageFormatUtils
+            return MessageFormatUtils.format(jsonString, arguments);
         }
     }
 
