@@ -15,6 +15,7 @@ import top.silwings.core.exceptions.DynamicMockException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @ClassName JsonUtils
@@ -25,6 +26,9 @@ import java.util.Map;
  **/
 @Slf4j
 public class JsonUtils {
+
+    public static final String EMPTY_JSON = "{}";
+    public static final String EMPTY_ARRAY = "[]";
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
     private static final Configuration DEFAULT_PATH_TO_NULL = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
@@ -79,12 +83,12 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T tryToBean(final String jsonStr, final Class<T> tClass, final T defaultReturnValue) {
+    public static <T> T tryToBean(final String jsonStr, final Class<T> tClass, final Supplier<T> defaultReturnValueSupplier) {
         try {
             return MAPPER.readValue(jsonStr, tClass);
-        } catch (IOException e) {
-            log.debug("Json parsing error: " + jsonStr, e);
-            return defaultReturnValue;
+        } catch (Exception e) {
+            log.debug("tryToBean error: " + jsonStr, e);
+            return defaultReturnValueSupplier.get();
         }
     }
 
@@ -101,6 +105,7 @@ public class JsonUtils {
         try {
             return MAPPER.readValue(jsonStr, Object.class);
         } catch (IOException e) {
+            log.debug("tryToBean error: " + jsonStr, e);
             return jsonStr;
         }
     }

@@ -7,6 +7,7 @@ import top.silwings.core.interpreter.dynamic_expression.DynamicExpressionFactory
 import top.silwings.core.model.CheckInfoDto;
 import top.silwings.core.model.CheckItemDto;
 import top.silwings.core.model.ErrorResponseInfoDto;
+import top.silwings.core.utils.HttpUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,9 @@ public class CheckInfoFactory {
     }
 
     private List<CheckItem> buildCheckItems(final List<CheckItemDto> checkItemList) {
+        if (CollectionUtils.isEmpty(checkItemList)) {
+            return Collections.emptyList();
+        }
         return checkItemList.stream().map(this::buildCheckItem).collect(Collectors.toList());
     }
 
@@ -65,7 +69,7 @@ public class CheckInfoFactory {
     private ErrorResponseInfo buildErrorResponseInfo(final ErrorResponseInfoDto responseInfoDto) {
         return ErrorResponseInfo.builder()
                 .status(responseInfoDto.getStatus())
-                .headers(responseInfoDto.getHeaders())
+                .headers(HttpUtils.convertMapToHttpHeaders(responseInfoDto.getHeaders()))
                 .body(responseInfoDto.getBody())
                 .build();
     }

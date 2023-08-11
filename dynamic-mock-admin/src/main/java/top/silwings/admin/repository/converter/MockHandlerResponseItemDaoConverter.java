@@ -34,7 +34,7 @@ public class MockHandlerResponseItemDaoConverter {
         po.setResponseId(null);
         po.setHandlerId(ConvertUtils.getNoNullOrDefault(handlerId, null, Identity::intValue));
         po.setStatus(mockResponseDto.getStatus());
-        po.setHeaders(ConvertUtils.getNoBlankOrDefault(JsonUtils.toJSONString(mockResponseDto.getHeaders()), "{}"));
+        po.setHeaders(ConvertUtils.getNoBlankOrDefault(JsonUtils.toJSONString(mockResponseDto.getHeaders()), JsonUtils.EMPTY_JSON));
         po.setBody(JsonUtils.toJSONString(mockResponseDto.getBody()));
 
         return po;
@@ -47,7 +47,7 @@ public class MockHandlerResponseItemDaoConverter {
                 .enableStatus(EnableStatus.valueOfCode(mockHandlerResponsePo.getEnableStatus()))
                 .support(mockHandlerConditionPoList.stream().map(MockHandlerConditionPo::getExpression).collect(Collectors.toList()))
                 .delayTime(mockHandlerResponsePo.getDelayTime())
-                .checkInfo(JsonUtils.toBean(mockHandlerResponsePo.getCheckInfoJson(), CheckInfoDto.class))
+                .checkInfo(JsonUtils.tryToBean(mockHandlerResponsePo.getCheckInfoJson(), CheckInfoDto.class, CheckInfoDto::newEmpty))
                 .response(this.convert(responseItemPo))
                 .build();
     }
@@ -55,7 +55,7 @@ public class MockHandlerResponseItemDaoConverter {
     private MockResponseDto convert(final MockHandlerResponseItemPo responseItemPo) {
         return MockResponseDto.builder()
                 .status(responseItemPo.getStatus())
-                .headers(JsonUtils.nativeRead(ConvertUtils.getNoBlankOrDefault(responseItemPo.getHeaders(), "{}"), new TypeReference<Map<String, List<String>>>() {
+                .headers(JsonUtils.nativeRead(ConvertUtils.getNoBlankOrDefault(responseItemPo.getHeaders(), JsonUtils.EMPTY_JSON), new TypeReference<Map<String, List<String>>>() {
                 }))
                 .body(JsonUtils.tryToBean(responseItemPo.getBody()))
                 .build();

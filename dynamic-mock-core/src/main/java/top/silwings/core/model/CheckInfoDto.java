@@ -3,6 +3,7 @@ package top.silwings.core.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,5 +26,12 @@ public class CheckInfoDto {
      * 校验项
      */
     private List<CheckItemDto> checkItemList;
+
+    public static CheckInfoDto newEmpty() {
+        final CheckInfoDto checkInfoDto = new CheckInfoDto();
+        checkInfoDto.setErrResList(Collections.emptyList());
+        checkInfoDto.setCheckItemList(Collections.emptyList());
+        return checkInfoDto;
+    }
 
 }

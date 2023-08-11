@@ -141,9 +141,9 @@ public class MockHandlerDataMigration {
                 .requestUri(mockHandlerPo.getRequestUri())
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
-                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
-                .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), "[]"), MockResponseInfoDto.class))
-                .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), "[]"), TaskInfoDto.class))
+                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), JsonUtils.EMPTY_JSON), String.class, Object.class))
+                .responses(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getResponses(), JsonUtils.EMPTY_ARRAY), MockResponseInfoDto.class))
+                .tasks(JsonUtils.toList(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getTasks(), JsonUtils.EMPTY_ARRAY), TaskInfoDto.class))
                 .updateTime(mockHandlerPo.getUpdateTime())
                 .build();
     }

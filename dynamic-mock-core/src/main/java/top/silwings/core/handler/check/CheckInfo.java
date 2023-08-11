@@ -67,7 +67,7 @@ public class CheckInfo {
             return CommonMockResponse.builder()
                     .delayTime(0)
                     .status(errRes.getStatus())
-                    .headers(JsonUtils.tryToBean(this.fillParam(errRes.getHeaders(), arguments), HttpHeaders.class, errRes.getHeaders()))
+                    .headers(JsonUtils.tryToBean(this.fillParam(errRes.getHeaders(), arguments), HttpHeaders.class, errRes::getHeaders))
                     .body(JsonUtils.tryToBean(this.fillParam(errRes.getBody(), arguments)))
                     .build();
         }

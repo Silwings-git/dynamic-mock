@@ -5,6 +5,7 @@ import top.silwings.admin.repository.po.MockTaskLogPo;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.MockTaskLogDto;
 import top.silwings.core.utils.ConvertUtils;
+import top.silwings.core.utils.JsonUtils;
 
 /**
  * @ClassName MockHandlerDaoConverter
@@ -16,8 +17,6 @@ import top.silwings.core.utils.ConvertUtils;
 @Component
 public class MockTaskLogDaoConverter {
 
-    private static final String EMPTY_JSON = "{}";
-
     public MockTaskLogPo convert(final MockTaskLogDto mockTaskLog) {
 
         final MockTaskLogPo logPo = new MockTaskLogPo();
@@ -26,8 +25,8 @@ public class MockTaskLogDaoConverter {
         logPo.setHandlerId(ConvertUtils.getNoNullOrDefault(mockTaskLog.getHandlerId(), null, Identity::intValue));
         logPo.setName(mockTaskLog.getName());
         logPo.setRegistrationTime(mockTaskLog.getRegistrationTime());
-        logPo.setRequestInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getRequestInfo(), EMPTY_JSON));
-        logPo.setResponseInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getResponseInfo(), EMPTY_JSON));
+        logPo.setRequestInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getRequestInfo(), JsonUtils.EMPTY_JSON));
+        logPo.setResponseInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getResponseInfo(), JsonUtils.EMPTY_JSON));
         logPo.setRequestTime(mockTaskLog.getRequestTime());
         logPo.setTiming(mockTaskLog.getTiming());
         return logPo;

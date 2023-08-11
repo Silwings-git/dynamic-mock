@@ -52,8 +52,8 @@ public class MockHandlerDaoConverter {
         mockHandlerPo.setRequestUri(mockHandlerDto.getRequestUri());
         mockHandlerPo.setLabel(mockHandlerDto.getLabel());
         mockHandlerPo.setDelayTime(mockHandlerDto.getDelayTime());
-        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), "{}")));
-        mockHandlerPo.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCheckInfo(), "{}")));
+        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), JsonUtils.EMPTY_JSON)));
+        mockHandlerPo.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCheckInfo(), JsonUtils.EMPTY_JSON)));
 
         final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
         handlerPoWrap.setMockHandlerPo(mockHandlerPo);
@@ -74,8 +74,8 @@ public class MockHandlerDaoConverter {
                 .requestUri(mockHandlerPo.getRequestUri())
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
-                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), "{}"), String.class, Object.class))
-                .checkInfo(JsonUtils.toBean(mockHandlerPo.getCheckInfoJson(), CheckInfoDto.class))
+                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), JsonUtils.EMPTY_JSON), String.class, Object.class))
+                .checkInfo(JsonUtils.tryToBean(mockHandlerPo.getCheckInfoJson(), CheckInfoDto.class, CheckInfoDto::newEmpty))
                 .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())
