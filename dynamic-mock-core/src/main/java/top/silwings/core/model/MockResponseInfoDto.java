@@ -43,6 +43,11 @@ public class MockResponseInfoDto {
     private List<String> support;
 
     /**
+     * 检查信息
+     */
+    private CheckInfoDto checkInfo;
+
+    /**
      * 延迟响应时间
      */
     private Integer delayTime;

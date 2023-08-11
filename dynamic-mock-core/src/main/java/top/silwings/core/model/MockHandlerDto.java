@@ -72,6 +72,11 @@ public class MockHandlerDto {
     private Map<String, Object> customizeSpace;
 
     /**
+     * 检查信息
+     */
+    private CheckInfoDto checkInfo;
+
+    /**
      * 响应信息集
      */
     private List<MockResponseInfoDto> responses;

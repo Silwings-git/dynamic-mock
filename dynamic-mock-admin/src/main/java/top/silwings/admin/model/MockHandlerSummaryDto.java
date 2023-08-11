@@ -1,4 +1,4 @@
-package top.silwings.core.model;
+package top.silwings.admin.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @ClassName MockHandlerDefinition
- * @Description MockHandler定义信息
+ * @ClassName MockHandlerSummaryDto
+ * @Description MockHandlerSummaryDto
  * @Author Silwings
  * @Date 2022/11/9 23:22
  * @Since

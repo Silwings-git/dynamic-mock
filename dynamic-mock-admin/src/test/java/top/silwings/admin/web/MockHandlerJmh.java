@@ -17,6 +17,7 @@ import top.silwings.core.config.MockTaskLogProperties;
 import top.silwings.core.config.TaskSchedulerProperties;
 import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
+import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
@@ -162,6 +163,7 @@ public class MockHandlerJmh {
         private final JsonTreeParser jsonTreeParser;
         private final MockResponseInfoFactory mockResponseInfoFactory;
         private final MockTaskInfoFactory mockTaskInfoFactory;
+        private final CheckInfoFactory checkInfoFactory;
         private final MockHandlerFactory mockHandlerFactory;
         private final DynamicMockContext dynamicMockContext;
         private final MockTaskManager mockTaskManager;
@@ -175,9 +177,10 @@ public class MockHandlerJmh {
             this.functionFactory = new FunctionExpressionFactory(this.loadFunction());
             this.dynamicExpressionFactory = new DynamicExpressionFactory(this.expressionFactory, this.functionFactory);
             this.jsonTreeParser = new JsonTreeParser(this.dynamicExpressionFactory);
-            this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
+            this.checkInfoFactory = new CheckInfoFactory(this.dynamicExpressionFactory);
+            this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser, checkInfoFactory);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, null);
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, null, this.checkInfoFactory);
             final ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
             taskScheduler.initialize();
             this.mockTaskManager = new MockTaskManager(taskScheduler, new TaskSchedulerProperties());

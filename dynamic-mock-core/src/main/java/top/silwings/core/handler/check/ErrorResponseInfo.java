@@ -1,9 +1,7 @@
 package top.silwings.core.handler.check;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +16,6 @@ import top.silwings.core.handler.response.MockResponse;
  **/
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class ErrorResponseInfo implements MockResponse {
 

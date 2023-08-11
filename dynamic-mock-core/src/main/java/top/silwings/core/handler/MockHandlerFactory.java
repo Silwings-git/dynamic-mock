@@ -4,7 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.exceptions.ScriptNoSupportException;
-import top.silwings.core.handler.check.CheckInfo;
+import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.handler.plugin.PluginRegistrationProgram;
@@ -42,14 +42,17 @@ public class MockHandlerFactory {
 
     private final List<PluginRegistrationProgram> pluginRegistrationProgram;
 
+    private final CheckInfoFactory checkInfoFactory;
+
     public MockHandlerFactory(final JsonTreeParser jsonTreeParser,
                               final MockResponseInfoFactory mockResponseInfoFactory,
                               final MockTaskInfoFactory mockTaskInfoFactory,
-                              final List<PluginRegistrationProgram> pluginRegistrationProgram) {
+                              final List<PluginRegistrationProgram> pluginRegistrationProgram, final CheckInfoFactory checkInfoFactory) {
         this.jsonTreeParser = jsonTreeParser;
         this.mockResponseInfoFactory = mockResponseInfoFactory;
         this.mockTaskInfoFactory = mockTaskInfoFactory;
         this.pluginRegistrationProgram = ConvertUtils.getNoNullOrDefault(pluginRegistrationProgram, Collections::emptyList);
+        this.checkInfoFactory = checkInfoFactory;
     }
 
     public MockHandler buildMockHandler(final MockHandlerDto definition) {
@@ -67,8 +70,7 @@ public class MockHandlerFactory {
         builder.customizeSpaceInterpreter(new CustomizeSpaceInterpreter(definition.getCustomizeSpace(), this.jsonTreeParser.parse(definition.getCustomizeSpace())));
 
         // 校验
-        // TODO_Silwings: 2023/8/11 实例化Check
-        builder.checkInfo(CheckInfo.builder().build());
+        builder.checkInfo(this.checkInfoFactory.buildCheck(definition.getCheckInfo()));
 
         // 响应信息
         builder.responseInfoList(
