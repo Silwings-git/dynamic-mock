@@ -12,8 +12,9 @@ import top.silwings.admin.auth.UserHolder;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;
-import top.silwings.admin.event.MockHandlerAdminEvent;
 import top.silwings.admin.event.UpdatedMockHandlerEvent;
+import top.silwings.admin.event.UpdatedMockHandlerResponseEvent;
+import top.silwings.admin.event.UpdatedMockHandlerTaskEvent;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
 import top.silwings.admin.model.HandlerInfoDto;
@@ -55,7 +56,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Service
-public class MockHandlerServiceImpl implements MockHandlerService, ApplicationListener<MockHandlerAdminEvent> {
+public class MockHandlerServiceImpl implements MockHandlerService, ApplicationListener<UpdatedMockHandlerEvent> {
 
     private final MockHandlerManager mockHandlerManager;
 
@@ -86,13 +87,8 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
     @Override
     @Transactional
-    public void onApplicationEvent(final MockHandlerAdminEvent event) {
-        if (event instanceof UpdatedMockHandlerEvent) {
-            this.afterMockHandlerUpdated(event.getHandlerId());
-        } else {
-            log.error("没有可用的消息处理器");
-            throw DynamicMockAdminException.from(ErrorCode.UNKNOWN_ERROR);
-        }
+    public void onApplicationEvent(final UpdatedMockHandlerEvent event) {
+        this.afterMockHandlerUpdated(event.getHandlerId());
     }
 
     private void afterMockHandlerUpdated(final Identity handlerId) {
@@ -545,19 +541,19 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
         this.mockHandlerResponseRepository.updateByHandlerAndResponseId(handlerId, responseInfoDto);
 
-        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerResponseEvent.of(this, handlerId));
     }
 
     @Override
     @Transactional
     public void updateResponseEnableStatus(final Identity handlerId, final Identity responseId, final EnableStatus enableStatus) {
         this.mockHandlerResponseRepository.updateResponseEnableStatus(handlerId, responseId, enableStatus);
-        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerResponseEvent.of(this, handlerId));
     }
 
     @Override
     public void updateTaskEnableStatus(final Identity handlerId, final Identity taskId, final EnableStatus enableStatus) {
         this.mockHandlerTaskRepository.updateTaskEnableStatus(handlerId, taskId, enableStatus);
-        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerEvent.of(this, handlerId));
+        this.applicationEventPublisher.publishEvent(UpdatedMockHandlerTaskEvent.of(this, handlerId));
     }
 }
