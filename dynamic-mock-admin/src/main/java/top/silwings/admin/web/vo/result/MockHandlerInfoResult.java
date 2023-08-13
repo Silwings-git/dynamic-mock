@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.silwings.admin.web.vo.param.CheckInfoParam;
+import top.silwings.admin.web.vo.param.MockHandlerPluginInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
 import top.silwings.core.common.Identity;
@@ -70,6 +71,9 @@ public class MockHandlerInfoResult {
 
     @ApiModelProperty(value = "Task信息集")
     private List<SaveTaskInfoParam> tasks;
+
+    @ApiModelProperty(value = "插件信息集")
+    private List<MockHandlerPluginInfoParam> pluginInfos;
 
     @ApiModelProperty(value = "最后更新时间")
     private Date updateTime;

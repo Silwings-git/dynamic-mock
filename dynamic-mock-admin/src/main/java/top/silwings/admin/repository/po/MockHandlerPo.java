@@ -95,6 +95,12 @@ public class MockHandlerPo {
     private String checkInfoJson;
 
     /**
+     * 插件信息
+     */
+    @Column(name = "plugin_infos_json")
+    private String pluginInfosJson;
+
+    /**
      * 负责人
      */
     @Column(name = "author")

@@ -25,8 +25,8 @@ public class MockTaskLogDaoConverter {
         logPo.setHandlerId(ConvertUtils.getNoNullOrDefault(mockTaskLog.getHandlerId(), null, Identity::intValue));
         logPo.setName(mockTaskLog.getName());
         logPo.setRegistrationTime(mockTaskLog.getRegistrationTime());
-        logPo.setRequestInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getRequestInfo(), JsonUtils.EMPTY_JSON));
-        logPo.setResponseInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getResponseInfo(), JsonUtils.EMPTY_JSON));
+        logPo.setRequestInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getRequestInfo(), JsonUtils.EMPTY_OBJECT));
+        logPo.setResponseInfo(ConvertUtils.getNoBlankOrDefault(mockTaskLog.getResponseInfo(), JsonUtils.EMPTY_OBJECT));
         logPo.setRequestTime(mockTaskLog.getRequestTime());
         logPo.setTiming(mockTaskLog.getTiming());
         return logPo;

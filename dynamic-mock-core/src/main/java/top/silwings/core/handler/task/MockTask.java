@@ -143,7 +143,7 @@ public class MockTask implements HttpMockTask<MockTaskStartEvent, Consumer<MockT
                 .handlerId(this.getHandlerId())
                 .name(this.getName())
                 .registrationTime(new Date(this.registrationInfo.getRegistrationTime()))
-                .requestInfo(mockTaskLogProperties.isLogRequestInfo() ? JsonUtils.toJSONString(RequestInfo.from(this), JsonInclude.Include.NON_NULL) : JsonUtils.EMPTY_JSON)
+                .requestInfo(mockTaskLogProperties.isLogRequestInfo() ? JsonUtils.toJSONString(RequestInfo.from(this), JsonInclude.Include.NON_NULL) : JsonUtils.EMPTY_OBJECT)
                 .requestTime(new Date())
                 .build();
 

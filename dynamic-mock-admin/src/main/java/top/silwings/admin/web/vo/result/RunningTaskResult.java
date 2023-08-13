@@ -38,7 +38,7 @@ public class RunningTaskResult {
     @ApiModelProperty(value = "注册时间", example = "1")
     private Date registrationTime;
 
-    @ApiModelProperty(value = "任务原始信息", example = JsonUtils.EMPTY_JSON)
+    @ApiModelProperty(value = "任务原始信息", example = JsonUtils.EMPTY_OBJECT)
     private Map<String, ?> taskInfo;
 
     public static RunningTaskResult from(final AutoCancelCronTask autoCancelCronTask) {

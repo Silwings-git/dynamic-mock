@@ -87,14 +87,9 @@ public class MockHandlerDto {
     private List<TaskInfoDto> tasks;
 
     /**
-     * 脚本数据集
+     * 插件信息集
      */
-    private List<MockScriptDto> mockScriptList;
-
-    /**
-     * 用于拓展的额外数据
-     */
-    private Map<String, ?> extData;
+    private List<MockHandlerPluginInfoDto> plugins;
 
     private Date updateTime;
 

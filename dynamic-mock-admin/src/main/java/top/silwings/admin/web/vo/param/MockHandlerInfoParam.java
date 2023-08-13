@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import top.silwings.admin.exceptions.DynamicMockAdminException;
 import top.silwings.admin.exceptions.ErrorCode;
@@ -64,6 +65,9 @@ public class MockHandlerInfoParam {
     @ApiModelProperty(value = "Task信息集")
     private List<SaveTaskInfoParam> tasks;
 
+    @ApiModelProperty(value = "插件信息集")
+    private List<MockHandlerPluginInfoParam> pluginInfos;
+
     public void validate() {
         CheckUtils.isNotNull(this.projectId, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "projectId"));
         CheckUtils.isNotBlank(this.name, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "name"));
@@ -72,6 +76,9 @@ public class MockHandlerInfoParam {
         CheckUtils.isNotBlank(this.requestUri, DynamicMockAdminException.supplier(ErrorCode.VALID_EMPTY, "requestUri"));
         if (null != this.checkInfo) {
             this.checkInfo.validate();
+        }
+        if (CollectionUtils.isNotEmpty(this.pluginInfos)) {
+            this.pluginInfos.forEach(MockHandlerPluginInfoParam::validate);
         }
     }
 }

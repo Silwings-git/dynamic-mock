@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class JsonUtils {
 
-    public static final String EMPTY_JSON = "{}";
+    public static final String EMPTY_OBJECT = "{}";
     public static final String EMPTY_ARRAY = "[]";
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
@@ -147,6 +147,15 @@ public class JsonUtils {
         } catch (IOException e) {
             log.error("Json parsing error: " + jsonStr, e);
             throw new DynamicMockException(e);
+        }
+    }
+
+    public static <E> List<E> tryToList(final String jsonStr, final Class<E> eClass, final Supplier<List<E>> defaultReturnValueSupplier) {
+        try {
+            return MAPPER.readValue(jsonStr, MAPPER.getTypeFactory().constructCollectionType(List.class, eClass));
+        } catch (IOException e) {
+            log.debug("tryToList error: " + jsonStr, e);
+            return defaultReturnValueSupplier.get();
         }
     }
 

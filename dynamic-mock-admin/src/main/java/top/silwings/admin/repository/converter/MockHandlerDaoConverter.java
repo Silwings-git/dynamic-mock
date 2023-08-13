@@ -10,6 +10,7 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.CheckInfoDto;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.model.MockHandlerPluginInfoDto;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -52,8 +53,9 @@ public class MockHandlerDaoConverter {
         mockHandlerPo.setRequestUri(mockHandlerDto.getRequestUri());
         mockHandlerPo.setLabel(mockHandlerDto.getLabel());
         mockHandlerPo.setDelayTime(mockHandlerDto.getDelayTime());
-        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), JsonUtils.EMPTY_JSON)));
-        mockHandlerPo.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCheckInfo(), JsonUtils.EMPTY_JSON)));
+        mockHandlerPo.setCustomizeSpace(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCustomizeSpace(), JsonUtils.EMPTY_OBJECT)));
+        mockHandlerPo.setCheckInfoJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getCheckInfo(), JsonUtils.EMPTY_OBJECT)));
+        mockHandlerPo.setPluginInfosJson(JsonUtils.toJSONString(ConvertUtils.getNoNullOrDefault(mockHandlerDto.getPlugins(), JsonUtils.EMPTY_ARRAY)));
 
         final MockHandlerPoWrap handlerPoWrap = new MockHandlerPoWrap();
         handlerPoWrap.setMockHandlerPo(mockHandlerPo);
@@ -74,8 +76,9 @@ public class MockHandlerDaoConverter {
                 .requestUri(mockHandlerPo.getRequestUri())
                 .label(mockHandlerPo.getLabel())
                 .delayTime(mockHandlerPo.getDelayTime())
-                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), JsonUtils.EMPTY_JSON), String.class, Object.class))
+                .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), JsonUtils.EMPTY_OBJECT), String.class, Object.class))
                 .checkInfo(JsonUtils.tryToBean(mockHandlerPo.getCheckInfoJson(), CheckInfoDto.class, CheckInfoDto::newEmpty))
+                .plugins(JsonUtils.tryToList(mockHandlerPo.getPluginInfosJson(), MockHandlerPluginInfoDto.class, Collections::emptyList))
                 .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())

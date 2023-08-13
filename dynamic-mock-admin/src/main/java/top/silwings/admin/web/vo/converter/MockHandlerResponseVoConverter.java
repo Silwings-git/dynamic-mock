@@ -43,4 +43,24 @@ public class MockHandlerResponseVoConverter {
                 .build();
     }
 
+    public MockResponseInfoParam convert(final MockResponseInfoDto dto) {
+        return MockResponseInfoParam.builder()
+                .responseId(dto.getResponseId())
+                .name(dto.getName())
+                .enableStatus(dto.getEnableStatus().code())
+                .support(dto.getSupport())
+                .delayTime(dto.getDelayTime())
+                .checkInfo(this.mockHandlerCheckVoConverter.convert(dto.getCheckInfo()))
+                .response(this.convert(dto.getResponse()))
+                .build();
+    }
+
+    private MockResponseParam convert(final MockResponseDto dto) {
+        return MockResponseParam.builder()
+                .status(dto.getStatus())
+                .headers(dto.getHeaders())
+                .body(dto.getBody())
+                .build();
+    }
+
 }
