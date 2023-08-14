@@ -12,12 +12,12 @@ import top.silwings.core.model.MockHandlerDto;
  **/
 public interface PluginRegistrationProgram {
 
-    PluginExecutor<?> newPluginExecutor(String pluginCode, MockHandlerDto definition);
+    PluginExecutor<?> newPluginExecutor(MockHandlerPluginInfo mockHandlerPluginInfo, MockHandlerDto definition);
 
-    MockPluginInfo getMockPluginInfo();
+    MockPluginInfo<?> getMockPluginInfo();
 
-    default void register(String pluginCode, MockHandlerDto definition, PluginExecutorManager manager) {
-        manager.register(this.newPluginExecutor(pluginCode, definition));
+    default void register(MockHandlerPluginInfo mockHandlerPluginInfo, MockHandlerDto definition, PluginExecutorManager manager) {
+        manager.register(this.newPluginExecutor(mockHandlerPluginInfo, definition));
     }
 
 }

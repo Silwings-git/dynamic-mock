@@ -12,7 +12,7 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-public class MockPluginInfo {
+public class MockPluginInfo<T> {
 
     /**
      * 插件编码
@@ -29,11 +29,17 @@ public class MockPluginInfo {
      */
     private String description;
 
-    public static MockPluginInfo copyOf(final MockPluginInfo mockPluginInfo) {
-        final MockPluginInfo res = new MockPluginInfo();
+    /**
+     * 元数据
+     */
+    private T metadata;
+
+    public static <E> MockPluginInfo<E> copyOf(final MockPluginInfo<E> mockPluginInfo) {
+        final MockPluginInfo<E> res = new MockPluginInfo<>();
         res.setPluginCode(mockPluginInfo.getPluginCode());
         res.setPluginName(mockPluginInfo.getPluginName());
         res.setDescription(mockPluginInfo.getDescription());
+        res.setMetadata(mockPluginInfo.getMetadata());
         return res;
     }
 }

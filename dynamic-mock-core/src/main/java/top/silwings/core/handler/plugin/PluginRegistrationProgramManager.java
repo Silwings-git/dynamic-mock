@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import top.silwings.core.exceptions.DynamicMockException;
-import top.silwings.core.model.MockHandlerPluginInfoDto;
 
 import java.util.List;
 import java.util.Map;
@@ -24,14 +23,14 @@ public class PluginRegistrationProgramManager {
     private final Map<String, PluginRegistrationProgram> pluginCodeRegistrationProgramMap;
 
     @Getter
-    private final List<MockPluginInfo> mockPluginInfoList;
+    private final List<MockPluginInfo<?>> mockPluginInfoList;
 
     public PluginRegistrationProgramManager(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
         this.pluginCodeRegistrationProgramMap = this.initPluginCodeRegistrationProgramMap(pluginRegistrationProgramList);
         this.mockPluginInfoList = this.initMockPluginInfoList(pluginRegistrationProgramList);
     }
 
-    private List<MockPluginInfo> initMockPluginInfoList(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
+    private List<MockPluginInfo<?>> initMockPluginInfoList(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
         return pluginRegistrationProgramList
                 .stream()
                 .map(PluginRegistrationProgram::getMockPluginInfo)
@@ -43,7 +42,7 @@ public class PluginRegistrationProgramManager {
         return pluginRegistrationProgramList
                 .stream()
                 .collect(Collectors.toMap(e -> {
-                            final MockPluginInfo mockPluginInfo = e.getMockPluginInfo();
+                            final MockPluginInfo<?> mockPluginInfo = e.getMockPluginInfo();
                             if (null == mockPluginInfo) {
                                 throw DynamicMockException.from("The plug-in registration program lacks plug-in information, and the plug-in registration program that does not meet the requirements:" + e.getClass().getName());
                             }
@@ -55,19 +54,19 @@ public class PluginRegistrationProgramManager {
                         }));
     }
 
-    public PluginRegistrationProgramInfo findPluginRegistrationProgram(final MockHandlerPluginInfoDto mockHandlerPluginInfoDto) {
-        return PluginRegistrationProgramInfo.of(mockHandlerPluginInfoDto.getPluginCode(), this.pluginCodeRegistrationProgramMap.get(mockHandlerPluginInfoDto.getPluginCode()));
+    public PluginRegistrationProgramInfo findPluginRegistrationProgram(final MockHandlerPluginInfo mockHandlerPluginInfo) {
+        return PluginRegistrationProgramInfo.of(mockHandlerPluginInfo, this.pluginCodeRegistrationProgramMap.get(mockHandlerPluginInfo.getPluginCode()));
     }
 
     @Getter
     @Setter
     public static class PluginRegistrationProgramInfo {
-        private String pluginCode;
+        private MockHandlerPluginInfo mockHandlerPluginInfo;
         private PluginRegistrationProgram pluginRegistrationProgram;
 
-        public static PluginRegistrationProgramInfo of(final String pluginCode, final PluginRegistrationProgram pluginRegistrationProgram) {
+        public static PluginRegistrationProgramInfo of(final MockHandlerPluginInfo mockHandlerPluginInfo, final PluginRegistrationProgram pluginRegistrationProgram) {
             final PluginRegistrationProgramInfo programInfo = new PluginRegistrationProgramInfo();
-            programInfo.setPluginCode(pluginCode);
+            programInfo.setMockHandlerPluginInfo(mockHandlerPluginInfo);
             programInfo.setPluginRegistrationProgram(pluginRegistrationProgram);
             return programInfo;
         }

@@ -1,4 +1,4 @@
-package top.silwings.core.model;
+package top.silwings.core.handler.plugin;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import top.silwings.core.common.EnableStatus;
 import java.util.Map;
 
 /**
- * @ClassName MockHandlerPluginInfoParam
+ * @ClassName MockHandlerPluginInfoDto
  * @Description 插件参数信息
  * @Author Silwings
  * @Date 2023/8/13 12:22
@@ -15,7 +15,7 @@ import java.util.Map;
  **/
 @Getter
 @Builder
-public class MockHandlerPluginInfoDto {
+public class MockHandlerPluginInfo {
 
     // 插件编码
     private String pluginCode;

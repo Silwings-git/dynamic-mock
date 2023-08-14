@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
+import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -89,7 +90,7 @@ public class MockHandlerDto {
     /**
      * 插件信息集
      */
-    private List<MockHandlerPluginInfoDto> plugins;
+    private List<MockHandlerPluginInfo> plugins;
 
     private Date updateTime;
 

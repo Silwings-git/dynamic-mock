@@ -4,7 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.MockHandlerPluginInfoParam;
 import top.silwings.core.common.EnableStatus;
-import top.silwings.core.model.MockHandlerPluginInfoDto;
+import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 @Component
 public class MockHandlerPluginVoConverter {
 
-    public MockHandlerPluginInfoDto convert(final MockHandlerPluginInfoParam pluginParam) {
-        return MockHandlerPluginInfoDto.builder()
+    public MockHandlerPluginInfo convert(final MockHandlerPluginInfoParam pluginParam) {
+        return MockHandlerPluginInfo.builder()
                 .pluginCode(pluginParam.getPluginCode())
                 .enableStatus(EnableStatus.valueOfCode(pluginParam.getEnableStatus()))
                 .pluginParam(pluginParam.getPluginParam())
                 .build();
     }
 
-    public MockHandlerPluginInfoParam convert(final MockHandlerPluginInfoDto pluginDto) {
+    public MockHandlerPluginInfoParam convert(final MockHandlerPluginInfo pluginDto) {
         final MockHandlerPluginInfoParam param = new MockHandlerPluginInfoParam();
         param.setPluginCode(pluginDto.getPluginCode());
         param.setEnableStatus(param.getEnableStatus());
@@ -36,7 +36,7 @@ public class MockHandlerPluginVoConverter {
         return param;
     }
 
-    public List<MockHandlerPluginInfoDto> convert(final List<MockHandlerPluginInfoParam> pluginInfoList) {
+    public List<MockHandlerPluginInfo> convert(final List<MockHandlerPluginInfoParam> pluginInfoList) {
         if (CollectionUtils.isEmpty(pluginInfoList)) {
             return Collections.emptyList();
         }

@@ -78,6 +78,7 @@ import top.silwings.core.interpreter.dynamic_expression.parser.AutoTypeParser;
 import top.silwings.core.interpreter.dynamic_expression.parser.DynamicExpressionStringParser;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
+import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -136,9 +137,8 @@ public class MockHandlerJunit {
 
     @Component
     public static class PrintSomethingPlugin implements PluginRegistrationProgram {
-
         @Override
-        public PluginExecutor<?> newPluginExecutor(final String pluginCode, final MockHandlerDto definition) {
+        public PluginExecutor<?> newPluginExecutor(final MockHandlerPluginInfo mockHandlerPluginInfo, final MockHandlerDto definition) {
             return new PluginExecutor<Void>() {
                 @Override
                 public PluginInterfaceType getPluginInterfaceType() {

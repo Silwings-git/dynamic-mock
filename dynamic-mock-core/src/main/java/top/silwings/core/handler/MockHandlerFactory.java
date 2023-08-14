@@ -102,9 +102,9 @@ public class MockHandlerFactory {
                     .map(this.pluginRegistrationProgramManager::findPluginRegistrationProgram)
                     .forEach(programInfo -> {
                         if (null == programInfo.getPluginRegistrationProgram()) {
-                            throw new NoMatchingPluginRegistrationProgramException(programInfo.getPluginCode());
+                            throw new NoMatchingPluginRegistrationProgramException(programInfo.getMockHandlerPluginInfo().getPluginCode());
                         }
-                        programInfo.getPluginRegistrationProgram().register(programInfo.getPluginCode(), definition, manager);
+                        programInfo.getPluginRegistrationProgram().register(programInfo.getMockHandlerPluginInfo(), definition, manager);
                     });
         }
 

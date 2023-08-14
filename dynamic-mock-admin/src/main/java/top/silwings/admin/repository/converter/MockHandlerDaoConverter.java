@@ -10,7 +10,7 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.common.Identity;
 import top.silwings.core.model.CheckInfoDto;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.MockHandlerPluginInfoDto;
+import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 import top.silwings.core.model.MockResponseInfoDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.utils.ConvertUtils;
@@ -78,7 +78,7 @@ public class MockHandlerDaoConverter {
                 .delayTime(mockHandlerPo.getDelayTime())
                 .customizeSpace(JsonUtils.toMap(ConvertUtils.getNoBlankOrDefault(mockHandlerPo.getCustomizeSpace(), JsonUtils.EMPTY_OBJECT), String.class, Object.class))
                 .checkInfo(JsonUtils.tryToBean(mockHandlerPo.getCheckInfoJson(), CheckInfoDto.class, CheckInfoDto::newEmpty))
-                .plugins(JsonUtils.tryToList(mockHandlerPo.getPluginInfosJson(), MockHandlerPluginInfoDto.class, Collections::emptyList))
+                .plugins(JsonUtils.tryToList(mockHandlerPo.getPluginInfosJson(), MockHandlerPluginInfo.class, Collections::emptyList))
                 .responses(ConvertUtils.getNoNullOrDefault(mockResponseInfoDtoList, Collections::emptyList))
                 .tasks(ConvertUtils.getNoNullOrDefault(taskInfoDtoList, Collections::emptyList))
                 .updateTime(mockHandlerPo.getUpdateTime())

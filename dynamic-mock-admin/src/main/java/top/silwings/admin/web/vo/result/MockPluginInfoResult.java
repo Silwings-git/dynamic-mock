@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "插件信息")
-public class MockPluginInfoResult {
+public class MockPluginInfoResult<T> {
 
     @ApiModelProperty(value = "插件编码", example = "PG001")
     private String pluginCode;
@@ -36,17 +36,21 @@ public class MockPluginInfoResult {
     @ApiModelProperty(value = "描述", example = "描述")
     private String description;
 
-    public static List<MockPluginInfoResult> listFrom(final List<MockPluginInfo> mockPluginInfoList) {
+    @ApiModelProperty(value = "元数据")
+    private T metadata;
+
+    public static <E> List<MockPluginInfoResult<E>> listFrom(final List<MockPluginInfo<? extends E>> mockPluginInfoList) {
         if (CollectionUtils.isEmpty(mockPluginInfoList)) {
             return Collections.emptyList();
         }
         return mockPluginInfoList
                 .stream()
                 .map(e -> {
-                    final MockPluginInfoResult res = new MockPluginInfoResult();
+                    final MockPluginInfoResult<E> res = new MockPluginInfoResult<>();
                     res.setPluginCode(e.getPluginCode());
                     res.setPluginName(e.getPluginName());
                     res.setDescription(e.getDescription());
+                    res.setMetadata(e.getMetadata());
                     return res;
                 })
                 .collect(Collectors.toList());

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.silwings.admin.auth.annotation.PermissionLimit;
 import top.silwings.admin.common.Result;
 import top.silwings.admin.web.vo.result.MockPluginInfoResult;
+import top.silwings.core.handler.plugin.MockPluginInfo;
 import top.silwings.core.handler.plugin.PluginRegistrationProgramManager;
 
 import java.util.List;
@@ -33,8 +34,9 @@ public class MockPluginController {
     @PostMapping("/list")
     @PermissionLimit
     @ApiOperation(value = "获取插件信息列表")
-    public Result<List<MockPluginInfoResult>> queryMockPluginInfo() {
-        return Result.ok(MockPluginInfoResult.listFrom(this.pluginRegistrationProgramManager.getMockPluginInfoList()));
+    public Result<List<MockPluginInfoResult<Object>>> queryMockPluginInfo() {
+        final List<MockPluginInfo<?>> mockPluginInfoList = this.pluginRegistrationProgramManager.getMockPluginInfoList();
+        return Result.ok(MockPluginInfoResult.listFrom(mockPluginInfoList));
     }
 
 }
