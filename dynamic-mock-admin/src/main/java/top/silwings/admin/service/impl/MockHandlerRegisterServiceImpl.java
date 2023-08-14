@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.silwings.admin.common.DynamicMockAdminContext;
 import top.silwings.admin.common.PageData;
 import top.silwings.admin.common.PageParam;

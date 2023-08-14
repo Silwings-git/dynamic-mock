@@ -7,7 +7,7 @@ package top.silwings.core.exceptions;
  * @Date 2023/6/12 13:14
  * @Since
  **/
-public class ClosedException extends BaseDynamicMockException{
+public class ClosedException extends BaseDynamicMockException {
     public ClosedException(final String message) {
         super(message);
     }

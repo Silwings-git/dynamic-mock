@@ -77,7 +77,7 @@ public class SetUp {
 
         final SaveTaskInfoParam mockTask = SaveTaskInfoParam.builder()
                 .name("TEST_MOCK_TASK")
-                .support(Collections.singletonList("${#search('age')==14&&#eq(#search('parameterMap.execute[0]','requestInfo'),1)}"))
+                .support(Collections.singletonList("${#search('age','customizeSpace')==14&&#eq(#search('parameterMap.execute[0]','requestInfo'),1)}"))
                 .async(true)
                 .cron("* * * * * ?")
                 .numberOfExecute(3)
@@ -90,9 +90,9 @@ public class SetUp {
     private static List<MockResponseInfoParam> buildMockResponseInfoVoList() {
 
         final Map<String, Object> body = new HashMap<>();
-        body.put("name", "${#search('name')}");
-        body.put("age", "${#search('age')}");
-        body.put("level", "${#search('level')}");
+        body.put("name", "${#search('name','customizeSpace')}");
+        body.put("age", "${#search('age','customizeSpace')}");
+        body.put("level", "${#search('level','customizeSpace')}");
 
         final MockResponseParam responseVo = MockResponseParam.builder()
                 .status(200)

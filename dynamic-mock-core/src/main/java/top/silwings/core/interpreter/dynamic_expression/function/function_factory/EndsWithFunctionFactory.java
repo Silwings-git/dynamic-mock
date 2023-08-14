@@ -84,7 +84,7 @@ public class EndsWithFunctionFactory implements FunctionFactory {
 
             return ignoreCase ? StringUtils.endsWithIgnoreCase(first, suffix) : StringUtils.endsWith(first, suffix);
         }
-        
+
         @Override
         protected String symbol() {
             return SYMBOL;

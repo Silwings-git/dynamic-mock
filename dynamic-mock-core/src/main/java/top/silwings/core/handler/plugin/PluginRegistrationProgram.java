@@ -1,5 +1,6 @@
 package top.silwings.core.handler.plugin;
 
+import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.model.MockHandlerDto;
 
 /**
@@ -10,5 +11,13 @@ import top.silwings.core.model.MockHandlerDto;
  * @Since
  **/
 public interface PluginRegistrationProgram {
-    void register(final MockHandlerDto definition, final PluginExecutorManager manager);
+
+    PluginExecutor<?> newPluginExecutor(String pluginCode, MockHandlerDto definition);
+
+    MockPluginInfo getMockPluginInfo();
+
+    default void register(String pluginCode, MockHandlerDto definition, PluginExecutorManager manager) {
+        manager.register(this.newPluginExecutor(pluginCode, definition));
+    }
+
 }

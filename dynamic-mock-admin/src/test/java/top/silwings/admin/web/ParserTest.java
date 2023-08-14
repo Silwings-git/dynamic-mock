@@ -65,11 +65,11 @@ public class ParserTest {
 
         expressionList.add("1+2");
         expressionList.add("1+2*3");
-        expressionList.add("2+#search('age')");
-        expressionList.add("2+#search('age')*2");
-        expressionList.add("(2+#search('age'))*2+2*4");
-        expressionList.add("#uuid(#search(1+1),#search(true))");
-        expressionList.add("#uuid(#search(1+1),#search(#search(true)))");
+        expressionList.add("2+#search('age','customizeSpace')");
+        expressionList.add("2+#search('age','customizeSpace')*2");
+        expressionList.add("(2+#search('age','customizeSpace'))*2+2*4");
+        expressionList.add("#uuid(#search(1+1,'customizeSpace'),#search(true,'customizeSpace'))");
+        expressionList.add("#uuid(#search(1+1,'customizeSpace'),#search(#search(true,'customizeSpace')))");
         expressionList.add("1/2");
         expressionList.add("2/1");
         expressionList.add("2-1");
@@ -78,23 +78,23 @@ public class ParserTest {
         expressionList.add("1--1");
         expressionList.add("1--1-1");
         expressionList.add("123,456");
-        expressionList.add("#search(#search(#search(#search('param')+#search('param'))))");
-        expressionList.add("#search(#search(#search(#search('param')+(19-#search('paramA')))))");
-        expressionList.add("#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))");
-        expressionList.add("#search('abc.abc')");
+        expressionList.add("#search(#search(#search(#search('param','customizeSpace')+#search('param','customizeSpace'),'customizeSpace'),'customizeSpace'),'customizeSpace')");
+        expressionList.add("#search(#search(#search(#search('param','customizeSpace')+(19-#search('paramA','customizeSpace'),'customizeSpace'),'customizeSpace'),'customizeSpace'),'customizeSpace')");
+        expressionList.add("#search(#search(#search(#search('param','customizeSpace')+(20-#search('paramA','customizeSpace')--1-2,'customizeSpace'),'customizeSpace'),'customizeSpace'),'customizeSpace')");
+        expressionList.add("#search('abc.abc','customizeSpace')");
         expressionList.add("#isBlank('abc.abc')");
         expressionList.add("#isBlank('abc.abc')");
         expressionList.add("#isBlank()");
         expressionList.add("#isBlank('')");
         expressionList.add("#isBlank() && true");
         expressionList.add("#isBlank() && false");
-        expressionList.add("#search(#isBlank())");
-        expressionList.add("#search(10+#isBlank())");
+        expressionList.add("#search(#isBlank(),'customizeSpace')");
+        expressionList.add("#search(10+#isBlank(),'customizeSpace')");
         expressionList.add("'2+2'");
         expressionList.add("2+2");
         expressionList.add("'2+2'");
         expressionList.add("#eq(#uuid(),1)");
-        expressionList.add("#eq(#search('abcMap.list[0],customizeSpace'),-1)");
+        expressionList.add("#eq(#search('abcMap.list[0]^,customizeSpace','customizeSpace'),-1)");
         expressionList.add("#uuid(,,)");
         expressionList.add("#uuid(,,false)");
         expressionList.add("#uuid(,,true)");
@@ -136,8 +136,8 @@ public class ParserTest {
         expressionList.add("#now('yyyy')");
 
         expressionList.add("#page(1,2,101,'{\"name\":88}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'age^')>0}\"}')");
-        expressionList.add("#page(1,2,101,'{\"name\":\"#search(^'age^')\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'age^',^'customizeSpace^')>0}\"}')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"#search(^'age^',^'customizeSpace^')\"}')");
         expressionList.add("#page(1,2,101,'1+1')");
         expressionList.add("#page(1,2,101,1+1)");
 
@@ -146,10 +146,10 @@ public class ParserTest {
         expressionList.add("#equals(1,1 -  1+1)");
         expressionList.add("#equals(              1        ,(              1 -  1        )     +             1 )");
         expressionList.add("#equals(           1         ,                1         - (1                   + 1                   )               )");
-        expressionList.add("#page(1,10,#search('list'))");
-        expressionList.add("#page(1,10,#search('list2'))");
+        expressionList.add("#page(1,10,#search('list','customizeSpace'))");
+        expressionList.add("#page(1,10,#search('list2','customizeSpace'))");
         expressionList.add("#page(1,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
-        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(^'param^')}\"}]')");
+        expressionList.add("#page(2,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":\"${#search(^'param^',^'customizeSpace^')}\"}]')");
         expressionList.add("#page(3,2,'[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":15},{\"name\":\"御坂美琴\",\"age\":16}]')");
         expressionList.add("#page(1,2,101,'${1+1}')");
         expressionList.add("#page(1,2,101,'${1+1}',false)");
@@ -162,9 +162,9 @@ public class ParserTest {
         expressionList.add("#isNotNull('')");
         expressionList.add("#isNull()");
         expressionList.add("#isNull('')");
-        expressionList.add("#search('$[0]',#search('list2'))");
-        expressionList.add("#search('$.name',#search('$[0]',#search('list2')))");
-        expressionList.add("#search('$.page',#search('page_param'))");
+        expressionList.add("#search('$[0]',#search('list2','customizeSpace'),'customizeSpace')");
+        expressionList.add("#search('$.name',#search('$[0]',#search('list2','customizeSpace'),'customizeSpace'),'customizeSpace')");
+        expressionList.add("#search('$.page',#search('page_param','customizeSpace'),'customizeSpace')");
         expressionList.add("#isNull(2)");
         expressionList.add("#isNull('3')");
         expressionList.add("#isNull(3.4)");
@@ -177,12 +177,12 @@ public class ParserTest {
         expressionList.add("#random('int',10,20)");
         expressionList.add("#Contains('a','abc')");
         expressionList.add("#Contains('abc','a')");
-        expressionList.add("#Contains(#search('list3'),'a')");
-        expressionList.add("#Contains(#search('list3'),'2')");
-        expressionList.add("#Contains(#search('list3'),2)");
-        expressionList.add("#Contains(#search('list4'),'2')");
-        expressionList.add("#Contains(#search('list4'),2)");
-        expressionList.add("#Contains(#search('list4'),#search('list5'))");
+        expressionList.add("#Contains(#search('list3','customizeSpace'),'a')");
+        expressionList.add("#Contains(#search('list3','customizeSpace'),'2')");
+        expressionList.add("#Contains(#search('list3','customizeSpace'),2)");
+        expressionList.add("#Contains(#search('list4','customizeSpace'),'2')");
+        expressionList.add("#Contains(#search('list4','customizeSpace'),2)");
+        expressionList.add("#Contains(#search('list4','customizeSpace'),#search('list5','customizeSpace'))");
         expressionList.add("#Contains(#toBean('[1,2,3]'),1)");
         expressionList.add("#Contains(#toBean('[1,2,3]'),'1')");
         expressionList.add("#Contains(#toBean('[1,2,3]'),#toBean('[1,3]'))");
@@ -195,11 +195,11 @@ public class ParserTest {
         expressionList.add("#print(#tjs(#toBean('{\"name\":\"御坂美琴\"}')))");
         expressionList.add("3*(1+1)");
         expressionList.add("3*(1+1)--2-6");
-        expressionList.add("#search(#print(3*(1+1)--2-6))");
-        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\"}',true)");
+        expressionList.add("#search(#print(3*(1+1)--2-6),'customizeSpace')");
+        expressionList.add("#page(1,2,101,'{\"name\":\"${#search(^'10true^',^'customizeSpace^')}\"}',true)");
         expressionList.add("#search('param','customizeSpace')");
 //        expressionList.add("#page(#search('$.body.pageNum','requestInfo'),#search('$.body.pageSize','requestInfo'),101,'{\\\"code\\\": \\\"CD001\\\",\\\"status\\\": \\\"2\\\"}')");
-        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
+        expressionList.add("#page(#search('$.pageNum','customizeSpace'),#search('$.pageSize','customizeSpace'),101,'{\"code\": \"CD001\",\"status\": \"2\"}')");
         expressionList.add("#search('abcabcabc','customizeSpace','御坂美琴')");
         expressionList.add("#search('abcabcabc','localcache','Misaka Mikoto')");
         expressionList.add("#search(#saveCache('abcabcabc','abcabcabc'),'localcache','Misaka Mikoto')");
@@ -212,25 +212,25 @@ public class ParserTest {
                            "+#print(#search('$.list6['+#search(#saveCache('index',#search('index','localCache',-1)+1,'key'),'localCache')+']','customizeSpace'))");
         // 遍历集合
         expressionList.add("#page(1,10,100,'${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}')");
-        expressionList.add("#page(#search('$.pageNum'),#search('$.pageSize'),101,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')");
+        expressionList.add("#page(#search('$.pageNum','customizeSpace'),#search('$.pageSize','customizeSpace'),101,'{\"code\": \"CD001\",\"status\": \"${#search(^'$.list6[^'+#search(#saveCache(^'index^',#search(^'index^',^'localCache^',-1)+1,^'key^'),^'localCache^')+^']^',^'customizeSpace^')}\"}')");
         expressionList.add("#selectIf(true,1,2)");
         expressionList.add("#selectIf(false,1,2)");
-        expressionList.add("#selectIf(#search('40'),1,2)");
+        expressionList.add("#selectIf(#search('40','customizeSpace'),1,2)");
         expressionList.add("#selectIf(10>0,1,2)");
         expressionList.add("#toJsonString(1+1)");
         expressionList.add("#toJsonString('{\"name\":\"aka Mikoto\"}')");
-        expressionList.add("#toJsonString(#search('user'))");
+        expressionList.add("#toJsonString(#search('user','customizeSpace'))");
         expressionList.add("#parseJsonString('{\"name\":\"御坂美琴\"}')");
         expressionList.add("#parseJsonString('{\"name\":\"${#search(10,^'customizespace^')}\"}')");
         expressionList.add("#parseJsonString('[{\"name\":\"${#search(10,^'customizespace^')}\"}]')");
         // page函数返回的数据类型不是string,这里使用toJsonString函数将对象转字符串再交给parseJsonString处理
-        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',true)))");
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^',^'customizeSpace^')}\",\"uid\":\"${#uuid()}\"}',true)))");
         expressionList.add("#parseJsonString('{\"name\":\"御坂美琴\"}',false)");
         expressionList.add("#parseJsonString('{\"name\":\"${#search(10,^'customizespace^')}\"}',false)");
         expressionList.add("#parseJsonString('[{\"name\":\"${#search(10,^'customizespace^')}\"}]',false)");
         // page函数返回的数据类型不是string,这里使用toJsonString函数将对象转字符串再交给parseJsonString处理
-        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',true)),false)");
-        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^')}\",\"uid\":\"${#uuid()}\"}',false)),false)");
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^',^'customizeSpace^')}\",\"uid\":\"${#uuid()}\"}',true)),false)");
+        expressionList.add("#parseJsonString(#toJsonString(#page(1,2,101,'{\"name\":\"${#search(^'10true^',^'customizeSpace^')}\",\"uid\":\"${#uuid()}\"}',false)),false)");
         expressionList.add("#urlDecode('https://demo.com/demo?&timestamp=2020-05-26+17%3A42%3A14.059%2B0800')");
         expressionList.add("#urlEncode('https://demo.com/demo?&timestamp=2020-05-26 10:30:55 +800')");
         expressionList.add("#Contains('userCode001^,userCode','001^,userCode')");
@@ -323,7 +323,7 @@ public class ParserTest {
         requestContext.addCustomizeParam("10", "御坂美琴");
         requestContext.addCustomizeParam("10true", "御坂美琴");
         requestContext.addCustomizeParam("list", "[{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
-        requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
+        requestContext.addCustomizeParam("list2", "[{\"name\":\"御坂美琴\",\"age\":\"${#search('age','customizeSpace')}\"},{\"name\":\"御坂美琴\",\"age\":14},{\"name\":\"御坂美琴\",\"age\":14}]");
         requestContext.addCustomizeParam("list3", Stream.of(1, 2, 3).collect(Collectors.toList()));
         requestContext.addCustomizeParam("list4", Stream.of("1", "2", "3").collect(Collectors.toList()));
         requestContext.addCustomizeParam("list5", Stream.of("1", "3").collect(Collectors.toList()));
@@ -487,18 +487,18 @@ public class ParserTest {
     @Getter
     public static class TestData {
         final MockHandlerContext mockHandlerContext;
-        private final String test001 = "#search(#search(#search(#search('param')+(20-#search('paramA')--1-2))))";
+        private final String test001 = "#search(#search(#search(#search('param','customizeSpace')+(20-#search('paramA','customizeSpace')--1-2),'customizeSpace'),'customizeSpace'),'customizeSpace')";
         private final String test002 = "{\n" +
                                        "\"id\":\"${#uuid('abc')}\"," +
-                                       "\"${#search('def')}\": \"${#search(#search(#concat('a',(3*(1+1)--2-6))))}\"," +
-                                       "\"${#search('abcabc')}\": \"${#search(#search('a'+(3*(1+1)--2-6)))}\"," +
-                                       "\"age\": \"${#search('age')}\"," +
-                                       "\"zbd\": \"${#search('zbd')}\"," +
+                                       "\"${#search('def','customizeSpace')}\": \"${#search(#search(#concat('a',(3*(1+1)--2-6)),'customizeSpace'),'customizeSpace')}\"," +
+                                       "\"${#search('abcabc','customizeSpace')}\": \"${#search(#search('a'+(3*(1+1)--2-6)),'customizeSpace')}\"," +
+                                       "\"age\": \"${#search('age','customizeSpace')}\"," +
+                                       "\"zbd\": \"${#search('zbd','customizeSpace')}\"," +
                                        "\"happy\": \"${             10  + 1-1        == 11-1 }\"," +
                                        "\"uuidKey\": \"${#uuid(1,2)}\"" +
                                        "}";
         private final String test004 = "{\n" +
-                                       "\"${#search('def')}\": \"${#search(#search(3*(1+1)--2-6))}\"," +
+                                       "\"${#search('def','customizeSpace')}\": \"${#search(#search(3*(1+1)--2-6,'customizeSpace'),'customizeSpace')}\"," +
                                        "\"uuidKey\": \"${#uuid(1,2)}\"" +
                                        "}";
         private final RequestContext requestContext = RequestContext.builder().customizeSpace(new HashMap<>()).build();

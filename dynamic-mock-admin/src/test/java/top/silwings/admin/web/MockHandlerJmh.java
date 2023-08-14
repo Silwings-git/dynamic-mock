@@ -19,6 +19,7 @@ import top.silwings.core.handler.MockHandler;
 import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
+import top.silwings.core.handler.plugin.PluginRegistrationProgramManager;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.handler.task.MockTaskManager;
@@ -75,6 +76,7 @@ import top.silwings.core.model.MockHandlerDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -168,6 +170,7 @@ public class MockHandlerJmh {
         private final DynamicMockContext dynamicMockContext;
         private final MockTaskManager mockTaskManager;
         private final WebClient webClient;
+        private final PluginRegistrationProgramManager pluginRegistrationProgramManager;
 
         public ApplicationContent() {
             this.dynamicExpressionStringParser = new DynamicExpressionStringParser();
@@ -180,7 +183,8 @@ public class MockHandlerJmh {
             this.checkInfoFactory = new CheckInfoFactory(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser, checkInfoFactory);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, null, this.checkInfoFactory);
+            this.pluginRegistrationProgramManager = new PluginRegistrationProgramManager(Collections.emptyList());
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, this.checkInfoFactory, this.pluginRegistrationProgramManager);
             final ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
             taskScheduler.initialize();
             this.mockTaskManager = new MockTaskManager(taskScheduler, new TaskSchedulerProperties());

@@ -3,24 +3,16 @@ package top.silwings.core.handler;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.core.common.EnableStatus;
-import top.silwings.core.exceptions.ScriptNoSupportException;
+import top.silwings.core.exceptions.NoMatchingPluginRegistrationProgramException;
 import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.plugin.PluginExecutorManager;
-import top.silwings.core.handler.plugin.PluginInterfaceType;
-import top.silwings.core.handler.plugin.PluginRegistrationProgram;
-import top.silwings.core.handler.plugin.executors.PluginExecutor;
-import top.silwings.core.handler.plugin.executors.js.PreMockNashornJSScriptExecutor;
-import top.silwings.core.handler.plugin.executors.js.PreResponseNashornJSScriptExecutor;
+import top.silwings.core.handler.plugin.PluginRegistrationProgramManager;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfo;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.model.MockScriptDto;
-import top.silwings.core.script.ScriptLanguage;
-import top.silwings.core.utils.ConvertUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,19 +32,20 @@ public class MockHandlerFactory {
 
     private final MockTaskInfoFactory mockTaskInfoFactory;
 
-    private final List<PluginRegistrationProgram> pluginRegistrationProgram;
-
     private final CheckInfoFactory checkInfoFactory;
+
+    private final PluginRegistrationProgramManager pluginRegistrationProgramManager;
 
     public MockHandlerFactory(final JsonTreeParser jsonTreeParser,
                               final MockResponseInfoFactory mockResponseInfoFactory,
                               final MockTaskInfoFactory mockTaskInfoFactory,
-                              final List<PluginRegistrationProgram> pluginRegistrationProgram, final CheckInfoFactory checkInfoFactory) {
+                              final CheckInfoFactory checkInfoFactory,
+                              final PluginRegistrationProgramManager pluginRegistrationProgramManager) {
         this.jsonTreeParser = jsonTreeParser;
         this.mockResponseInfoFactory = mockResponseInfoFactory;
         this.mockTaskInfoFactory = mockTaskInfoFactory;
-        this.pluginRegistrationProgram = ConvertUtils.getNoNullOrDefault(pluginRegistrationProgram, Collections::emptyList);
         this.checkInfoFactory = checkInfoFactory;
+        this.pluginRegistrationProgramManager = pluginRegistrationProgramManager;
     }
 
     public MockHandler buildMockHandler(final MockHandlerDto definition) {
@@ -92,42 +85,28 @@ public class MockHandlerFactory {
         // 异步Task
         builder.asyncTaskInfoList(mockTaskInfoList.stream().filter(MockTaskInfo::isAsync).collect(Collectors.toList()));
 
-        // 脚本
+        // 插件
         builder.pluginExecutorManager(this.buildPluginExecutorManager(definition));
 
         return builder.build();
     }
 
     private PluginExecutorManager buildPluginExecutorManager(final MockHandlerDto definition) {
-        final List<MockScriptDto> mockScriptList = definition.getMockScriptList();
-        final PluginExecutorManager manager = new PluginExecutorManager();
-        if (CollectionUtils.isNotEmpty(mockScriptList)) {
-            mockScriptList.stream()
-                    .map(scriptInfo -> {
-                        final ScriptLanguage scriptLanguage = scriptInfo.getScriptLanguage();
-                        final PluginExecutor<?> pluginExecutor;
-                        switch (scriptLanguage) {
-                            case JAVA:
-                                // 脚本注入暂不支持java,如果需要使用java直接使用ScriptRegistrationProgram进行注册
-                                throw new ScriptNoSupportException("JAVA language is not supported yet.");
-                            case JAVA_SCRIPT:
-                                if (PluginInterfaceType.PRE_MOCK.equals(scriptInfo.getInterfaceType())) {
-                                    pluginExecutor = PreMockNashornJSScriptExecutor.from(scriptInfo.getScriptName(), scriptInfo.getScriptText());
-                                } else if (PluginInterfaceType.PRE_RESPONSE.equals(scriptInfo.getInterfaceType())) {
-                                    pluginExecutor = PreResponseNashornJSScriptExecutor.from(scriptInfo.getScriptName(), scriptInfo.getScriptText());
-                                } else {
-                                    throw new IllegalArgumentException();
-                                }
-                                break;
-                            default:
-                                throw new IllegalArgumentException();
-                        }
-                        return pluginExecutor;
-                    })
-                    .forEach(manager::register);
-        }
 
-        this.pluginRegistrationProgram.forEach(program -> program.register(definition, manager));
+        final PluginExecutorManager manager = new PluginExecutorManager();
+
+        if (CollectionUtils.isNotEmpty(definition.getPlugins())) {
+            definition.getPlugins()
+                    .stream()
+                    .filter(plugin -> EnableStatus.ENABLE.equals(plugin.getEnableStatus()))
+                    .map(this.pluginRegistrationProgramManager::findPluginRegistrationProgram)
+                    .forEach(programInfo -> {
+                        if (null == programInfo.getPluginRegistrationProgram()) {
+                            throw new NoMatchingPluginRegistrationProgramException(programInfo.getPluginCode());
+                        }
+                        programInfo.getPluginRegistrationProgram().register(programInfo.getPluginCode(), definition, manager);
+                    });
+        }
 
         return manager;
     }

@@ -82,8 +82,8 @@ public class UUIDFunctionFactory implements FunctionFactory {
             // 前缀
             String prefix = "";
             if (!childNodeValueList.isEmpty()
-                    && null != childNodeValueList.get(0)
-                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(0)))) {
+                && null != childNodeValueList.get(0)
+                && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(0)))) {
 
                 prefix = String.valueOf(childNodeValueList.get(0));
             }
@@ -102,8 +102,8 @@ public class UUIDFunctionFactory implements FunctionFactory {
             // 长度
             int length = replace ? 32 : 36;
             if (childNodeValueList.size() >= 2
-                    && null != childNodeValueList.get(1)
-                    && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(1)))) {
+                && null != childNodeValueList.get(1)
+                && StringUtils.isNotBlank(String.valueOf(childNodeValueList.get(1)))) {
 
                 try {
                     length = TypeUtils.toBigDecimal(childNodeValueList.get(1)).intValue();

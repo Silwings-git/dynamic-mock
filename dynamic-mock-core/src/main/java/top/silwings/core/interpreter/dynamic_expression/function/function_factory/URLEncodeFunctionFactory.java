@@ -50,7 +50,7 @@ public class URLEncodeFunctionFactory implements FunctionFactory {
         return URLEncodeFunction.from(expressionList);
     }
 
-    public static class URLEncodeFunction extends AbstractFunctionExpression{
+    public static class URLEncodeFunction extends AbstractFunctionExpression {
 
         protected URLEncodeFunction(final List<ExpressionTreeNode> functionExpressionList) {
             super(functionExpressionList);

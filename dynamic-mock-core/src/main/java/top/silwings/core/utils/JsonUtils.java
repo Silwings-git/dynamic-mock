@@ -104,7 +104,7 @@ public class JsonUtils {
     public static Object tryToBean(final String jsonStr) {
         try {
             return MAPPER.readValue(jsonStr, Object.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.debug("tryToBean error: " + jsonStr, e);
             return jsonStr;
         }
@@ -153,7 +153,7 @@ public class JsonUtils {
     public static <E> List<E> tryToList(final String jsonStr, final Class<E> eClass, final Supplier<List<E>> defaultReturnValueSupplier) {
         try {
             return MAPPER.readValue(jsonStr, MAPPER.getTypeFactory().constructCollectionType(List.class, eClass));
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.debug("tryToList error: " + jsonStr, e);
             return defaultReturnValueSupplier.get();
         }

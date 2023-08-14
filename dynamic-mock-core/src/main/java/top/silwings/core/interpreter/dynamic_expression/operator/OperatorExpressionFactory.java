@@ -110,8 +110,8 @@ public class OperatorExpressionFactory {
                 // 3.如果当前操作符优先级小于等于栈顶操作符,将栈顶元素依次弹栈,加入到suffixList,直到该操作符优先级大于栈顶操作符或栈无数据,将当前操作符入栈
 
                 while (!stack.empty()
-                        && this.isOperatorSymbol(stack.peek())
-                        && this.getPriority(symbol) <= this.getPriority(stack.peek())) {
+                       && this.isOperatorSymbol(stack.peek())
+                       && this.getPriority(symbol) <= this.getPriority(stack.peek())) {
 
                     suffixList.add(stack.pop());
                 }

@@ -24,6 +24,10 @@ public class MockHandlerCheckVoConverter {
 
     public CheckInfoDto convert(final CheckInfoParam checkInfo) {
         final CheckInfoDto infoParam = new CheckInfoDto();
+        if (null == checkInfo) {
+            return infoParam;
+        }
+
         infoParam.setErrResList(CollectionUtils.isNotEmpty(checkInfo.getErrResList())
                 ? checkInfo.getErrResList().stream().map(this::convert).collect(Collectors.toList())
                 : Collections.emptyList());

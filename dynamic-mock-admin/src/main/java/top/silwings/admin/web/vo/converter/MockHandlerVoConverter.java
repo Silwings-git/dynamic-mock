@@ -53,9 +53,9 @@ public class MockHandlerVoConverter {
                 .delayTime(ConvertUtils.getNoNullOrDefault(vo.getDelayTime(), 0))
                 .customizeSpace(vo.getCustomizeSpace())
                 .checkInfo(this.mockHandlerCheckVoConverter.convert(vo.getCheckInfo()))
-                .responses(vo.getResponses().stream().map(this.mockHandlerResponseVoConverter::convert).collect(Collectors.toList()))
-                .tasks(vo.getTasks().stream().map(this.mockHandlerTaskVoConverter::convert).collect(Collectors.toList()))
-                .plugins(vo.getPluginInfos().stream().map(this.mockHandlerPluginVoConverter::convert).collect(Collectors.toList()))
+                .responses(this.mockHandlerResponseVoConverter.convert(vo.getResponses()))
+                .tasks(this.mockHandlerTaskVoConverter.convert(vo.getTasks()))
+                .plugins(this.mockHandlerPluginVoConverter.convert(vo.getPluginInfos()))
                 .updateTime(new Date())
                 .build();
     }

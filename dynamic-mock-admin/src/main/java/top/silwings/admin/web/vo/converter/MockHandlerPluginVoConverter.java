@@ -1,9 +1,14 @@
 package top.silwings.admin.web.vo.converter;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.MockHandlerPluginInfoParam;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.MockHandlerPluginInfoDto;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MockHandlerTaskVoConverter
@@ -30,4 +35,12 @@ public class MockHandlerPluginVoConverter {
         param.setPluginParam(pluginDto.getPluginParam());
         return param;
     }
+
+    public List<MockHandlerPluginInfoDto> convert(final List<MockHandlerPluginInfoParam> pluginInfoList) {
+        if (CollectionUtils.isEmpty(pluginInfoList)) {
+            return Collections.emptyList();
+        }
+        return pluginInfoList.stream().map(this::convert).collect(Collectors.toList());
+    }
+
 }

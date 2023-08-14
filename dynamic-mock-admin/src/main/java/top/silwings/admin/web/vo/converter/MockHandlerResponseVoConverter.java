@@ -1,11 +1,16 @@
 package top.silwings.admin.web.vo.converter;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.MockResponseInfoParam;
 import top.silwings.admin.web.vo.param.MockResponseParam;
 import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MockHandlerResponseVoConverter
@@ -21,6 +26,13 @@ public class MockHandlerResponseVoConverter {
 
     public MockHandlerResponseVoConverter(final MockHandlerCheckVoConverter mockHandlerCheckVoConverter) {
         this.mockHandlerCheckVoConverter = mockHandlerCheckVoConverter;
+    }
+
+    public List<MockResponseInfoDto> convert(final List<MockResponseInfoParam> voList) {
+        if (CollectionUtils.isEmpty(voList)) {
+            return Collections.emptyList();
+        }
+        return voList.stream().map(this::convert).collect(Collectors.toList());
     }
 
     public MockResponseInfoDto convert(final MockResponseInfoParam vo) {

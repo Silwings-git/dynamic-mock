@@ -1,9 +1,8 @@
 package top.silwings.core.handler.plugin.executors;
 
+import org.springframework.core.Ordered;
 import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
-import top.silwings.core.handler.plugin.interfaces.Ordered;
-import top.silwings.core.script.ScriptExecutor;
 
 import java.io.Closeable;
 
@@ -14,8 +13,10 @@ import java.io.Closeable;
  * @Date 2023/5/29 20:03
  * @Since
  **/
-public interface PluginExecutor<T> extends ScriptExecutor<T, MockPluginContext>, Ordered, Closeable {
+public interface PluginExecutor<T> extends Ordered, Closeable {
 
     PluginInterfaceType getPluginInterfaceType();
+
+    T execute(MockPluginContext mockPluginContext);
 
 }

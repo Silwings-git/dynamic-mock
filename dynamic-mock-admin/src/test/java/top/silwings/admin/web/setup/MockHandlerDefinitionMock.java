@@ -2,16 +2,12 @@ package top.silwings.admin.web.setup;
 
 import org.springframework.http.HttpMethod;
 import top.silwings.core.common.Identity;
-import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.model.MockHandlerDto;
 import top.silwings.core.model.MockResponseDto;
 import top.silwings.core.model.MockResponseInfoDto;
-import top.silwings.core.model.MockScriptDto;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
-import top.silwings.core.script.ScriptLanguage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -42,71 +38,9 @@ public class MockHandlerDefinitionMock {
                 .customizeSpace(buildCustomizeSpace())
                 .responses(buildResponseInfo())
                 .tasks(buildTasksInfo())
-                .mockScriptList(buildScriptList())
                 .updateTime(new Date())
                 .handlerId(Identity.from(random.nextInt(1000)))
                 .build();
-    }
-
-    private static List<MockScriptDto> buildScriptList() {
-
-        final List<MockScriptDto> mockScriptList = new ArrayList<>();
-        final MockScriptDto preMock = MockScriptDto.builder()
-                .scriptName("测试脚本")
-                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
-                .interfaceType(PluginInterfaceType.PRE_MOCK)
-//                .scriptText("function preMock(context) {\n" +
-//                            "    console.log(context.getRequestInfo().getRequestURI());\n" +
-//                            "    context.getMockWorkflowControl().getInterruptResult().setBody(\"abc\");\n" +
-//                            "}\n" +
-//                            "\n" +
-//                            "function getOrder(){\n" +
-//                            "    return 10;\n" +
-//                            "}")
-                .scriptText("function preMock(context) {\n" +
-                            "   var a = \"\"+JSON.parse(decodeURIComponent(JSON.parse('{\"formBody\": {\"360buy_param_json\": [\"%7B%22optional_fields%22%3A%22orderId%2CorderType%2CpayType%2CorderTotalPrice%2CorderSellerPrice%2CorderPayment%2CfreightPrice%2CorderRemark%2CorderStartTime%2CconsigneeInfo%2CitemInfoList%2CcouponDetailList%2CvenderRemark%2Cpin%2CpaymentConfirmTime%2ClogisticsId%2CrealPin%2CorderState%2CbalanceUsed%2CdirectParentOrderId%22%2C%22order_id%22%3A274975906226%2C%22order_state%22%3Anull%7D\"]}}').formBody['360buy_param_json'][0])).order_id;\n" +
-                            "   console.log(a);\n" +
-                            "}\n" +
-                            "\n" +
-                            "function getOrder(){\n" +
-                            "    return 10;\n" +
-                            "}")
-                .remark("这是备注")
-                .build();
-        mockScriptList.add(preMock);
-
-        final MockScriptDto preResponse = MockScriptDto.builder()
-                .scriptName("响应前")
-                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
-                .interfaceType(PluginInterfaceType.PRE_RESPONSE)
-                .scriptText("function preResponse(context) {\n" +
-                            "    context.getMockWorkflowControl().setInterruptAndReturn(true);" +
-                            "    context.getMockWorkflowControl().getInterruptResult().setBody(context.getMockWorkflowControl().getInterruptResult().getBody()+\"*2\")\n" +
-                            "}\n" +
-                            "\n" +
-                            "function getOrder(){\n" +
-                            "    return 10;\n" +
-                            "}")
-                .remark("这是备注")
-                .build();
-
-        final MockScriptDto preResponse2 = MockScriptDto.builder()
-                .scriptName("响应前")
-                .scriptLanguage(ScriptLanguage.JAVA_SCRIPT)
-                .interfaceType(PluginInterfaceType.PRE_RESPONSE)
-                .scriptText("function preResponse(context) {\n" +
-                            "    context.getResponse().setBody(\"222\")\n" +
-                            "}\n" +
-                            "\n" +
-                            "function getOrder(){\n" +
-                            "    return 10;\n" +
-                            "}")
-                .remark("这是备注")
-                .build();
-        // 目前脚本解析还存在问题
-        mockScriptList.add(preResponse2);
-
-        return mockScriptList;
     }
 
     private static Map<String, Object> buildCustomizeSpace() {

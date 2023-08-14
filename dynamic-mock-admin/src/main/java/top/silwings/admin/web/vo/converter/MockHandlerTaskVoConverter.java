@@ -1,5 +1,6 @@
 package top.silwings.admin.web.vo.converter;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import top.silwings.admin.web.vo.param.SaveTaskInfoParam;
@@ -8,6 +9,10 @@ import top.silwings.core.common.EnableStatus;
 import top.silwings.core.model.TaskInfoDto;
 import top.silwings.core.model.TaskRequestDto;
 import top.silwings.core.utils.ConvertUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MockHandlerTaskVoConverter
@@ -18,6 +23,13 @@ import top.silwings.core.utils.ConvertUtils;
  **/
 @Component
 public class MockHandlerTaskVoConverter {
+
+    public List<TaskInfoDto> convert(final List<SaveTaskInfoParam> voList) {
+        if (CollectionUtils.isEmpty(voList)) {
+            return Collections.emptyList();
+        }
+        return voList.stream().map(this::convert).collect(Collectors.toList());
+    }
 
     public TaskInfoDto convert(final SaveTaskInfoParam vo) {
         return TaskInfoDto.builder()

@@ -22,9 +22,10 @@ import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.handler.context.MockPluginContext;
-import top.silwings.core.handler.plugin.PluginExecutorManager;
+import top.silwings.core.handler.plugin.MockPluginInfo;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.handler.plugin.PluginRegistrationProgram;
+import top.silwings.core.handler.plugin.PluginRegistrationProgramManager;
 import top.silwings.core.handler.plugin.executors.PluginExecutor;
 import top.silwings.core.handler.response.MockResponseInfoFactory;
 import top.silwings.core.handler.task.MockTaskInfoFactory;
@@ -77,7 +78,6 @@ import top.silwings.core.interpreter.dynamic_expression.parser.AutoTypeParser;
 import top.silwings.core.interpreter.dynamic_expression.parser.DynamicExpressionStringParser;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.script.ScriptLanguage;
 import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -136,9 +136,10 @@ public class MockHandlerJunit {
 
     @Component
     public static class PrintSomethingPlugin implements PluginRegistrationProgram {
+
         @Override
-        public void register(final MockHandlerDto definition, final PluginExecutorManager manager) {
-            manager.register(new PluginExecutor<Void>() {
+        public PluginExecutor<?> newPluginExecutor(final String pluginCode, final MockHandlerDto definition) {
+            return new PluginExecutor<Void>() {
                 @Override
                 public PluginInterfaceType getPluginInterfaceType() {
                     return PluginInterfaceType.PRE_MOCK;
@@ -155,15 +156,19 @@ public class MockHandlerJunit {
 
                 @Override
                 public Void execute(final MockPluginContext mockPluginContext) {
-                    System.out.println("JAVA脚本被执行.");
+                    System.out.println("JAVA插件被执行.");
                     return null;
                 }
+            };
+        }
 
-                @Override
-                public ScriptLanguage getLanguege() {
-                    return ScriptLanguage.JAVA;
-                }
-            });
+        @Override
+        public MockPluginInfo getMockPluginInfo() {
+            final MockPluginInfo mockPluginInfo = new MockPluginInfo();
+            mockPluginInfo.setPluginCode("anonymousPlugin");
+            mockPluginInfo.setPluginName("匿名测试插件");
+            mockPluginInfo.setDescription("测试用");
+            return mockPluginInfo;
         }
     }
 
@@ -183,6 +188,7 @@ public class MockHandlerJunit {
         private final DynamicMockContext dynamicMockContext;
         private final MockTaskManager mockTaskManager;
         private final WebClient webClient;
+        private final PluginRegistrationProgramManager pluginRegistrationProgramManager;
 
         public ApplicationContent() {
 
@@ -196,7 +202,8 @@ public class MockHandlerJunit {
             this.checkInfoFactory = new CheckInfoFactory(this.dynamicExpressionFactory);
             this.mockResponseInfoFactory = new MockResponseInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser, this.checkInfoFactory);
             this.mockTaskInfoFactory = new MockTaskInfoFactory(this.dynamicExpressionFactory, this.jsonTreeParser);
-            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, Collections.singletonList(new PrintSomethingPlugin()), this.checkInfoFactory);
+            this.pluginRegistrationProgramManager = new PluginRegistrationProgramManager(Collections.emptyList());
+            this.mockHandlerFactory = new MockHandlerFactory(this.jsonTreeParser, this.mockResponseInfoFactory, this.mockTaskInfoFactory, this.checkInfoFactory, this.pluginRegistrationProgramManager);
             final ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
             taskScheduler.initialize();
             this.mockTaskManager = new MockTaskManager(taskScheduler, new TaskSchedulerProperties());

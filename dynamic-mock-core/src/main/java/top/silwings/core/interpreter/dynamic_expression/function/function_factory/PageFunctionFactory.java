@@ -90,7 +90,7 @@ public class PageFunctionFactory implements FunctionFactory {
             final Object arg3 = childNodeValueList.get(2);
 
             if (arg3 instanceof List
-                    || (arg3 instanceof String && JsonUtils.isValidListJson((String) arg3))) {
+                || (arg3 instanceof String && JsonUtils.isValidListJson((String) arg3))) {
 
                 final boolean dynamic = childNodeValueList.size() < 4 || TypeUtils.toBooleanValue(childNodeValueList.get(3));
 
@@ -132,9 +132,9 @@ public class PageFunctionFactory implements FunctionFactory {
         private int getReturnSize(final int pageNum, final int pageSize, final int total) {
             if (pageNum <= 0 || pageSize < 0 || total < 0) {
                 throw new DynamicMockException("Parameter specification error of `page` function." +
-                        " PageNum should be greater than or equal to 0, actual: " + pageNum +
-                        " . PageSize should be greater than 0, actual: " + pageSize +
-                        " . Total should be greater than 0, actual: " + total);
+                                               " PageNum should be greater than or equal to 0, actual: " + pageNum +
+                                               " . PageSize should be greater than 0, actual: " + pageSize +
+                                               " . Total should be greater than 0, actual: " + total);
             }
 
             return Math.min(total - (pageNum - 1) * pageSize, pageSize);

@@ -9,7 +9,7 @@ import top.silwings.core.common.Identity;
  * @Date 2023/8/13 12:18
  * @Since
  **/
-public class UpdatedMockHandlerTaskEvent extends UpdatedMockHandlerEvent{
+public class UpdatedMockHandlerTaskEvent extends UpdatedMockHandlerEvent {
     public UpdatedMockHandlerTaskEvent(final Object source, final Identity handlerId) {
         super(source, handlerId);
     }
