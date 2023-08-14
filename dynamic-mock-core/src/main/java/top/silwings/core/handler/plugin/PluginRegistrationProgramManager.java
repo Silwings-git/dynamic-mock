@@ -23,14 +23,14 @@ public class PluginRegistrationProgramManager {
     private final Map<String, PluginRegistrationProgram> pluginCodeRegistrationProgramMap;
 
     @Getter
-    private final List<MockPluginInfo<?>> mockPluginInfoList;
+    private final List<MockPluginInfo> mockPluginInfoList;
 
     public PluginRegistrationProgramManager(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
         this.pluginCodeRegistrationProgramMap = this.initPluginCodeRegistrationProgramMap(pluginRegistrationProgramList);
         this.mockPluginInfoList = this.initMockPluginInfoList(pluginRegistrationProgramList);
     }
 
-    private List<MockPluginInfo<?>> initMockPluginInfoList(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
+    private List<MockPluginInfo> initMockPluginInfoList(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
         return pluginRegistrationProgramList
                 .stream()
                 .map(PluginRegistrationProgram::getMockPluginInfo)
@@ -42,7 +42,7 @@ public class PluginRegistrationProgramManager {
         return pluginRegistrationProgramList
                 .stream()
                 .collect(Collectors.toMap(e -> {
-                            final MockPluginInfo<?> mockPluginInfo = e.getMockPluginInfo();
+                            final MockPluginInfo mockPluginInfo = e.getMockPluginInfo();
                             if (null == mockPluginInfo) {
                                 throw DynamicMockException.from("The plug-in registration program lacks plug-in information, and the plug-in registration program that does not meet the requirements:" + e.getClass().getName());
                             }

@@ -34,8 +34,8 @@ public class MockPluginController {
     @PostMapping("/list")
     @PermissionLimit
     @ApiOperation(value = "获取插件信息列表")
-    public Result<List<MockPluginInfoResult<Object>>> queryMockPluginInfo() {
-        final List<MockPluginInfo<?>> mockPluginInfoList = this.pluginRegistrationProgramManager.getMockPluginInfoList();
+    public Result<List<MockPluginInfoResult>> queryMockPluginInfo() {
+        final List<MockPluginInfo> mockPluginInfoList = this.pluginRegistrationProgramManager.getMockPluginInfoList();
         return Result.ok(MockPluginInfoResult.listFrom(mockPluginInfoList));
     }
 

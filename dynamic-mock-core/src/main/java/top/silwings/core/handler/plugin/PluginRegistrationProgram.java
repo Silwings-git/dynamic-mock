@@ -14,7 +14,7 @@ public interface PluginRegistrationProgram {
 
     PluginExecutor<?> newPluginExecutor(MockHandlerPluginInfo mockHandlerPluginInfo, MockHandlerDto definition);
 
-    MockPluginInfo<?> getMockPluginInfo();
+    MockPluginInfo getMockPluginInfo();
 
     default void register(MockHandlerPluginInfo mockHandlerPluginInfo, MockHandlerDto definition, PluginExecutorManager manager) {
         manager.register(this.newPluginExecutor(mockHandlerPluginInfo, definition));
