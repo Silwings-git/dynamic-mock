@@ -43,4 +43,10 @@ public class MockHandlerPluginVoConverter {
         return pluginInfoList.stream().map(this::convert).collect(Collectors.toList());
     }
 
+    public List<MockHandlerPluginInfoParam> convert2Param(final List<MockHandlerPluginInfo> pluginInfoList) {
+        if (CollectionUtils.isEmpty(pluginInfoList)) {
+            return Collections.emptyList();
+        }
+        return pluginInfoList.stream().map(this::convert).collect(Collectors.toList());
+    }
 }

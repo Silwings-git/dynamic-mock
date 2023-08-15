@@ -22,6 +22,7 @@ import top.silwings.core.handler.MockHandlerFactory;
 import top.silwings.core.handler.check.CheckInfoFactory;
 import top.silwings.core.handler.context.MockHandlerContext;
 import top.silwings.core.handler.context.MockPluginContext;
+import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 import top.silwings.core.handler.plugin.MockPluginInfo;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
 import top.silwings.core.handler.plugin.PluginRegistrationProgram;
@@ -78,7 +79,6 @@ import top.silwings.core.interpreter.dynamic_expression.parser.AutoTypeParser;
 import top.silwings.core.interpreter.dynamic_expression.parser.DynamicExpressionStringParser;
 import top.silwings.core.interpreter.json.JsonTreeParser;
 import top.silwings.core.model.MockHandlerDto;
-import top.silwings.core.handler.plugin.MockHandlerPluginInfo;
 import top.silwings.core.utils.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -164,11 +164,10 @@ public class MockHandlerJunit {
 
         @Override
         public MockPluginInfo getMockPluginInfo() {
-            final MockPluginInfo mockPluginInfo = new MockPluginInfo();
-            mockPluginInfo.setPluginCode("anonymousPlugin");
-            mockPluginInfo.setPluginName("匿名测试插件");
-            mockPluginInfo.setDescription("测试用");
-            return mockPluginInfo;
+            return MockPluginInfo.builder()
+                    .pluginCode("anonymousPlugin")
+                    .pluginName("匿名测试插件")
+                    .build();
         }
     }
 

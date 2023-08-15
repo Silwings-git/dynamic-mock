@@ -75,4 +75,10 @@ public class MockHandlerResponseVoConverter {
                 .build();
     }
 
+    public List<MockResponseInfoParam> convert2Param(final List<MockResponseInfoDto> responseInfoList) {
+        if (CollectionUtils.isEmpty(responseInfoList)) {
+            return Collections.emptyList();
+        }
+        return responseInfoList.stream().map(this::convert).collect(Collectors.toList());
+    }
 }

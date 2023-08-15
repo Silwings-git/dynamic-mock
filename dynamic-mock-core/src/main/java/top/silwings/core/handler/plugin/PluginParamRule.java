@@ -36,4 +36,9 @@ public class PluginParamRule {
      */
     private final String description;
 
+    /**
+     * 示例
+     */
+    private final String example;
+
 }

@@ -1,7 +1,7 @@
 package top.silwings.core.handler.plugin;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @ClassName MockPluginInfo
@@ -11,7 +11,7 @@ import lombok.Setter;
  * @Since
  **/
 @Getter
-@Setter
+@Builder
 public class MockPluginInfo {
 
     /**
@@ -35,11 +35,12 @@ public class MockPluginInfo {
     private PluginMetaData metadata;
 
     public static MockPluginInfo copyOf(final MockPluginInfo mockPluginInfo) {
-        final MockPluginInfo res = new MockPluginInfo();
-        res.setPluginCode(mockPluginInfo.getPluginCode());
-        res.setPluginName(mockPluginInfo.getPluginName());
-        res.setDescription(mockPluginInfo.getDescription());
-        res.setMetadata(mockPluginInfo.getMetadata());
-        return res;
+        return MockPluginInfo.builder()
+                .pluginCode(mockPluginInfo.getPluginCode())
+                .pluginName(mockPluginInfo.getPluginName())
+                .description(mockPluginInfo.getDescription())
+                .metadata(mockPluginInfo.getMetadata())
+                .build();
     }
+
 }

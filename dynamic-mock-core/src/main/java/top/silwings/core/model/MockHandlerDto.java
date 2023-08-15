@@ -111,6 +111,7 @@ public class MockHandlerDto {
                 .customizeSpace(dto.getCustomizeSpace())
                 .responses(dto.getResponses())
                 .tasks(dto.getTasks())
+                .plugins(dto.getPlugins())
                 .updateTime(dto.getUpdateTime())
                 .version(dto.getVersion());
 

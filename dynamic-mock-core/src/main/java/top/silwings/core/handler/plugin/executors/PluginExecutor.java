@@ -5,6 +5,7 @@ import top.silwings.core.handler.context.MockPluginContext;
 import top.silwings.core.handler.plugin.PluginInterfaceType;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * @ClassName PluginExecutor
@@ -19,4 +20,13 @@ public interface PluginExecutor<T> extends Ordered, Closeable {
 
     T execute(MockPluginContext mockPluginContext);
 
+    @Override
+    default void close() throws IOException {
+        // NO CODES
+    }
+
+    @Override
+    default int getOrder() {
+        return 0;
+    }
 }

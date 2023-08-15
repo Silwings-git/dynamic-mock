@@ -76,9 +76,9 @@ public class MockHandlerVoConverter {
         resultVo.setDelayTime(dto.getDelayTime());
         resultVo.setCustomizeSpace(dto.getCustomizeSpace());
         resultVo.setCheckInfo(this.mockHandlerCheckVoConverter.convert(dto.getCheckInfo()));
-        resultVo.setPluginInfos(dto.getPlugins().stream().map(this.mockHandlerPluginVoConverter::convert).collect(Collectors.toList()));
-        resultVo.setResponses(dto.getResponses().stream().map(this.mockHandlerResponseVoConverter::convert).collect(Collectors.toList()));
-        resultVo.setTasks(dto.getTasks().stream().map(this.mockHandlerTaskVoConverter::convert).collect(Collectors.toList()));
+        resultVo.setPluginInfos(this.mockHandlerPluginVoConverter.convert2Param(dto.getPlugins()));
+        resultVo.setResponses(this.mockHandlerResponseVoConverter.convert2Param(dto.getResponses()));
+        resultVo.setTasks(this.mockHandlerTaskVoConverter.convert2Param(dto.getTasks()));
         resultVo.setUpdateTime(dto.getUpdateTime());
 
         return resultVo;

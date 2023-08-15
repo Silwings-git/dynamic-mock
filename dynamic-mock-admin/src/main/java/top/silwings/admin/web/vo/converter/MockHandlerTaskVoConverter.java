@@ -77,4 +77,10 @@ public class MockHandlerTaskVoConverter {
                 .build();
     }
 
+    public List<SaveTaskInfoParam> convert2Param(final List<TaskInfoDto> taskInfoList) {
+        if (CollectionUtils.isEmpty(taskInfoList)) {
+            return Collections.emptyList();
+        }
+        return taskInfoList.stream().map(this::convert).collect(Collectors.toList());
+    }
 }

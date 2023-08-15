@@ -1,7 +1,10 @@
 package top.silwings.core.handler.plugin;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import top.silwings.core.common.EnableStatus;
 
 import java.util.Map;
@@ -14,7 +17,10 @@ import java.util.Map;
  * @Since
  **/
 @Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MockHandlerPluginInfo {
 
     // 插件编码
