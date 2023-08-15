@@ -1,7 +1,10 @@
 package top.silwings.core.handler.plugin;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @ClassName PluginMetaData
@@ -11,6 +14,13 @@ import lombok.Setter;
  * @Since
  **/
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 public class PluginMetaData {
+
+    /**
+     * 字段规则
+     */
+    private final List<PluginParamRule> pluginParamRuleList;
+
 }

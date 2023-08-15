@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import top.silwings.core.handler.plugin.MockPluginInfo;
-import top.silwings.core.handler.plugin.PluginMetaData;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +37,7 @@ public class MockPluginInfoResult {
     private String description;
 
     @ApiModelProperty(value = "元数据")
-    private PluginMetaData metadata;
+    private PluginMetaDataResult metadata;
 
     public static List<MockPluginInfoResult> listFrom(final List<MockPluginInfo> mockPluginInfoList) {
         if (CollectionUtils.isEmpty(mockPluginInfoList)) {
@@ -51,7 +50,7 @@ public class MockPluginInfoResult {
                     res.setPluginCode(e.getPluginCode());
                     res.setPluginName(e.getPluginName());
                     res.setDescription(e.getDescription());
-                    res.setMetadata(e.getMetadata());
+                    res.setMetadata(PluginMetaDataResult.from(e.getMetadata()));
                     return res;
                 })
                 .collect(Collectors.toList());
