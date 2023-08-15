@@ -307,6 +307,11 @@ public class ParserTest {
         expressionList.add("#endsWith('abc','BC',true)");
         // true
         expressionList.add("#endsWith('abc','ABC',true)");
+        expressionList.add("#time()");
+        expressionList.add("#time('')");
+        expressionList.add("#time('yyyy-MM-dd')");
+        expressionList.add("#time('YMDHMS')");
+        expressionList.add("#time('/1000')");
 
         final HashMap<String, Object> abcMap = new HashMap<>();
         abcMap.put("list", Collections.singletonList(-1));

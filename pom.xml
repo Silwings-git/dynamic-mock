@@ -33,6 +33,7 @@
         <jwt.version>0.11.5</jwt.version>
         <jython-standalone.version>2.7.2</jython-standalone.version>
         <graalvm-js.version>22.3.2</graalvm-js.version>
+        <caffeine.version>2.9.3</caffeine.version>
     </properties>
 
     <dependencyManagement>
@@ -102,6 +103,12 @@
                 <groupId>org.graalvm.js</groupId>
                 <artifactId>js</artifactId>
                 <version>${graalvm-js.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
             </dependency>
 
         </dependencies>

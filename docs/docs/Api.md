@@ -856,3 +856,87 @@ Java `java.lang.String#join(java.lang.CharSequence, java.lang.Iterable<? extends
 4. `#timeshift('yyyy-MM-dd HH:mm:ss','2023-06-16 12:00:00','P10DT-1H-5M5S',)`=>2023-06-26 10:55:05
 5. `#timeshift('yyyy-MM-dd^'T^'HH:mm:ss','2023-06-16T12:00:00','P10DT-1H-5M5S','zh_CN')`=>2023-06-26T10:55:05
 6. `#timeshift('yyyy-MM-dd HH:mm:ss','','P10DT-1H-5M5S','zh_CN')`=>2023-06-26 22:32:35
+
+##### 23.StartsWith
+
+判断是否以指定字符结尾
+
+函数声明:
+`#startsWith(待检查字符,prefix)`
+`#startsWith(待检查字符,prefix,ignoreCase)`
+
+1. 待检查字符: 需要进行检查的字符串
+2. prefix: 前缀
+3. ignoreCase: 是否忽略大小写,默认为false
+
+示例:
+
+1. `#startsWith('abc','1')`=>false
+2. `#startsWith('abc','a')`=>true
+3. `#startsWith('abc','A')`=>false
+4. `#startsWith('abc','A',true)`=>true
+
+##### 24.EndsWith
+
+判断是否以指定字符结尾
+
+函数声明:
+`#endsWith(待检查字符,suffix)`
+`#endsWith(待检查字符,suffix,ignoreCase)`
+
+1. 待检查字符: 需要进行检查的字符串
+2. suffix: 后缀
+3. ignoreCase: 是否忽略大小写,默认为false
+
+示例:
+
+1. `#endsWith('abc','1')`=>false
+2. `#endsWith('abc','c')`=>true
+3. `#endsWith('abc','C')`=>false
+4. `#endsWith('abc','C',true)`=>true
+
+##### 25.UrlEncode
+
+URL编码函数
+
+函数声明:
+`#urlEncode(文本)`
+
+1. 文本: 要编码的文本内容
+
+示例:
+
+1. `#urlEncode('https://demo.com/demo?&timestamp=2020-05-26 10:30:55 +800')`=>
+   https%3A%2F%2Fdemo.com%2Fdemo%3F%26timestamp%3D2020-05-26+10%3A30%3A55+%2B800
+
+##### 26.UrlDecode
+
+URL解码函数
+
+函数声明:
+`#urlDecode(文本)`
+
+1. 文本: 要解码的文本内容
+
+示例:
+
+1. `#urlDecode('https://demo.com/demo?&timestamp=2020-05-26+17%3A42%3A14.059%2B0800')`=>https://demo.com/demo?&timestamp=2020-05-26
+   17:42:14.059+0800
+
+##### 27.Time
+
+时间戳函数
+
+函数声明:
+`#time()`
+`#time(format)`
+
+1. format: 时间格式
+
+示例:
+
+1. `#time()`=>1692096471702
+2. `#time('yyyy-MM-dd')`=>2023-08-15
+3. `#time('YMDHMS')`=>20230815-184751
+4. `#time('/1000')`=>1692096471
+
