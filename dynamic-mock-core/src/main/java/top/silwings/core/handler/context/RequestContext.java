@@ -267,11 +267,14 @@ public class RequestContext {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private static void buildJsonBody(final RequestInfoBuilder builder, final String bodyStr) {
             if (JsonUtils.isValidJson(bodyStr)) {
-                final Map<String, ?> jsonBody = JsonUtils.toMap(bodyStr, String.class, Object.class);
-                builder.body(jsonBody)
-                        .jsonBody(jsonBody);
+                final Object body = JsonUtils.toBean(bodyStr, Object.class);
+                builder.body(body);
+                if (body instanceof Map) {
+                    builder.jsonBody((Map<String, ?>) body);
+                }
             } else {
                 log.error("The request body does not have a valid data in json format.");
             }
