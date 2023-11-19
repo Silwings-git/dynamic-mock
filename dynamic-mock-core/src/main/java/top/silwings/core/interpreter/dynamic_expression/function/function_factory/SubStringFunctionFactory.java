@@ -86,7 +86,7 @@ public class SubStringFunctionFactory implements FunctionFactory {
                 throw new DynamicMockException("Parameter incorrectly of `SubString` function. expect: " + SUB_STRING_INFO.getMinArgsNumber() + ", actual: " + childNodeValueList.size());
             }
 
-            final String str = String.valueOf(childNodeValueList.get(0));
+            final String str = String.valueOf(ConvertUtils.getNoNullOrDefault(childNodeValueList.get(0), ""));
             int start = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(1)), 0);
             int end = ConvertUtils.getNoNullOrDefault(TypeUtils.toInteger(childNodeValueList.get(2)), 0);
 
