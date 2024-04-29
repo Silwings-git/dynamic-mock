@@ -940,3 +940,39 @@ URL解码函数
 3. `#time('YMDHMS')`=>20230815-184751
 4. `#time('/1000')`=>1692096471
 
+
+##### 28.Base64Encode
+
+Base64编码
+
+函数声明:
+1. `#base64Encode(text)`
+2. `#base64Encode(text,boolean)`
+
+参数说明:
+1. text: 需要进行编码的内容,支持文本或字节数组
+2. boolean: 是否以字符串返回,仅支持boolean类型,默认true
+
+示例:
+
+1. `#base64Encode('Hello World!')`=>SGVsbG8gV29ybGQh
+2. `#base64Encode('Hello World!',true)`=>SGVsbG8gV29ybGQh
+
+##### 29.Base64Decode
+
+Base64编码
+
+函数声明:
+1. `#base64Decode(text)`
+2. `#base64Decode(text,boolean)`
+
+参数说明:
+1. text: 需要进行编码的内容,支持文本或字节数组
+2. boolean: 是否以字符串返回,仅支持boolean类型,默认true
+
+示例:
+
+1. `#base64Decode(#base64Encode('Hello World!'))`=>Hello World!
+2. `#base64Decode(#base64Encode('Hello World!'),true)`=>Hello World!
+
+
