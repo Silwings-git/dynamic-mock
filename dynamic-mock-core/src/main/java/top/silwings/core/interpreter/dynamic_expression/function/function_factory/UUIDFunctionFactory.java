@@ -33,6 +33,11 @@ public class UUIDFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("UUID生成函数，生成随机或基于参数的UUID。支持2种用法：\n" +
+                    "1. #UUID() - 生成随机UUID\n" +
+                    "2. #UUID(name, namespace, version) - 基于名称和命名空间生成特定版本的UUID")
+            .example("#UUID()\n" +
+                    "#UUID('myapp', 'com.example', 5)")
             .build();
     private static final String SYMBOL = "#uuid(...)";
 

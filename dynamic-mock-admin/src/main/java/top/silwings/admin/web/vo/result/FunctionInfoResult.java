@@ -40,12 +40,26 @@ public class FunctionInfoResult {
     @ApiModelProperty(value = "函数返回值类型", example = "2")
     private FunctionReturnType functionReturnType;
 
+    /**
+     * 函数描述
+     */
+    @ApiModelProperty(value = "函数描述", example = "搜索函数，用于从指定范围中搜索数据")
+    private String description;
+
+    /**
+     * 使用示例
+     */
+    @ApiModelProperty(value = "使用示例", example = "#Search($.userId)")
+    private String example;
+
     public static FunctionInfoResult from(final FunctionInfo functionInfo) {
         return FunctionInfoResult.builder()
                 .functionName(functionInfo.getFunctionName())
                 .minArgsNumber(functionInfo.getMinArgsNumber())
                 .maxArgsNumber(functionInfo.getMaxArgsNumber())
                 .functionReturnType(functionInfo.getFunctionReturnType())
+                .description(functionInfo.getDescription())
+                .example(functionInfo.getExample())
                 .build();
     }
 

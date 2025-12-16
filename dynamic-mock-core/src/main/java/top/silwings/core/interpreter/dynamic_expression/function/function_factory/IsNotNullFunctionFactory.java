@@ -27,6 +27,9 @@ public class IsNotNullFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断参数是否不为null。参数不为null时返回true，为null时返回false。")
+            .example("#IsNotNull(#Search($.required))\n" +
+                    "#IsNotNull(#Search($.id))")
             .build();
 
     private static final String SYMBOL = "#isNotNull(...)";

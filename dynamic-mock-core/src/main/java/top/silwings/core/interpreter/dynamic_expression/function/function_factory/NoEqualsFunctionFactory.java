@@ -27,6 +27,9 @@ public class NoEqualsFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(2)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("比较两个字符串是否不相等。支持别名 neq。接收2个参数，返回布尔值。")
+            .example("#NoEquals(#Search($.status), 'inactive')\n" +
+                    "#neq(#Search($.role), 'admin')")
             .build();
 
     private static final String SYMBOL = "#noEquals(...)";

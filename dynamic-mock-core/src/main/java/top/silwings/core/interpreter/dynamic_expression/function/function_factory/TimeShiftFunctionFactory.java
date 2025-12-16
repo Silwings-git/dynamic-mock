@@ -44,6 +44,10 @@ public class TimeShiftFunctionFactory implements FunctionFactory {
             .minArgsNumber(4)
             .maxArgsNumber(4)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("时间偏移函数，对指定时间进行加减操作。接收4个参数：时间戳、偏移量、时间单位（YEAR/MONTH/DAY/HOUR/MINUTE/SECOND）、输出格式。")
+            .example("#TimeShift(#Now(), 1, 'DAY', 'yyyy-MM-dd HH:mm:ss')\n" +
+                    "#TimeShift(#Now(), -7, 'DAY', 'yyyy-MM-dd')\n" +
+                    "#TimeShift(#Now(), 2, 'HOUR', 'HH:mm:ss')")
             .build();
 
     private static final String SYMBOL = "timeShift(,,,)";

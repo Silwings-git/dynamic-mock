@@ -36,6 +36,9 @@ public class MockPluginInfoResult {
     @ApiModelProperty(value = "描述", example = "描述")
     private String description;
 
+    @ApiModelProperty(value = "版本", example = "版本")
+    private String version;
+
     @ApiModelProperty(value = "元数据")
     private PluginMetaDataResult metadata;
 
@@ -50,6 +53,7 @@ public class MockPluginInfoResult {
                     res.setPluginCode(e.getPluginCode());
                     res.setPluginName(e.getPluginName());
                     res.setDescription(e.getDescription());
+                    res.setVersion(e.getVersion());
                     res.setMetadata(PluginMetaDataResult.from(e.getMetadata()));
                     return res;
                 })

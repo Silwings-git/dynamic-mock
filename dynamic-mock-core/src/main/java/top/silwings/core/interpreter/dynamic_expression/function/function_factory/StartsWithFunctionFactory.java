@@ -31,6 +31,9 @@ public class StartsWithFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断字符串是否以指定前缀开头。接收2~3个参数：待检查字符串、前缀、是否忽略大小写（可选，默认false）。")
+            .example("#StartsWith(#Search($.username), 'admin')\n" +
+                    "#StartsWith(#Search($.email), 'test', true)")
             .build();
 
     private static final String SYMBOL = "#StartsWith(...)";

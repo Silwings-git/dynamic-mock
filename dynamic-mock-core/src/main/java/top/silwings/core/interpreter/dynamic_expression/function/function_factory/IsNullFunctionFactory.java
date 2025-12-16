@@ -28,6 +28,9 @@ public class IsNullFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断参数是否为null。参数为null时返回true，否则返回false。")
+            .example("#IsNull(#Search($.optional))\n" +
+                    "#IsNull(#Search($.data.extra))")
             .build();
 
     private static final String SYMBOL = "#IsNull(...)";

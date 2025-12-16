@@ -33,6 +33,11 @@ public class SaveCacheFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("保存缓存函数。支持2种用法：\n" +
+                    "1. #SaveCache(key, value) - 将value保存到localCache中，key为缓存键\n" +
+                    "2. #SaveCache(key, value, scope) - 将value保存到指定范围，scope可选：localCache/customizeSpace")
+            .example("#SaveCache('user', #Search($.userInfo))\n" +
+                    "#SaveCache('config', #Search($.settings), 'customizeSpace')")
             .build();
 
     private static final String SYMBOL = "#SaveCache(...)";

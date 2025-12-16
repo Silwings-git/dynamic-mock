@@ -29,6 +29,9 @@ public class JoinFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(Integer.MAX_VALUE)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("使用指定的分隔符连接一组字符串。第一个参数为分隔符，后续参数为待连接的字符串，按顺序用分隔符连接。")
+            .example("#Join(',', 'apple', 'banana', 'orange')\n" +
+                    "#Join('-', #Search($.year), #Search($.month), #Search($.day))")
             .build();
 
     private static final String SYMBOL = "#join(...)";

@@ -31,6 +31,9 @@ public class EndsWithFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断字符串是否以指定后缀结尾。接收2~3个参数：待检查字符串、后缀、是否忽略大小写（可选，默认false）。")
+            .example("#EndsWith(#Search($.filename), '.pdf')\n" +
+                    "#EndsWith(#Search($.url), '.com', true)")
             .build();
 
     private static final String SYMBOL = "#EndsWith(...)";

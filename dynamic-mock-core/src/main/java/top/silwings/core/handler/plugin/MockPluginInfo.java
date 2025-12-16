@@ -30,6 +30,11 @@ public class MockPluginInfo {
     private String description;
 
     /**
+     * 版本
+     */
+    private String version;
+
+    /**
      * 元数据
      */
     private PluginMetaData metadata;
@@ -39,6 +44,7 @@ public class MockPluginInfo {
                 .pluginCode(mockPluginInfo.getPluginCode())
                 .pluginName(mockPluginInfo.getPluginName())
                 .description(mockPluginInfo.getDescription())
+                .version(mockPluginInfo.getVersion())
                 .metadata(mockPluginInfo.getMetadata())
                 .build();
     }

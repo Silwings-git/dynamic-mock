@@ -29,6 +29,9 @@ public class SelectIfFunctionFactory implements FunctionFactory {
             .minArgsNumber(3)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("三元运算符函数，根据条件选择返回不同的值。接收3个参数：条件表达式、条件为true时的返回值、条件为false时的返回值。")
+            .example("#SelectIf(#Equals(#Search($.role), 'admin'), 'Administrator', 'User')\n" +
+                    "#SelectIf(#IsNotNull(#Search($.vip)), '会员', '普通用户')")
             .build();
 
     private static final String SYMBOL = "#selectIf(...)";

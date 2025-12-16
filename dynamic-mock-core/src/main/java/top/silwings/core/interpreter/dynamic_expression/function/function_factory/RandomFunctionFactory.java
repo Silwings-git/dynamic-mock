@@ -32,6 +32,15 @@ public class RandomFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("随机数生成函数。支持4种用法：\n" +
+                    "1. #Random() - 生成0到1之间的随机小数\n" +
+                    "2. #Random(max) - 生成0到max之间的随机整数\n" +
+                    "3. #Random(min, max) - 生成min到max之间的随机整数\n" +
+                    "4. #Random(min, max, count) - 生成count个min到max之间的随机整数列表")
+            .example("#Random()\n" +
+                    "#Random(100)\n" +
+                    "#Random(10, 50)\n" +
+                    "#Random(1, 100, 5)")
             .build();
 
     private static final String SYMBOL = "#random(...)";

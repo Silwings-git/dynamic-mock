@@ -29,6 +29,9 @@ public class PrintFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("打印函数，将参数的值打印到日志中（info级别），并原样返回参数值。用于调试和日志记录。")
+            .example("#Print(#Search($.userId))\n" +
+                    "#Print(#Now())")
             .build();
 
     private static final String SYMBOL = "#print(...)";

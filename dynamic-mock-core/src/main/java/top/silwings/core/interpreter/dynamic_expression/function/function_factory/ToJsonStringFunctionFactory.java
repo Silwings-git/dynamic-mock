@@ -30,6 +30,9 @@ public class ToJsonStringFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("对象转JSON字符串函数。将Java对象序列化为JSON格式字符串。支持别名：ToJsonStr, TJS。")
+            .example("#ToJsonString(#Search($.data))\n" +
+                    "#TJS(#Search($.userInfo))")
             .build();
 
     private static final String SYMBOL = "#toJsonString(...)";

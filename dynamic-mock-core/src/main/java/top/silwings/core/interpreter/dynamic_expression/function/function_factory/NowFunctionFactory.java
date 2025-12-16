@@ -31,6 +31,12 @@ public class NowFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("获取当前时间。支持2种用法：\n" +
+                    "1. #Now() - 返回当前时间戳（毫秒）\n" +
+                    "2. #Now('format') - 返回指定格式的时间字符串，如 'yyyy-MM-dd HH:mm:ss'")
+            .example("#Now()\n" +
+                    "#Now('yyyy-MM-dd HH:mm:ss')\n" +
+                    "#Now('yyyy/MM/dd')")
             .build();
 
     private static final String SYMBOL = "#now()";

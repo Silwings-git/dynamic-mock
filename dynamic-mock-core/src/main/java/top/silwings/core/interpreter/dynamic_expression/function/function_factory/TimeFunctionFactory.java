@@ -39,6 +39,12 @@ public class TimeFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("时间函数，获取当前时间并按指定格式输出。支持2种用法：\n" +
+                    "1. #Time() - 返回当前时间戳字符串\n" +
+                    "2. #Time('format') - 返回指定格式的当前时间字符串，如 'yyyy-MM-dd HH:mm:ss'")
+            .example("#Time()\n" +
+                    "#Time('yyyy-MM-dd HH:mm:ss')\n" +
+                    "#Time('yyyyMMdd')")
             .build();
 
     private static final String SYMBOL = "time(,,,)";

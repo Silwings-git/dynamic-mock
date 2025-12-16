@@ -26,7 +26,10 @@ public class ConcatFunctionFactory implements FunctionFactory {
             .functionName("Concat")
             .minArgsNumber(0)
             .maxArgsNumber(Integer.MAX_VALUE)
-            .functionReturnType(FunctionReturnType.BOOLEAN)
+            .functionReturnType(FunctionReturnType.STRING)
+            .description("拼接函数，可将任意个字符串拼接起来。参数个数不限，将所有参数按顺序拼接成一个字符串。")
+            .example("#Concat('Hello', ' ', 'World')\n" +
+                    "#Concat(#Search($.firstName), ' ', #Search($.lastName))")
             .build();
 
     private static final String SYMBOL = "#concat(...)";

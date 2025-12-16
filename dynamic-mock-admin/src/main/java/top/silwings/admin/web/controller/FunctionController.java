@@ -53,6 +53,10 @@ public class FunctionController {
                 .functionName("Dynamic")
                 .minArgsNumber(0)
                 .maxArgsNumber(Integer.MAX_VALUE)
+                .functionReturnType(top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType.OBJECT)
+                .description("动态函数，使用字符串拼接的方式动态构建表达式。可以将多个字符串片段拼接成完整的动态表达式并执行。")
+                .example("#Dynamic('#Search($.', 'userId', ')')\n" +
+                        "#Dynamic('#', 'Time', '()')")
                 .build();
 
         // 添加一个常量函数
@@ -60,6 +64,11 @@ public class FunctionController {
                 .functionName("Constant")
                 .minArgsNumber(0)
                 .maxArgsNumber(Integer.MAX_VALUE)
+                .functionReturnType(top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType.OBJECT)
+                .description("常量函数，直接返回指定的常量值。可以是字符串、数字、布尔值等任意类型的常量。")
+                .example("#Constant('hello')\n" +
+                        "#Constant(123)\n" +
+                        "#Constant(true)")
                 .build();
 
         // 常量函数排在Dynamic之前

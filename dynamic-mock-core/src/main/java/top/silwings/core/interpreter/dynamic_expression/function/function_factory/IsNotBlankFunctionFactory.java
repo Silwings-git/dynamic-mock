@@ -27,6 +27,9 @@ public class IsNotBlankFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断字符串是否不为空。参数不为空、不为null且包含非空白字符时返回true，否则返回false。")
+            .example("#IsNotBlank(#Search($.email))\n" +
+                    "#IsNotBlank(#Search($.username))")
             .build();
 
     private static final String SYMBOL = "#isNotBlank(...)";

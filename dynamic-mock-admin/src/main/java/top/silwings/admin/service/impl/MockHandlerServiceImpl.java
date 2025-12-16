@@ -386,7 +386,7 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
             }
 
             if (null != conditionParamDto.getProjectId()) {
-                criteria.andEqualTo(MockHandlerPo.C_PROJECT_ID, conditionParamDto.getProjectId());
+                criteria.andEqualTo(MockHandlerPo.C_PROJECT_ID, conditionParamDto.getProjectId().intValue());
             }
         }
 
@@ -411,7 +411,7 @@ public class MockHandlerServiceImpl implements MockHandlerService, ApplicationLi
 
     private PageData<MockHandlerDto> queryPageData(final Example queryCondition, final RowBounds rowBounds) {
 
-        final long total = this.mockHandlerMapper.selectCountByCondition(queryCondition);
+        final int total = this.mockHandlerMapper.selectCountByExample(queryCondition);
         if (total <= 0) {
             return PageData.empty();
         }

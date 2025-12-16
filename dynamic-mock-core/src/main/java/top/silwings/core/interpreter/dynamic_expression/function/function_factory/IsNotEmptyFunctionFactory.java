@@ -27,6 +27,9 @@ public class IsNotEmptyFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断集合或映射是否不为空。支持List、Map类型及其JSON字符串表示。参数不为空且集合/映射包含元素时返回true。")
+            .example("#IsNotEmpty(#Search($.roles))\n" +
+                    "#IsNotEmpty(#Search($.config))")
             .build();
 
     private static final String SYMBOL = "#isNotEmpty(...)";

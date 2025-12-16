@@ -34,6 +34,11 @@ public class ParseJsonStringFunctionFactory implements FunctionFactory {
             .maxArgsNumber(2)
             // 实际上,ParseJsonString函数的返回值也可能是FunctionReturnType.List,这里将其也归类到FunctionReturnType.OBJECT
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("解析JSON字符串并执行其中包含的动态表达式。支持2种用法：\n" +
+                    "1. #ParseJsonString(jsonString) - 解析JSON字符串，执行其中的动态表达式\n" +
+                    "2. #ParseJsonString(jsonString, JsonPath) - 解析JSON并从指定路径获取值")
+            .example("#ParseJsonString('{\"time\":\"#Now()\",\"user\":\"#Search($.userId)\"}')\n" +
+                    "#ParseJsonString(#Search($.template), '$.data')")
             .build();
 
     private static final String SYMBOL = "#parseJsonString(...)";

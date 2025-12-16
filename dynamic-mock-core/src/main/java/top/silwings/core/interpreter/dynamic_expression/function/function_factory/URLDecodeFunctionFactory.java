@@ -30,6 +30,9 @@ public class URLDecodeFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("URL解码函数，对URL编码的字符串进行解码（使用UTF-8字符集）。将百分号编码格式转换回原始字符。")
+            .example("#UrlDecode(#Search($.encodedParam))\n" +
+                    "#UrlDecode('hello%20world')")
             .build();
 
     private static final String SYMBOL = "#urlDecode(...)";

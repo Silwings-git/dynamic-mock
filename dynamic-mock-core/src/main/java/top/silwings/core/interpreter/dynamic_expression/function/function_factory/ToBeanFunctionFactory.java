@@ -28,6 +28,9 @@ public class ToBeanFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("JSON字符串转对象函数。将JSON格式的字符串解析为Java对象（Map或List）。")
+            .example("#ToBean('{\"name\":\"John\",\"age\":30}')\n" +
+                    "#ToBean(#Search($.jsonString))")
             .build();
 
     private static final String SYMBOL = "#toBean(...)";

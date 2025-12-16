@@ -29,6 +29,9 @@ public class EqualsFunctionFactory implements FunctionFactory {
             .minArgsNumber(2)
             .maxArgsNumber(2)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("比较两个字符串是否相等。支持别名 eq。接收2个参数，返回布尔值。")
+            .example("#Equals(#Search($.userId), '123')\n" +
+                    "#eq(#Search($.status), 'active')")
             .build();
 
     private static final String SYMBOL = "#equals(...)";

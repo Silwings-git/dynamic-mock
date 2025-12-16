@@ -31,6 +31,16 @@ public class FunctionInfo implements Comparable<FunctionInfo> {
      */
     private final int maxArgsNumber;
 
+    /**
+     * 描述
+     */
+    private final String description;
+
+    /**
+     * 示例
+     */
+    private final String example;
+
     private final FunctionReturnType functionReturnType;
 
     @Override

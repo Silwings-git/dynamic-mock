@@ -33,6 +33,9 @@ public class IsEmptyFunctionFactory implements FunctionFactory {
             .minArgsNumber(0)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("判断集合或映射是否为空。支持List、Map类型及其JSON字符串表示。参数为空、null或集合/映射为空时返回true。")
+            .example("#IsEmpty(#Search($.items))\n" +
+                    "#IsEmpty(#Search($.data.list))")
             .build();
 
     private static final String SYMBOL = "#isEmpty(...)";

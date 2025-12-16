@@ -30,6 +30,13 @@ public class ContainsFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(2)
             .functionReturnType(FunctionReturnType.BOOLEAN)
+            .description("包含判断函数，判断字符串或集合是否包含指定元素。支持3种用法：\n" +
+                    "1. #Contains(str) - 判断requestInfo转JSON字符串是否包含str\n" +
+                    "2. #Contains(collection, element) - 判断集合是否包含元素\n" +
+                    "3. #Contains(str, substring) - 判断字符串str是否包含子串substring")
+            .example("#Contains('admin')\n" +
+                    "#Contains(#Search($.roles), 'ADMIN')\n" +
+                    "#Contains(#Search($.name), 'test')")
             .build();
 
     private static final String SYMBOL = "#contains(...)";

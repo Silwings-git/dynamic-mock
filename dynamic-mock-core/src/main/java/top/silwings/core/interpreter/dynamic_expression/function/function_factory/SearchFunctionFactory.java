@@ -33,6 +33,15 @@ public class SearchFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.OBJECT)
+            .description("从指定范围搜索数据。支持5种用法：\n" +
+                    "1. #Search($) - 返回requestInfo全部信息\n" +
+                    "2. #Search(jsonpath) - 从requestInfo搜索\n" +
+                    "3. #Search(jsonpath, 搜索范围) - 从指定范围搜索，范围可选：requestInfo/customizeSpace/localCache\n" +
+                    "4. #Search(jsonpath, json对象) - 从指定JSON对象中搜索\n" +
+                    "5. #Search(jsonpath, 搜索范围, 默认值) - 从指定范围搜索，并设置默认值")
+            .example("#Search($.userId)\n" +
+                    "#Search($.data.name, requestInfo)\n" +
+                    "#Search($.config, customizeSpace, 'default')")
             .build();
     private static final String SYMBOL = "#search(...)";
 

@@ -30,6 +30,9 @@ public class URLEncodeFunctionFactory implements FunctionFactory {
             .minArgsNumber(1)
             .maxArgsNumber(1)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("URL编码函数，对字符串进行URL编码（使用UTF-8字符集）。将特殊字符转换为百分号编码格式。")
+            .example("#UrlEncode(#Search($.query))\n" +
+                    "#UrlEncode('hello world')")
             .build();
 
     private static final String SYMBOL = "#urlEncode(...)";
