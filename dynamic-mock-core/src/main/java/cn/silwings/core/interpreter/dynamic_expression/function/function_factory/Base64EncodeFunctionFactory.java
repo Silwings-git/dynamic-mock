@@ -1,15 +1,15 @@
-package top.silwings.core.interpreter.dynamic_expression.function.function_factory;
+package cn.silwings.core.interpreter.dynamic_expression.function.function_factory;
 
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.context.MockHandlerContext;
-import top.silwings.core.interpreter.ExpressionTreeNode;
-import top.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
-import top.silwings.core.utils.CheckUtils;
-import top.silwings.core.utils.TypeUtils;
+import cn.silwings.core.exceptions.DynamicValueCompileException;
+import cn.silwings.core.handler.context.MockHandlerContext;
+import cn.silwings.core.interpreter.ExpressionTreeNode;
+import cn.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
+import cn.silwings.core.utils.CheckUtils;
+import cn.silwings.core.utils.TypeUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -29,6 +29,12 @@ public class Base64EncodeFunctionFactory implements FunctionFactory {
             .functionName("Base64Encode")
             .minArgsNumber(1)
             .maxArgsNumber(2)
+            .description("Base64编码函数，用于将字符串或字节数组编码为Base64格式。支持2种调用方式：\n" +
+                    "1. #Base64Encode(data) - 编码后返回字符串\n" +
+                    "2. #Base64Encode(data, returnString) - 指定返回类型，returnString为true返回字符串，false返回字节数组")
+            .example("#Base64Encode('Hello World')\n" +
+                    "#Base64Encode('测试数据')\n" +
+                    "#Base64Encode(#Search($.data), true)")
             .functionReturnType(FunctionReturnType.STRING)
             .build();
 

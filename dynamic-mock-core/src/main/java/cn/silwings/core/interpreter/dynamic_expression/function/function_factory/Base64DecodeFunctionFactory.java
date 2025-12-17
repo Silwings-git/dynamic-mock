@@ -1,18 +1,16 @@
-package top.silwings.core.interpreter.dynamic_expression.function.function_factory;
+package cn.silwings.core.interpreter.dynamic_expression.function.function_factory;
 
+import cn.silwings.core.exceptions.DynamicValueCompileException;
+import cn.silwings.core.handler.context.MockHandlerContext;
+import cn.silwings.core.interpreter.ExpressionTreeNode;
+import cn.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
+import cn.silwings.core.utils.CheckUtils;
+import cn.silwings.core.utils.TypeUtils;
 import org.springframework.stereotype.Component;
-import top.silwings.core.exceptions.DynamicValueCompileException;
-import top.silwings.core.handler.context.MockHandlerContext;
-import top.silwings.core.interpreter.ExpressionTreeNode;
-import top.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
-import top.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
-import top.silwings.core.utils.CheckUtils;
-import top.silwings.core.utils.TypeUtils;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 
@@ -30,6 +28,12 @@ public class Base64DecodeFunctionFactory implements FunctionFactory {
             .functionName("Base64Decode")
             .minArgsNumber(1)
             .maxArgsNumber(2)
+            .description("Base64解码函数，用于将Base64编码的字符串解码为原始数据。支持2种调用方式：\n" +
+                    "1. #Base64Decode(encodedData) - 解码后返回字符串\n" +
+                    "2. #Base64Decode(encodedData, returnString) - 指定返回类型，returnString为true返回字符串，false返回字节数组")
+            .example("#Base64Decode('SGVsbG8gV29ybGQ=')\n" +
+                    "#Base64Decode('5rWL6K+V5pWw5o2u')\n" +
+                    "#Base64Decode(#Search($.encodedToken), true)")
             .functionReturnType(FunctionReturnType.STRING)
             .build();
 
@@ -78,10 +82,10 @@ public class Base64DecodeFunctionFactory implements FunctionFactory {
 
                 byte[] bytes;
 
-                if (obj instanceof byte[]){
+                if (obj instanceof byte[]) {
                     bytes = Base64.getDecoder().decode((byte[]) obj);
-                }else {
-                    bytes= Base64.getDecoder().decode(String.valueOf(obj));
+                } else {
+                    bytes = Base64.getDecoder().decode(String.valueOf(obj));
                 }
 
                 return returnString ? new String(bytes) : bytes;
