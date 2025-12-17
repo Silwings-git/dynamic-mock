@@ -31,9 +31,9 @@ public class ExpressionInterpreter {
 
         final Stack<Object> stack = new Stack<>();
 
-        for (final ExpressionTreeNode expression : this.expressionFlattenedList) {
+        for (final ExpressionTreeNode expressionNode : this.expressionFlattenedList) {
 
-            final int nodeCount = expression.getNodeCount();
+            final int nodeCount = expressionNode.getNodeCount();
 
             if (stack.size() < nodeCount) {
                 throw new DynamicMockException("The number of nodes is not as expected. expect : >=" + nodeCount + " .actual: " + stack.size());
@@ -47,7 +47,7 @@ public class ExpressionInterpreter {
             }
             Collections.reverse(arrayList);
 
-            final Object interpret = expression.interpret(mockHandlerContext, arrayList);
+            final Object interpret = expressionNode.interpret(mockHandlerContext, arrayList);
 
             stack.push(interpret);
         }

@@ -312,6 +312,19 @@ public class ParserTest {
         expressionList.add("#time('yyyy-MM-dd')");
         expressionList.add("#time('YMDHMS')");
         expressionList.add("#time('/1000')");
+        expressionList.add("#substring('abc',-1,3)");
+        expressionList.add("#substring('abc',-1,300)");
+        expressionList.add("#substring('abc',0,3)");
+        expressionList.add("#substring('abc',1,2)");
+        expressionList.add("#substring('abc',1,1)");
+        expressionList.add("#substring('abc',100,-11)");
+        expressionList.add("#substring('abc',20,-11)");
+        expressionList.add("#base64Encode('Hello World!')");
+        expressionList.add("#base64Decode(#base64Encode('Hello World!'))");
+        expressionList.add("#base64Encode('Hello World!',true)");
+        expressionList.add("#base64Decode(#base64Encode('Hello World!'),true)");
+        expressionList.add("#base64Encode('Hello World!',false)");
+        expressionList.add("#base64Decode(#base64Encode('Hello World!'),false)");
 
         final HashMap<String, Object> abcMap = new HashMap<>();
         abcMap.put("list", Collections.singletonList(-1));

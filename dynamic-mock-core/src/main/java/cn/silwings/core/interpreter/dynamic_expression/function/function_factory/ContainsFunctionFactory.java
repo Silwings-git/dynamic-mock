@@ -106,7 +106,7 @@ public class ContainsFunctionFactory implements FunctionFactory {
                 return false;
             }
 
-            throw DynamicMockException.from("Wrong parameter type.require String/List ,actual : " + container.getClass().getName());
+            throw DynamicMockException.from("Wrong parameter type.require String/List ,actual : " + container.getClass().getName() + ".actual: " + container + ":" + included);
         }
 
         @Override

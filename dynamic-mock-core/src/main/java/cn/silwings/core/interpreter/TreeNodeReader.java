@@ -14,6 +14,7 @@ import java.util.Stack;
  **/
 public class TreeNodeReader {
 
+    // 后序遍历树
     public static <T extends TreeNode<T>> List<T> postOrderTraversal(final T root) {
 
         if (root == null) {
