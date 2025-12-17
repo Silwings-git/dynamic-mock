@@ -30,6 +30,13 @@ public class SubStringFunctionFactory implements FunctionFactory {
             .minArgsNumber(3)
             .maxArgsNumber(3)
             .functionReturnType(FunctionReturnType.STRING)
+            .description("字符串截取函数，按索引位置截取字符串的子串。接收3个参数：目标字符串、起始索引（从0开始）、结束索引。" +
+                    "函数会自动修正无效的索引值：负数索引会被修正为0，超出长度的索引会被修正为字符串长度，" +
+                    "如果结束索引小于起始索引，则会被修正为起始索引（返回空串）。")
+            .example("#SubString('hello world', 0, 5) => 'hello'\n" +
+                    "#SubString('hello world', 6, 11) => 'world'\n" +
+                    "#SubString(#Search($.username), 0, 3)\n" +
+                    "#SubString('test', -1, 100) => 'test' (索引自动修正)")
             .build();
 
     private static final String SYMBOL = "#subString(str,beginIndex,endIndex)";
