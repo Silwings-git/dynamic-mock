@@ -9,12 +9,38 @@
         <relativePath/>
     </parent>
 
-    <groupId>top.silwings</groupId>
+    <groupId>cn.silwings</groupId>
     <artifactId>dynamic-mock-pom</artifactId>
-    <version>1.1.4-RELEASE</version>
+    <version>1.1.5</version>
     <packaging>pom</packaging>
     <name>dynamic-mock</name>
     <description>dynamic-mock</description>
+
+    <developers>
+        <developer>
+            <name>Silwings</name>
+            <email>silwings@163.com</email>
+            <url>https://github.com/Silwings-git/dynamic-mock</url>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/Silwings-git/dynamic-mock/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/Silwings-git/dynamic-mock</url>
+        <connection>https://github.com/Silwings-git/dynamic-mock.git</connection>
+        <developerConnection>https://github.com/Silwings-git</developerConnection>
+    </scm>
 
     <modules>
         <module>dynamic-mock-admin</module>
@@ -34,6 +60,10 @@
         <jython-standalone.version>2.7.2</jython-standalone.version>
         <graalvm-js.version>22.3.2</graalvm-js.version>
         <caffeine.version>2.9.3</caffeine.version>
+        <maven.plugin.central-publishing.version>0.8.0</maven.plugin.central-publishing.version>
+        <maven.plugin.gpg.version>3.2.8</maven.plugin.gpg.version>
+        <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
+        <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
     </properties>
 
     <dependencyManagement>
@@ -166,16 +196,6 @@
         </dependency>
     </dependencies>
 
-    <developers>
-        <developer>
-            <name>Silwings</name>
-            <!-- 邮件 -->
-            <email>silwings@163.com</email>
-            <!-- 开源地址 -->
-            <url>https://github.com/Silwings-git</url>
-        </developer>
-    </developers>
-
     <build>
         <plugins>
             <plugin>
@@ -199,6 +219,71 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${maven.plugin.central-publishing.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven.plugin.gpg.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.plugin.javadoc.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>bundle-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <maxmemory>1024</maxmemory>
+                    <encoding>UTF-8</encoding>
+                    <show>protected</show>
+                    <notree>true</notree>
+                    <!-- Avoid running into Java 8's very restrictive doclint issues -->
+                    <failOnError>false</failOnError>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.plugin.source.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludeResources>true</excludeResources>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

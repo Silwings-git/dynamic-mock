@@ -1,0 +1,79 @@
+package cn.silwings.core.interpreter.dynamic_expression.function.function_factory;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import cn.silwings.core.exceptions.DynamicValueCompileException;
+import cn.silwings.core.handler.context.MockHandlerContext;
+import cn.silwings.core.interpreter.ExpressionTreeNode;
+import cn.silwings.core.interpreter.dynamic_expression.function.AbstractFunctionExpression;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionFactory;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionInfo;
+import cn.silwings.core.interpreter.dynamic_expression.function.FunctionReturnType;
+import cn.silwings.core.utils.CheckUtils;
+
+import java.util.List;
+
+/**
+ * @ClassName PrintFunctionFactory
+ * @Description 打印函数
+ * @Author Silwings
+ * @Date 2022/12/31 17:01
+ * @Since
+ **/
+@Slf4j
+@Component
+public class PrintFunctionFactory implements FunctionFactory {
+
+    private static final FunctionInfo PRINT_FUNCTION_INFO = FunctionInfo.builder()
+            .functionName("Print")
+            .minArgsNumber(1)
+            .maxArgsNumber(1)
+            .functionReturnType(FunctionReturnType.OBJECT)
+            .description("打印函数，将参数的值打印到日志中（info级别），并原样返回参数值。用于调试和日志记录。")
+            .example("#Print(#Search($.userId))\n" +
+                    "#Print(#Now())")
+            .build();
+
+    private static final String SYMBOL = "#print(...)";
+
+    @Override
+    public boolean support(final String methodName) {
+        return "print".equalsIgnoreCase(methodName);
+    }
+
+    @Override
+    public FunctionInfo getFunctionInfo() {
+        return PRINT_FUNCTION_INFO;
+    }
+
+    @Override
+    public PrintFunction buildFunction(final List<ExpressionTreeNode> functionExpressionList) {
+        CheckUtils.sizeBetween(functionExpressionList, PRINT_FUNCTION_INFO.getMinArgsNumber(), PRINT_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Print function."));
+        return PrintFunction.from(functionExpressionList);
+    }
+
+    public static class PrintFunction extends AbstractFunctionExpression {
+
+        protected PrintFunction(final List<ExpressionTreeNode> functionExpressionList) {
+            super(functionExpressionList);
+        }
+
+        public static PrintFunction from(final List<ExpressionTreeNode> functionExpressionList) {
+            return new PrintFunction(functionExpressionList);
+        }
+
+        @Override
+        protected Object doInterpret(final MockHandlerContext mockHandlerContext, final List<Object> childNodeValueList) {
+
+            log.info("Print Function :{}", childNodeValueList.get(0));
+
+            return childNodeValueList.get(0);
+        }
+
+        @Override
+        protected String symbol() {
+            return SYMBOL;
+        }
+    }
+
+}

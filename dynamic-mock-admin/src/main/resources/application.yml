@@ -42,4 +42,4 @@ mybatis:
 
 logging:
   level:
-    top.silwings.admin: DEBUG
+    cn.silwings.admin: DEBUG

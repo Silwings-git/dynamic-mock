@@ -1,0 +1,75 @@
+package cn.silwings.core.handler.plugin;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+import cn.silwings.core.exceptions.DynamicMockException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * @ClassName PluginRegistrationProgramManager
+ * @Description
+ * @Author Silwings
+ * @Date 2023/8/14 17:25
+ * @Since
+ **/
+@Component
+public class PluginRegistrationProgramManager {
+
+    private final Map<String, PluginRegistrationProgram> pluginCodeRegistrationProgramMap;
+
+    @Getter
+    private final List<MockPluginInfo> mockPluginInfoList;
+
+    public PluginRegistrationProgramManager(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
+        this.pluginCodeRegistrationProgramMap = this.initPluginCodeRegistrationProgramMap(pluginRegistrationProgramList);
+        this.mockPluginInfoList = this.initMockPluginInfoList(pluginRegistrationProgramList);
+    }
+
+    private List<MockPluginInfo> initMockPluginInfoList(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
+        return pluginRegistrationProgramList
+                .stream()
+                .map(PluginRegistrationProgram::getMockPluginInfo)
+                .map(MockPluginInfo::copyOf)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, PluginRegistrationProgram> initPluginCodeRegistrationProgramMap(final List<PluginRegistrationProgram> pluginRegistrationProgramList) {
+        return pluginRegistrationProgramList
+                .stream()
+                .collect(Collectors.toMap(e -> {
+                            final MockPluginInfo mockPluginInfo = e.getMockPluginInfo();
+                            if (null == mockPluginInfo) {
+                                throw DynamicMockException.from("The plug-in registration program lacks plug-in information, and the plug-in registration program that does not meet the requirements:" + e.getClass().getName());
+                            }
+                            return mockPluginInfo.getPluginCode();
+                        },
+                        Function.identity(),
+                        (v1, v2) -> {
+                            throw DynamicMockException.from("The plug-in code is repeated, Repeated code: " + v2.getMockPluginInfo().getPluginCode());
+                        }));
+    }
+
+    public PluginRegistrationProgramInfo findPluginRegistrationProgram(final MockHandlerPluginInfo mockHandlerPluginInfo) {
+        return PluginRegistrationProgramInfo.of(mockHandlerPluginInfo, this.pluginCodeRegistrationProgramMap.get(mockHandlerPluginInfo.getPluginCode()));
+    }
+
+    @Getter
+    @Setter
+    public static class PluginRegistrationProgramInfo {
+        private MockHandlerPluginInfo mockHandlerPluginInfo;
+        private PluginRegistrationProgram pluginRegistrationProgram;
+
+        public static PluginRegistrationProgramInfo of(final MockHandlerPluginInfo mockHandlerPluginInfo, final PluginRegistrationProgram pluginRegistrationProgram) {
+            final PluginRegistrationProgramInfo programInfo = new PluginRegistrationProgramInfo();
+            programInfo.setMockHandlerPluginInfo(mockHandlerPluginInfo);
+            programInfo.setPluginRegistrationProgram(pluginRegistrationProgram);
+            return programInfo;
+        }
+    }
+
+}

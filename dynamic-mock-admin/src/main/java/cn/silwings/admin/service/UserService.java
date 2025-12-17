@@ -1,0 +1,30 @@
+package cn.silwings.admin.service;
+
+import cn.silwings.admin.common.PageData;
+import cn.silwings.admin.common.PageParam;
+import cn.silwings.admin.model.UserDto;
+import cn.silwings.core.common.Identity;
+
+import java.util.List;
+
+/**
+ * @ClassName UserService
+ * @Description 用户管理
+ * @Author Silwings
+ * @Date 2022/11/19 17:50
+ * @Since
+ **/
+public interface UserService {
+    Identity create(String username, String userAccount, String password, int role, List<Identity> permissionList);
+
+    Identity updateById(Identity userId, String username, String password, int role, List<Identity> permissionList);
+
+    void changePassword(String oldPassword, String newPassword);
+
+    void deleteUser(Identity userId);
+
+    PageData<UserDto> query(String username, String userAccount, Integer role, PageParam pageParam);
+
+    UserDto findByUserAccount(String userAccount, boolean required);
+
+}

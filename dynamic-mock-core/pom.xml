@@ -3,12 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.silwings</groupId>
+        <groupId>cn.silwings</groupId>
         <artifactId>dynamic-mock-pom</artifactId>
-        <version>1.1.4-RELEASE</version>
+        <version>1.1.5</version>
     </parent>
 
     <artifactId>dynamic-mock-core</artifactId>
+    <name>dynamic-mock-core</name>
+    <description>dynamic-mock-core</description>
 
     <dependencies>
 

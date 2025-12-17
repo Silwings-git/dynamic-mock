@@ -8,7 +8,7 @@
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: top.silwings.dynamicmock.core.MockHandlerJmh.test202
+# Benchmark: cn.silwings.dynamicmock.core.MockHandlerJmh.test202
 
 # Run progress: 0.00% complete, ETA 00:08:20
 # Fork: 1 of 5
@@ -76,7 +76,7 @@ Iteration   4: 49483.659 ops/s
 Iteration   5: 48635.010 ops/s
 
 
-Result "top.silwings.dynamicmock.core.MockHandlerJmh.test202":
+Result "cn.silwings.dynamicmock.core.MockHandlerJmh.test202":
   44410.730 ±(99.9%) 2286.110 ops/s [Average]
   (min, avg, max) = (37715.763, 44410.730, 49668.603), stdev = 3051.892
   CI (99.9%): [42124.620, 46696.841] (assumes normal distribution)

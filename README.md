@@ -24,7 +24,7 @@ Dynamic-Mock是一款用于便捷创建动态的Http请求模拟响应数据的�
 
 1. 执行`docs/sql/init.sql`，数据库初始化文件。
 2. 修改配置文件的数据库配置
-3. 运行`top.silwings.admin.DynamicMockAdminApplication`
+3. 运行`cn.silwings.admin.DynamicMockAdminApplication`
 
 **tips:**
 
