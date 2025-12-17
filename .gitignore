@@ -86,3 +86,5 @@ coverage/
 *.pid
 *.seed
 *.pid.lock
+
+dynamic-mock-admin/src/main/resources/static

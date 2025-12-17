@@ -17,29 +17,12 @@
 
       <!-- 搜索区域 -->
       <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item label="项目">
-          <el-select
-            v-model="searchForm.projectId"
-            placeholder="请选择项目"
-            clearable
-            style="width: 200px"
-            @change="handleProjectChange"
-          >
-            <el-option
-              v-for="project in projectList"
-              :key="project.projectId"
-              :label="project.projectName"
-              :value="project.projectId"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="处理器">
           <el-select
             v-model="searchForm.handlerId"
             placeholder="请选择处理器"
             clearable
             style="width: 200px"
-            :disabled="!searchForm.projectId"
           >
             <el-option
               v-for="handler in handlerList"
@@ -97,7 +80,7 @@
 
       <!-- 分页 -->
       <el-pagination
-        v-model:current-page="pagination.pageNo"
+        v-model:current-page="pagination.pageNum"
         v-model:page-size="pagination.pageSize"
         :total="pagination.total"
         :page-sizes="[10, 20, 50, 100]"
@@ -336,7 +319,7 @@ const batchDeleteForm = reactive({
 })
 
 const pagination = reactive({
-  pageNo: 1,
+  pageNum: 1,
   pageSize: 10,
   total: 0
 })
@@ -349,7 +332,7 @@ watch(
   (newProjectId) => {
     if (newProjectId) {
       searchForm.projectId = newProjectId
-      pagination.pageNo = 1
+      pagination.pageNum = 1
       loadData()
     }
   }
@@ -377,7 +360,7 @@ async function loadData() {
       handlerId: searchForm.handlerId,
       taskCode: searchForm.taskCode,
       name: searchForm.name,
-      pageNo: pagination.pageNo,
+      pageNum: pagination.pageNum,
       pageSize: pagination.pageSize
     })
     tableData.value = data.list || []
@@ -406,12 +389,8 @@ async function loadHandlers() {
   }
 }
 
-function handleProjectChange() {
-  searchForm.handlerId = null
-}
-
 function handleSearch() {
-  pagination.pageNo = 1
+  pagination.pageNum = 1
   loadData()
 }
 

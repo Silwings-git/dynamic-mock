@@ -45,7 +45,7 @@
 
       <!-- 分页 -->
       <el-pagination
-        v-model:current-page="pagination.pageNo"
+        v-model:current-page="pagination.pageNum"
         v-model:page-size="pagination.pageSize"
         :total="pagination.total"
         :page-sizes="[10, 20, 50, 100]"
@@ -108,7 +108,7 @@ const searchForm = reactive({
 })
 
 const pagination = reactive({
-  pageNo: 1,
+  pageNum: 1,
   pageSize: 10,
   total: 0
 })
@@ -136,7 +136,7 @@ async function loadData() {
     loading.value = true
     const data = await queryProjects({
       projectName: searchForm.projectName,
-      pageNo: pagination.pageNo,
+      pageNum: pagination.pageNum,
       pageSize: pagination.pageSize
     })
     tableData.value = data.list || []
@@ -149,7 +149,7 @@ async function loadData() {
 }
 
 function handleSearch() {
-  pagination.pageNo = 1
+  pagination.pageNum = 1
   loadData()
 }
 

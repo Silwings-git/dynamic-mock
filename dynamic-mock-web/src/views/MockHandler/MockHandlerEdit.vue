@@ -24,6 +24,7 @@
       <!-- 编辑模式切换 -->
       <el-radio-group v-model="editMode" style="margin-bottom: 20px">
         <el-radio-button value="form">表单模式</el-radio-button>
+        <el-radio-button value="browse">浏览模式</el-radio-button>
         <el-radio-button value="json">JSON模式（高级）</el-radio-button>
       </el-radio-group>
 
@@ -247,15 +248,26 @@
                           <div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px">
                               <div style="font-size: 12px; color: #606266">响应体JSON</div>
-                              <el-button
-                                type="primary"
-                                link
-                                size="small"
-                                @click="formatJson('handlerErrRes', errRes, 'bodyJson')"
-                              >
-                                <el-icon><MagicStick /></el-icon>
-                                格式化
-                              </el-button>
+                              <div>
+                                <el-button
+                                  type="primary"
+                                  link
+                                  size="small"
+                                  @click="formatJson('handlerErrRes', errRes, 'bodyJson')"
+                                >
+                                  <el-icon><MagicStick /></el-icon>
+                                  格式化
+                                </el-button>
+                                <el-button
+                                  type="primary"
+                                  link
+                                  size="small"
+                                  @click="openFullscreenEdit('handlerErrRes', errRes, 'bodyJson', 'Handler错误响应 - 响应体JSON')"
+                                >
+                                  <el-icon><FullScreen /></el-icon>
+                                  全屏编辑
+                                </el-button>
+                              </div>
                             </div>
                             <el-input
                               v-model="errRes.bodyJson"
@@ -659,15 +671,26 @@
                                   <div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px">
                                       <div style="font-size: 12px; color: #606266">响应体JSON</div>
-                                      <el-button
-                                        type="primary"
-                                        link
-                                        size="small"
-                                        @click="formatJson('responseErrRes', errRes, 'bodyJson')"
-                                      >
-                                        <el-icon><MagicStick /></el-icon>
-                                        格式化
-                                      </el-button>
+                                      <div>
+                                        <el-button
+                                          type="primary"
+                                          link
+                                          size="small"
+                                          @click="formatJson('responseErrRes', errRes, 'bodyJson')"
+                                        >
+                                          <el-icon><MagicStick /></el-icon>
+                                          格式化
+                                        </el-button>
+                                        <el-button
+                                          type="primary"
+                                          link
+                                          size="small"
+                                          @click="openFullscreenEdit('responseErrRes', errRes, 'bodyJson', '响应错误响应 - 响应体JSON')"
+                                        >
+                                          <el-icon><FullScreen /></el-icon>
+                                          全屏编辑
+                                        </el-button>
+                                      </div>
                                     </div>
                                     <el-input
                                       v-model="errRes.bodyJson"
@@ -918,6 +941,15 @@
                         >
                           <el-icon><MagicStick /></el-icon>
                           格式化
+                        </el-button>
+                        <el-button
+                          type="primary"
+                          link
+                          size="small"
+                          @click="openFullscreenEdit('response', response, 'bodyJson', `响应【${response.name}】 - 响应体JSON`)"
+                        >
+                          <el-icon><FullScreen /></el-icon>
+                          全屏编辑
                         </el-button>
                       </div>
                       <el-input
@@ -1236,6 +1268,15 @@
                           <el-icon><MagicStick /></el-icon>
                           格式化
                         </el-button>
+                        <el-button
+                          type="primary"
+                          link
+                          size="small"
+                          @click="openFullscreenEdit('task', task, 'requestBodyJson', `任务【${task.name}】 - 请求体JSON`)"
+                        >
+                          <el-icon><FullScreen /></el-icon>
+                          全屏编辑
+                        </el-button>
                       </div>
                       <el-input
                         v-model="task.requestBodyJson"
@@ -1406,6 +1447,15 @@
                           <el-icon><MagicStick /></el-icon>
                           格式化
                         </el-button>
+                        <el-button
+                          type="primary"
+                          link
+                          size="small"
+                          @click="openFullscreenEdit('plugin', plugin, 'pluginParamJson', `插件【${plugin.pluginCode}】 - 参数JSON`)"
+                        >
+                          <el-icon><FullScreen /></el-icon>
+                          全屏编辑
+                        </el-button>
                       </div>
                       <el-input
                         v-model="plugin.pluginParamJson"
@@ -1435,6 +1485,185 @@
             <el-icon><Back /></el-icon>
             返回
           </el-button>
+        </div>
+      </div>
+
+      <!-- 浏览模式 -->
+      <div v-show="editMode === 'browse'">
+        <!-- 浏览模式提示 -->
+        <el-alert
+          title="浏览模式 - 可双击编辑"
+          type="info"
+          :closable="false"
+          show-icon
+          style="margin-bottom: 20px"
+        >
+          <template #default>
+            双击任意高亮字段（显示为蓝色）可快速切换到表单模式并定位到该字段进行编辑
+          </template>
+        </el-alert>
+
+        <!-- 基础信息 -->
+        <el-divider content-position="left">基础信息</el-divider>
+        <el-descriptions :column="2" border size="small">
+          <el-descriptions-item label="处理器名称">
+            <span style="cursor: pointer" @dblclick="handleBrowseDoubleClick('basic', null, 'name')">{{ formData.name }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="所属项目">
+            {{ projectList.find(p => p.projectId === formData.projectId)?.projectName || '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="HTTP方法">
+            <el-tag v-for="method in formData.httpMethods" :key="method" size="small" style="margin-right: 5px">
+              {{ method }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="请求URI">
+            <span style="cursor: pointer" @dblclick="handleBrowseDoubleClick('basic', null, 'requestUri')">{{ formData.requestUri }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="标签">{{ formData.label || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="延迟时间">{{ formData.delayTime || 0 }} ms</el-descriptions-item>
+          <el-descriptions-item label="启用状态">
+            <el-tag :type="formData.enableStatus === 1 ? 'success' : 'info'" size="small">
+              {{ formData.enableStatus === 1 ? '已启用' : '已停用' }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <!-- Handler校验配置 -->
+        <el-divider content-position="left">Handler校验配置</el-divider>
+        <div v-if="handlerCheckInfoData && (handlerCheckInfoData.errResList?.length > 0 || handlerCheckInfoData.checkItemList?.length > 0)">
+          <!-- 错误响应列表 -->
+          <div v-if="handlerCheckInfoData.errResList?.length > 0" style="margin-bottom: 15px">
+            <h4 style="font-size: 14px; color: #606266; margin-bottom: 10px">错误响应列表 ({{ handlerCheckInfoData.errResList.length }})</h4>
+            <el-card v-for="(errRes, idx) in handlerCheckInfoData.errResList" :key="idx" size="small" style="margin-bottom: 8px">
+              <el-descriptions :column="2" border size="small">
+                <el-descriptions-item label="错误码">{{ errRes.errResCode }}</el-descriptions-item>
+                <el-descriptions-item label="HTTP状态">{{ errRes.status }}</el-descriptions-item>
+                <el-descriptions-item label="响应体" :span="2">
+                  <pre style="margin: 0; max-height: 150px; overflow: auto; font-size: 12px">{{ errRes.bodyJson }}</pre>
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+          <!-- 校验项列表 -->
+          <div v-if="handlerCheckInfoData.checkItemList?.length > 0">
+            <h4 style="font-size: 14px; color: #606266; margin-bottom: 10px">校验项列表 ({{ handlerCheckInfoData.checkItemList.length }})</h4>
+            <el-card v-for="(item, idx) in handlerCheckInfoData.checkItemList" :key="idx" size="small" style="margin-bottom: 8px">
+              <el-descriptions :column="1" border size="small">
+                <el-descriptions-item label="校验表达式">
+                  <pre style="margin: 0; font-size: 12px">{{ item.checkExpression }}</pre>
+                </el-descriptions-item>
+                <el-descriptions-item label="错误响应码">{{ item.errResCode }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          未配置Handler校验
+        </div>
+
+        <!-- 自定义参数空间 -->
+        <el-divider content-position="left">自定义参数空间</el-divider>
+        <div v-if="customizeSpaceList.length > 0">
+          <el-table :data="customizeSpaceList" border size="small">
+            <el-table-column prop="key" label="参数名" width="200" />
+            <el-table-column prop="value" label="参数值">
+              <template #default="{ row }">
+                <pre style="margin: 0; font-size: 12px; max-height: 100px; overflow: auto">{{ row.value }}</pre>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无自定义参数
+        </div>
+
+        <!-- 响应集 -->
+        <el-divider content-position="left">响应集 ({{ formData.responses.length }})</el-divider>
+        <div v-if="formData.responses.length > 0">
+          <el-card v-for="(response, idx) in formData.responses" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center; cursor: pointer" @dblclick="handleBrowseDoubleClick('response', idx, 'name')">
+                <el-tag :type="response.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ response.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ response.name }}</span>
+                <el-tag size="small" style="margin-left: 8px" type="info">HTTP {{ response.response?.status || 200 }}</el-tag>
+                <el-tag size="small" style="margin-left: 8px" type="warning">延迟 {{ response.delayTime || 0 }}ms</el-tag>
+              </div>
+            </template>
+            <el-descriptions :column="1" border size="small" style="margin-bottom: 10px">
+              <el-descriptions-item label="期望表达式" v-if="response.support?.length > 0">
+                <div v-for="(expr, i) in response.support" :key="i" style="margin-bottom: 5px">
+                  <pre style="margin: 0; font-size: 12px; cursor: pointer" @dblclick="handleBrowseDoubleClick('response', idx, 'support', i)">{{ expr }}</pre>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="响应体">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px; cursor: pointer" @dblclick="handleBrowseDoubleClick('response', idx, 'bodyJson')">{{ response.bodyJson }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无响应配置
+        </div>
+
+        <!-- 任务集 -->
+        <el-divider content-position="left">任务集 ({{ formData.tasks.length }})</el-divider>
+        <div v-if="formData.tasks.length > 0">
+          <el-card v-for="(task, idx) in formData.tasks" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center; cursor: pointer" @dblclick="handleBrowseDoubleClick('task', idx, 'name')">
+                <el-tag :type="task.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ task.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ task.name }}</span>
+                <el-tag size="small" style="margin-left: 8px" :type="task.async ? 'warning' : 'info'">
+                  {{ task.async ? '异步' : '同步' }}
+                </el-tag>
+              </div>
+            </template>
+            <el-descriptions :column="2" border size="small" style="margin-bottom: 10px">
+              <el-descriptions-item label="Cron表达式">{{ task.cron }}</el-descriptions-item>
+              <el-descriptions-item label="执行次数">{{ task.numberOfExecute }}</el-descriptions-item>
+              <el-descriptions-item label="请求URL" :span="2">{{ task.request?.requestUrl }}</el-descriptions-item>
+              <el-descriptions-item label="HTTP方法">{{ task.request?.httpMethod }}</el-descriptions-item>
+              <el-descriptions-item label="期望表达式" :span="2" v-if="task.support?.length > 0">
+                <div v-for="(expr, i) in task.support" :key="i" style="margin-bottom: 5px">
+                  <pre style="margin: 0; font-size: 12px; cursor: pointer" @dblclick="handleBrowseDoubleClick('task', idx, 'support', i)">{{ expr }}</pre>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="请求体" :span="2" v-if="task.requestBodyJson">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px; cursor: pointer" @dblclick="handleBrowseDoubleClick('task', idx, 'requestBodyJson')">{{ task.requestBodyJson }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无任务配置
+        </div>
+
+        <!-- 插件信息集 -->
+        <el-divider content-position="left">插件信息集 ({{ formData.pluginInfos.length }})</el-divider>
+        <div v-if="formData.pluginInfos.length > 0">
+          <el-card v-for="(plugin, idx) in formData.pluginInfos" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center; cursor: pointer" @dblclick="handleBrowseDoubleClick('plugin', idx, 'pluginCode')">
+                <el-tag :type="plugin.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ plugin.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ plugin.pluginCode }}</span>
+              </div>
+            </template>
+            <el-descriptions :column="1" border size="small">
+              <el-descriptions-item label="插件参数">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px; cursor: pointer" @dblclick="handleBrowseDoubleClick('plugin', idx, 'pluginParamJson')">{{ plugin.pluginParamJson }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无插件配置
         </div>
       </div>
 
@@ -1477,6 +1706,19 @@
       <!-- 浮动保存按钮 -->
       <transition name="fade">
         <div v-show="showFloatButton" class="float-buttons">
+          <!-- 返回浏览模式按钮 -->
+          <el-tooltip v-if="showBackToBrowse" content="返回浏览模式" placement="left" effect="dark" :show-after="300">
+            <div class="float-button-wrapper">
+              <el-button
+                type="success"
+                size="large"
+                circle
+                @click="backToBrowseMode"
+              >
+                <el-icon><View /></el-icon>
+              </el-button>
+            </div>
+          </el-tooltip>
           <el-tooltip content="文档中心" placement="left" effect="dark" :show-after="300">
             <div class="float-button-wrapper">
               <el-button
@@ -1657,11 +1899,42 @@
         </el-tab-pane>
       </el-tabs>
     </el-drawer>
+
+    <!-- 全屏编辑对话框 -->
+    <el-dialog
+      v-model="fullscreenEditVisible"
+      :title="fullscreenEditTitle"
+      fullscreen
+      :close-on-click-modal="false"
+    >
+      <div style="display: flex; flex-direction: column; height: calc(100vh - 150px)">
+        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end">
+          <el-button
+            type="primary"
+            @click="formatFullscreenJson"
+          >
+            <el-icon><MagicStick /></el-icon>
+            格式化
+          </el-button>
+        </div>
+        <el-input
+          v-model="fullscreenEditContent"
+          type="textarea"
+          :rows="30"
+          placeholder="请输入JSON格式的内容"
+          style="flex: 1; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 14px"
+        />
+      </div>
+      <template #footer>
+        <el-button @click="fullscreenEditVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveFullscreenEdit">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { findMockHandler, saveMockHandler, updateHandlerEnableStatus } from '@/api/mockHandler'
@@ -1676,7 +1949,8 @@ const projectStore = useProjectStore()
 
 const loading = ref(false)
 const saveLoading = ref(false)
-const editMode = ref('form')
+// 根据是否是编辑模式设置初始视图模式：编辑时默认浏览模式，新增时默认表单模式
+const editMode = ref(route.params.id ? 'browse' : 'form')
 const jsonError = ref('')
 const jsonContent = ref('')
 const activeResponseIndex = ref(-1)
@@ -1684,6 +1958,7 @@ const activeTaskIndex = ref(-1)
 const activePluginIndex = ref(-1)
 const handlerCheckExpanded = ref(false)
 const showFloatButton = ref(false)
+const showBackToBrowse = ref(false) // 是否显示返回浏览模式按钮
 
 // DSL文档相关
 const dslDocVisible = ref(false)
@@ -1698,6 +1973,15 @@ const functionDocLoading = ref(false)
 const functionList = ref([])
 const functionSearchKeyword = ref('')
 const activeFunctionNames = ref('')
+
+// 全屏编辑相关
+const fullscreenEditVisible = ref(false)
+const fullscreenEditContent = ref('')
+const fullscreenEditTitle = ref('')
+const fullscreenEditContext = ref(null) // 存储编辑上下文 { type, obj, field }
+
+// 浏览模式双击聚焦相关
+const focusTarget = ref(null) // 存储要聚焦的目标 { section, index, field }
 
 const handlerCheckInfoData = reactive({
   errResList: [],
@@ -1732,6 +2016,10 @@ watch(
   (newMode) => {
     if (newMode === 'json') {
       syncFormToJson()
+    }
+    // 如果用户手动切换到浏览模式或JSON模式，隐藏返回浏览模式按钮
+    if (newMode === 'browse' || newMode === 'json') {
+      showBackToBrowse.value = false
     }
   }
 )
@@ -2525,6 +2813,230 @@ function formatJson(type, obj, field) {
   }
 }
 
+// 打开全屏编辑
+function openFullscreenEdit(type, obj, field, title) {
+  fullscreenEditContext.value = { type, obj, field }
+  fullscreenEditContent.value = obj[field] || ''
+  fullscreenEditTitle.value = title
+  fullscreenEditVisible.value = true
+}
+
+// 保存全屏编辑
+function saveFullscreenEdit() {
+  const context = fullscreenEditContext.value
+  if (context && context.obj && context.field) {
+    context.obj[context.field] = fullscreenEditContent.value
+    ElMessage.success('保存成功')
+    fullscreenEditVisible.value = false
+  }
+}
+
+// 全屏编辑中的格式化
+function formatFullscreenJson() {
+  try {
+    const jsonStr = fullscreenEditContent.value
+    if (!jsonStr || !jsonStr.trim()) {
+      ElMessage.warning('JSON 内容为空')
+      return
+    }
+    // 尝试解析并格式化
+    const parsed = JSON.parse(jsonStr)
+    fullscreenEditContent.value = JSON.stringify(parsed, null, 2)
+    ElMessage.success('格式化成功')
+  } catch (error) {
+    ElMessage.error('JSON 格式错误，无法格式化：' + error.message)
+  }
+}
+
+// 浏览模式双击切换到表单模式并聚焦
+function handleBrowseDoubleClick(section, index = null, field = null, exprIndex = null) {
+  focusTarget.value = { section, index, field, exprIndex }
+  editMode.value = 'form'
+  showBackToBrowse.value = true // 显示返回浏览模式按钮
+
+  // 如果是响应/任务/插件，需要展开对应的项
+  if (section === 'response' && index !== null) {
+    activeResponseIndex.value = index
+  } else if (section === 'task' && index !== null) {
+    activeTaskIndex.value = index
+  } else if (section === 'plugin' && index !== null) {
+    activePluginIndex.value = index
+  }
+
+  // 等待DOM更新后尝试聚焦
+  nextTick(() => {
+    tryFocusElement(section, index, field, exprIndex)
+  })
+}
+
+// 返回浏览模式
+function backToBrowseMode() {
+  editMode.value = 'browse'
+  showBackToBrowse.value = false
+}
+
+// 尝试聚焦到对应的元素
+function tryFocusElement(section, index, field, exprIndex = null) {
+  let selector = null
+
+  // 根据不同的section和field构建选择器
+  switch (section) {
+    case 'basic':
+      // 基础信息字段
+      if (field === 'name') {
+        selector = 'input[placeholder="请输入处理器名称"]'
+      } else if (field === 'requestUri') {
+        selector = 'input[placeholder="请输入请求URI，如：/api/user/info"]'
+      }
+      break
+    case 'response':
+      // 响应相关
+      if (index !== null) {
+        if (field === 'name') {
+          // 聚焦到响应名称输入框
+          setTimeout(() => {
+            const nameInputs = document.querySelectorAll('input[placeholder="请输入响应名称"]')
+            if (nameInputs[index]) {
+              nameInputs[index].focus()
+              nameInputs[index].select()
+            }
+          }, 100)
+          return
+        } else if (field === 'bodyJson') {
+          // 聚焦到响应体JSON输入框 - 需要在展开的响应卡片中查找
+          setTimeout(() => {
+            // 先展开对应的响应卡片（已在handleBrowseDoubleClick中处理）
+            // 查找所有响应体textarea，取对应索引的
+            const bodyTextareas = document.querySelectorAll('textarea[placeholder="请输入JSON格式的响应体"]')
+            if (bodyTextareas[index]) {
+              bodyTextareas[index].focus()
+              bodyTextareas[index].select()
+            }
+          }, 200)
+          return
+        } else if (field === 'support' && exprIndex !== null) {
+          // 聚焦到响应的期望表达式输入框
+          setTimeout(() => {
+            // 需要展开期望表达式配置区域
+            const response = formData.responses[index]
+            if (response) {
+              response._supportExpanded = true
+              // 等待DOM更新后再查找元素
+              nextTick(() => {
+                // 查找所有期望表达式的textarea
+                // 由于期望表达式在每个响应卡片内部，需要更精确的定位
+                // 这里使用一个变通方法：通过placeholder来查找
+                const allSupportTextareas = document.querySelectorAll('textarea[placeholder*="请输入完整的表达式"]')
+                // 计算当前响应的期望表达式textarea的起始位置
+                let startIndex = 0
+                for (let i = 0; i < index; i++) {
+                  startIndex += (formData.responses[i].support || []).length
+                }
+                const targetTextarea = allSupportTextareas[startIndex + exprIndex]
+                if (targetTextarea) {
+                  targetTextarea.focus()
+                  targetTextarea.select()
+                }
+              })
+            }
+          }, 200)
+          return
+        }
+      }
+      break
+    case 'task':
+      // 任务相关
+      if (index !== null) {
+        if (field === 'name') {
+          setTimeout(() => {
+            const nameInputs = document.querySelectorAll('input[placeholder="请输入任务名称"]')
+            if (nameInputs[index]) {
+              nameInputs[index].focus()
+              nameInputs[index].select()
+            }
+          }, 100)
+          return
+        } else if (field === 'requestBodyJson') {
+          // 聚焦到任务请求体JSON输入框
+          setTimeout(() => {
+            const bodyTextareas = document.querySelectorAll('textarea[placeholder="请输入JSON格式的请求体"]')
+            if (bodyTextareas[index]) {
+              bodyTextareas[index].focus()
+              bodyTextareas[index].select()
+            }
+          }, 200)
+          return
+        } else if (field === 'support' && exprIndex !== null) {
+          // 聚焦到任务的期望表达式输入框
+          setTimeout(() => {
+            // 需要展开期望表达式配置区域
+            const task = formData.tasks[index]
+            if (task) {
+              task._supportExpanded = true
+              // 等待DOM更新后再查找元素
+              nextTick(() => {
+                // 查找所有期望表达式的textarea（需要排除响应的）
+                const allSupportTextareas = document.querySelectorAll('textarea[placeholder*="请输入完整的表达式"]')
+                // 计算当前任务的期望表达式textarea的起始位置
+                // 先计算所有响应的期望表达式总数
+                let startIndex = formData.responses.reduce((sum, resp) => sum + (resp.support || []).length, 0)
+                // 再加上前面任务的期望表达式总数
+                for (let i = 0; i < index; i++) {
+                  startIndex += (formData.tasks[i].support || []).length
+                }
+                const targetTextarea = allSupportTextareas[startIndex + exprIndex]
+                if (targetTextarea) {
+                  targetTextarea.focus()
+                  targetTextarea.select()
+                }
+              })
+            }
+          }, 200)
+          return
+        }
+      }
+      break
+    case 'plugin':
+      // 插件相关
+      if (index !== null) {
+        if (field === 'pluginCode') {
+          // 聚焦到插件编码选择框
+          setTimeout(() => {
+            // 插件选择框较难通过索引定位，暂时聚焦到插件卡片的第一个输入元素
+            const pluginSelects = document.querySelectorAll('.el-select input[placeholder="请选择插件"]')
+            if (pluginSelects[index]) {
+              pluginSelects[index].focus()
+            }
+          }, 200)
+          return
+        } else if (field === 'pluginParamJson') {
+          // 聚焦到插件参数JSON输入框
+          setTimeout(() => {
+            const paramTextareas = document.querySelectorAll('textarea[placeholder*="请输入插件参数JSON"]')
+            if (paramTextareas[index]) {
+              paramTextareas[index].focus()
+              paramTextareas[index].select()
+            }
+          }, 200)
+          return
+        }
+      }
+      break
+  }
+
+  // 尝试通过选择器聚焦
+  if (selector) {
+    const element = document.querySelector(selector)
+    if (element) {
+      element.focus()
+      // 如果是输入框，选中所有文本
+      if (element.select) {
+        element.select()
+      }
+    }
+  }
+}
+
 async function handleSave() {
   // 验证Handler级别必填字段
   if (!formData.name) {
@@ -3180,6 +3692,23 @@ function goBack() {
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+/* 浏览模式可编辑元素样式 */
+[style*="cursor: pointer"][style*="@dblclick"],
+span[style*="cursor: pointer"],
+pre[style*="cursor: pointer"],
+div[style*="cursor: pointer"] {
+  transition: all 0.2s ease;
+  border-radius: 2px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+[style*="cursor: pointer"]:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 /* 函数文档样式 */

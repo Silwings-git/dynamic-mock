@@ -19,11 +19,12 @@
 
       <!-- 视图模式切换 -->
       <el-radio-group v-model="viewMode" style="margin-bottom: 20px">
-        <el-radio-button value="graphic">图形模式</el-radio-button>
+        <el-radio-button value="graphic">表单模式</el-radio-button>
+        <el-radio-button value="browse">浏览模式</el-radio-button>
         <el-radio-button value="json">JSON模式</el-radio-button>
       </el-radio-group>
 
-      <!-- 图形模式 -->
+      <!-- 表单模式 -->
       <div v-show="viewMode === 'graphic'" v-if="handlerData">
         <!-- 基础信息 -->
         <el-divider content-position="left">基础信息</el-divider>
@@ -225,28 +226,25 @@
             shadow="hover"
           >
             <template #header>
-              <div style="display: flex; justify-content: space-between; align-items: center">
-                <div>
-                  <el-tag :type="response.enableStatus === 1 ? 'success' : 'info'" size="small">
-                    {{ response.enableStatus === 1 ? '已启用' : '已停用' }}
-                  </el-tag>
-                  <span style="margin-left: 10px; font-weight: bold">
-                    {{ response.name }}
-                  </span>
-                  <el-tag size="small" style="margin-left: 10px" type="info">
-                    HTTP {{ response.response?.status || 200 }}
-                  </el-tag>
-                  <el-tag size="small" style="margin-left: 10px" type="warning">
-                    延迟 {{ response.delayTime || 0 }}ms
-                  </el-tag>
-                </div>
-                <el-button
-                  :type="activeResponseIndex === index ? 'primary' : 'default'"
-                  size="small"
-                  @click="toggleResponse(index)"
-                >
-                  {{ activeResponseIndex === index ? '收起' : '展开' }}
-                </el-button>
+              <div
+                style="flex: 1; display: flex; align-items: center; cursor: pointer"
+                @click="toggleResponse(index)"
+              >
+                <span style="margin-right: 8px; color: #909399; font-size: 14px">
+                  {{ activeResponseIndex === index ? '▼' : '▶' }}
+                </span>
+                <el-tag :type="response.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ response.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 10px; font-weight: bold">
+                  {{ response.name }}
+                </span>
+                <el-tag size="small" style="margin-left: 10px" type="info">
+                  HTTP {{ response.response?.status || 200 }}
+                </el-tag>
+                <el-tag size="small" style="margin-left: 10px" type="warning">
+                  延迟 {{ response.delayTime || 0 }}ms
+                </el-tag>
               </div>
             </template>
 
@@ -377,25 +375,22 @@
             shadow="hover"
           >
             <template #header>
-              <div style="display: flex; justify-content: space-between; align-items: center">
-                <div>
-                  <el-tag :type="task.enableStatus === 1 ? 'success' : 'info'" size="small">
-                    {{ task.enableStatus === 1 ? '已启用' : '已停用' }}
-                  </el-tag>
-                  <span style="margin-left: 10px; font-weight: bold">
-                    {{ task.name }}
-                  </span>
-                  <el-tag size="small" style="margin-left: 10px" :type="task.async ? 'warning' : 'info'">
-                    {{ task.async ? '异步' : '同步' }}
-                  </el-tag>
-                </div>
-                <el-button
-                  :type="activeTaskIndex === index ? 'primary' : 'default'"
-                  size="small"
-                  @click="toggleTask(index)"
-                >
-                  {{ activeTaskIndex === index ? '收起' : '展开' }}
-                </el-button>
+              <div
+                style="flex: 1; display: flex; align-items: center; cursor: pointer"
+                @click="toggleTask(index)"
+              >
+                <span style="margin-right: 8px; color: #909399; font-size: 14px">
+                  {{ activeTaskIndex === index ? '▼' : '▶' }}
+                </span>
+                <el-tag :type="task.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ task.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 10px; font-weight: bold">
+                  {{ task.name }}
+                </span>
+                <el-tag size="small" style="margin-left: 10px" :type="task.async ? 'warning' : 'info'">
+                  {{ task.async ? '异步' : '同步' }}
+                </el-tag>
               </div>
             </template>
 
@@ -495,22 +490,19 @@
             shadow="hover"
           >
             <template #header>
-              <div style="display: flex; justify-content: space-between; align-items: center">
-                <div>
-                  <el-tag :type="plugin.enableStatus === 1 ? 'success' : 'info'" size="small">
-                    {{ plugin.enableStatus === 1 ? '已启用' : '已停用' }}
-                  </el-tag>
-                  <span style="margin-left: 10px; font-weight: bold">
-                    {{ plugin.pluginCode }}
-                  </span>
-                </div>
-                <el-button
-                  :type="activePluginIndex === index ? 'primary' : 'default'"
-                  size="small"
-                  @click="togglePlugin(index)"
-                >
-                  {{ activePluginIndex === index ? '收起' : '展开' }}
-                </el-button>
+              <div
+                style="flex: 1; display: flex; align-items: center; cursor: pointer"
+                @click="togglePlugin(index)"
+              >
+                <span style="margin-right: 8px; color: #909399; font-size: 14px">
+                  {{ activePluginIndex === index ? '▼' : '▶' }}
+                </span>
+                <el-tag :type="plugin.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ plugin.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 10px; font-weight: bold">
+                  {{ plugin.pluginCode }}
+                </span>
               </div>
             </template>
 
@@ -544,6 +536,179 @@
         </div>
       </div>
 
+      <!-- 浏览模式 -->
+      <div v-show="viewMode === 'browse'" v-if="handlerData">
+        <!-- 浏览模式提示 -->
+        <el-alert
+          title="浏览模式 - 只读视图"
+          type="warning"
+          :closable="false"
+          show-icon
+          style="margin-bottom: 20px"
+        >
+          <template #default>
+            当前为只读浏览模式，如需编辑请点击右上角"编辑"按钮
+          </template>
+        </el-alert>
+
+        <!-- 基础信息 -->
+        <el-divider content-position="left">基础信息</el-divider>
+        <el-descriptions :column="2" border size="small">
+          <el-descriptions-item label="处理器名称">{{ handlerData.name }}</el-descriptions-item>
+          <el-descriptions-item label="项目名称">{{ handlerData.projectName }}</el-descriptions-item>
+          <el-descriptions-item label="HTTP方法">
+            <el-tag v-for="method in handlerData.httpMethods" :key="method" size="small" style="margin-right: 5px">
+              {{ method }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="请求URI">{{ handlerData.requestUri }}</el-descriptions-item>
+          <el-descriptions-item label="标签">{{ handlerData.label || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="延迟时间">{{ handlerData.delayTime || 0 }} ms</el-descriptions-item>
+          <el-descriptions-item label="启用状态">
+            <el-tag :type="handlerData.enableStatus === 1 ? 'success' : 'info'" size="small">
+              {{ handlerData.enableStatus === 1 ? '已启用' : '已停用' }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <!-- Handler校验配置 -->
+        <el-divider content-position="left">Handler校验配置</el-divider>
+        <div v-if="hasHandlerCheckInfo">
+          <!-- 错误响应列表 -->
+          <div v-if="handlerData.checkInfo?.errResList?.length > 0" style="margin-bottom: 15px">
+            <h4 style="font-size: 14px; color: #606266; margin-bottom: 10px">错误响应列表 ({{ handlerData.checkInfo.errResList.length }})</h4>
+            <el-card v-for="(errRes, idx) in handlerData.checkInfo.errResList" :key="idx" size="small" style="margin-bottom: 8px">
+              <el-descriptions :column="2" border size="small">
+                <el-descriptions-item label="错误码">{{ errRes.errResCode }}</el-descriptions-item>
+                <el-descriptions-item label="HTTP状态">{{ errRes.status }}</el-descriptions-item>
+                <el-descriptions-item label="响应体" :span="2">
+                  <pre style="margin: 0; max-height: 150px; overflow: auto; font-size: 12px">{{ formatJson(errRes.body) }}</pre>
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+          <!-- 校验项列表 -->
+          <div v-if="handlerData.checkInfo?.checkItemList?.length > 0">
+            <h4 style="font-size: 14px; color: #606266; margin-bottom: 10px">校验项列表 ({{ handlerData.checkInfo.checkItemList.length }})</h4>
+            <el-card v-for="(item, idx) in handlerData.checkInfo.checkItemList" :key="idx" size="small" style="margin-bottom: 8px">
+              <el-descriptions :column="1" border size="small">
+                <el-descriptions-item label="校验表达式">
+                  <pre style="margin: 0; font-size: 12px">{{ item.checkExpression }}</pre>
+                </el-descriptions-item>
+                <el-descriptions-item label="错误响应码">{{ item.errResCode }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          未配置Handler校验
+        </div>
+
+        <!-- 自定义参数空间 -->
+        <el-divider content-position="left">自定义参数空间</el-divider>
+        <div v-if="hasCustomizeSpace">
+          <el-table :data="customizeSpaceList" border size="small">
+            <el-table-column prop="key" label="参数名" width="200" />
+            <el-table-column prop="value" label="参数值">
+              <template #default="{ row }">
+                <pre style="margin: 0; font-size: 12px; max-height: 100px; overflow: auto">{{ row.value }}</pre>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无自定义参数
+        </div>
+
+        <!-- 响应集 -->
+        <el-divider content-position="left">响应集 ({{ handlerData.responses?.length || 0 }})</el-divider>
+        <div v-if="handlerData.responses && handlerData.responses.length > 0">
+          <el-card v-for="(response, idx) in handlerData.responses" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center">
+                <el-tag :type="response.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ response.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ response.name }}</span>
+                <el-tag size="small" style="margin-left: 8px" type="info">HTTP {{ response.response?.status || 200 }}</el-tag>
+                <el-tag size="small" style="margin-left: 8px" type="warning">延迟 {{ response.delayTime || 0 }}ms</el-tag>
+              </div>
+            </template>
+            <el-descriptions :column="1" border size="small" style="margin-bottom: 10px">
+              <el-descriptions-item label="期望表达式" v-if="response.support?.length > 0">
+                <div v-for="(expr, i) in response.support" :key="i" style="margin-bottom: 5px">
+                  <pre style="margin: 0; font-size: 12px">{{ expr }}</pre>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="响应体">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px">{{ formatJson(response.response?.body) }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无响应配置
+        </div>
+
+        <!-- 任务集 -->
+        <el-divider content-position="left">任务集 ({{ handlerData.tasks?.length || 0 }})</el-divider>
+        <div v-if="handlerData.tasks && handlerData.tasks.length > 0">
+          <el-card v-for="(task, idx) in handlerData.tasks" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center">
+                <el-tag :type="task.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ task.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ task.name }}</span>
+                <el-tag size="small" style="margin-left: 8px" :type="task.async ? 'warning' : 'info'">
+                  {{ task.async ? '异步' : '同步' }}
+                </el-tag>
+              </div>
+            </template>
+            <el-descriptions :column="2" border size="small" style="margin-bottom: 10px">
+              <el-descriptions-item label="Cron表达式">{{ task.cron }}</el-descriptions-item>
+              <el-descriptions-item label="执行次数">{{ task.numberOfExecute }}</el-descriptions-item>
+              <el-descriptions-item label="请求URL" :span="2">{{ task.request?.requestUrl }}</el-descriptions-item>
+              <el-descriptions-item label="HTTP方法">{{ task.request?.httpMethod }}</el-descriptions-item>
+              <el-descriptions-item label="期望表达式" :span="2" v-if="task.support?.length > 0">
+                <div v-for="(expr, i) in task.support" :key="i" style="margin-bottom: 5px">
+                  <pre style="margin: 0; font-size: 12px">{{ expr }}</pre>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="请求体" :span="2" v-if="task.request?.body">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px">{{ formatJson(task.request.body) }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无任务配置
+        </div>
+
+        <!-- 插件信息集 -->
+        <el-divider content-position="left">插件信息集 ({{ handlerData.pluginInfos?.length || 0 }})</el-divider>
+        <div v-if="handlerData.pluginInfos && handlerData.pluginInfos.length > 0">
+          <el-card v-for="(plugin, idx) in handlerData.pluginInfos" :key="idx" style="margin-bottom: 10px" size="small">
+            <template #header>
+              <div style="display: flex; align-items: center">
+                <el-tag :type="plugin.enableStatus === 1 ? 'success' : 'info'" size="small">
+                  {{ plugin.enableStatus === 1 ? '已启用' : '已停用' }}
+                </el-tag>
+                <span style="margin-left: 8px; font-weight: bold">{{ plugin.pluginCode }}</span>
+              </div>
+            </template>
+            <el-descriptions :column="1" border size="small">
+              <el-descriptions-item label="插件参数">
+                <pre style="margin: 0; max-height: 200px; overflow: auto; font-size: 12px">{{ formatJson(plugin.pluginParam) }}</pre>
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else style="color: #909399; padding: 10px; text-align: center; background: #f5f7fa; border-radius: 4px">
+          暂无插件配置
+        </div>
+      </div>
+
       <!-- JSON模式 -->
       <div v-show="viewMode === 'json'" v-if="handlerData">
         <el-input
@@ -569,7 +734,7 @@ const route = useRoute()
 const loading = ref(false)
 const handlerData = ref(null)
 const handlerId = ref(null)
-const viewMode = ref('graphic')
+const viewMode = ref('browse')
 const activeResponseIndex = ref(-1)
 const activeTaskIndex = ref(-1)
 const activePluginIndex = ref(-1)

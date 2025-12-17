@@ -74,7 +74,23 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="requestUri" label="请求URI" />
+        <el-table-column label="请求URI">
+          <template #default="{ row }">
+            <div style="display: flex; align-items: center; gap: 8px">
+              <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+                {{ getFullUrl(row) }}
+              </span>
+              <el-button
+                type="primary"
+                link
+                @click="copyUrl(row)"
+                style="flex-shrink: 0"
+              >
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="label" label="标签" width="120" />
         <el-table-column prop="enableStatus" label="状态" width="100">
           <template #default="{ row }">
@@ -104,7 +120,7 @@
 
       <!-- 分页 -->
       <el-pagination
-        v-model:current-page="pagination.pageNo"
+        v-model:current-page="pagination.pageNum"
         v-model:page-size="pagination.pageSize"
         :total="pagination.total"
         :page-sizes="[10, 20, 50, 100]"
@@ -143,7 +159,7 @@ const searchForm = reactive({
 })
 
 const pagination = reactive({
-  pageNo: 1,
+  pageNum: 1,
   pageSize: 10,
   total: 0
 })
@@ -154,7 +170,7 @@ watch(
   (newProjectId) => {
     if (newProjectId) {
       searchForm.projectId = newProjectId
-      pagination.pageNo = 1
+      pagination.pageNum = 1
       loadData()
     }
   }
@@ -174,7 +190,7 @@ async function loadData() {
       httpMethod: searchForm.httpMethod,
       requestUri: searchForm.requestUri,
       enableStatus: searchForm.enableStatus,
-      pageNo: pagination.pageNo,
+      pageNum: pagination.pageNum,
       pageSize: pagination.pageSize
     })
     tableData.value = data.list || []
@@ -187,7 +203,7 @@ async function loadData() {
 }
 
 function handleSearch() {
-  pagination.pageNo = 1
+  pagination.pageNum = 1
   loadData()
 }
 
@@ -245,6 +261,33 @@ async function handleDelete(row) {
     loadData()
   } catch (error) {
     // 取消操作
+  }
+}
+
+function getFullUrl(row) {
+  // 获取项目的baseUri
+  const project = projectStore.projectList.find(p => p.projectId === row.projectId)
+  const baseUri = project?.baseUri || ''
+  const requestUri = row.requestUri || ''
+
+  // 拼接完整URL
+  if (baseUri) {
+    // 确保baseUri和requestUri之间只有一个斜杠
+    const cleanBaseUri = baseUri.endsWith('/') ? baseUri.slice(0, -1) : baseUri
+    const cleanRequestUri = requestUri.startsWith('/') ? requestUri : '/' + requestUri
+    return cleanBaseUri + cleanRequestUri
+  }
+
+  return requestUri
+}
+
+async function copyUrl(row) {
+  try {
+    const url = getFullUrl(row)
+    await navigator.clipboard.writeText(url)
+    ElMessage.success('URL已复制到剪贴板')
+  } catch (error) {
+    ElMessage.error('复制失败，请手动复制')
   }
 }
 </script>
