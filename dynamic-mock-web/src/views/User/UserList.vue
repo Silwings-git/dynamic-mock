@@ -284,7 +284,7 @@ function handleEdit(row) {
   form.username = row.username
   form.userAccount = row.userAccount
   form.password = ''
-  form.role = row.role
+  form.role = Number(row.role) // 确保转换为数字类型
   form.permissionList = row.permissionList || []
   dialogVisible.value = true
 }
