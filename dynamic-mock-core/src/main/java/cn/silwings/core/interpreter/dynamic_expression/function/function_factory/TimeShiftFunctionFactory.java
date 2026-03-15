@@ -44,10 +44,14 @@ public class TimeShiftFunctionFactory implements FunctionFactory {
             .minArgsNumber(4)
             .maxArgsNumber(4)
             .functionReturnType(FunctionReturnType.STRING)
-            .description("时间偏移函数，对指定时间进行加减操作。接收4个参数：时间戳、偏移量、时间单位（YEAR/MONTH/DAY/HOUR/MINUTE/SECOND）、输出格式。")
-            .example("#TimeShift(#Now(), 1, 'DAY', 'yyyy-MM-dd HH:mm:ss')\n" +
-                    "#TimeShift(#Now(), -7, 'DAY', 'yyyy-MM-dd')\n" +
-                    "#TimeShift(#Now(), 2, 'HOUR', 'HH:mm:ss')")
+            .description("时间偏移函数，对指定时间进行加减操作。接收 4 个参数：\n" +
+                    "1. format - 日期格式，如'yyyy-MM-dd HH:mm:ss'，不指定或为空时返回毫秒值\n" +
+                    "2. dateToShift - 要转换的日期，支持时间戳或格式化的日期字符串，为空时默认为当前时间\n" +
+                    "3. amountToShift - 要移动的时间量，使用 ISO-8601 持续时间格式（如'P10DT-1H-5M5S'）\n" +
+                    "4. locale - 语言环境设置，如'zh_CN'或'en_US'，为空时使用默认 locale")
+            .example("#TimeShift('yyyy-MM-dd HH:mm:ss', '', 'P1D', '')\n" +
+                    "#TimeShift('yyyy-MM-dd', #Now(), 'P7D', '')\n" +
+                    "#TimeShift('HH:mm:ss', '', '-PT2H', 'en_US')")
             .build();
 
     private static final String SYMBOL = "timeShift(,,,)";

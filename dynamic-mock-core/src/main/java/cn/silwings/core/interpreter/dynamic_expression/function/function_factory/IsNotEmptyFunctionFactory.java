@@ -13,8 +13,8 @@ import cn.silwings.core.utils.CheckUtils;
 import java.util.List;
 
 /**
- * @ClassName IsEmptyFunctionFactory
- * @Description 集合判空函数工厂
+ * @ClassName IsNotEmptyFunctionFactory
+ * @Description 集合非空判断函数工厂
  * @Author Silwings
  * @Date 2022/11/8 22:20
  * @Since

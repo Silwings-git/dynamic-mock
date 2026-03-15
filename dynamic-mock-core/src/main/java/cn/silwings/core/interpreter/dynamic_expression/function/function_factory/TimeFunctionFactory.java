@@ -61,7 +61,7 @@ public class TimeFunctionFactory implements FunctionFactory {
 
     @Override
     public FunctionExpression buildFunction(final List<ExpressionTreeNode> expressionList) {
-        CheckUtils.sizeBetween(expressionList, TIME_FUNCTION_INFO.getMinArgsNumber(), TIME_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of StartsWith function."));
+        CheckUtils.sizeBetween(expressionList, TIME_FUNCTION_INFO.getMinArgsNumber(), TIME_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of Time function."));
         return TimeFunction.from(expressionList);
     }
 

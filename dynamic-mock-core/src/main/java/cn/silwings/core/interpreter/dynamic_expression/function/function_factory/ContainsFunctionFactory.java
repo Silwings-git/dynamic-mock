@@ -27,16 +27,17 @@ public class ContainsFunctionFactory implements FunctionFactory {
 
     private static final FunctionInfo CONTAINS_FUNCTION_INFO = FunctionInfo.builder()
             .functionName("Contains")
-            .minArgsNumber(1)
+            .minArgsNumber(2)
             .maxArgsNumber(2)
             .functionReturnType(FunctionReturnType.BOOLEAN)
-            .description("包含判断函数，判断字符串或集合是否包含指定元素。支持3种用法：\n" +
-                    "1. #Contains(str) - 判断requestInfo转JSON字符串是否包含str\n" +
-                    "2. #Contains(collection, element) - 判断集合是否包含元素\n" +
-                    "3. #Contains(str, substring) - 判断字符串str是否包含子串substring")
-            .example("#Contains('admin')\n" +
-                    "#Contains(#Search($.roles), 'ADMIN')\n" +
-                    "#Contains(#Search($.name), 'test')")
+            .description("包含判断函数，判断容器是否包含指定元素。支持以下场景：\n" +
+                    "1. Collection.contains(element) - 判断集合是否包含元素\n" +
+                    "2. Collection.containsAll(collection) - 判断集合是否包含另一个集合的所有元素\n" +
+                    "3. String.contains(substring) - 判断字符串是否包含子串\n" +
+                    "参数：第一个参数为容器 (Collection 或 String)，第二个参数为要查找的元素或子串")
+            .example("#Contains(#Search($.roles), 'ADMIN')\n" +
+                    "#Contains(#Search($.name), 'test')\n" +
+                    "#Contains(#Search($.list1), #Search($.list2))")
             .build();
 
     private static final String SYMBOL = "#contains(...)";

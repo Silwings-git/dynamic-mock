@@ -49,7 +49,7 @@ public class URLEncodeFunctionFactory implements FunctionFactory {
 
     @Override
     public URLEncodeFunction buildFunction(final List<ExpressionTreeNode> expressionList) {
-        CheckUtils.sizeBetween(expressionList, URL_ENCODE_FUNCTION_INFO.getMinArgsNumber(), URL_ENCODE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UrlDecode function."));
+        CheckUtils.sizeBetween(expressionList, URL_ENCODE_FUNCTION_INFO.getMinArgsNumber(), URL_ENCODE_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of UrlEncode function."));
         return URLEncodeFunction.from(expressionList);
     }
 

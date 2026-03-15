@@ -39,13 +39,13 @@ public class PageFunctionFactory implements FunctionFactory {
             .minArgsNumber(3)
             .maxArgsNumber(5)
             .functionReturnType(FunctionReturnType.LIST)
-            .description("分页函数，从集合或JSON对象中提取指定页的数据。支持4种用法：\n" +
-                    "1. #Page(List, pageNo, pageSize) - 从List分页\n" +
-                    "2. #Page(Map, jsonpath, pageNo, pageSize) - 从Map的指定路径分页\n" +
-                    "3. #Page(Map, jsonpath, pageNo, pageSize, defaultValue) - 带默认值的分页\n" +
-                    "4. #Page(JsonString, jsonpath, pageNo, pageSize) - 从JSON字符串分页")
-            .example("#Page(#Search($.items), 1, 10)\n" +
-                    "#Page(#Search($), '$.data.list', 1, 20)")
+            .description("分页函数，支持两种分页模式：\n" +
+                    "模式 1 - 从现有列表分页：#Page(pageNum, pageSize, dataList, [dynamic])\n" +
+                    "模式 2 - 生成模板数据分页：#Page(pageNum, pageSize, total, pageItem, [dynamic])\n" +
+                    "参数说明：pageNum-页码 (从 1 开始), pageSize-每页数量, dataList-数据列表,total-总记录数，pageItem-数据模板，dynamic-是否动态解析 (默认 true)")
+            .example("#Page(1, 10, #Search($.items))\n" +
+                    "#Page(1, 20, 100, '{\"id\":\"#Random(1,1000)}')\n" +
+                    "#Page(1, 10, #Search($.items), false)")
             .build();
 
     private static final String SYMBOL = "#page(...)";

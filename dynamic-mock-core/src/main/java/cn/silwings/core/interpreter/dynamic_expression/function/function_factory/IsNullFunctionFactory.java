@@ -14,8 +14,8 @@ import cn.silwings.core.utils.CheckUtils;
 import java.util.List;
 
 /**
- * @ClassName IsBlankFunctionFactory
- * @Description 判空函数工厂
+ * @ClassName IsNullFunctionFactory
+ * @Description 空值判断函数工厂
  * @Author Silwings
  * @Date 2022/12/14 23:46
  * @Since

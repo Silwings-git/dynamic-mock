@@ -13,7 +13,7 @@ import cn.silwings.core.utils.CheckUtils;
 import java.util.List;
 
 /**
- * @ClassName EqualsFunctionFactory
+ * @ClassName NoEqualsFunctionFactory
  * @Description 不等函数工厂
  * @Author Silwings
  * @Date 2022/12/17 18:24
@@ -57,9 +57,9 @@ public class NoEqualsFunctionFactory implements FunctionFactory {
     }
 
     /**
-     * 相等函数
-     * #noEqual(待检查字符A,待检查字符B)
-     * #neq(待检查字符A,待检查字符B)
+     * 不等函数
+     * #noEquals(待检查字符 A，待检查字符 B)
+     * #neq(待检查字符 A，待检查字符 B)
      */
     public static class NoEqualsFunction extends AbstractFunctionExpression {
 

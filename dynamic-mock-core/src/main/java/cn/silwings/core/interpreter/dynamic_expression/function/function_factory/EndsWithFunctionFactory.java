@@ -50,23 +50,23 @@ public class EndsWithFunctionFactory implements FunctionFactory {
 
     @Override
     public FunctionExpression buildFunction(final List<ExpressionTreeNode> functionExpressionList) {
-        return StartWithFunction.from(functionExpressionList);
+        return EndsWithFunction.from(functionExpressionList);
     }
 
     /**
-     * 判断指定字符是否以suffix结尾
-     * #EndsWith(待检查字符,suffix)
-     * #EndsWith(待检查字符,suffix,ignoreCase)
+     * 判断指定字符是否以 suffix 结尾
+     * #EndsWith(待检查字符，suffix)
+     * #EndsWith(待检查字符，suffix,ignoreCase)
      */
-    public static class StartWithFunction extends AbstractFunctionExpression {
+    public static class EndsWithFunction extends AbstractFunctionExpression {
 
-        private StartWithFunction(final List<ExpressionTreeNode> functionExpressionList) {
+        private EndsWithFunction(final List<ExpressionTreeNode> functionExpressionList) {
             super(functionExpressionList);
         }
 
-        private static StartWithFunction from(final List<ExpressionTreeNode> functionExpressionList) {
+        private static EndsWithFunction from(final List<ExpressionTreeNode> functionExpressionList) {
             CheckUtils.sizeBetween(functionExpressionList, ENDS_WITH_FUNCTION_INFO.getMinArgsNumber(), ENDS_WITH_FUNCTION_INFO.getMaxArgsNumber(), DynamicValueCompileException.supplier("Wrong number of parameters of EndsWith function."));
-            return new StartWithFunction(functionExpressionList);
+            return new EndsWithFunction(functionExpressionList);
         }
 
         @Override

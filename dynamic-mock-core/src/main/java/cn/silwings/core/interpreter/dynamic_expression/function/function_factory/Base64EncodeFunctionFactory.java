@@ -16,8 +16,8 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * @ClassName URLEncodeFunctionFactory
- * @Description Url
+ * @ClassName Base64EncodeFunctionFactory
+ * @Description Base64 编码函数工厂
  * @Author Silwings
  * @Date 2023/5/26 19:52
  * @Since
