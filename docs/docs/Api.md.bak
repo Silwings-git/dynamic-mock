@@ -215,7 +215,7 @@ Mock hanlder包含4个部分`基础信息`,`自定义参数空间（customizeSpa
     1. 请求地址（requestUrl）
         1. 设置要发起请求的地址，可以不带http，会自动添加
     2. 请求方式（httpMethod）
-        1. 设置发起请求的请求方式，支持`GET`,`POST`,`PUT`,`DELETE`,`HEAD`,`PATCH`,`OPTIONS`,`TRACE`
+        1. 设置发起请求的请求方式，支持`GET`,`POST`,`PUT`,`DELETE`,`HEAD`,`PATCH`
     3. 请求头（headers）
         1. 设置发起的请求的请求头，注意，value部分需要使用集合
     4. 请求体（body）
