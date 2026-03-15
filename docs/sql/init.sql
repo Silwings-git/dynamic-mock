@@ -5,7 +5,7 @@ CREATE TABLE `dm_mock_handler`
     `project_id`        INT          NOT NULL COMMENT '项目id',
     `enable_status`     INT          NOT NULL DEFAULT '2' COMMENT '启用状态.1-启用,其他-禁用',
     `name`              VARCHAR(255) NOT NULL COMMENT '处理器名称',
-    `http_methods` SET('GET','POST','PUT','DELETE') NOT NULL DEFAULT 'GET' COMMENT '支持的请求方式',
+    `http_methods` SET('GET','POST','PUT','DELETE','HEAD','PATCH','OPTIONS','TRACE') NOT NULL DEFAULT 'GET' COMMENT '支持的请求方式',
     `request_uri`       VARCHAR(255) NOT NULL COMMENT '支持的请求URI',
     `label`             VARCHAR(128)          DEFAULT NULL COMMENT '标签',
     `delay_time`        INT          NOT NULL DEFAULT '0' COMMENT '延迟处理时间',

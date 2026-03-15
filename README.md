@@ -2,30 +2,97 @@
 
 ### 简介
 
-Dynamic-Mock是一款用于便捷创建动态的Http请求模拟响应数据的软件。
+Dynamic-Mock 是一款用于便捷创建动态的 Http 请求模拟响应数据的软件。
 
 #### 特征
 
 1.
-动态的：Dynamic-Mock并不致力于自动生成名称,编码等随机数据，而是更侧重于通过提供表达式和函数，让开发人员和测试人员可以按照自己的想法，以一定的逻辑生成模拟数据。除了对动态数据的支持，Dynamic-Mock还允许用户设置的Mock处理器按照一定周期向某些Http地址发送任意形式的Http请求，并记录这些请求的结果信息，发起请求时使用的请求地址，请求参数等信息均支持通过函数和表达式进行动态指定。
-2. 快速的：Dynamic-Mock通过在内存中预构建语法解析树，将动态逻辑运算的大部分工作提前到配置阶段，使其在真正处理Http请求时具有极快的速度。这一点在其向进行压测的接口提供Mock数据时显得尤为重要。
-3. 便捷的： 支持通过Web页面对Mock处理器，Mock任务进行CRUD操作，操作简单。配置好处理器后点击启用立即生效。Mock任务执行产生的请求信息均可通过页面查阅。
+动态的：Dynamic-Mock 并不致力于自动生成名称，编码等随机数据，而是更侧重于通过提供表达式和函数，让开发人员和测试人员可以按照自己的想法，以一定的逻辑生成模拟数据。除了对动态数据的支持，Dynamic-Mock 还允许用户设置的 Mock 处理器按照一定周期向某些 Http 地址发送任意形式的 Http 请求，并记录这些请求的结果信息，发起请求时使用的请求地址，请求参数等信息均支持通过函数和表达式进行动态指定。
+2. 快速的：Dynamic-Mock 通过在内存中预构建语法解析树，将动态逻辑运算的大部分工作提前到配置阶段，使其在真正处理 Http 请求时具有极快的速度。这一点在其向进行压测的接口提供 Mock 数据时显得尤为重要。
+3. 便捷的：支持通过 Web 页面对 Mock 处理器，Mock 任务进行 CRUD 操作，操作简单。配置好处理器后点击启用立即生效。Mock 任务执行产生的请求信息均可通过页面查阅。
 
 #### 适用场景
 
 1. 调用受限时：当需要调用的接口没有测试环境，或有调用次数限制时，通过模拟三方接口进行测试，待其他流程确认完成时再真实调用三方接口，减少对对方接口的实际调用次数。
-2. 开发未完成时：接口由同事或其他团队开发，但开发尚未完成，可以按照数据格式先行设置Mock处理器，减少代码中的硬编码伪数据。
-3. 长操作流程时：要调用的接口会发起一个操作流程，操作完成后会对我方进行回调。但发起操作流程后，该流程耗时很长，或不方便甚至难以完成时，可以通过Mock任务，设定指定时间后回调预设接口，越过流程操作来测试待测功能。
+2. 开发未完成时：接口由同事或其他团队开发，但开发尚未完成，可以按照数据格式先行设置 Mock 处理器，减少代码中的硬编码伪数据。
+3. 长操作流程时：要调用的接口会发起一个操作流程，操作完成后会对我方进行回调。但发起操作流程后，该流程耗时很长，或不方便甚至难以完成时，可以通过 Mock 任务，设定指定时间后回调预设接口，越过流程操作来测试待测功能。
 4. 短时间需要大量动态模拟数据的场景。
 
 #### 安装说明
 
-运行该项目仅需要一个MySQL服务，要求不低于8.0版本
+运行该项目仅需要一个 MySQL 服务，要求不低于 8.0 版本
 
-1. 执行`docs/sql/init.sql`，数据库初始化文件。
+1. 执行 `docs/sql/init.sql`，数据库初始化文件。
 2. 修改配置文件的数据库配置
-3. 运行`cn.silwings.admin.DynamicMockAdminApplication`
+3. 运行 `cn.silwings.admin.DynamicMockAdminApplication`
+
+#### 前端启动方式
+
+**方式一：独立开发模式（推荐开发时使用）**
+
+```bash
+# 1. 进入前端目录
+cd dynamic-mock-web
+
+# 2. 安装依赖（首次运行需要）
+npm install
+
+# 3. 启动开发服务器
+npm run dev
+
+# 访问 http://localhost:5173
+```
+
+**方式二：生产构建后嵌入后端**
+
+```bash
+# 1. 进入前端目录
+cd dynamic-mock-web
+
+# 2. 安装依赖（首次运行需要）
+npm install
+
+# 3. 构建生产版本
+npm run build
+
+# 4. 复制构建产物到后端静态资源目录
+cp -r dist/* ../dynamic-mock-admin/src/main/resources/static/
+
+# 5. 启动后端应用，前端会随后端一起启动
+# 运行 cn.silwings.admin.DynamicMockAdminApplication
+```
+
+**方式三：使用 Nginx 独立部署**
+
+```bash
+# 1. 构建生产版本
+cd dynamic-mock-web
+npm install
+npm run build
+
+# 2. 配置 Nginx（示例配置）
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        root /path/to/dynamic-mock-web/dist;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /dynamic-mock/ {
+        proxy_pass http://backend-server:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+**前置要求：**
+- Node.js >= 16
+- npm >= 7
 
 **tips:**
 
-更多API说明请参阅[使用文档](https://gitee.com/silwings/dynamic-mock/blob/master/docs/docs/Api.md)。
+更多 API 说明请参阅 [使用文档](https://gitee.com/silwings/dynamic-mock/blob/master/docs/docs/Api.md)。

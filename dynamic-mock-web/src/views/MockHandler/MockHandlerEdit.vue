@@ -84,7 +84,10 @@
                   <el-option label="POST" value="POST" />
                   <el-option label="PUT" value="PUT" />
                   <el-option label="DELETE" value="DELETE" />
+                  <el-option label="HEAD" value="HEAD" />
                   <el-option label="PATCH" value="PATCH" />
+                  <el-option label="OPTIONS" value="OPTIONS" />
+                  <el-option label="TRACE" value="TRACE" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -1188,13 +1191,16 @@
                           <el-option label="POST" value="POST" />
                           <el-option label="PUT" value="PUT" />
                           <el-option label="DELETE" value="DELETE" />
-                          <el-option label="PATCH" value="PATCH" />
-                        </el-select>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>
+                        <el-option label="HEAD" value="HEAD" />
+                        <el-option label="PATCH" value="PATCH" />
+                        <el-option label="OPTIONS" value="OPTIONS" />
+                        <el-option label="TRACE" value="TRACE" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
 
-                  <el-form-item label="请求头">
+                <el-form-item label="请求头">
                     <el-table :data="getTaskHeadersList(task.request)" border size="small">
                       <el-table-column label="Header名" width="200">
                         <template #default="{ row }">

@@ -87,4 +87,8 @@ coverage/
 *.seed
 *.pid.lock
 
+.claude
+CLAUDE.md
+AGENTS.md
+.omc
 dynamic-mock-admin/src/main/resources/static
